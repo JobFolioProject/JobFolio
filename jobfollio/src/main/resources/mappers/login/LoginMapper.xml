@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.happyjob.jobfolio.repository.login.LoginMapper">
+	<select id="login"
+			parameterType="kr.happyjob.jobfolio.vo.login.LoginVO"
+			resultType="kr.happyjob.jobfolio.vo.login.UserVO">
+		select
+			loginID
+			,user_type
+			,name
+			,password
+		from
+			tb_userinfo
+		where
+			loginID = #{id}
+			and password = #{pw}
+	</select>
+</mapper>

@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.happyjob.study.repository.menu.MenuMapper">
+   
+      <select id="mainmenusearch"
+         parameterType="Map"
+         resultType="kr.happyjob.study.vo.menu.MainmenuVO">
+         /* kr.happyjob.study.repository.menu.MenuMapper.mainmenusearch */
+
+        select main.mnu_id
+              ,main.hir_mnu_id
+              ,main.mnu_nm
+              ,main.mnu_url
+              ,main.mnu_dvs_cod
+              ,main.grp_num
+              ,main.odr
+              ,main.lvl
+              ,main.mnu_ico_cod
+              ,main.use_poa
+              ,main.dlt_poa 
+              ,(
+                 select count(*) as cnt
+                   from tm_mnu_mst sub
+                  where sub.hir_mnu_id = main.mnu_id
+                  and sub.lvl = 1
+             ) as submenucnt
+         from tm_mnu_mst main
+        <where>
+         <if test ="(smenuid != null) and (!smenuid.equals(''))">
+             and main.mnu_id  Like CONCAT('%', #{smenuid}, '%')
+         </if>
+         <if test ="(smenuname != null) and (!smenuname.equals(''))">
+             and main.mnu_nm  Like CONCAT('%', #{smenuname}, '%')
+         </if>
+         <if test ="(suseyn != null) and (!suseyn.equals(''))">
+             and main.use_poa = #{suseyn}
+         </if>   
+         and main.lvl = #{level}
+       </where>
+       order by main.hir_mnu_id, main.mnu_id
+      limit #{pageIndex}, #{pageSize}
+   </select>        
+   
+   <select id="mainmenusearchtotalcnt"
+         parameterType="Map"
+         resultType="int">
+         /* kr.happyjob.study.repository.menu.MenuMapper.mainmenusearchtotalcnt */
+
+        select count(*) as cnt
+         from tm_mnu_mst
+        <where>
+         <if test ="(smenuid != null) and (!smenuid.equals(''))">
+             and mnu_id  Like CONCAT('%', #{smenuid}, '%')
+         </if>
+         <if test ="(smenuname != null) and (!smenuname.equals(''))">
+             and mnu_nm  Like CONCAT('%', #{smenuname}, '%')
+         </if>
+         <if test ="(suseyn != null) and (!suseyn.equals(''))">
+             and use_poa = #{suseyn}
+         </if>   
+         and lvl = #{level}
+       </where>
+   </select>   
+   
+   
+   
+   <select id="submenusearch"
+         parameterType="Map"
+         resultType="kr.happyjob.study.vo.menu.MainmenuVO">
+         /* kr.happyjob.study.repository.menu.MenuMapper.submenusearch */
+
+        select sub.mnu_id
+              ,sub.hir_mnu_id
+              ,(select main.mnu_nm from tm_mnu_mst main where main.mnu_id = sub.hir_mnu_id) as hir_mnu_nm
+              ,sub.mnu_nm
+              ,sub.mnu_url
+              ,sub.mnu_dvs_cod
+              ,sub.grp_num
+              ,sub.odr
+              ,sub.lvl
+              ,sub.mnu_ico_cod
+              ,sub.use_poa
+              ,sub.dlt_poa 
+         from tm_mnu_mst sub
+        where sub.hir_mnu_id = #{smenuid}
+        and sub.lvl = #{level}
+       order by sub.hir_mnu_id, sub.mnu_id
+      limit #{pageIndex}, #{pageSize}
+   </select>    
+   
+   <select id="submenusearchtotalcnt"
+         parameterType="Map"
+         resultType="int">
+         /* kr.happyjob.study.repository.menu.MenuMapper.submenusearchtotalcnt */
+
+        select count(*) as cnt
+          from tm_mnu_mst
+         where hir_mnu_id = #{smenuid}
+         and lvl = #{level}
+   </select>      
+   
+   <select id="mainmenudupcheck"
+         parameterType="Map"
+         resultType="int">
+         /* kr.happyjob.study.repository.menu.MenuMapper.mainmenudupcheck */
+
+        select count(*) as cnt
+          from tm_mnu_mst
+         where mnu_id = #{mnu_id}
+   </select>   
+   
+    <insert id="mainmenuinsert" parameterType="Map">
+         insert into tm_mnu_mst (
+                              mnu_id 
+                             ,hir_mnu_id
+                             ,mnu_nm
+                             ,mnu_url
+                             ,mnu_dvs_cod
+                             ,grp_num
+                             ,odr  
+                             ,lvl 
+                             ,mnu_ico_cod
+                             ,use_poa
+                             ,dlt_poa
+                         ) values (
+                              #{mnu_id}
+                             ,#{mnu_id}
+                             ,#{mnu_nm}
+                             ,''
+                             ,'A'
+                             ,(select max(g.grp_num) + 1 from tm_mnu_mst g)
+                             ,1
+                             ,0
+                             ,'menu000'
+                             ,#{use_poa}
+                             ,'N'
+                        ) 
+   </insert>   
+   
+   <update id="mainmenuipdate" parameterType="Map">
+      update tm_mnu_mst
+         set mnu_nm = #{mnu_nm}
+            ,use_poa = #{use_poa}
+       where mnu_id = #{menucd}  
+      
+   </update>
+   
+    <delete id="mainmenudelete" parameterType="Map">
+          delete from tm_mnu_mst
+          where mnu_id = #{menucd} 
+    </delete>
+   
+    <select id="mainmenudetail" parameterType="Map" resultType="kr.happyjob.study.vo.menu.MainmenuVO">
+          select main.mnu_id
+                ,main.hir_mnu_id
+              ,main.mnu_nm
+              ,main.mnu_url
+              ,main.mnu_dvs_cod
+              ,main.grp_num
+              ,main.odr
+              ,main.lvl
+              ,main.mnu_ico_cod
+              ,main.use_poa
+              ,main.dlt_poa 
+              ,(
+                 select count(*) as cnt
+                   from tm_mnu_mst sub
+                  where sub.hir_mnu_id = main.mnu_id
+                  and sub.lvl = 1
+             ) as submenucnt
+         from tm_mnu_mst main 
+        where main.mnu_id = #{mnu_id}  
+   </select>    
+   
+   <select id="submenuselect" parameterType="Map" resultType="kr.happyjob.study.vo.menu.MainmenuVO">
+      select sub.mnu_id
+              ,sub.hir_mnu_id
+              ,(select main.mnu_nm from tm_mnu_mst main where main.mnu_id = sub.hir_mnu_id) as hir_mnu_nm
+              ,sub.mnu_nm
+              ,sub.mnu_url
+              ,sub.mnu_dvs_cod
+              ,sub.grp_num
+              ,sub.odr
+              ,sub.lvl
+              ,sub.mnu_ico_cod
+              ,sub.use_poa
+              ,sub.dlt_poa 
+         from tm_mnu_mst sub
+        where sub.mnu_id = #{mnu_id}
+           and sub.lvl = 1
+   </select>
+   
+   <insert id="submenuinsert" parameterType="Map">
+         insert into tm_mnu_mst (
+                              mnu_id 
+                             ,hir_mnu_id
+                             ,mnu_nm
+                             ,mnu_url
+                             ,mnu_dvs_cod
+                             ,grp_num
+                             ,odr  
+                             ,lvl 
+                             ,mnu_ico_cod
+                             ,use_poa
+                             ,dlt_poa
+                         ) values (
+                              #{sub_mnu_id}
+                             ,#{mnu_id}
+                             ,#{sub_mnu_nm}
+                             ,#{url}
+                             ,'A'
+                             ,(
+                                 select g.grp_num 
+                                   from tm_mnu_mst g 
+                                  where g.mnu_id  = #{mnu_id}
+                              )
+                             ,(
+                                 select max(f.odr) + 1 
+                                   from tm_mnu_mst f 
+                                  where f.grp_num  = (
+                                                       select h.grp_num 
+                                                         from tm_mnu_mst h 
+                                                       where h.mnu_id  = #{mnu_id}
+                                                     )
+                              )
+                             ,1
+                             ,'menu000'
+                             ,#{use_poa}
+                             ,'N'
+                        ) 
+   </insert>   
+   
+   <update id="submenuipdate" parameterType="Map">
+      update tm_mnu_mst
+         set mnu_nm = #{sub_mnu_nm}
+             ,mnu_url = #{url} 
+             ,use_poa = #{use_poa}
+       where mnu_id = #{sub_mnu_id}     
+   </update>
+   
+   <delete id="submenudelete" parameterType="Map">
+       delete from tm_mnu_mst
+        where mnu_id = #{sub_mnu_id}
+   </delete>
+   
+   <select id="selectpermmit" parameterType="Map" resultType="kr.happyjob.study.vo.menu.MenupermitVO">
+      select  userlist.user,
+               CASE WHEN usertypelist.MNU_ID is null THEN 'N'   
+              ELSE 'Y'
+               END as permit
+      from (
+               select 'A' as user
+               union
+               select 'B' as user
+             ) userlist 
+             left outer join (
+                          select user_type
+                                ,MNU_ID
+                          from tn_usr_mnu_atrt
+                         where MNU_ID = #{submenuid}
+                       ) usertypelist on usertypelist.user_type = userlist.user
+   </select>
+   
+   <delete id="deletepermmit"  parameterType="Map">
+          delete from tn_usr_mnu_atrt
+          where  MNU_ID = #{submenuid}
+             and  user_type in ('A','B')
+   </delete>
+   
+   <insert id="insertpermmit" parameterType="Map">
+          insert into tn_usr_mnu_atrt
+                  (
+                     mnu_id
+                    ,user_type 
+                  ) values (
+                    #{submenuid}
+                   ,#{Usertype}
+                  )
+   </insert>   
+   
+   <select id="mainmenupermmitselect" parameterType="Map">
+            select count(*) as cnt
+             from tn_usr_mnu_atrt
+            where mnu_id in (
+                                       select mnu_id
+                                        from tm_mnu_mst
+                                       where HIR_MNU_ID = #{mainmenuid}
+                                          and lvl = 1
+                                   )    
+               and user_type = #{Usertype}
+   </select>   
+   
+   <delete id="mainmenupermmitdelete" parameterType="Map">
+          delete from tn_usr_mnu_atrt
+          where mnu_id = #{mainmenuid}
+             and user_type = #{Usertype}
+   </delete>   
+   
+   <select id="mainmenupermmitcount" parameterType="Map">
+          select count(*) as cnt
+             from tn_usr_mnu_atrt
+            where mnu_id  = #{mainmenuid}
+               and user_type = #{Usertype}
+   </select>
+   
+   
+   <insert id="mainmenuinsertpermit" parameterType="Map">
+          insert into tn_usr_mnu_atrt
+                  (
+                     mnu_id
+                    ,user_type 
+                  ) values (
+                    #{mainmenuid}
+                   ,#{Usertype}
+                  )
+   </insert> 
+      
+</mapper>
