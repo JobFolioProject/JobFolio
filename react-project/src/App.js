@@ -31,16 +31,22 @@ function App() {
               <Route path="/resume" element={<Resume />}/>
               <Route path="/interview" element={<Interview />}/>
               <Route path="/pay" element={<Payment />}/>
+
+              {/* 커뮤니티 메뉴 하위항목 */}
                 <Route path="/commuNotice" element={<CommuNotice />}/>
                 <Route path="/commuResume" element={<CommuResume />}/>
                 <Route path="/commuInfo" element={<CommuInfo />}/>
                 <Route path="/commuFaq" element={<CommuFaq />}/>
+
+              {/* 마이페이지 메뉴 하위항목 */}
               <Route path="/myPage" element={<MyPage />}/>
                 <Route path="/userInfo" element={<UserInfo/>}/>
                 <Route path="/myCareer" element={<MyCareer/>}/>
                 <Route path="/payHistory" element={<PayHistory/>}/>
                 <Route path="/postLike" element={<PostLike/>}/>
                 <Route path="/resumeDetail" element={<ResumeDetail/>}/>
+
+              {/* 관리자페이지 메뉴 하위항목 */}  
               <Route path="/adminPage" element={<AdminPage />}/>
 
             </Routes>
