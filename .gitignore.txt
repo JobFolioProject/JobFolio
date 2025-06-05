@@ -33,10 +33,6 @@ build/
 *.jar
 *.war
 
-# React
-react-project/node_modules/
-react-project/build/
-
 # 테스트용 임시 파일
 *.temp
 .temp-happyjob*
