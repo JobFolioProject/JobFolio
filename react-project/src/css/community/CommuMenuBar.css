@@ -1,0 +1,23 @@
+.info-menu {
+  display: flex;
+  justify-content: center; 
+  align-items: center;
+  gap: 100px;
+  list-style: none;
+  padding: 0;
+  margin: 40px 0; 
+}
+
+.info-menu-item {
+  font-size: 16px;
+  font-weight: 400;
+  cursor: pointer;
+  padding : 0 10px;
+  padding-bottom: 5px; 
+  border-bottom: 2px solid transparent; 
+  transition: border-color 0.2s;
+}
+
+.info-menu-item:hover {
+  border-bottom: 2px solid #0b0ea8; 
+}

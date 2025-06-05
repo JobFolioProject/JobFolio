@@ -1,7 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
-import Menubar from './components/common/Menubar';
+import MenuBar from './components/common/MenuBar';
 import Main from './components/Main';
 import Login from './components/user/Login';
 import Resume from './components/resume/Resume';
@@ -13,20 +13,28 @@ import MyCareer from './components/user/myPageComponent/MyCareer';
 import PayHistory from './components/user/myPageComponent/PayHistory';
 import PostLike from './components/user/myPageComponent/PostLike';
 import ResumeDetail from './components/user/myPageComponent/ResumeDetail';
+import Interview from './components/interview/Interview';
+import CommuNotice from './components/community/CommuNotice';
+import CommuResume from './components/community/CommuResume';
+import CommuInfo from './components/community/CommuInfo';
+import CommuFaq from './components/community/CommuFaq';
 
 
 function App() {
   return (
     <BrowserRouter>
-    <Menubar/>
+    <MenuBar/>
           <main>
             <Routes>
               <Route path="/" element={<Main />}/>
               <Route path="/login" element={<Login />}/>
-              <Route path="/resume" element={<Resume />}>
-                 {/* <Route path="/resume" element={<ResumeWrite  />}/> */}
-              </Route>
+              <Route path="/resume" element={<Resume />}/>
+              <Route path="/interview" element={<Interview />}/>
               <Route path="/pay" element={<Payment />}/>
+                <Route path="/commuNotice" element={<CommuNotice />}/>
+                <Route path="/commuResume" element={<CommuResume />}/>
+                <Route path="/commuInfo" element={<CommuInfo />}/>
+                <Route path="/commuFaq" element={<CommuFaq />}/>
               <Route path="/myPage" element={<MyPage />}/>
                 <Route path="/userInfo" element={<UserInfo/>}/>
                 <Route path="/myCareer" element={<MyCareer/>}/>
