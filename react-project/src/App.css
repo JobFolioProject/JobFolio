@@ -1,0 +1,14 @@
+body{
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  background-color: rgb(253, 250, 250);
+  color: rgb(0, 0, 0);
+  font-family: Arial, sans-serif;
+  overflow-y: scroll;
+}
+
+a {
+  text-decoration: none;
+  color: #000000;
+}

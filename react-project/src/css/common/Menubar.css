@@ -1,0 +1,164 @@
+.navbar {
+  display: flex;
+  justify-content: space-between; /* 로고와 메뉴를 양쪽 끝에 배치 */
+  align-items: center;
+  padding: 0px 50px;
+  background-color: #cce0ff;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  min-width: 200px; /* 최소 크기 제한 */
+  box-sizing: border-box;
+}
+
+.navbar ul {
+  list-style: none;
+  display: flex;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar ul li {
+  margin: 0 20px;
+}
+
+.navbar ul li a {
+  color: #000;
+  text-decoration: none;
+  font-size: 18px;
+  transition: color 0.3s;
+}
+
+.navbar ul li a:hover {
+  color: #00ffff;
+}
+
+.logo {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-size: large;
+  font-weight: 650;
+  letter-spacing: 0.1em;
+}
+
+.logoImg {
+  margin: 15px 10px;
+  width: 30px;
+}
+
+.user-options {
+  display: flex;
+  align-items: center;
+}
+
+/* 햄버거 메뉴 버튼 */
+.toggle-button {
+  display: none; /* 기본적으로 숨김 */
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  width: 30px;
+  position: absolute;
+  left: 10px; /* 로고 왼쪽 끝에 위치 */
+  top: 50%;
+  transform: translateY(-50%); /* 수직 중앙 정렬 */
+  z-index: 1100; /* 메뉴보다 항상 위에 표시되도록 설정 */
+}
+
+.toggle-button div {
+  background-color: #000;
+  height: 4px;
+  width: 25px;
+  margin: 3px 0;
+  transition: all 0.3s ease-in-out;
+}
+
+/* 반응형 처리 */
+@media screen and (max-width: 1024px) {
+  .navbar {
+    flex-direction: column;
+    padding: 10px 20px;
+  }
+
+  .navbar ul {
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+    display: none; /* 기본적으로 메뉴 숨김 */
+  }
+
+  .navbar.active ul {
+    display: flex; /* 클릭 시 메뉴 표시 */
+    flex-direction: column;
+    align-items: center;
+    background-color: #f8f0ef;
+    position: absolute;
+    top: 50px;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+  }
+
+  .navbar ul li {
+    margin: 10px 0;
+  }
+
+  .logo {
+    justify-content: center;
+    margin-bottom: 10px;
+  }
+
+  .user-options {
+    margin-top: 10px;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .toggle-button {
+    display: flex; /* 작은 화면에서 햄버거 버튼 표시 */
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .navbar ul li a {
+    font-size: 16px;
+  }
+
+  .logo {
+    font-size: medium;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .navbar {
+    padding: 5px;
+  }
+
+  .navbar ul li {
+    margin: 15px 0;
+  }
+
+  .logo {
+    font-size: medium;
+    margin-bottom: 10px;
+  }
+}
+
+
+@media screen and (max-width: 430px) {
+  .navbar {
+    padding: 5px;
+  }
+
+  .navbar ul li {
+    margin: 15px 0;
+  }
+
+  .logo {
+    font-size: medium;
+    margin-bottom: 10px;
+  }
+}

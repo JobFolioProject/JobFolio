@@ -1,0 +1,21 @@
+.main-top{
+    margin-top: 200px;
+    height: 100vh;
+    width: 100vw;
+    text-align: center;
+  }
+
+.main-top .bg-img {
+    height: 50vh;
+    width: 50vw;
+    z-index: -1;
+    background-size: cover;
+    object-fit: cover;
+}
+
+.main-2nd{
+    margin-top: 200px;
+    height: 100vh;
+    width: 100vw;
+    text-align: center;
+  }
