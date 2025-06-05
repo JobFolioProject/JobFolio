@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="kr.happyjob.jobfolio.repository.notice.NoticeMapper">
+<mapper namespace="com.happyjob.jobfolio.repository.notice.NoticeMapper">
 	
    	<!-- 공지사항 목록 조회 -->
-	<select id = "noticeList" parameterType="java.util.Map" resultType = "kr.happyjob.jobfolio.vo.notice.NoticeModel">
+	<select id = "noticeList" parameterType="java.util.Map" resultType = "com.happyjob.jobfolio.vo.notice.NoticeModel">
         /*com.happyjob.jobfolio.repository.notice.NoticeMapper.noticeList*/
 		SELECT
 				n.ntc_no as noticeNo
@@ -53,7 +53,7 @@
 	
 	
 	<!-- 공지사항 단건 조회 : 공지제목 클릭시 -->
-	<select id = "noticeDetail" parameterType="java.util.Map"  resultType = "kr.happyjob.jobfolio.vo.notice.NoticeModel">
+	<select id = "noticeDetail" parameterType="java.util.Map"  resultType = "com.happyjob.jobfolio.vo.notice.NoticeModel">
         /*com.happyjob.jobfolio.repository.notice.NoticeMapper.noticeDetail*/
 		SELECT
 					u.loginID as loginId
