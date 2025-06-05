@@ -1,1 +1,48 @@
-.metadata
+# Eclipse / STS
+.metadata/
+*.log
+*.tmp
+*.bak
+*.swp
+*.class
+
+# Build outputs
+target/
+bin/
+build/
+
+# OS 관련
+.DS_Store
+Thumbs.db
+
+# IDE 설정
+*.iml
+.idea/
+.project
+.classpath
+.settings/
+
+# Maven / Gradle
+.mvn/
+mvnw
+mvnw.cmd
+.gradle/
+build/
+
+# Spring Boot
+*.jar
+*.war
+
+# React
+react-project/node_modules/
+react-project/build/
+
+# 테스트용 임시 파일
+*.temp
+.temp-happyjob*
+
+# 로그
+*.log
+
+# 기타
+.env
