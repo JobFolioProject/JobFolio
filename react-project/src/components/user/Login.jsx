@@ -1,7 +1,7 @@
 import '../../css/user/Login.css';
 import { useNavigate } from 'react-router-dom'
 
-const Login = () => {
+const Login = ({onClose}) => {
 
 
     const userLogin=() => {
@@ -15,12 +15,17 @@ const Login = () => {
     }
    
     return (
-    <div className='login'>
-        <h1>
-            로그인 페이지 입니다.
-        </h1>
-        <button onClick={userLogin}>유저 로그인</button>
-        <button onClick={adminLogin}>관리자 로그인</button>
+    <div className="modal-overlay">
+      <div className="modal-content">
+        <div className='login'>
+            <h1>
+                로그인 모달창 입니다.
+            </h1>
+            <button className='loginBtn' onClick={userLogin}>유저 로그인</button>
+            <button className='loginBtn' onClick={adminLogin}>관리자 로그인</button>
+        </div>
+        <button className="close-button" onClick={onClose}>x</button>
+      </div>
     </div>
     );
 };

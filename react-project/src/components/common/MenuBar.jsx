@@ -1,12 +1,14 @@
 import { Link } from 'react-router-dom';
 import {  useState } from 'react';
 import '../../css/common/MenuBar.css';
+import Login from '../user/Login';
 
 
 const MenuBar = () => {
     const loginUser = sessionStorage.getItem('loginUser'); // loginUser 객체를 JSON.parse로 파싱
-    const status = loginUser?.status || ''; // loginUser가 null일 경우 안전하게 status를 빈 문자열로 초기화
-    const [menuOpen, setMenuOpen] = useState(false); // 메뉴 열고 닫기 상태 관리
+    const status = loginUser?.status || ''; // loginUser가 null일때 status를 빈 문자열로 초기화
+    const [menuOpen, setMenuOpen] = useState(false); // 메뉴 열고 닫기
+    const [showLoginModal, setShowLoginModal] = useState(false); // 모달 열기 상태
 
     const toggleMenu = () => {
     setMenuOpen(!menuOpen); // 메뉴 상태를 토글
@@ -15,7 +17,7 @@ const MenuBar = () => {
     {/* 로그아웃시 세선에 있는 로그인 정보 삭제 후 페이지 전송 */}
     const logout = () => {
     sessionStorage.removeItem('loginUser');
-    window.location.href = '/'; // 메인 페이지로 이동
+    window.location.href = '/';
     };
 
     return (
@@ -45,9 +47,10 @@ const MenuBar = () => {
             <span onClick={logout} style={{ cursor: 'pointer' }}>Logout</span>
             </>
         ) : (
-            <Link to="login">LOG IN</Link>
+             <span onClick={() => setShowLoginModal(true)} style={{ cursor: 'pointer' }}>LOG IN</span>
         )}
         </div>
+        {showLoginModal && <Login onClose={() => setShowLoginModal(false)} />}
     </div>
     );
 };
