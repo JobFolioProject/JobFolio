@@ -15,7 +15,7 @@ If you don't comply with the terms, I'll have a deep conversation with U ^^
 ********폴더명은 소문자 시작, 파일명은 대문자로 시작하되, 각각 카멜케이스를 적용하도록 합니다.
 각 component는 component 폴더의 각 항목폴더에 하위파일로 작성 부탁드립니다.
 React의 경우 각 component간의 import가 잦은 편이니 꼭 주의하여 생성 및 작성하여 주시기 바랍니다.
-
+좋아요
 -- 각 component들은 src/component경로에 정렬되어 있습니다. --
 
 ## Component 등록, path입력
