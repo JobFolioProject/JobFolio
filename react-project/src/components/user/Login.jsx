@@ -15,13 +15,13 @@ const Login = () => {
     }
    
     return (
-    <>
+    <div className='login'>
         <h1>
             로그인 페이지 입니다.
         </h1>
         <button onClick={userLogin}>유저 로그인</button>
         <button onClick={adminLogin}>관리자 로그인</button>
-    </>
+    </div>
     );
 };
 
