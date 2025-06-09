@@ -37,9 +37,11 @@ const AdminSideBar = () => {
             <li className="list-item" onClick={(e) => setDropDown(!dropDownVisible)}>
               <span className="dropDownMenuTitle">
                 커뮤니티 관리
+                <span className='arrow'>
                 {
-                  dropDownVisible ? "∧" : "∨"
+                  dropDownVisible ? " ∧" : " ∨"
                 }
+                </span>
               </span>
             </li>
             <div className={`sideBarDropDownMenuList ${dropDownVisible ? 'slide-fade-in-dropdown' : 'slide-fade-out-dropdown'}`}>

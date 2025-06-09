@@ -80,3 +80,7 @@
   animation-fill-mode: forwards;
 }
 
+.dropDownMenuTitle .arrow {
+  font-size : 10px;
+  text-align: center;
+}
