@@ -1,0 +1,83 @@
+.adminSideBar {
+  flex: 1;
+  height: 100vh;
+  width: 300px;
+  background-color: rgb(60,60,60);
+  position: sticky;
+}
+
+.adminSideBar .sideBarWrapper {
+  width: 300px;
+}
+.adminSideBar .sideBarTitle {
+  color: white;
+  margin: 0;
+  padding: 15px;
+}
+.sideBarMenuList {
+  list-style-type: none;
+}
+.sideBarDropDownMenuList {
+  position: relative;
+}
+.sideBarDropDownMenuList ul{
+  list-style-type: none;
+}
+.dropDownMenuTitle {
+  color: white;
+}
+.sideBarMenuList li{
+  margin: 5px;
+  padding: 15px;
+  color: white;
+  cursor: pointer;
+}
+.sideBarMenuList li a{
+  color: white;
+  text-decoration: none;
+}
+.sideBarMenuList li:hover,
+.sideBarMenuList li:active{
+  background-color: rgb(50, 50, 50);
+  border-radius: 10px;
+}
+
+/* 드롭 다운 메뉴 애니메이션 */
+@keyframes slide-fade-in-dropdown-animation {
+  0% {
+    transform: translateY(-100%);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.slide-fade-in-dropdown {
+  overflow: hidden;
+}
+
+.slide-fade-in-dropdown > ul {
+  animation: slide-fade-in-dropdown-animation .4s ease;
+}
+
+@keyframes slide-fade-out-dropdown-animation {
+  0% {
+    transform: translateY(0);
+  }
+
+  100% {
+    transform: translateY(-100%);
+  }
+}
+
+.slide-fade-out-dropdown {
+  overflow: hidden;
+  display: none;
+}
+
+.slide-fade-out-dropdown > ul {
+  animation: slide-fade-out-dropdown-animation 0.4s ease;
+  animation-fill-mode: forwards;
+}
+
