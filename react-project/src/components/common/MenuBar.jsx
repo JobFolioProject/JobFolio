@@ -30,7 +30,7 @@ const MenuBar = () => {
         <li><Link to="/resume">이력서</Link></li>
         <li><Link to="/interview">면접연습</Link></li>
         <li><Link to="/pay">이용권</Link></li>
-        <li><Link to="/commuNotice">커뮤니티</Link></li>
+        <li><Link to="/community/notice">커뮤니티</Link></li>
         {loginUser === 'user' && (
             <li><Link to="myPage">마이페이지</Link></li>
         )}

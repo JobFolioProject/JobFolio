@@ -5,6 +5,10 @@ const CommuNotice = () => {
    
     return (
     <>
+        <div className="notice-banner">
+            <img src="/resources/img/banner.png" alt="Banner" />
+            <h1>공지사항</h1>
+        </div>
     <CommuMenuBar/>
         <h1>
             공지사항 페이지 입니다.

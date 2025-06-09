@@ -1,0 +1,41 @@
+footer {
+    margin-top: 80px;
+    height: 20vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  footer .link {
+    display: flex;
+    margin-bottom: 20px;
+  }
+  
+  footer .box {
+    width: 300px;
+    height: 100px;
+    color: #888;
+  }
+
+  footer .box a{
+    color: #888;
+  }
+
+  footer .title {
+    color: #000000;
+    font-size: larger;
+  }
+
+  footer .policy {
+    font-size: small;
+    color: #888;
+    margin-top: 60px;
+    margin-bottom: 8px;
+  }
+
+  footer .copywrite {
+    color: #888;
+    margin-bottom: 1px;
+  }

@@ -1,0 +1,15 @@
+.info-banner img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.info-banner h1 {
+  position: absolute;
+  top: 120px;
+  left: 10%;
+  transform: translate(-50%, -50%);
+  color: #ffffff;
+  font-size: 2.5rem;
+  font-weight: 900;
+}

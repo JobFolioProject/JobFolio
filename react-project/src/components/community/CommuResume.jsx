@@ -5,6 +5,10 @@ const CommuResume = () => {
    
     return (
     <>
+        <div className="resume-banner">
+            <img src="/resources/img/banner.png" alt="Banner" />
+            <h1>이력서</h1>
+        </div>
     <CommuMenuBar/>
         <h1>
             이력서 게시 페이지 입니다.

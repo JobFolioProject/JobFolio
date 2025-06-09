@@ -18,6 +18,17 @@ import CommuNotice from './components/community/CommuNotice';
 import CommuResume from './components/community/CommuResume';
 import CommuInfo from './components/community/CommuInfo';
 import CommuFaq from './components/community/CommuFaq';
+import UserManagement from './components/admin/adminComponents/UserManagement';
+import Footer from './components/common/Footer';
+import AdminManagement from './components/admin/adminComponents/AdminManagement';
+import SubscriptStatus from './components/admin/adminComponents/SubscriptStatus';
+import NoticeManagement from './components/admin/adminComponents/NoticeManagement';
+import ResumeManagement from './components/admin/adminComponents/ResumeManagement';
+import InfoManagement from './components/admin/adminComponents/InfoManagement';
+import FaqManagement from './components/admin/adminComponents/FaqManagement';
+import SubscriptManagement from './components/admin/adminComponents/SubscriptManagement';
+import TemplateManagement from './components/admin/adminComponents/TemplateManagement';
+import Configuration from './components/admin/adminComponents/Configuration';
 
 function App() {
   return (
@@ -43,23 +54,34 @@ function AppContent() {
           <Route path="/pay" element={<Payment />} />
 
           {/* 커뮤니티 메뉴 하위항목 */}
-          <Route path="/commuNotice" element={<CommuNotice />} />
-          <Route path="/commuResume" element={<CommuResume />} />
-          <Route path="/commuInfo" element={<CommuInfo />} />
-          <Route path="/commuFaq" element={<CommuFaq />} />
+          <Route path="/community/notice" element={<CommuNotice />} />
+          <Route path="/community/resume" element={<CommuResume />} />
+          <Route path="/community/info" element={<CommuInfo />} />
+          <Route path="/community/faq" element={<CommuFaq />} />
 
           {/* 마이페이지 메뉴 하위항목 */}
           <Route path="/myPage" element={<MyPage />} />
-          <Route path="/userInfo" element={<UserInfo />} />
-          <Route path="/myCareer" element={<MyCareer />} />
-          <Route path="/payHistory" element={<PayHistory />} />
-          <Route path="/postLike" element={<PostLike />} />
-          <Route path="/resumeDetail" element={<ResumeDetail />} />
+          <Route path="/myPage/userInfo" element={<UserInfo />} />
+          <Route path="/myPage/myCareer" element={<MyCareer />} />
+          <Route path="/myPage/payHistory" element={<PayHistory />} />
+          <Route path="/myPage/postLike" element={<PostLike />} />
+          <Route path="/myPage/resumeDetail" element={<ResumeDetail />} />
 
           {/* 관리자페이지 메뉴 하위항목 */}
           <Route path="/adminPage" element={<AdminPage />} />
+          <Route path="/adminPage/userManagement" element={<UserManagement />} />
+          <Route path="/adminPage/adminManagement" element={<AdminManagement />} />
+          <Route path="/adminPage/subscriptStatus" element={<SubscriptStatus />} />
+          <Route path="/adminPage/noticeManagement" element={<NoticeManagement />} />
+          <Route path="/adminPage/resumeManagement" element={<ResumeManagement />} />
+          <Route path="/adminPage/infoManagement" element={<InfoManagement />} />
+          <Route path="/adminPage/faqManagement" element={<FaqManagement />} />
+          <Route path="/adminPage/subscriptManagement" element={<SubscriptManagement />} />
+          <Route path="/adminPage/templateManagement" element={<TemplateManagement />} />
+          <Route path="/adminPage/configuration" element={<Configuration />} />
         </Routes>
       </main>
+      {!isAdminPath && <Footer />}
     </>
   );
 }

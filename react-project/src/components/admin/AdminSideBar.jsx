@@ -20,17 +20,17 @@ const AdminSideBar = () => {
               </NavLink>
             </li>
             <li className="list-item">
-              <NavLink to="/" activeClassName="list-active">
+              <NavLink to="/adminPage/userManagement" activeClassName="list-active">
                 회원 관리
               </NavLink>
             </li>
             <li className="list-item">
-              <NavLink to="/" activeClassName="list-active">
+              <NavLink to="/adminPage/adminManagement" activeClassName="list-active">
                 관리자 계정 관리
               </NavLink>
             </li>
             <li className="list-item">
-              <NavLink to="/" activeClassName="list-active">
+              <NavLink to="/adminPage/subscriptStatus" activeClassName="list-active">
                 이용권 현황
               </NavLink>
             </li>
@@ -47,39 +47,39 @@ const AdminSideBar = () => {
             <div className={`sideBarDropDownMenuList ${dropDownVisible ? 'slide-fade-in-dropdown' : 'slide-fade-out-dropdown'}`}>
               <ul>
                 <li className="list-item">
-                  <NavLink to="/" activeClassName="list-active">
+                  <NavLink to="/adminPage/noticeManagement" activeClassName="list-active">
                     공지사항
                   </NavLink>
                 </li>
                 <li className="list-item">
-                  <NavLink to="/" activeClassName="list-active">
+                  <NavLink to="/adminPage/resumeManagement" activeClassName="list-active">
                     이력서
                   </NavLink>
                 </li>
                 <li className="list-item">
-                  <NavLink to="/" activeClassName="list-active">
+                  <NavLink to="/adminPage/infoManagement" activeClassName="list-active">
                     이용안내
                   </NavLink>
                 </li>
                 <li className="list-item">
-                  <NavLink to="/" activeClassName="list-active">
+                  <NavLink to="/adminPage/faqManagement" activeClassName="list-active">
                     FAQ
                   </NavLink>
                 </li>
               </ul>
             </div>
             <li className="list-item">
-              <NavLink to="/" activeClassName="list-active">
+              <NavLink to="/adminPage/subscriptManagement" activeClassName="list-active">
                 상품 관리
               </NavLink>
             </li>
             <li className="list-item">
-              <NavLink to="/" activeClassName="list-active">
+              <NavLink to="/adminPage/templateManagement" activeClassName="list-active">
                 템플릿 관리
               </NavLink>
             </li>
             <li className="list-item">
-              <NavLink to="/" activeClassName="list-active">
+              <NavLink to="/adminPage/configuration" activeClassName="list-active">
                 설정값
               </NavLink>
             </li>

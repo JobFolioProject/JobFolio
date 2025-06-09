@@ -57,7 +57,7 @@
 }
 
 .slide-fade-in-dropdown > ul {
-  animation: slide-fade-in-dropdown-animation .4s ease;
+  animation: slide-fade-in-dropdown-animation .6s ease;
 }
 
 @keyframes slide-fade-out-dropdown-animation {
@@ -76,7 +76,7 @@
 }
 
 .slide-fade-out-dropdown > ul {
-  animation: slide-fade-out-dropdown-animation 0.4s ease;
+  animation: slide-fade-out-dropdown-animation 0.6s ease;
   animation-fill-mode: forwards;
 }
 
@@ -84,3 +84,5 @@
   font-size : 10px;
   text-align: center;
 }
+
+
