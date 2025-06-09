@@ -13,30 +13,30 @@
   margin: 0;
   padding: 15px;
 }
-.sideBarMenuList {
+.adminSideBar .sideBarMenuList {
   list-style-type: none;
 }
-.sideBarDropDownMenuList {
+.adminSideBar .sideBarDropDownMenuList {
   position: relative;
 }
-.sideBarDropDownMenuList ul{
+.adminSideBar .sideBarDropDownMenuList ul{
   list-style-type: none;
 }
-.dropDownMenuTitle {
+.adminSideBar .dropDownMenuTitle {
   color: white;
 }
-.sideBarMenuList li{
+.adminSideBar .sideBarMenuList li{
   margin: 5px;
   padding: 15px;
   color: white;
   cursor: pointer;
 }
-.sideBarMenuList li a{
+.adminSideBar .sideBarMenuList li a{
   color: white;
   text-decoration: none;
 }
-.sideBarMenuList li:hover,
-.sideBarMenuList li:active{
+.adminSideBar .sideBarMenuList li:hover,
+.adminSideBar .sideBarMenuList li:active{
   background-color: rgb(50, 50, 50);
   border-radius: 10px;
 }

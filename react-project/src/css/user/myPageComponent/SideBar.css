@@ -1,23 +1,23 @@
-.sideBarMenu {
+.mySideBarMenu {
     width: 300px;
 }
 
-.sideBarMenuList {
+.mySideBarMenuList {
   width: 200px;
   list-style-type: none;
 }
-.sideBarMenuList .userInfo{
+.mySideBarMenuList .userInfo{
   font-size: 32px;
 }
-.sideBarMenuList li{
+.mySideBarMenuList li{
   margin: 5px;
 }
-.sideBarMenuList li:hover{
+.mySideBarMenuList li:hover{
   margin: 5px;
   background: linear-gradient(90deg, rgb(118, 204, 255), rgb(47, 130, 255));
   border-radius: 10px;
 }
-.sideBarMenuList li a{
+.mySideBarMenuList li a{
   padding: 15px;
   display: block;
   width: 100%;
@@ -25,13 +25,13 @@
   text-align: left;
   color: black;
 }
-.sideBarMenuList li a:hover{
+.mySideBarMenuList li a:hover{
   width: 100%;
   text-decoration: none;
   color: white;
 }
 
-.sideBarMenuList li .list-active{
+.mySideBarMenuList li .list-active{
   background: linear-gradient(90deg, rgb(118, 204, 255), rgb(47, 130, 255));
   border-radius: 10px;
   color: white;

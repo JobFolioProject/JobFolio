@@ -4,8 +4,8 @@ import { NavLink } from 'react-router-dom';
 const SideBar = () => {
    
     return (
-    <div className="sideBarMenu">
-      <ul className="sideBarMenuList">
+    <div className="mySideBarMenu">
+      <ul className="mySideBarMenuList">
         <div className="userInfo">
           <img src="" alt="" />
           <p>반가워요</p>
