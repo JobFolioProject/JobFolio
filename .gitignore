@@ -43,3 +43,5 @@ build/
 
 # 기타
 .env
+
+# push test
