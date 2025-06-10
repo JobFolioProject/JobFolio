@@ -1,5 +1,8 @@
 .mySideBarMenu {
-    width: 300px;
+  position: relative;
+  margin-right: 10px;
+  margin-top: 50px;
+  width: 300px;
 }
 
 .mySideBarMenuList {
@@ -8,6 +11,7 @@
 }
 .mySideBarMenuList .userInfo{
   font-size: 32px;
+  font-weight: 700;
 }
 .mySideBarMenuList li{
   margin: 5px;
@@ -21,6 +25,7 @@
   padding: 15px;
   display: block;
   width: 100%;
+  font-weight: 700;
   text-decoration: none;
   text-align: left;
   color: black;
@@ -31,8 +36,39 @@
   color: white;
 }
 
+.userInfo  li {
+  font-weight: 700;
+}
+
 .mySideBarMenuList li .list-active{
   background: linear-gradient(90deg, rgb(118, 204, 255), rgb(47, 130, 255));
   border-radius: 10px;
   color: white;
+}
+
+.menuDivider {
+  margin-top: 50px;
+  margin-bottom: 20px;
+}
+
+.menuDivider2 {
+  margin-top: 20px;
+}
+
+.userInfo p {
+  margin: 0 auto;
+}
+
+.imogi {
+  margin-bottom:10px !important;
+}
+
+.userNameWrap {
+  display: flex;
+  align-items: center;
+}
+
+.userName {
+  color: #6239ff;
+  margin: 0 !important;
 }
