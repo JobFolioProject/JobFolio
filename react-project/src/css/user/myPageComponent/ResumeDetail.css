@@ -1,6 +1,71 @@
-.resumeDetail{
-    margin-top: 100px;
+.resumeDetail {
+    margin-top: 50px;
     display: flex;
-    flex-direction: row;
+    justify-content: space-between;
+    flex-flow: wrap;
+    align-items: center;
     width: 100%;
+    height: fit-content;
+}
+
+.resumeItem {
+    position: relative;
+    display: flex;
+    width: 470px;
+    height: 150px;
+    border: 1px solid #cacaca;
+    border-radius: 15px;
+    margin-bottom: 40px;
+}
+
+.resumeItemCon {
+    position: relative;
+    padding: 40px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    align-self: center;
+}
+
+
+
+.resumeItemHeader {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.resumeItemCon h3 {
+    color: #5f4dff;
+    margin: 0;
+}
+
+.resumeItemDetail {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    /* align-items: end; */
+    margin-top: 30px;
+}
+
+img.likeIcon {
+    width: 25px;
+}
+
+.resumeItemDetail p {
+    margin: 0;
+}
+
+p.resumeItemJob {
+    color: #717171;
+}
+
+p.resumeItemDate {
+    color: #8b8b8b;
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: 1px;
 }
