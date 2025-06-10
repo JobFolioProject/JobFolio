@@ -23,42 +23,44 @@
         <result property="emailVerifyToken" column="email_verify_token"/>
         <result property="emailVerified" column="email_verified"/>
         <result property="tokenExpireTime" column="token_expire_time"/>
-        <result property="resetToken" column="reset_token"/>
+        <!-- reset_token은 데이터베이스에 컬럼이 없으므로 임시로 제거 -->
     </resultMap>
 
     <!-- ================= 기본 CRUD ================= -->
 
     <!-- 사용자 등록 -->
-    <insert id="insertUser" parameterType="map">
+    <insert id="insertUser" parameterType="map" useGeneratedKeys="true" keyProperty="userNo">
         INSERT INTO tb_userinfo (
-            login_id,
-            user_type,
-            user_name,
-            password,
-            birthday,
-            sex,
-            hp,
-            reg_date,
-            status_yn,
-            address,
-            hobby,
-            notes,
-            email_verified
+        login_id,
+        user_type,
+        user_name,
+        password,
+        birthday,
+        sex,
+        hp,
+        reg_date,
+        status_yn,
+        address,
+        hobby,
+        notes,
+        email_verified,
+        user_no
         ) VALUES (
-                     #{loginId},
-                     COALESCE(#{userType}, 'C'),  /* 기본값: 일반사용자 */
-                     #{userName},
-                     #{password},  /* TODO: 암호화 필요 */
-                     #{birthday},
-                     #{sex},
-                     #{hp},
-                     NOW(),
-                     'Y',
-                     #{address},
-                     #{hobby},
-                     #{notes},
-                     'N'  /* 이메일 미인증 상태로 시작 */
-                 )
+        #{loginId},
+        COALESCE(#{userType}, 'C'),  <!-- 기본값: 일반사용자 -->
+        #{userName},
+        #{password},  <!-- TODO: 암호화 필요 -->
+        #{birthday},
+        #{sex},
+        #{hp},
+        NOW(),
+        'Y',
+        #{address},
+        #{hobby},
+        #{notes},
+        'Y',  <!-- 이메일 인증 완료된 상태로 등록 (인증 후 회원가입이므로) -->
+        (SELECT COALESCE(MAX(user_no), 0) + 1 FROM tb_userinfo t1)  <!-- 자동 증가 user_no -->
+        )
     </insert>
 
     <!-- 로그인 ID 중복 체크 -->
@@ -73,31 +75,30 @@
     <!-- 로그인ID로 사용자 조회 -->
     <select id="selectUserByLoginId" parameterType="map" resultMap="userResultMap">
         SELECT
-            user_no,
-            login_id,
-            user_type,
-            user_name,
-            password,
-            birthday,
-            sex,
-            hp,
-            DATE_FORMAT(reg_date, '%Y-%m-%d %H:%i:%s') AS reg_date,
-            DATE_FORMAT(withdrawal_date, '%Y-%m-%d %H:%i:%s') AS withdrawal_date,
-            status_yn,
-            expire_days,
-            address,
-            hobby,
-            notes,
-            email_verify_token,
-            email_verified,
-            token_expire_time,
-            reset_token
+        user_no,
+        login_id,
+        user_type,
+        user_name,
+        password,
+        birthday,
+        sex,
+        hp,
+        DATE_FORMAT(reg_date, '%Y-%m-%d %H:%i:%s') AS reg_date,
+        DATE_FORMAT(withdrawal_date, '%Y-%m-%d %H:%i:%s') AS withdrawal_date,
+        status_yn,
+        expire_days,
+        address,
+        hobby,
+        notes,
+        email_verify_token,
+        email_verified,
+        token_expire_time
         FROM tb_userinfo
         WHERE login_id = #{loginId}
-          AND status_yn = 'Y'
-          AND withdrawal_date IS NULL
-            /* 이메일 인증된 사용자만 조회 */
-          AND email_verified = 'Y'
+        AND status_yn = 'Y'
+        AND withdrawal_date IS NULL
+        <!-- 이메일 인증된 사용자만 조회 -->
+        AND email_verified = 'Y'
     </select>
 
     <!-- 사용자번호로 사용자 조회 -->
@@ -120,8 +121,7 @@
             notes,
             email_verify_token,
             email_verified,
-            token_expire_time,
-            reset_token
+            token_expire_time
         FROM tb_userinfo
         WHERE user_no = #{userNo}
           AND status_yn = 'Y'
@@ -132,199 +132,201 @@
     <update id="updateUser" parameterType="map">
         UPDATE tb_userinfo
         SET
-            user_name = #{userName},
-            birthday = #{birthday},
-            sex = #{sex},
-            hp = #{hp},
-            address = #{address},
-            hobby = #{hobby},
-            notes = #{notes}
+        user_name = #{userName},
+        birthday = #{birthday},
+        sex = #{sex},
+        hp = #{hp},
+        address = #{address},
+        hobby = #{hobby},
+        notes = #{notes}
         WHERE user_no = #{userNo}
-          AND status_yn = 'Y'
-          AND withdrawal_date IS NULL
-            /* 이메일 인증된 사용자만 수정 가능 */
-          AND email_verified = 'Y'
+        AND status_yn = 'Y'
+        AND withdrawal_date IS NULL
+        <!-- 이메일 인증된 사용자만 수정 가능 -->
+        AND email_verified = 'Y'
     </update>
 
     <!-- 비밀번호 변경 -->
     <update id="updatePassword" parameterType="map">
         UPDATE tb_userinfo
-        SET password = #{newPassword}  /* TODO: 암호화 필요 */
+        SET password = #{newPassword}
         WHERE user_no = #{userNo}
-          AND password = #{currentPassword}  /* 현재 비밀번호 확인 */
-          AND status_yn = 'Y'
-          AND withdrawal_date IS NULL
-          AND email_verified = 'Y'
+        AND password = #{currentPassword}  <!-- 현재 비밀번호 확인 -->
+        AND status_yn = 'Y'
+        AND withdrawal_date IS NULL
+        AND email_verified = 'Y'
     </update>
 
     <!-- 회원 탈퇴 (상태 변경) -->
     <update id="withdrawUser" parameterType="map">
         UPDATE tb_userinfo
         SET
-            status_yn = 'N',
-            withdrawal_date = NOW(),
-            /* 개인정보 삭제 (GDPR 준수) */
-            user_name = '탈퇴회원',
-            hp = NULL,
-            address = NULL,
-            hobby = NULL,
-            notes = '회원탈퇴',
-            email_verify_token = NULL,
-            reset_token = NULL
+        status_yn = 'N',
+        withdrawal_date = NOW(),
+        <!-- 개인정보 삭제 (GDPR 준수) -->
+        user_name = '탈퇴회원',
+        hp = NULL,
+        address = NULL,
+        hobby = NULL,
+        notes = '회원탈퇴',
+        email_verify_token = NULL
         WHERE user_no = #{userNo}
-          AND status_yn = 'Y'
-          AND withdrawal_date IS NULL
+        AND status_yn = 'Y'
+        AND withdrawal_date IS NULL
     </update>
 
     <!-- 이름과 연락처로 사용자 조회 (아이디 찾기) -->
     <select id="selectUserByNameAndHp" parameterType="map" resultMap="userResultMap">
         SELECT
-            user_no,
-            login_id,
-            user_name,
-            DATE_FORMAT(reg_date, '%Y-%m-%d') AS reg_date
+        user_no,
+        login_id,
+        user_name,
+        DATE_FORMAT(reg_date, '%Y-%m-%d') AS reg_date
         FROM tb_userinfo
         WHERE user_name = #{userName}
-          AND hp = #{hp}
-          AND status_yn = 'Y'
-          AND withdrawal_date IS NULL
-          AND email_verified = 'Y'
-        /* 최근 가입한 계정 우선 */
+        AND hp = #{hp}
+        AND status_yn = 'Y'
+        AND withdrawal_date IS NULL
+        AND email_verified = 'Y'
+        <!-- 최근 가입한 계정 우선 -->
         ORDER BY reg_date DESC
-            LIMIT 1
+        LIMIT 1
     </select>
 
     <!-- 비밀번호 찾기용 사용자 검증 -->
     <select id="selectUserForPasswordReset" parameterType="map" resultMap="userResultMap">
         SELECT
-            user_no,
-            login_id,
-            user_name,
-            hp
+        user_no,
+        login_id,
+        user_name,
+        hp
         FROM tb_userinfo
         WHERE login_id = #{loginId}
-          AND user_name = #{userName}
-          AND hp = #{hp}
-          AND status_yn = 'Y'
-          AND withdrawal_date IS NULL
-          AND email_verified = 'Y'
-            /* 최근 로그인한 사용자 확인 */
-          AND EXISTS (
-            SELECT 1
-            FROM tb_userinfo u2
-            WHERE u2.login_id = tb_userinfo.login_id
-              AND u2.reg_date >= DATE_SUB(NOW(), INTERVAL 2 YEAR)  /* 2년 이내 가입자만 */
+        AND user_name = #{userName}
+        AND hp = #{hp}
+        AND status_yn = 'Y'
+        AND withdrawal_date IS NULL
+        AND email_verified = 'Y'
+        <!-- 최근 로그인한 사용자 확인 -->
+        AND EXISTS (
+        SELECT 1
+        FROM tb_userinfo u2
+        WHERE u2.login_id = tb_userinfo.login_id
+        AND u2.reg_date &gt;= DATE_SUB(NOW(), INTERVAL 2 YEAR)  <!-- 2년 이내 가입자만 -->
         )
     </select>
 
     <!-- ================= 토큰 관련 ================= -->
 
-    <!-- 이메일 인증 토큰 저장 -->
-    <update id="saveEmailVerificationToken" parameterType="map">
-        UPDATE tb_userinfo
-        SET
+    <!-- 이메일 인증 토큰 저장 (임시 사용자 생성 또는 업데이트) -->
+    <insert id="saveEmailVerificationToken" parameterType="map">
+        INSERT INTO tb_userinfo (
+        login_id,
+        email_verify_token,
+        token_expire_time,
+        email_verified,
+        status_yn,
+        reg_date,
+        user_no
+        ) VALUES (
+        #{loginId},
+        #{emailVerifyToken},
+        DATE_ADD(NOW(), INTERVAL 5 MINUTE),
+        'N',
+        'N',  <!-- 임시 상태 -->
+        NOW(),
+        999999  <!-- 임시 번호 -->
+        )
+        ON DUPLICATE KEY UPDATE
         email_verify_token = #{emailVerifyToken},
         token_expire_time = DATE_ADD(NOW(), INTERVAL 5 MINUTE),
         email_verified = 'N'
-        WHERE login_id = #{loginId}
-        /* 기존 토큰이 만료된 경우만 새 토큰 발급 */
-        AND (
-        email_verify_token IS NULL
-        OR token_expire_time &lt; NOW()
-        OR email_verified = 'N'
-        )
-    </update>
+    </insert>
 
-    <!-- 비밀번호 재설정 토큰 저장 -->
+    <!-- 비밀번호 재설정 토큰 저장 (reset_token 컬럼이 없으므로 임시로 notes 사용) -->
     <update id="savePasswordResetToken" parameterType="map">
         UPDATE tb_userinfo
         SET
-        reset_token = #{resetToken},
-        token_expire_time = DATE_ADD(NOW(), INTERVAL 5 MINUTE)
+            notes = CONCAT(COALESCE(notes, ''), '[RESET_TOKEN:', #{resetToken}, ']'),
+            token_expire_time = DATE_ADD(NOW(), INTERVAL 5 MINUTE)
         WHERE login_id = #{loginId}
-        AND status_yn = 'Y'
-        AND withdrawal_date IS NULL
-        AND email_verified = 'Y'
-        /* 기존 토큰이 만료된 경우만 새 토큰 발급 */
-        AND (
-        reset_token IS NULL
-        OR token_expire_time &lt; NOW()
-        )
+          AND status_yn = 'Y'
+          AND withdrawal_date IS NULL
+          AND email_verified = 'Y'
     </update>
 
     <!-- 이메일 인증 토큰으로 사용자 조회 (만료시간 체크 포함) -->
     <select id="selectByEmailVerifyToken" parameterType="map" resultMap="userResultMap">
         SELECT
-            user_no,
-            login_id,
-            user_name,
-            email_verify_token,
-            email_verified,
-            token_expire_time
+        user_no,
+        login_id,
+        user_name,
+        email_verify_token,
+        email_verified,
+        token_expire_time
         FROM tb_userinfo
         WHERE login_id = #{loginId}
-          AND email_verify_token = #{emailVerifyToken}
-          AND token_expire_time &gt; NOW()  /* 만료되지 않은 토큰만 */
-          AND status_yn = 'Y'
-          AND withdrawal_date IS NULL
-            /* 토큰 사용 횟수 제한 (보안 강화) */
-          AND (
-                  SELECT COUNT(*)
-                  FROM tb_userinfo u2
-                  WHERE u2.login_id = tb_userinfo.login_id
-                    AND u2.email_verify_token = tb_userinfo.email_verify_token
-              ) = 1
+        AND email_verify_token = #{emailVerifyToken}
+        AND token_expire_time &gt; NOW()  <!-- 만료되지 않은 토큰만 -->
+        AND status_yn = 'N'  <!-- 임시 사용자 상태 -->
+        AND withdrawal_date IS NULL
+        AND email_verified = 'N'  <!-- 아직 인증되지 않은 상태만 -->
+        <!-- 토큰 사용 횟수 제한 (보안 강화) -->
+        AND (
+        SELECT COUNT(*)
+        FROM tb_userinfo u2
+        WHERE u2.login_id = tb_userinfo.login_id
+        AND u2.email_verify_token = tb_userinfo.email_verify_token
+        ) = 1
     </select>
 
-    <!-- 비밀번호 재설정 토큰으로 사용자 조회 (만료시간 체크 포함) -->
+    <!-- 비밀번호 재설정 토큰으로 사용자 조회 (notes에서 토큰 확인) -->
     <select id="selectByPasswordResetToken" parameterType="map" resultMap="userResultMap">
         SELECT
-            user_no,
-            login_id,
-            user_name,
-            reset_token,
-            token_expire_time
+        user_no,
+        login_id,
+        user_name,
+        notes,
+        token_expire_time
         FROM tb_userinfo
         WHERE login_id = #{loginId}
-          AND reset_token = #{resetToken}
-          AND token_expire_time &gt; NOW()  /* 만료되지 않은 토큰만 */
-          AND status_yn = 'Y'
-          AND withdrawal_date IS NULL
-          AND email_verified = 'Y'
-            /* 최근 5분 이내 토큰만 유효 */
-          AND token_expire_time &gt;= DATE_SUB(NOW(), INTERVAL 5 MINUTE)
+        AND notes LIKE CONCAT('%[RESET_TOKEN:', #{resetToken}, ']%')
+        AND token_expire_time &gt; NOW()  <!-- 만료되지 않은 토큰만 -->
+        AND status_yn = 'Y'
+        AND withdrawal_date IS NULL
+        AND email_verified = 'Y'
+        <!-- 최근 5분 이내 토큰만 유효 -->
+        AND token_expire_time &gt;= DATE_SUB(NOW(), INTERVAL 5 MINUTE)
     </select>
 
     <!-- 이메일 인증 완료 처리 -->
     <update id="completeEmailVerification" parameterType="map">
         UPDATE tb_userinfo
         SET
-            email_verified = 'Y',
-            email_verify_token = NULL,
-            token_expire_time = NULL
+        email_verified = 'Y',
+        email_verify_token = NULL,
+        token_expire_time = NULL,
+        status_yn = 'Y'  <!-- 임시 상태에서 정상 상태로 변경 -->
         WHERE login_id = #{loginId}
-          AND email_verify_token IS NOT NULL
-          AND token_expire_time &gt; NOW()
-          AND status_yn = 'Y'
-        /* 트랜잭션 로그를 위한 업데이트 시간 기록 */
-        /* notes = CONCAT(COALESCE(notes, ''), '[', NOW(), '] 이메일 인증 완료\n') */
+        AND email_verify_token IS NOT NULL
+        AND token_expire_time &gt; NOW()
+        AND status_yn = 'N'  <!-- 임시 상태의 사용자만 -->
+        AND email_verified = 'N'  <!-- 아직 인증되지 않은 상태만 -->
     </update>
 
     <!-- 비밀번호 업데이트 + 재설정 토큰 삭제 -->
     <update id="updatePasswordAndClearToken" parameterType="map">
         UPDATE tb_userinfo
         SET
-            password = #{newPassword},  /* TODO: 암호화 필요 */
-            reset_token = NULL,
-            token_expire_time = NULL
+        password = #{newPassword},  <!-- TODO: 암호화 필요 -->
+        notes = REPLACE(notes, CONCAT('[RESET_TOKEN:', #{resetToken}, ']'), ''),
+        token_expire_time = NULL
         WHERE login_id = #{loginId}
-          AND reset_token IS NOT NULL
-          AND token_expire_time &gt; NOW()
-          AND status_yn = 'Y'
-          AND withdrawal_date IS NULL
-          AND email_verified = 'Y'
-        /* 비밀번호 변경 로그 */
-        /* notes = CONCAT(COALESCE(notes, ''), '[', NOW(), '] 비밀번호 변경\n') */
+        AND notes LIKE CONCAT('%[RESET_TOKEN:', #{resetToken}, ']%')
+        AND token_expire_time &gt; NOW()
+        AND status_yn = 'Y'
+        AND withdrawal_date IS NULL
+        AND email_verified = 'Y'
     </update>
 
 </mapper>
