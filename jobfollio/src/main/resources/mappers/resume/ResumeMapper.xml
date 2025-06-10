@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.happyjob.jobfolio.repository.resume.ResumeMapper">
+
+	<select id="selectResumeInfo"
+			parameterType="int"
+			resultType="com.happyjob.jobfolio.vo.resume.ResumeInfoVO">
+		SELECT
+			resume_no,
+			user_no,
+			title,
+			desired_position,
+			template_no,
+			resume_file_name,
+			resume_file_pypath,
+			resume_file_lopath
+		FROM tb_resume_info
+		WHERE user_no = #{user_no}
+	</select>
+
+	<insert id="insertResumeInfo"
+			parameterType="com.happyjob.jobfolio.vo.resume.ResumeInfoVO">
+		INSERT INTO tb_resume_info (
+			resume_no,
+			user_no,
+			title,
+			desired_position,
+			template_no,
+			resume_file_name,
+			resume_file_pypath,
+			resume_file_lopath
+		) VALUES (
+					 #{resume_no},
+					 #{user_no},
+					 #{title},
+					 #{desired_position},
+					 #{template_no},
+					 #{resume_file_name},
+					 #{resume_file_pypath},
+					 #{resume_file_lopath}
+				 )
+	</insert>
+
+	<select id="selectLinkInfoByResume"
+			parameterType="int"
+			resultType="com.happyjob.jobfolio.vo.resume.LinkInfoVO">
+		SELECT
+			resume_no,
+			link_name,
+			link_url
+		FROM tb_link_info
+		WHERE resume_no = #{resume_no}
+	</select>
+
+	<insert id="insertLinkInfo"
+			parameterType="com.happyjob.jobfolio.vo.resume.LinkInfoVO">
+		INSERT INTO tb_link_info (
+			resume_no,
+			link_name,
+			link_url
+		) VALUES (
+					 #{resume_no},
+					 #{link_name},
+					 #{link_url}
+				 )
+	</insert>
+
+	<select id="selectResumeLikeByResume"
+			parameterType="int"
+			resultType="int">
+		SELECT
+			count(*)
+		FROM tb_resume_like
+		WHERE resume_no = #{resume_no}
+	</select>
+
+	<insert id="insertResumeLike"
+			parameterType="com.happyjob.jobfolio.vo.resume.ResumeLikeVO">
+		INSERT INTO tb_resume_like (
+			user_no,
+			resume_no
+		) VALUES (
+					 #{user_no},
+					 #{resume_no}
+				 )
+	</insert>
+
+	<select id="selectAllTemplates"
+			resultType="com.happyjob.jobfolio.vo.resume.TemplateVO">
+		SELECT
+			template_no,
+			template_name,
+			file_pypath,
+			file_lopath
+		FROM tb_template
+		ORDER BY template_no
+	</select>
+
+	<insert id="insertTemplate"
+			parameterType="com.happyjob.jobfolio.vo.resume.TemplateVO">
+		INSERT INTO tb_template (
+			template_no,
+			template_name,
+			file_pypath,
+			file_lopath
+		) VALUES (
+					 #{template_no},
+					 #{template_name},
+					 #{file_pypath},
+					 #{file_lopath}
+				 )
+	</insert>
+
+</mapper>
