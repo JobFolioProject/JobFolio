@@ -1,9 +1,7 @@
 package com.happyjob.jobfolio.service.chatgpt;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -30,7 +28,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.nio.file.Files;
-import java.util.Base64;
+import java.io.IOException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import com.happyjob.jobfolio.common.comnUtils.FileUtilCho;
 
@@ -39,21 +38,23 @@ import org.springframework.http.HttpHeaders;
 @Service
 public class ChatgptService {
 
-	
+    // Set logger
+    private final Logger logger = LogManager.getLogger(this.getClass());
 
-	@Value("${fileUpload.rootPath}")
-	private String rootPath;
-	
-	@Value("${fileUpload.temp}")
-	private String tempPath;
-	
-	@Value("${fileUpload.virtualRootPath}")
-	private String virtualRootPath;
-	
-	// Get class name for logger
-	private final String className = this.getClass().toString();
+    @Value("${fileUpload.rootPath}")
+    private String rootPath;
 
-	private  RestTemplate restTemplate;
+    @Value("${fileUpload.temp}")
+    private String tempPath;
+
+    @Value("${fileUpload.virtualRootPath}")
+    private String virtualRootPath;
+
+    // Get class name for logger
+    private final String className = this.getClass().toString();
+
+    private  RestTemplate restTemplate;
+
     private final String chatGptApiUrl = "https://api.openai.com/v1/chat/completions";
 
     public ChatgptService() {
@@ -65,20 +66,13 @@ public class ChatgptService {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(apiKey);
 
-        String requestBody = "{\"model\":\"gpt-3.5-turbo\",\"messages\":[{\"role\":\"system\",\"content\":\"" +
-        		"You are to respond **only** with an HTML resume (이력서) template."
-        		+ "The response **must include all CSS inline** within a single HTML file."
-        		+ "Do not link external CSS files."
-        		+ "Use modern, clean, and responsive HTML/CSS structure."
-        		+ "The content should be a generic resume template, not tied to a specific person."
-        		+ "Never include any explanation or markdown formatting — only return pure HTML." 
-        		+ "\"},{\"role\":\"system\",\"content\":\"" + userInput + "\"}]}";
+        String requestBody = "{\"model\":\"gpt-3.5-turbo\",\"messages\":[{\"role\":\"system\",\"content\":\"" + userInput + "\"}]}";
         HttpEntity<String> requestEntity = new HttpEntity<>(requestBody, headers);
 
         // ChatGPT API 호출
         ResponseEntity<String> responseEntity=null;
         try{
-           responseEntity = restTemplate.exchange(chatGptApiUrl, HttpMethod.POST, requestEntity, String.class);
+            responseEntity = restTemplate.exchange(chatGptApiUrl, HttpMethod.POST, requestEntity, String.class);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -88,7 +82,7 @@ public class ChatgptService {
 
         return chatResponse;
     }
-    
+
     public String getChatResponse4(String userInput,String apiKey) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -100,7 +94,7 @@ public class ChatgptService {
         // ChatGPT API 호출
         ResponseEntity<String> responseEntity=null;
         try{
-           responseEntity = restTemplate.exchange(chatGptApiUrl, HttpMethod.POST, requestEntity, String.class);
+            responseEntity = restTemplate.exchange(chatGptApiUrl, HttpMethod.POST, requestEntity, String.class);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -109,100 +103,137 @@ public class ChatgptService {
         String chatResponse = responseEntity.getBody();
 
         return chatResponse;
-    }    
-    
-    
-    public String getChatResponse4file(String userInput, HttpServletRequest request, String apiKey, String turboapiKey) throws Exception {
-
-        MultipartHttpServletRequest multipartHttpServletRequest = (MultipartHttpServletRequest) request;
-        FileUtilCho fileutil = new FileUtilCho(multipartHttpServletRequest, rootPath, virtualRootPath, tempPath + File.separator);
-        Map<String, Object> fileinfo = fileutil.returnuploadFiles();
-
-        String returnval = "";
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(apiKey);
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        Map<String, Object> requestBodyMap = new HashMap<>();
-
-        if ("Y".equals(fileinfo.get("exist"))) {
-            // 파일이 있는 경우 OpenAI Vision API를 사용하여 이미지 처리
-            String filePath = (String) fileinfo.get("file_loc");
-            File tempFile = new File(filePath);
-            returnval = processVisionRequest(userInput, tempFile, turboapiKey);
-        } else {
-            // 파일이 없는 경우 일반 텍스트 처리 (gpt-4 사용)
-            requestBodyMap.put("model", "gpt-4");  // 파일이 없을 때는 일반 gpt-4 사용
-            requestBodyMap.put("messages", new Object[]{
-                    new HashMap<String, String>() {{
-                        put("role", "system");
-                        put("content", userInput);
-                    }}
-            });
-
-            String jsonPayload = objectMapper.writeValueAsString(requestBodyMap);
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            HttpEntity<String> requestEntity = new HttpEntity<>(jsonPayload, headers);
-
-            // OpenAI API 호출
-            try {
-                ResponseEntity<String> responseEntity = restTemplate.exchange(chatGptApiUrl, HttpMethod.POST, requestEntity, String.class);
-                returnval = responseEntity.getBody();
-            } catch (HttpClientErrorException e) {
-                e.printStackTrace();
-                if (e.getStatusCode() == HttpStatus.NOT_FOUND && e.getResponseBodyAsString().contains("model_not_found")) {
-                    returnval = "OpenAI API에서 요청한 모델을 사용할 수 없습니다.";
-                } else {
-                    returnval = "API 요청 중 오류 발생!";
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                returnval = "API 요청 중 오류 발생!";
-            }
-        }
-
-        return returnval;
     }
 
-    /**
-     * OpenAI Vision API로 이미지 처리 요청 (파일이 있을 때만 사용)
-     */
-    public static String processVisionRequest(String userInput, File file, String apiKey) throws Exception {
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setBearerAuth(apiKey);
 
-        // 1️⃣ 파일을 Base64로 변환
-        String base64Image = Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
+    /* ---------------------------------------------------------------
+     *  OpenAI Chat+Vision 통합 호출
+     * ------------------------------------------------------------- */
+    public String getChatResponse4file(String userInput,
+                                       HttpServletRequest request,
+                                       String apiKey,          // ⬅️ 텍스트 Chat Key
+                                       String visionKey)       // ⬅️ Vision  Key
+            throws Exception {
 
-        // 2️⃣ JSON 요청 본문 생성
-        ObjectMapper objectMapper = new ObjectMapper();
-        String requestBody = objectMapper.writeValueAsString(Map.of(
-                "model", "gpt-4-turbo",
-                "messages", List.of(Map.of(
-                    "role", "user",
-                    "content", List.of(
-                        Map.of("type", "text", "text", userInput),
-                        Map.of("type", "image_url", "image_url", Map.of("url", "data:image/jpeg;base64," + base64Image))
-                    )
-                ))
-            ));
- 
-        HttpEntity<String> requestEntity = new HttpEntity<>(requestBody, headers);
+        /* ① 업로드 파일 체크 */
+        MultipartHttpServletRequest multiReq = (MultipartHttpServletRequest) request;
+        Map<String, Object> fileInfo = new FileUtilCho(
+                multiReq, rootPath, virtualRootPath, tempPath + File.separator)
+                .uploadFiles();                                          // {file_size, file_loc, …}
 
-        // 3️⃣ API 요청 실행
-        ResponseEntity<String> responseEntity;
+        /* ② 텍스트-Chat 헤더 */
+        HttpHeaders chatHeaders = new HttpHeaders();
+        chatHeaders.setBearerAuth(apiKey);
+        chatHeaders.setContentType(MediaType.APPLICATION_JSON);
+
+        /* ③ Vision 헤더 */
+        HttpHeaders visionHeaders = new HttpHeaders();
+        visionHeaders.setBearerAuth(visionKey);
+        visionHeaders.setContentType(MediaType.APPLICATION_JSON);
+
+        /* ④ 파일 여부 분기 */
+        long size = 0L;
+        if (fileInfo.get("file_size") != null) {
+            size = Long.parseLong(String.valueOf(fileInfo.get("file_size")));
+        }
+
+        if (size > 0) {                                  // ✔ 이미지가 있을 때
+            String filePath = (String) fileInfo.get("file_loc");
+            return callVision(userInput, new File(filePath), visionHeaders);
+        }
+
+        /* ⑤ 이미지가 없으면 일반 Chat */
+        return callChat(userInput, chatHeaders);
+    }
+
+    /* ---------------------------------------------------------------
+     *  일반 Chat 호출 (텍스트만)
+     * ------------------------------------------------------------- */
+    // Java 8 호환 방식: callChat()
+    private String callChat(String userInput, HttpHeaders headers) throws JsonProcessingException {
+        ObjectMapper om = new ObjectMapper();
+
+        // 1) body 맵 생성
+        Map<String, Object> body = new HashMap<>();
+        body.put("model", "gpt-4o-mini");
+        body.put("temperature", 0.7);
+
+        // 2) messages 리스트 생성
+        List<Map<String, Object>> messages = new ArrayList<>();
+
+        Map<String, Object> systemMsg = new HashMap<>();
+        systemMsg.put("role", "system");
+        systemMsg.put("content", "You are a helpful assistant.");
+        messages.add(systemMsg);
+
+        Map<String, Object> userMsg = new HashMap<>();
+        userMsg.put("role", "user");
+        userMsg.put("content", userInput);
+        messages.add(userMsg);
+
+        body.put("messages", messages);
+
+        // 3) 요청 전송
+        String json = om.writeValueAsString(body);
+        HttpEntity<String> req = new HttpEntity<>(json, headers);
         try {
-            responseEntity = restTemplate.exchange("https://api.openai.com/v1/chat/completions", HttpMethod.POST, requestEntity, String.class);
-            return responseEntity.getBody();
+            ResponseEntity<String> res = restTemplate.postForEntity(
+                    "https://api.openai.com/v1/chat/completions", req, String.class);
+            return res.getBody();
         } catch (HttpClientErrorException e) {
-            e.printStackTrace();
-            return "Vision API 요청 중 오류 발생: " + e.getResponseBodyAsString();
+            return "[Chat API 오류] " + e.getStatusCode() + " : " + e.getResponseBodyAsString();
         }
     }
 
-    
-    
+    // Java 8 호환 방식: callVision()
+    private String callVision(String userInput, File imageFile, HttpHeaders headers) throws IOException {
+        ObjectMapper om = new ObjectMapper();
+
+        // 1) 이미지 → Base64
+        String base64 = Base64.getEncoder()
+                .encodeToString(Files.readAllBytes(imageFile.toPath()));
+
+        // 2) body 맵 생성
+        Map<String, Object> body = new HashMap<>();
+        body.put("model", "gpt-4o-mini");
+
+        // 3) messages 리스트 및 content 리스트 생성
+        List<Map<String, Object>> messages = new ArrayList<>();
+        Map<String, Object> userMsg = new HashMap<>();
+        userMsg.put("role", "user");
+
+        // content 항목 (text + image_url)
+        List<Object> contentList = new ArrayList<>();
+        Map<String, Object> textItem = new HashMap<>();
+        textItem.put("type", "text");
+        textItem.put("text", userInput);
+        contentList.add(textItem);
+
+        Map<String, Object> imgItem = new HashMap<>();
+        imgItem.put("type", "image_url");
+        Map<String, Object> urlMap = new HashMap<>();
+        urlMap.put("url", "data:image/jpeg;base64," + base64);
+        imgItem.put("image_url", urlMap);
+        contentList.add(imgItem);
+
+        userMsg.put("content", contentList);
+        messages.add(userMsg);
+
+        body.put("messages", messages);
+
+        // 4) 요청 전송
+        String json = om.writeValueAsString(body);
+        HttpEntity<String> req = new HttpEntity<>(json, headers);
+        try {
+            ResponseEntity<String> res = restTemplate.postForEntity(
+                    "https://api.openai.com/v1/chat/completions", req, String.class);
+            return res.getBody();
+        } catch (HttpClientErrorException e) {
+            return "[Vision API 오류] " + e.getStatusCode() + " : " + e.getResponseBodyAsString();
+        }
+    }
+
+
+
+
 }
