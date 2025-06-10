@@ -54,6 +54,7 @@ public class ChatgptService {
     private final String className = this.getClass().toString();
 
     private  RestTemplate restTemplate;
+
     private final String chatGptApiUrl = "https://api.openai.com/v1/chat/completions";
 
     public ChatgptService() {
