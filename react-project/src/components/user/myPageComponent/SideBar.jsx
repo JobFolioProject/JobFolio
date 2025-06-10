@@ -8,27 +8,52 @@ const SideBar = () => {
     <div className="mySideBarMenu">
       <ul className="mySideBarMenuList">
         <div className="userInfo">
-          <img src="" alt="" />
+          <p className="imogi">🖐</p>  
           <p>반가워요</p>
-          <p>{loginUser}님</p>
+          <div className="userNameWrap"><p className="userName">{loginUser}</p>님</div>
         </div>
         <hr className="menuDivider" />
-        <li>
-          <NavLink to="/myPage/userInfo" activeClassName="list-active">회원 정보</NavLink>
+          <li>
+          <NavLink 
+            to="/myPage/userInfo" 
+            className={({ isActive }) => (isActive ? "list-active" : "")}
+          >
+            회원정보
+          </NavLink>
         </li>
-        <li>
-          <NavLink to="/myPage/resumeDetail" activeClassName="list-active">이력서 내역</NavLink>
+          <li>
+          <NavLink 
+            to="/myPage/resumeDetail" 
+            className={({ isActive }) => (isActive ? "list-active" : "")}
+          >
+            이력서 내역
+          </NavLink>
         </li>
-        <li>
-          <NavLink to="/myPage/myCareer" activeClassName="list-active">내 커리어</NavLink>
+          <li>
+          <NavLink 
+            to="/myPage/myCareer" 
+            className={({ isActive }) => (isActive ? "list-active" : "")}
+          >
+            내 커리어
+          </NavLink>
         </li>
-        <li>
-          <NavLink to="/myPage/payHistory" activeClassName="list-active">결제 내역</NavLink>
+          <li>
+          <NavLink 
+            to="/myPage/payHistory" 
+            className={({ isActive }) => (isActive ? "list-active" : "")}
+          >
+            결제 내역
+          </NavLink>
         </li>
-        <li>
-          <NavLink to="/myPage/postLike" activeClassName="list-active">좋아요 내역</NavLink>
+          <li>
+          <NavLink 
+            to="/myPage/postLike" 
+            className={({ isActive }) => (isActive ? "list-active" : "")}
+          >
+            좋아요 내역
+          </NavLink>
         </li>
-        <hr />
+        <hr className="menuDivider2" />
       </ul>
     </div>
     );
