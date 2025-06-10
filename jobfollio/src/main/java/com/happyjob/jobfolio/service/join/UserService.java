@@ -34,7 +34,24 @@ public class UserService {
     public int registerUser(Map<String, Object> paramMap) throws Exception {
         logger.info("+ Start UserService.registerUser");
         logger.info("   - ParamMap : " + paramMap);
-        return userMapper.insertUser(paramMap);
+
+        String loginId = (String) paramMap.get("loginId");
+
+        // 기존에 이메일 인증된 임시 데이터가 있는지 확인
+        Map<String, Object> checkMap = new HashMap<>();
+        checkMap.put("loginId", loginId);
+        UserVO existingUser = userMapper.selectUserByLoginId(checkMap);
+
+        if (existingUser != null && existingUser.getUserName() == null) {
+            // 임시 데이터가 있으면 업데이트
+            logger.info("   - Updating existing temporary user data");
+            paramMap.put("userNo", existingUser.getUserNo()); // 기존 user_no 사용
+            return userMapper.updateUserInfo(paramMap); // 새로운 UPDATE 쿼리 사용
+        } else {
+            // 임시 데이터가 없으면 새로 생성
+            logger.info("   - Creating new user");
+            return userMapper.insertUser(paramMap);
+        }
     }
 
     /**

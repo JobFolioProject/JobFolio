@@ -17,6 +17,11 @@ public interface UserMapper {
     int insertUser(Map<String, Object> paramMap) throws Exception;
 
     /**
+     * 기존 임시 사용자 정보 업데이트 (회원가입 완료)
+     */
+    int updateUserInfo(Map<String, Object> paramMap) throws Exception;
+
+    /**
      * 로그인 ID 중복 체크
      */
     int checkLoginIdDuplicate(Map<String, Object> paramMap) throws Exception;
@@ -82,7 +87,6 @@ public interface UserMapper {
      * 이메일 인증 완료 처리 (email_verified = 'Y', 토큰 삭제)
      */
     int completeEmailVerification(Map<String, Object> paramMap) throws Exception;
-
 
     /**
      * 비밀번호 업데이트 + 재설정 토큰 삭제
