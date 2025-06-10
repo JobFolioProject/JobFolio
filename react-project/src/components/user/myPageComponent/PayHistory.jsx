@@ -1,15 +1,13 @@
 import '../../../css/user/myPageComponent/PayHistory.css';
-import SideBar from './SideBar';
 
 const PayHistory = () => {
    
     return (
-    <div className='payHistory'>
-        <SideBar/>
-            <h1>
-            결제내역 입니다.
-            </h1>
-    </div>
+        <div className="userInfoWrap">
+            <div className="userInfoContent">
+            <h1>나중에 결제 관리쪽 완료되면 화면 갖다씀</h1>
+            </div>
+        </div>
     );
 };
 
