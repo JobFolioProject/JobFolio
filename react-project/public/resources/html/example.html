@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>이력서</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&display=swap");
+      body {
+        background: #f4f6fb;
+        font-family: "Montserrat", sans-serif;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+      .resume-container {
+        max-width: 800px;
+        /* height: 100vh; */
+        background: #fff;
+        aspect-ratio: 9 / 9;
+
+        margin: auto;
+        margin-top: 5px;
+        border-radius: 18px;
+        box-shadow: 0 8px 32px rgba(60, 60, 100, 0.13);
+        padding: 40px 50px 50px 50px;
+      }
+      .header {
+        display: flex;
+        align-items: center;
+        border-bottom: 2px solid #e0e5ee;
+        padding-bottom: 24px;
+        margin-bottom: 32px;
+      }
+      .profile-img {
+        width: 110px;
+        height: 110px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid #d8e6ff;
+        margin-right: 32px;
+      }
+      .name-title {
+        flex: 1;
+      }
+      .name-title h1 {
+        margin: 0;
+        font-size: 2.3rem;
+        font-weight: 700;
+        color: #1a237e;
+      }
+      .name-title h2 {
+        margin: 6px 0 0 0;
+        font-size: 1.2rem;
+        color: #4e5d78;
+        font-weight: 500;
+      }
+      .contact {
+        margin-top: 14px;
+        color: #7a869a;
+        font-size: 1rem;
+      }
+      .section {
+        margin-bottom: 32px;
+      }
+      .section-title {
+        font-size: 1.15rem;
+        color: #1976d2;
+        font-weight: 700;
+        margin-bottom: 10px;
+        letter-spacing: 1px;
+        border-left: 4px solid #1976d2;
+        padding-left: 10px;
+      }
+      .section-content {
+        color: #2d3748;
+        font-size: 1.05rem;
+      }
+      ul {
+        padding-left: 20px;
+        margin: 0;
+      }
+      li {
+        margin-bottom: 7px;
+      }
+      .skills-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 10px;
+      }
+      .skill-chip {
+        background: #e3f2fd;
+        color: #1976d2;
+        border-radius: 16px;
+        padding: 6px 16px;
+        font-size: 0.98rem;
+        font-weight: 500;
+        margin-bottom: 6px;
+        display: inline-block;
+      }
+      @media (max-width: 600px) {
+        .resume-container {
+          padding: 20px 8px;
+        }
+        .header {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        .profile-img {
+          margin-bottom: 16px;
+          margin-right: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="resume-container">
+      <div class="header">
+        <img
+          src="https://randomuser.me/api/portraits/men/32.jpg"
+          alt="프로필 사진"
+          class="profile-img"
+        />
+        <div class="name-title">
+          <h1>홍길동</h1>
+          <h2>웹 프론트엔드 개발자</h2>
+          <div class="contact">
+            📞 010-1234-5678 | ✉️ honggildong@email.com<br />
+            📍 서울특별시 강남구
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">프로필</div>
+        <div class="section-content profile">
+          사용자 경험을 최우선으로 생각하는 3년차 웹 프론트엔드 개발자입니다.<br />
+          React, Vue 등 최신 프레임워크에 능숙하며, 협업과 커뮤니케이션에 자신이
+          있습니다.
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">경력</div>
+        <div class="section-content">
+          <ul>
+            <li>
+              <strong>ABC테크 (2022.01 ~ 현재)</strong><br />
+              - 사내 ERP 시스템 프론트엔드 개발 및 유지보수<br />
+              - React, TypeScript 기반 SPA 개발
+            </li>
+            <li>
+              <strong>XYZ스타트업 (2020.03 ~ 2021.12)</strong><br />
+              - 쇼핑몰 프론트엔드 리뉴얼 프로젝트 참여<br />
+              - Vue.js, SCSS 활용 UI/UX 개선
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">학력</div>
+        <div class="section-content">
+          <ul>
+            <li>
+              <strong>서울대학교 컴퓨터공학과</strong><br />
+              학사 (2016.03 ~ 2020.02)
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">기술 스택</div>
+        <div class="skills-list">
+          <div class="skill-chip">HTML5</div>
+          <div class="skill-chip">CSS3</div>
+          <div class="skill-chip">JavaScript</div>
+          <div class="skill-chip">React</div>
+          <div class="skill-chip">Vue.js</div>
+          <div class="skill-chip">TypeScript</div>
+          <div class="skill-chip">Git</div>
+          <div class="skill-chip">Figma</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">자격증</div>
+        <div class="section-content">- 정보처리기사 (2020)</div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">수상 및 활동</div>
+        <div class="section-content">
+          - 2021 SW 해커톤 우수상<br />
+          - 2020 오픈소스 프로젝트 기여 (GitHub)
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
