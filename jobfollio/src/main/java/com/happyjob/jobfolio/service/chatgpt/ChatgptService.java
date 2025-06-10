@@ -39,8 +39,7 @@ import org.springframework.http.HttpHeaders;
 @Service
 public class ChatgptService {
 
-	// Set logger
-	private final Logger logger = LogManager.getLogger(this.getClass());
+	
 
 	@Value("${fileUpload.rootPath}")
 	private String rootPath;
