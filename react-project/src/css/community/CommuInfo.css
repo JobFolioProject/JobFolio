@@ -13,3 +13,57 @@
   font-size: 2.5rem;
   font-weight: 900;
 }
+
+/* FAQ 전체 리스트 영역 */
+.faq-list {
+  max-width: 1000px;
+  margin: 50px auto;
+  padding: 0 20px;
+  list-style: none;
+}
+
+/* 각 항목 */
+.faq-item {
+  border-bottom: 1px solid #ddd;
+  padding: 20px 0;
+}
+
+/* 질문 항목 */
+.faq-item .question {
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.2s;
+  display: flex;              /* 💡 수평 정렬 + 세로 정렬 둘 다 */
+  align-items: center;        /* 💡 세로 가운데 정렬 */
+}
+
+.faq-item .question:hover {
+  color: #0b0ea8;
+}
+
+/* 펼쳐진 상태일 때 색상 유지 */
+.faq-item.open .question {
+  color: #0b0ea8;
+}
+
+/* 아이콘 공통 스타일 */
+.icon {
+  font-size: 20px;
+  margin-right: 8px;
+  transition: transform 0.3s ease;
+  color: inherit; /* 텍스트 색상 따라감 */
+}
+
+/* 아이콘 회전도 유지하고 싶다면 추가 */
+.faq-item.open .icon {
+  transform: rotate(90deg);
+}
+
+/* 답변 영역 */
+.faq-item .answer {
+  margin-top: 10px;
+  font-size: 0.95rem;
+  color: #444;
+  line-height: 1.6;
+}
