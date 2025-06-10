@@ -1,16 +1,128 @@
+// InfoManagement.jsx
 import '../../../css/admin/adminComponents/InfoManagement.css';
+import InfoManagementDetail from './InfoManagement_detail';
 import AdminSideBar from '../AdminSideBar';
+import { useState } from 'react';
+
+const mockData = Array.from({ length: 14 }, (_, i) => ({
+  id: 14 - i,
+  question: `이용안내 항목 예시 ${14 - i}`,
+  answer: `
+구매한 사용권을 전혀 사용하지 않은 경우에 한해 구매일로부터 7일 이내(발급일 기준, 구매일 포함)아래 고객센터(카카오톡 혹은 이메일)로 환불 의사를 전달해 주실 경우 100% 환불이 진행됩니다.
+
+단, 사용권을 일부 사용하거나 환불 기한이 지난 경우에는 잔여 사용권이 있더라도 부분 환불이 불가능합니다.
+
+추가로, 위 조건을 충족하여 환불이 진행되면 결제 내역은 즉시 취소되나 결제 수단별(카드사)로 실제 환급이 이루어지기까지는 카드사 사정에 따라 상이할 수 있습니다.
+
+(앱에서 구매한 경우, 구매한 스토어에서 환불 여부를 결정하며 하이잡 서비스에서는 환불 여부를 결정하지 못합니다.)
+  `,
+  createdAt: `2024-06-${(14 - i).toString().padStart(2, '0')}`,
+  writer: '운영자',
+  priority : i
+}));
 
 const InfoManagement = () => {
-   
-    return (
-    <div className='infoManagement'>
-    <AdminSideBar/>
-        <h1>
-            이용안내 관리 페이지 입니다.
-        </h1>
-    </div>
+  const [data, setData] = useState(mockData);
+  const [selected, setSelected] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [detailItem, setDetailItem] = useState(null);    
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
+
+  const itemsPerPage = 10;
+
+  const toggleCheckbox = (id) => {
+    setSelected(prev =>
+      prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
     );
+  };
+
+  const openDetail = (item) => {
+    setDetailItem(item);
+    setIsDetailOpen(true);
+  };
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const sortedData = [...data].sort((a, b) => a.priority - b.priority);
+  const currentItems = sortedData.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(mockData.length / itemsPerPage);
+
+  return (
+    <div className='infoManagement'>
+      <AdminSideBar />
+      <div className='info-content'>
+        <h2>커뮤니티 관리</h2>
+        <div className='info-header'>
+          <h3>이용안내</h3>
+          <p className='info-warning'>삭제할 경우 복구가 어려우며, 하이잡 이용자에게 해당 항목이 즉시 비노출됩니다. 삭제 시 신중히 선택 바랍니다.</p>
+          <div className='info-controls'>
+            <button>선택 삭제</button>
+            <button>이용안내 등록</button>
+          </div>
+        </div>
+       
+        {isDetailOpen && (
+      <InfoManagementDetail
+        item={detailItem}
+        onClose={() => setIsDetailOpen(false)}
+      />
+    )}
+  
+
+        <table className='info-table'>
+          <thead>
+            <tr>
+              <th><input type='checkbox' disabled /></th>
+              <th>번호</th>
+              <th>제목</th>
+              <th>작성일(수정일)</th>
+              <th>우선순위</th>
+              <th>작성자</th>
+            </tr>
+          </thead>
+          <tbody>
+            {currentItems.map((item) => (
+              <tr key={item.id}>
+                <td>
+                  <input
+                    type='checkbox'
+                    checked={selected.includes(item.id)}
+                    onChange={() => toggleCheckbox(item.id)}
+                  />
+                </td>
+                <td>{item.id}</td>
+                <td
+                    className = "info-title"
+                    onClick={() => openDetail(item)}
+                >
+                    {item.question}
+                </td>
+                <td>{item.createdAt}</td>
+                <td><input className='input-priority' value={item.priority}></input></td>
+                <td>{item.writer}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <div className='pagination'>
+          <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1}>{'<<'}</button>
+          <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1}>{'<'}</button>
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((num) => (
+            <button
+              key={num}
+              className={num === currentPage ? 'active' : ''}
+              onClick={() => setCurrentPage(num)}
+            >
+              {num}
+            </button>
+          ))}
+          <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages}>{'>'}</button>
+          <button onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages}>{'>>'}</button>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default InfoManagement;
