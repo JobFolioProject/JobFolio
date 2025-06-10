@@ -19,10 +19,12 @@ const Login = ({onClose}) => {
       <div className="modal-content">
         <div className='login'>
             <h1>
-                로그인 모달창 입니다.
+                jobfollio
             </h1>
+            <h3>Ai기반의 자기소개서 생성서비스</h3>
             <button className='loginBtn' onClick={userLogin}>유저 로그인</button>
-            <button className='loginBtn' onClick={adminLogin}>관리자 로그인</button>
+            <button className='loginBtn' onClick={adminLogin}>네이버 로그인</button>
+            <button className='loginBtn' onClick={adminLogin}>카카오 로그인</button>
         </div>
         <button className="close-button" onClick={onClose}>x</button>
       </div>

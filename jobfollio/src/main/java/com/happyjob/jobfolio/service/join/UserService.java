@@ -15,12 +15,18 @@ import com.happyjob.jobfolio.vo.join.UserVO;
 @Service
 public class UserService {
 
+    // Set logger
     private final Logger logger = LogManager.getLogger(this.getClass());
 
+    // Get class name for logger
     private final String className = this.getClass().toString();
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private EmailService emailService;
+
 
     /**
      * 회원가입
@@ -134,13 +140,8 @@ public class UserService {
         int result = userMapper.saveEmailVerificationToken(paramMap);
 
         if (result > 0) {
-            // 이메일 발송
-            boolean emailSent = sendEmail(email, "JobFolio 이메일 인증",
-                    "안녕하세요! JobFolio입니다.\n\n" +
-                            "이메일 인증을 위해 아래 토큰을 입력해주세요.\n\n" +
-                            "인증 토큰: " + verificationToken + "\n\n" +
-                            "5분 내에 인증을 완료해주세요.");
-
+            // EmailService의 HTML 템플릿을 사용하여 예쁜 이메일 발송
+            boolean emailSent = emailService.sendSignupVerificationEmail(email, verificationToken);
             return emailSent;
         }
 
@@ -310,12 +311,25 @@ public class UserService {
      * 이메일 발송 (SMTP)
      */
     private boolean sendEmail(String to, String subject, String content) throws Exception {
-        // JavaMailSender를 사용한 실제 이메일 발송 로직 구현 필요
         logger.info("Sending email to: " + to);
         logger.info("Subject: " + subject);
         logger.info("Content: " + content);
 
-        // 실제 구현 시 JavaMailSender 사용
-        return true; // 임시로 true 반환
+        try {
+            // EmailService를 사용하여 실제 이메일 발송
+            boolean result = emailService.sendSimpleEmail(to, subject, content);
+
+            if (result) {
+                logger.info("Email sent successfully to: " + to);
+            } else {
+                logger.error("Failed to send email to: " + to);
+            }
+
+            return result;
+
+        } catch (Exception e) {
+            logger.error("Error sending email to: " + to, e);
+            return false;
+        }
     }
 }
