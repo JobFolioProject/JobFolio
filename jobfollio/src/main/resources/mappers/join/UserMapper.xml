@@ -63,6 +63,8 @@
         )
     </insert>
 
+
+
     <!-- 로그인 ID 중복 체크 -->
     <select id="checkLoginIdDuplicate" parameterType="map" resultType="int">
         SELECT COUNT(*)
@@ -146,6 +148,25 @@
         AND email_verified = 'Y'
     </update>
 
+    <update id="updateUserInfo" parameterType="map">
+        UPDATE tb_userinfo
+        SET
+        user_type = COALESCE(#{userType}, 'C'),
+        user_name = #{userName},
+        password = #{password},
+        birthday = #{birthday},
+        sex = #{sex},
+        hp = #{hp},
+        address = #{address},
+        hobby = #{hobby},
+        notes = #{notes},
+        reg_date = NOW()  <!-- 회원가입 완료 시간으로 업데이트 -->
+        WHERE user_no = #{userNo}
+        AND login_id = #{loginId}
+        AND status_yn = 'Y'
+        AND email_verified = 'Y'
+    </update>
+
     <!-- 비밀번호 변경 -->
     <update id="updatePassword" parameterType="map">
         UPDATE tb_userinfo
@@ -157,7 +178,7 @@
         AND email_verified = 'Y'
     </update>
 
-    <!-- 회원 탈퇴 (상태 변경) -->
+    <!-- 회원 탈퇴 (Y N 상태 변경) -->
     <update id="withdrawUser" parameterType="map">
         UPDATE tb_userinfo
         SET
