@@ -1,0 +1,40 @@
+.resume-sidebar {
+  width: 200px;
+  /* height: 100vh; */
+  background-color: #f7f7f7;
+  padding: 20px;
+  box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+  /* position: fixed; */
+  position: sticky;
+  /* left: 0; */
+  /* flex-shrink: 0; */
+  /* top: 250px; */
+  /* margin-top: 100px;  */
+  z-index: 10;
+  
+}
+
+.sidebar-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 30px;
+}
+
+.sidebar-menu {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar-menu li {
+  margin-bottom: 15px;
+}
+
+.sidebar-menu li a {
+  text-decoration: none;
+  color: #333;
+}
+
+.sidebar-menu li.active a {
+  color: #2c82f4;
+  font-weight: bold;
+}
