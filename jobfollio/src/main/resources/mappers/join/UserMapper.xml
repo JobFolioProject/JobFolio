@@ -63,7 +63,26 @@
         )
     </insert>
 
-
+    <!-- 기존 임시 사용자 정보 업데이트 (회원가입 완료) -->
+    <update id="updateUserInfo" parameterType="map">
+        UPDATE tb_userinfo
+        SET
+        user_type = COALESCE(#{userType}, 'C'),
+        user_name = #{userName},
+        password = #{password},
+        birthday = #{birthday},
+        sex = #{sex},
+        hp = #{hp},
+        address = #{address},
+        hobby = #{hobby},
+        notes = #{notes},
+        reg_date = NOW(),  <!-- 회원가입 완료 시간으로 업데이트 -->
+        status_yn = 'Y'    <!-- ✅ 추가: 회원가입 완료 시 정상 상태 -->
+        WHERE user_no = #{userNo}
+        AND login_id = #{loginId}
+        AND status_yn = 'Y'
+        AND email_verified = 'Y'
+    </update>
 
     <!-- 로그인 ID 중복 체크 -->
     <select id="checkLoginIdDuplicate" parameterType="map" resultType="int">
@@ -99,8 +118,11 @@
         WHERE login_id = #{loginId}
         AND status_yn = 'Y'
         AND withdrawal_date IS NULL
-        <!-- 이메일 인증된 사용자만 조회 -->
         AND email_verified = 'Y'
+        AND user_no != 999999  <!-- 임시 사용자 제외 -->
+        <!-- 가장 최근 등록된 사용자 우선 -->
+        ORDER BY reg_date DESC
+        LIMIT 1
     </select>
 
     <!-- 사용자번호로 사용자 조회 -->
@@ -148,25 +170,6 @@
         AND email_verified = 'Y'
     </update>
 
-    <update id="updateUserInfo" parameterType="map">
-        UPDATE tb_userinfo
-        SET
-        user_type = COALESCE(#{userType}, 'C'),
-        user_name = #{userName},
-        password = #{password},
-        birthday = #{birthday},
-        sex = #{sex},
-        hp = #{hp},
-        address = #{address},
-        hobby = #{hobby},
-        notes = #{notes},
-        reg_date = NOW()  <!-- 회원가입 완료 시간으로 업데이트 -->
-        WHERE user_no = #{userNo}
-        AND login_id = #{loginId}
-        AND status_yn = 'Y'
-        AND email_verified = 'Y'
-    </update>
-
     <!-- 비밀번호 변경 -->
     <update id="updatePassword" parameterType="map">
         UPDATE tb_userinfo
@@ -178,7 +181,7 @@
         AND email_verified = 'Y'
     </update>
 
-    <!-- 회원 탈퇴 (Y N 상태 변경) -->
+    <!-- 회원 탈퇴 (상태 변경) -->
     <update id="withdrawUser" parameterType="map">
         UPDATE tb_userinfo
         SET
