@@ -1,23 +1,22 @@
+// FaqManagement_detail.jsx
 import React, { useState } from 'react';
-import '../../../css/admin/adminComponents/InfoManagement_detail.css';
+import '../../../css/admin/adminComponents/FaqManagement_detail.css';
 
-const InfoManagementDetail = ({ item, onClose, mode }) => {
-  
-
+const FaqManagementDetail = ({ item, onClose, mode }) => {
   const isEdit = mode === 'edit';
   const [isEditing, setIsEditing] = useState(mode === 'post');
   const [editQuestion, setEditQuestion] = useState(item?.question || '');
   const [editAnswer, setEditAnswer] = useState(item?.answer || '');
 
-  const paragraphs = editAnswer.split('\n\n'); 
+  const paragraphs = editAnswer.split('\n\n');
 
+  if (!item && mode === 'edit') return null;
 
-  if (!item && mode === 'edit'){ return null};
-  
   return (
     <div className="detail-overlay" onClick={onClose}>
       <div className="detail-modal" onClick={e => e.stopPropagation()}>
         <button className="detail-close" onClick={onClose}>×</button>
+
         <div className="detail-header">
           <h3 className="detail-subtitle">제목</h3>
           {isEditing ? (
@@ -27,9 +26,10 @@ const InfoManagementDetail = ({ item, onClose, mode }) => {
               onChange={e => setEditQuestion(e.target.value)}
             />
           ) : (
-            <h2 className="detail-title">{item.question}</h2>
+            <h2 className="detail-title">{editQuestion}</h2>
           )}
         </div>
+
         <div className="detail-body">
           <h3 className="detail-text">내용</h3>
           {isEditing ? (
@@ -40,19 +40,17 @@ const InfoManagementDetail = ({ item, onClose, mode }) => {
             />
           ) : (
             paragraphs.map((para, idx) => (
-              <p key={idx} className="detail-text">
-                {para}
-              </p>
+              <p key={idx} className="detail-text">{para}</p>
             ))
           )}
         </div>
+
         <div className="detail-footer">
-          <button
-            className="btn-edit"
-            onClick={() => setIsEditing(prev => !prev)}
-          >
-            {isEditing ? '취소' : '수정'}
-          </button>
+          {isEdit && (
+            <button className="btn-edit" onClick={() => setIsEditing(prev => !prev)}>
+              {isEditing ? '취소' : '수정'}
+            </button>
+          )}
           {isEditing && (
             <button className="btn-save" onClick={() => setIsEditing(false)}>
               저장
@@ -64,4 +62,4 @@ const InfoManagementDetail = ({ item, onClose, mode }) => {
   );
 };
 
-export default InfoManagementDetail;
+export default FaqManagementDetail;
