@@ -3,14 +3,27 @@ import "../../css/resume/ResumeEditModal.css";
 
 const ResumeEditModal = ({ open, onClose, props }) => {
   const [htmlContent, setHtmlContent] = useState("");
-  const [profileText, setProfileText] = useState("");
-  const [careerText, setCareerText] = useState("");
+  const [resumeInfo, setResumeInfo] = useState({
+    name: "",
+    address: "",
+    email: "",
+    hp: "",
+    desired_position: "",
+    link: "",
+    education: {},
+    career: {},
+    skills: {},
+    languages: {},
+    certifications: {},
+    coverLetter: "",
+  });
+  const [selectedRadio, setSelectedRadio] = useState("");
   const [fixedPath, setFixedPath] = useState(props.fixedPath);
   const iframeRef = useRef(null);
 
   //html 파일 호출 후 text로 변수에 저장
   useEffect(() => {
-    fetch(fixedPath + "test.html")
+    fetch(fixedPath + "example.html")
       .then((res) => res.text())
       .then((html) => setHtmlContent(html));
   }, []);
@@ -19,8 +32,18 @@ const ResumeEditModal = ({ open, onClose, props }) => {
   useEffect(() => {
     const parser = new window.DOMParser();
     const doc = parser.parseFromString(htmlContent, "text/html");
-    const profileDiv = doc.querySelector(".profile");
-    setProfileText(profileDiv?.innerText || "");
+    const nameDiv = doc.querySelector(".userName");
+    const posDiv = doc.querySelector(".desired_position");
+    const addressDiv = doc.querySelector(".address");
+    const emailDiv = doc.querySelector(".email");
+    const hpDiv = doc.querySelector(".hp");
+    setResumeInfo({
+      name: nameDiv ? nameDiv.innerText : "",
+      desired_position: posDiv ? posDiv.innerText : "",
+      address: addressDiv ? addressDiv.innerText : "",
+      email: emailDiv ? emailDiv.innerText : "",
+      hp: hpDiv ? hpDiv.innerText : "",
+    });
   }, [htmlContent]);
 
   // 수정할때마다 실시간으로 iframe에 변경된 사항 적용
@@ -28,13 +51,19 @@ const ResumeEditModal = ({ open, onClose, props }) => {
     if (!htmlContent) return "";
     const parser = new DOMParser();
     const doc = parser.parseFromString(htmlContent, "text/html");
-    const profileDiv = doc.querySelector(".profile");
-    // const careerDiv = doc.querySelector(".section-content.career");
+    const nameDiv = doc.querySelector(".userName");
+    const posDiv = doc.querySelector(".desired_position");
+    const addressDiv = doc.querySelector(".address");
+    const emailDiv = doc.querySelector(".email");
+    const hpDiv = doc.querySelector(".hp");
 
     //사용자가 입력한 textarea값을 각각 class 값에 적용
 
-    profileDiv.innerText = profileText;
-    // careerDiv.innerText = careerText;
+    nameDiv.innerText = resumeInfo.name;
+    posDiv.innerText = resumeInfo.desired_position;
+    addressDiv.innerText = resumeInfo.address;
+    emailDiv.innerText = resumeInfo.email;
+    hpDiv.innerText = resumeInfo.hp;
 
     return doc.documentElement.outerHTML;
   };
@@ -60,7 +89,11 @@ const ResumeEditModal = ({ open, onClose, props }) => {
     return () => {
       iframe.removeEventListener("load", resizeIframe);
     };
-  }, [profileText, htmlContent]);
+  }, [resumeInfo, htmlContent]);
+
+  const toggleRadio = (event) => {
+    setSelectedRadio(event.target.id);
+  };
 
   if (!open) return null;
   return (
@@ -76,7 +109,35 @@ const ResumeEditModal = ({ open, onClose, props }) => {
             <span>이름</span>
           </div>
           <div>
-            <input type="text" name="title" />
+            <input
+              type="text"
+              name="name"
+              value={resumeInfo.name}
+              onChange={(e) => {
+                setResumeInfo({
+                  ...resumeInfo,
+                  name: e.target.value,
+                });
+              }}
+            />
+          </div>
+        </label>
+        <label>
+          <div>
+            <span>희망직무</span>
+          </div>
+          <div>
+            <input
+              type="text"
+              name="position"
+              value={resumeInfo.desired_position}
+              onChange={(e) => {
+                setResumeInfo({
+                  ...resumeInfo,
+                  desired_position: e.target.value,
+                });
+              }}
+            />
           </div>
         </label>
         <label>
@@ -84,7 +145,17 @@ const ResumeEditModal = ({ open, onClose, props }) => {
             <span>주소</span>
           </div>
           <div>
-            <input type="text" name="address" />
+            <input
+              type="text"
+              name="address"
+              value={resumeInfo.address}
+              onChange={(e) => {
+                setResumeInfo({
+                  ...resumeInfo,
+                  address: e.target.value,
+                });
+              }}
+            />
           </div>
         </label>
         <label>
@@ -92,7 +163,17 @@ const ResumeEditModal = ({ open, onClose, props }) => {
             <span>이메일</span>
           </div>
           <div>
-            <input type="email" name="email" />
+            <input
+              type="email"
+              name="email"
+              value={resumeInfo.email}
+              onChange={(e) => {
+                setResumeInfo({
+                  ...resumeInfo,
+                  email: e.target.value,
+                });
+              }}
+            />
           </div>
         </label>
         <label>
@@ -100,20 +181,85 @@ const ResumeEditModal = ({ open, onClose, props }) => {
             <span>전화번호</span>
           </div>
           <div>
-            <input type="email" name="phoneNum" />
+            <input
+              type="text"
+              name="phoneNum"
+              value={resumeInfo.hp}
+              onChange={(e) => {
+                setResumeInfo({
+                  ...resumeInfo,
+                  hp: e.target.value,
+                });
+              }}
+            />
           </div>
         </label>
 
-        {/* <textarea
-          className="profileInput"
-          value={profileText}
-          onChange={(e) => setProfileText(e.target.value)}
-        ></textarea> */}
+        <label>
+          <div>
+            <span>변경 필드 선택</span>
+          </div>
+          <div className="checkbox_list">
+            <input type="radio" name="list" id="link" onChange={toggleRadio} />
+            <label htmlFor="link">링크</label>
 
-        <button>수정 사항 저장</button>
-        <button className="modal-close" onClick={onClose}>
-          닫기
-        </button>
+            <input type="radio" name="list" id="edu" onChange={toggleRadio} />
+            <label htmlFor="edu">경력</label>
+            <input
+              type="radio"
+              name="list"
+              id="career"
+              onChange={toggleRadio}
+            />
+            <label htmlFor="career">학력</label>
+            <input type="radio" name="list" id="skill" onChange={toggleRadio} />
+            <label htmlFor="skill">기술스택</label>
+            <input
+              type="radio"
+              name="list"
+              id="language"
+              onChange={toggleRadio}
+            />
+            <label htmlFor="language">외국어 역량</label>
+            <input
+              type="radio"
+              name="list"
+              id="certification"
+              onChange={toggleRadio}
+            />
+            <label htmlFor="certification">자격증</label>
+            <input
+              type="radio"
+              name="list"
+              id="cover_letter"
+              onChange={toggleRadio}
+            />
+            <label htmlFor="cover_letter">자기소개서</label>
+          </div>
+        </label>
+
+        {selectedRadio === "link" && (
+          <div className="toggleInput">
+            <input
+              type="text"
+              placeholder="링크를 입력하세요"
+              value={resumeInfo.link}
+              onChange={(e) => {
+                setResumeInfo({
+                  ...resumeInfo,
+                  link: e.target.value,
+                });
+              }}
+            />
+          </div>
+        )}
+
+        <div className="buttonRow">
+          <button className="secondaryBtn">수정 사항 저장</button>
+          <button className="modal-close secondaryBtn" onClick={onClose}>
+            닫기
+          </button>
+        </div>
       </div>
     </div>
   );

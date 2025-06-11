@@ -26,12 +26,19 @@ const ResumeModify = () => {
   const handleCloseModal = () => setIsEditModalOpen(false);
 
   return (
-    <div>
-      <ResumeSidebar />
-      <div className="resume">
+    <>
+      <div className="resume-banner">
+        <img src="/resources/img/banner.png" alt="Banner" />
+      </div>
+      <div className="resume_wrap">
+        <ResumeSidebar />
         <div className="resumeContent">
-          <h2 className="title">이력서 수정</h2>
-          <iframe ref={iframeRef} src={fixedPath + "example.html"} />
+          <div className="resumeModifyPart">
+            <div>
+              <h2 className="title">이력서 수정</h2>
+            </div>
+            <iframe ref={iframeRef} src={fixedPath + "example.html"} />
+          </div>
           <div className="buttonRow">
             <button className="primaryBtn" onClick={handleOpenModal}>
               이력서 수정
@@ -58,7 +65,7 @@ const ResumeModify = () => {
           fixedPath,
         }}
       ></ResumeEditModal>
-    </div>
+    </>
   );
 };
 
