@@ -12,6 +12,7 @@ const Interview = () => {
             applyCompany:applyCompany,
             applyPosition:applyPosition,
             introduce:introduce,
+            sendmsg: `지원 회사는 ${applyCompany} 이고 지원 직무는 ${applyPosition} 이고 자기소개는 ${introduce} 일 때 면접 질문 5개`
         }
         console.log(checkValue);        
         
