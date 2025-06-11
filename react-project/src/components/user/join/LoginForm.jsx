@@ -26,17 +26,17 @@ const LoginForm = ({ onClose }) => {
     }
 
     return (
-        <div className="modal-overlay">
-            <div className="modal-content loginform-modal-content">
-                <div className='loginform-container'>
-                <h1 className="login-title">jobfollio</h1>
-                    <h3 className="loginform-subtitle mb-4">AI기반의 자기소개서 생성서비스</h3>
-                    <form onSubmit={handleLogin} className="loginform-form">
+        <div className="login-form-modal-overlay">
+            <div className="login-form-modal">
+                <div className='login-form-container'>
+                    <h1 className="login-form-title">jobfollio</h1>
+                    <h3 className="login-form-subtitle">AI기반의 자기소개서 생성서비스</h3>
+                    <form onSubmit={handleLogin} className="login-form">
                         <div className="mb-3 text-start">
-                            <label htmlFor="email" className="form-label">이메일</label>
+                            <label htmlFor="email" className="login-form-label">이메일</label>
                             <input
                                 type="email"
-                                className="form-control"
+                                className="login-form-input"
                                 id="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
@@ -45,10 +45,10 @@ const LoginForm = ({ onClose }) => {
                             />
                         </div>
                         <div className="mb-4 text-start">
-                            <label htmlFor="password" className="form-label">비밀번호</label>
+                            <label htmlFor="password" className="login-form-label">비밀번호</label>
                             <input
                                 type="password"
-                                className="form-control"
+                                className="login-form-input"
                                 id="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
@@ -56,19 +56,19 @@ const LoginForm = ({ onClose }) => {
                                 autoComplete="current-password"
                             />
                         </div>
-                        <button type="submit" className='btn btn-primary loginform-btn w-100'>
+                        <button type="submit" className='login-form-submit'>
                             로그인
                         </button>
                     </form>
-                    <div className="loginform-links mt-4">
-                        <span onClick={goToFindPassword} className="loginform-link">비밀번호 찾기</span>
-                        <span className="loginform-divider">|</span>
-                        <span onClick={goToFindId} className="loginform-link">아이디 찾기</span>
-                        <span className="loginform-divider">|</span>
-                        <span onClick={goToJoin} className="loginform-link">회원가입</span>
+                    <div className="login-form-links">
+                        <span onClick={goToFindPassword} className="login-form-link">비밀번호 찾기</span>
+                        <span className="login-form-divider">|</span>
+                        <span onClick={goToFindId} className="login-form-link">아이디 찾기</span>
+                        <span className="login-form-divider">|</span>
+                        <span onClick={goToJoin} className="login-form-link">회원가입</span>
                     </div>
                 </div>
-                <button className="close-button" onClick={onClose}>×</button>
+                <button className="login-form-close" onClick={onClose}>×</button>
             </div>
         </div>
     );

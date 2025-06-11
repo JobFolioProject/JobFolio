@@ -32,8 +32,8 @@ const Login = ({onClose, onLoginClick}) => {
     }
    
     return (
-        <div className="modal-overlay">
-            <div className="modal-content">
+        <div className="login-form-modal-overlay">
+            <div className="login-form-modal">
                 <div className='login-container'>
                     <h1 className="login-title">jobfollio</h1>
                     <h3 className="login-subtitle">Ai기반의 자기소개서 생성서비스</h3>
