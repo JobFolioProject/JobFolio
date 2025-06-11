@@ -21,19 +21,19 @@ const ResumeModify = () => {
     return () => iframe.removeEventListener("load", onLoad);
   }, []);
 
-  useEffect(() => {
-    async function fetchAndExtract() {
-      const res = await fetch(fixedPath + "example.html");
-      const htmlString = await res.text();
+  // useEffect(() => {
+  //   async function fetchAndExtract() {
+  //     const res = await fetch(fixedPath + "example.html");
+  //     const htmlString = await res.text();
 
-      const parser = new window.DOMParser();
-      const doc = parser.parseFromString(htmlString, "text/html");
+  //     const parser = new window.DOMParser();
+  //     const doc = parser.parseFromString(htmlString, "text/html");
 
-      const profileDiv = doc.querySelector(".section-content.profile");
-      if (profileDiv) {
-      }
-    }
-  }, []);
+  //     const profileDiv = doc.querySelector(".section-content.profile");
+  //     if (profileDiv) {
+  //     }
+  //   }
+  // }, []);
 
   return (
     <div>
