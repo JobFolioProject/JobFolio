@@ -8,7 +8,7 @@
 .userInfoWrap {
     display: flex;
     padding: 20px 40px 20px 40px;
-    border: 1px solid #9d9d9d;
+    border: 1px solid #c7c7c7;
     border-radius: 15px;
     width: 100%;
     height: fit-content;
@@ -110,12 +110,13 @@ input.userInfoInput {
 }
 
 .plusIcon {
-    width: 12px;
+    margin-top: 1px;
     margin-left: 10px;
 }
 
 .plusFunction {
-    text-align: right;
+    display: flex;
+    justify-content: end;
 }
 
 .inputWithRemoveButton {
@@ -134,7 +135,11 @@ input.careerInfoInput {
 }
 
 .removeInputButton {
-    width: 18px;
     margin-left: 5px;
     margin-top: 5px;
+    color: #8d8d8d;
+}
+
+.userCareerHr {
+    margin-top: 20px !important;
 }
