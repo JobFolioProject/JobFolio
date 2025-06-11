@@ -9,6 +9,16 @@
   padding-left: 0px;
 }
 
+.resume-content-form input[type="text"],
+.resume-content-form input[type="email"],   
+.resume-content-form input[type="tel"],
+.resume-content-form textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
 
 .resume-banner img {
   width: 100%;
@@ -31,3 +41,6 @@
 .resume-banner span {
   margin-right: 20px;
 }
+
+
+

@@ -50,8 +50,11 @@ function AppContent() {
         <Routes>
           <Route path="/" element={<Main />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/resume" element={<Resume />} />
+
+          <Route path="/resume/write" element={<Resume />} />
+
           <Route path="/resume/edit" element={<ResumeModify />} />
+
           <Route path="/interview" element={<Interview />} />
           <Route path="/pay" element={<Payment />} />
 
