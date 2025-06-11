@@ -11,7 +11,7 @@
         font-family: "Montserrat", sans-serif;
         margin: 0;
         padding: 0;
-        overflow: hidden;
+        /* overflow: hidden; */
       }
       .resume-container {
         max-width: 800px;
@@ -123,11 +123,12 @@
           class="profile-img"
         />
         <div class="name-title">
-          <h1>홍길동</h1>
-          <h2>웹 프론트엔드 개발자</h2>
+          <h1 class="userName">홍길동</h1>
+          <h2 class="desired_position">웹 프론트엔드 개발자</h2>
           <div class="contact">
-            📞 010-1234-5678 | ✉️ honggildong@email.com<br />
-            📍 서울특별시 강남구
+            <p>📞 <span class="hp">010-1234-5678</span></p>
+            <p>✉️ <span class="email">honggildong@email.com</span></p>
+            <p>📍 <span class="address">서울특별시 강남구</span></p>
           </div>
         </div>
       </div>
