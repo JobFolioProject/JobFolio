@@ -43,6 +43,6 @@ build/
 
 # 기타
 .env
-src/main/resources/application-secret.properties
+**/application-secret.properties
 
 # branch test
