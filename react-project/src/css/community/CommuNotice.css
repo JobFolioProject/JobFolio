@@ -13,3 +13,27 @@
   font-size: 2.5rem;
   font-weight: 900;
 }
+
+.community-notice-container {
+  display: flex;
+  margin-left: auto;
+  margin-right: auto;
+  justify-content: center;
+}
+.community-notice-container .community-notice-wrapper{
+  width: 1200px;  
+
+}
+.community-notice-content ul{
+  list-style-type: none;
+}
+
+.community-notice-top ul {
+  list-style-type: none;
+  display: flex;
+}
+
+.community-notice-container .community-notice-wrapper .community-notice-top {
+  display: flex;
+  justify-content: space-between;
+}
