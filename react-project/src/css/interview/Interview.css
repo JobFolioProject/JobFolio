@@ -52,6 +52,10 @@
     min-height: 450px;
     border-radius: 10px;
 }
+.interview .interview-container-left .interview-container-left-content h1{    
+    font-size: 1.5rem;
+    font-weight: 700;
+}
 .interview .interview-container-left .interview-container-left-content > textarea{    
     height: 200px;
     width: 620px;
@@ -63,7 +67,7 @@
 .interview .interview-container-right .interview-container-right-content {
     margin: 20px;
     min-height: 600px;
-    border: 1px solid black;
+    border: 1px solid rgb(210, 210, 210);
     border-radius: 10px;
 }
 .interview .interview-container-right .interview-container-right-content .interview-gpt-practice textarea{
