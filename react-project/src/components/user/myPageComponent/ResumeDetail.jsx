@@ -1,4 +1,5 @@
 import '../../../css/user/myPageComponent/ResumeDetail.css';
+import FavoriteIcon from '@mui/icons-material/FavoriteBorder';
 
 const ResumeDetail = () => {
 
@@ -8,8 +9,7 @@ const ResumeDetail = () => {
                 <div className="resumeItemCon">
                     <div className="resumeItemHeader">
                             <h3>이력서 제목</h3>
-                            {/* CORRECTED PATH */}
-                            <img src="/like2.png" alt="좋아요" className="likeIcon" />
+                            <FavoriteIcon className="likeIcon" />
                     </div>
                     <div className="resumeItemDetail">
                         <p className="resumeItemJob">SI | 개발자</p>
@@ -22,8 +22,7 @@ const ResumeDetail = () => {
                 <div className="resumeItemCon">
                     <div className="resumeItemHeader">
                             <h3>이력서 제목</h3>
-                            {/* CORRECTED PATH */}
-                            <img src="/like2.png" alt="좋아요" className="likeIcon" />
+                            <FavoriteIcon className="likeIcon" />
                     </div>
                     <div className="resumeItemDetail">
                         <p className="resumeItemJob">SI | 개발자</p>
@@ -36,8 +35,7 @@ const ResumeDetail = () => {
                 <div className="resumeItemCon">
                 <div className="resumeItemHeader">
                             <h3>이력서 제목</h3>
-                            {/* CORRECTED PATH */}
-                            <img src="/like2.png" alt="좋아요" className="likeIcon" />
+                            <FavoriteIcon className="likeIcon" />
                     </div>
                     <div className="resumeItemDetail">
                         <p className="resumeItemJob">중소기업 | 총무</p>
