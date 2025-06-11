@@ -1,14 +1,24 @@
+import axios from 'axios';
 import '../../css/resume/Resume.css'; // 스타일 따로 작성
 import ResumeSidebar from './ResumeSidebar';
-import React, { use, useState, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 
 const Resume = () => {
     // 이력서 작성 페이지 컴포넌트
     // 이력서 작성 폼을 포함하고 있으며, 사이드바를 사용하여 다른 이력서 관련 페이지로 이동할 수 있습니다.  
-    const handleSubmit = (event) => {
-        event.preventDefault();
+    const handleSubmit = async () => {
         console.log('이력서 제출:', formData);
-        alert('이력서가 제출되었습니다.');
+        const param = new URLSearchParams(Object.entries(formData));
+
+        await axios.post("/resume/insertResumeInfo",param)
+        .then((res)=>{
+            if(res.data.result === 1){
+                
+            }
+        })
+        .catch((err)=>{
+            console.log(err)
+        })
     }
 
     const [formData, setFormData] = useState({
@@ -81,6 +91,12 @@ const Resume = () => {
       ],
     }));
   };
+
+  useEffect(()=>{
+    //axios.post("/resume/selectResumeInfo")
+
+  },[])
+
 
 
   
