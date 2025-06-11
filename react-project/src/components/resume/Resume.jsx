@@ -35,9 +35,7 @@ const Resume = () => {
 
     return (
     <div className='resume'>
-        <div className='resume-sidebar'>
             <ResumeSidebar/>
-        </div>
         <div className='resume-content'>
             <div className="resume-banner">
                 <img src="/resources/img/banner.png" alt="Banner" />

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import "../../css/resume/ResumeModify.css";
+import ResumeSidebar from "./ResumeSidebar";
 
 const ResumeModify = () => {
   const [aiComment, setAiComment] = useState({});
@@ -37,13 +38,7 @@ const ResumeModify = () => {
 
   return (
     <div>
-      <div className="sidebar">
-        <div className="menuTitle">이력서</div>
-        <ul className="subMenu">
-          <li className="subMenuItem">이력서 작성</li>
-          <li className="subMenuItem">이력서 관리</li>
-        </ul>
-      </div>
+      <ResumeSidebar/>
       <div className="resume">
         <div className="resumeContent">
           <h2 className="title">이력서 수정</h2>
