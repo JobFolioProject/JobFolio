@@ -4,6 +4,14 @@
     width: 100%;
 }
 
+/* 타이틀 박스 */
+.info-section-title-box {
+  background-color: #ffffff;
+  padding: 16px 24px;
+  border-radius: 10px;
+  margin-bottom: 24px;
+}
+
 /* 본문 콘텐츠 */
 .infoManagement .info-content {
   flex: 1;
@@ -54,6 +62,11 @@
 /* title */
 .infoManagement .info-title {
     cursor: pointer;
+}
+
+.infoManagement .info-title:hover {
+  color: #084298;            /* 진한 블루로 전환 */
+  text-decoration: underline;
 }
 
 /* 테이블 */
