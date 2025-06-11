@@ -1,6 +1,7 @@
 package com.happyjob.jobfolio.controller.resume;
 
 import com.happyjob.jobfolio.service.resume.ResumeService;
+import com.happyjob.jobfolio.vo.resume.ResumeInfoVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +28,29 @@ public class ResumeController {
         return resultMap;
 
     }
+
+    @RequestMapping("/insertResumeInfo")
+    public Map<String,Object> insertResumeInfo(@RequestParam Map<String,Object> paramMap){
+        Map<String,Object> resultMap = new HashMap<>();
+
+        ResumeInfoVO resumeInfoVO = new ResumeInfoVO();
+
+        resumeInfoVO.setTitle(paramMap.get("title").toString());
+        resumeInfoVO.setDesired_position(paramMap.get("desired_position").toString());
+
+        int result = resumeService.insertResumeInfo(resumeInfoVO);
+
+
+
+        resultMap.put("result", result);
+
+
+
+        return resultMap;
+
+    }
+
+
 
 
 }
