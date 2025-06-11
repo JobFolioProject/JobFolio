@@ -14,12 +14,13 @@
 .login-form-modal {
   background: #fff;
   border-radius: 16px;
-  box-shadow: 0 2px 16px rgba(0,0,0,0.08);
-  width: 320px;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+  width: 420px; /* 이미지처럼 498px에 맞춤 */
   max-width: 90%;
-  padding: 1.8rem;
+  padding: 60px 40px; /* 이미지처럼 */
   position: relative;
   text-align: center;
+  min-height: 581.33px; /* 또는 원하는 고정값 */
 }
 
 .login-form-container {
@@ -34,19 +35,27 @@
   font-weight: bold;
   color: #333;
   margin: 0;
-  font-family: 'Noto Sans KR', '맑은 고딕', 'Malgun Gothic', sans-serif;
+  font-family: "Noto Sans KR", "맑은 고딕", "Malgun Gothic", sans-serif;
 }
 
 .login-form-subtitle {
   font-size: 0.9rem;
   color: #666;
   margin: 0;
-  font-family: 'Noto Sans KR', '맑은 고딕', 'Malgun Gothic', sans-serif;
+  font-family: "Noto Sans KR", "맑은 고딕", "Malgun Gothic", sans-serif;
 }
 
 .login-form {
   width: 100%;
+  margin-top: 16px;
+}
+
+.mb-3.text-start {
   margin-top: 6px;
+}
+
+.mb-4.text-start {
+  margin-top: 26px;
 }
 
 .login-form-label {
@@ -56,7 +65,7 @@
   margin-bottom: 4px;
   text-align: left;
   display: block;
-  font-family: 'Noto Sans KR', '맑은 고딕', 'Malgun Gothic', sans-serif;
+  font-family: "Noto Sans KR", "맑은 고딕", "Malgun Gothic", sans-serif;
 }
 
 /* 기본 input 스타일 - 브라우저 기본값 제거 */
@@ -73,7 +82,7 @@
   box-sizing: border-box;
   text-align: left;
   color: #333;
-  font-family: 'Noto Sans KR', '맑은 고딕', 'Malgun Gothic', sans-serif;
+  font-family: "Noto Sans KR", "맑은 고딕", "Malgun Gothic", sans-serif;
   outline: none !important; /* 기본 outline 제거 */
   box-shadow: none !important; /* 기본 box-shadow 제거 */
 }
@@ -96,7 +105,7 @@
   color: #aaa;
   text-align: left;
   font-size: 0.9rem;
-  font-family: 'Noto Sans KR', '맑은 고딕', 'Malgun Gothic', sans-serif;
+  font-family: "Noto Sans KR", "맑은 고딕", "Malgun Gothic", sans-serif;
 }
 
 .login-form-submit {
@@ -109,12 +118,27 @@
   padding: 10px 0;
   margin-top: 8px;
   margin-bottom: 0;
+  margin-top: 2rem;
   width: 100%;
   display: block;
-  font-family: 'Noto Sans KR', '맑은 고딕', 'Malgun Gothic', sans-serif;
+  font-family: "Noto Sans KR", "맑은 고딕", "Malgun Gothic", sans-serif;
   justify-content: center;
-  box-shadow: 0 2px 8px rgba(79,195,247,0.08);
+  box-shadow: 0 2px 8px rgba(79, 195, 247, 0.08);
   transition: background 0.2s, color 0.2s;
+}
+
+.login-form-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #333;
+  margin: 0;
+}
+
+.login-form-subtitle {
+  font-size: 1.1rem;
+  color: #666;
+  margin: 0;
+  font-family: "Noto Sans KR", "맑은 고딕", "Malgun Gothic", sans-serif;
 }
 
 .login-form-submit:hover {
@@ -127,11 +151,11 @@
 .login-form-links {
   display: flex;
   gap: 0.6rem;
-  margin-top: 0.1rem;
+  margin-top: 1.1rem;
   margin-bottom: 1.2rem;
   font-size: 0.8rem;
   color: #666;
-  font-family: 'Noto Sans KR', '맑은 고딕', 'Malgun Gothic', sans-serif;
+  font-family: "Noto Sans KR", "맑은 고딕", "Malgun Gothic", sans-serif;
   justify-content: center;
   align-items: center;
 }
