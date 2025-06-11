@@ -1,0 +1,72 @@
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.modal-content {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 8px;
+  min-width: 1000px;
+  min-height: 900px;
+  position: relative;
+  overflow: auto;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-content label {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 20px;
+  font-size: 1.1rem;
+  margin-top: 10px;
+}
+
+.modal-content label > div:first-child {
+  width: 100px;
+  font-weight: bold;
+  color: #333;
+}
+
+.modal-content label > div:last-child {
+  flex: 1;
+}
+
+.modal-content input[type="text"],
+.modal-content input[type="email"] {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  transition: border 0.2s;
+}
+
+.modal-content input[type="text"]:focus,
+.modal-content input[type="email"]:focus {
+  border: 1.5px solid #007bff;
+  outline: none;
+  background: #f8faff;
+}
+
+.modal-content .profileInput {
+  width: 100%;
+  height: 200px;
+}
+
+.modal-content .htmlContent {
+  width: 100%;
+  height: 1500px;
+  border: 1px solid #ddd;
+}

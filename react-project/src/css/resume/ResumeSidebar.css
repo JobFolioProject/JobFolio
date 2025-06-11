@@ -1,16 +1,13 @@
 .resume-sidebar {
   width: 200px;
-  /* height: 100vh; */
+  height: 50vh; /* 전체 높이 ... 이거 빠지면 너무 단촐해짐.*/
   background-color: #f7f7f7;
   padding: 20px;
   box-shadow: 2px 0 5px rgba(0,0,0,0.05);
   /* position: fixed; */
   position: sticky;
-  /* left: 0; */
-  /* flex-shrink: 0; */
-  /* top: 250px; */
-  /* margin-top: 100px;  */
-  z-index: 10;
+
+  flex-shrink: 0;
   
 }
 
