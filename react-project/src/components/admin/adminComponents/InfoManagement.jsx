@@ -27,8 +27,15 @@ const InfoManagement = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [detailItem, setDetailItem] = useState(null);    
   const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [modalMode, setModalMode] = useState('edit');
 
   const itemsPerPage = 10;
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const sortedData = [...data].sort((a, b) => a.priority - b.priority);
+  const currentItems = sortedData.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(mockData.length / itemsPerPage);
+
 
   const toggleCheckbox = (id) => {
     setSelected(prev =>
@@ -37,27 +44,30 @@ const InfoManagement = () => {
   };
 
   const openDetail = (item) => {
+    setModalMode('edit');
     setDetailItem(item);
     setIsDetailOpen(true);
   };
 
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const sortedData = [...data].sort((a, b) => a.priority - b.priority);
-  const currentItems = sortedData.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(mockData.length / itemsPerPage);
+  const openNewPostModal = () => {
+    setModalMode('post');
+    setDetailItem(null);
+    setIsDetailOpen(true);
+  }
 
   return (
     <div className='infoManagement'>
       <AdminSideBar />
       <div className='info-content'>
+        <div className = 'info-section-title-box'>
         <h2>커뮤니티 관리</h2>
+        </div>
         <div className='info-header'>
           <h3>이용안내</h3>
           <p className='info-warning'>삭제할 경우 복구가 어려우며, 하이잡 이용자에게 해당 항목이 즉시 비노출됩니다. 삭제 시 신중히 선택 바랍니다.</p>
           <div className='info-controls'>
             <button>선택 삭제</button>
-            <button>이용안내 등록</button>
+            <button onClick={openNewPostModal}>이용안내 등록</button>
           </div>
         </div>
        
@@ -65,6 +75,7 @@ const InfoManagement = () => {
       <InfoManagementDetail
         item={detailItem}
         onClose={() => setIsDetailOpen(false)}
+        mode={modalMode}
       />
     )}
   

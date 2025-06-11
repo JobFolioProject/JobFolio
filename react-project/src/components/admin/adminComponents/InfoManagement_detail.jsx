@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
 import '../../../css/admin/adminComponents/InfoManagement_detail.css';
 
-const InfoManagementDetail = ({ item, onClose }) => {
+const InfoManagementDetail = ({ item, onClose, mode }) => {
   
 
-  const [isEditing, setIsEditing] = useState(false);
-  const [editQuestion, setEditQuestion] = useState(item.question);
-  const [editAnswer, setEditAnswer] = useState(item.answer);
+  const isEdit = mode === 'edit';
+  const [isEditing, setIsEditing] = useState(mode === 'post');
+  const [editQuestion, setEditQuestion] = useState(item?.question || '');
+  const [editAnswer, setEditAnswer] = useState(item?.answer || '');
 
   const paragraphs = editAnswer.split('\n\n'); 
 
 
-  if (!item){ return null};
+  if (!item && mode === 'edit'){ return null};
   
   return (
     <div className="detail-overlay" onClick={onClose}>
