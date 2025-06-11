@@ -29,10 +29,12 @@
   cursor: pointer;
   color: #333;
 }
-.resume {
-  margin-left: 220px;
-  padding: 40px;
-}
+/* .resume {
+    margin-left: 220px;
+    padding: 40px;
+    display: flex;
+    justify-content: center;
+} */
 
 .resume .resumeContent {
   border-bottom: 2px solid #888;

@@ -34,10 +34,10 @@ const Resume = () => {
   return (
     <div className="resume">
       <ResumeSidebar />
-      <div className="resume-banner">
-        <img src="/resources/img/banner.png" alt="Banner" />
-      </div>
       <div className="resume-content">
+        <div className="resume-banner">
+          <img src="/resources/img/banner.png" alt="Banner" />
+        </div>
         {/* <div style={{ marginLeft: '200px', padding: '200px' }}> */}
         <div
           className="resume-content-form"
