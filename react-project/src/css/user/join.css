@@ -49,30 +49,52 @@
 }
 
 .login-btn {
-    padding: 0.8rem;
+    width: 100%;
+    height: 50px;
     border: none;
     border-radius: 5px;
-    font-size: 1rem;
-    font-weight: 500;
     cursor: pointer;
-    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    margin-bottom: 10px;
+    font-size: 16px;
+    position: relative;
 }
 
-.user-login {
-    background-color: #ffffff;
-    color: rgb(0, 0, 0);
-    border: 1px solid #e0e0e0;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.login-btn img {
+    width: 32px;
+    height: 32px;
+    margin-right: 10px;
+    position: absolute;
+    left: 16px;
 }
 
-.naver-login {
-    background-color: #03C75A;
-    color: white;
+.login-text {
+    width: 100%;
+    text-align: center;
 }
 
 .kakao-login {
-    background-color: #FEE500;
+    background-color: #FFEA29;
     color: #000000;
+}
+
+.naver-login {
+    background-color: #1CCC6A;
+    color: #FFFFFF;
+}
+
+.user-login {
+    background-color: #f2f3f377;
+    color: #000000;
+    justify-content: center;
+}
+
+.user-login img {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
 }
 
 .login-btn:hover {

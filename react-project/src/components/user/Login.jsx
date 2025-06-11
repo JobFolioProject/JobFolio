@@ -38,9 +38,18 @@ const Login = ({onClose}) => {
                     <h1 className="login-title">jobfollio</h1>
                     <h3 className="login-subtitle">Ai기반의 자기소개서 생성서비스</h3>
                     <div className="login-buttons">
-                        <button className='login-btn user-login' onClick={userLogin}>로그인</button>
-                        <button className='login-btn kakao-login' onClick={kakaoLogin}>카카오로 로그인</button>
-                        <button className='login-btn naver-login' onClick={naverLogin}>네이버로 로그인</button>
+                        <button className='login-btn user-login' onClick={userLogin}>
+                            <img src="/resources/img/local_login.png" alt="로컬 로그인" className="login-icon" />
+                            <span className="login-text">로그인</span>
+                        </button>
+                        <button className='login-btn kakao-login' onClick={kakaoLogin}>
+                            <img src="/resources/img/KakaoTalk_login.svg" alt="카카오 로그인" className="login-icon" />
+                            <span className="login-text">카카오로 로그인</span>
+                        </button>
+                        <button className='login-btn naver-login' onClick={naverLogin}>
+                            <img src="/resources/img/naver_login.png" alt="네이버 로그인" className="login-icon" />
+                            <span className="login-text">네이버로 로그인</span>
+                        </button>
                     </div>
                     <div className="login-links">
                         <span onClick={goToFindPassword}>비밀번호 찾기</span>
