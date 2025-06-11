@@ -1,0 +1,117 @@
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 10px;
+    position: relative;
+    width: 400px;
+    height: 500px;
+    max-width: 90%;
+}
+
+.login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3.0rem;
+}
+
+.login-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #333;
+    margin: 0;
+}
+
+.login-subtitle {
+    font-size: 1.1rem;
+    color: #666;
+    margin: 0;
+}
+
+.login-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+}
+
+.login-btn {
+    padding: 0.8rem;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.user-login {
+    background-color: #ffffff;
+    color: rgb(0, 0, 0);
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.naver-login {
+    background-color: #03C75A;
+    color: white;
+}
+
+.kakao-login {
+    background-color: #FEE500;
+    color: #000000;
+}
+
+.login-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+.login-links {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.login-links span {
+    cursor: pointer;
+}
+
+.login-links span:hover {
+    color: #007bff;
+}
+
+.divider {
+    color: #ccc;
+    cursor: default;
+}
+
+.close-button {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #666;
+}
+
+.close-button:hover {
+    color: #333;
+} 
