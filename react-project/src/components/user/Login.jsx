@@ -39,8 +39,8 @@ const Login = ({onClose}) => {
                     <h3 className="login-subtitle">Ai기반의 자기소개서 생성서비스</h3>
                     <div className="login-buttons">
                         <button className='login-btn user-login' onClick={userLogin}>로그인</button>
-                        <button className='login-btn kakao-login' onClick={kakaoLogin}>카카오 로그인</button>
-                        <button className='login-btn naver-login' onClick={naverLogin}>네이버 로그인</button>
+                        <button className='login-btn kakao-login' onClick={kakaoLogin}>카카오로 로그인</button>
+                        <button className='login-btn naver-login' onClick={naverLogin}>네이버로 로그인</button>
                     </div>
                     <div className="login-links">
                         <span onClick={goToFindPassword}>비밀번호 찾기</span>
