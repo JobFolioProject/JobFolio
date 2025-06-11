@@ -1,5 +1,6 @@
 package com.happyjob.jobfolio.service.join;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.Map;
@@ -9,7 +10,9 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.happyjob.jobfolio.repository.join.EmailVerificationMapper;
 import com.happyjob.jobfolio.repository.join.UserMapper;
+import com.happyjob.jobfolio.vo.join.EmailVerificationVO;
 import com.happyjob.jobfolio.vo.join.UserVO;
 
 @Service
@@ -25,8 +28,10 @@ public class UserService {
     private UserMapper userMapper;
 
     @Autowired
-    private EmailService emailService;
+    private EmailVerificationMapper emailVerificationMapper;
 
+    @Autowired
+    private EmailService emailService;
 
     /**
      * 회원가입
@@ -35,23 +40,8 @@ public class UserService {
         logger.info("+ Start UserService.registerUser");
         logger.info("   - ParamMap : " + paramMap);
 
-        String loginId = (String) paramMap.get("loginId");
-
-        // 기존에 이메일 인증된 임시 데이터가 있는지 확인
-        Map<String, Object> checkMap = new HashMap<>();
-        checkMap.put("loginId", loginId);
-        UserVO existingUser = userMapper.selectUserByLoginId(checkMap);
-
-        if (existingUser != null && existingUser.getUserName() == null) {
-            // 임시 데이터가 있으면 업데이트
-            logger.info("   - Updating existing temporary user data");
-            paramMap.put("userNo", existingUser.getUserNo()); // 기존 user_no 사용
-            return userMapper.updateUserInfo(paramMap); // 새로운 UPDATE 쿼리 사용
-        } else {
-            // 임시 데이터가 없으면 새로 생성
-            logger.info("   - Creating new user");
-            return userMapper.insertUser(paramMap);
-        }
+        // 이제 임시 데이터 처리 없이 바로 회원가입
+        return userMapper.insertUser(paramMap);
     }
 
     /**
@@ -135,7 +125,6 @@ public class UserService {
         return userMapper.selectUserForPasswordReset(paramMap);
     }
 
-    // ================= SMTP 이메일 인증 관련 =================
 
     /**
      * 회원가입용 이메일 인증번호 발송
@@ -144,87 +133,45 @@ public class UserService {
         logger.info("+ Start UserService.sendSignupEmailVerification");
         logger.info("   - Email : " + email);
 
-        // 고유한 토큰 생성 (UUID 사용)
-        String verificationToken = generateVerificationToken();
+        try {
+            // 이메일 중복 확인
+            Map<String, Object> checkMap = new HashMap<>();
+            checkMap.put("loginId", email);
+            int duplicateCount = userMapper.checkLoginIdDuplicate(checkMap);
 
-        // DB에 토큰 저장 (임시 사용자 정보)
-        Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("loginId", email);
-        paramMap.put("emailVerifyToken", verificationToken);
-        paramMap.put("tokenExpireTime", "DATE_ADD(NOW(), INTERVAL 5 MINUTE)"); // 5분 후 만료
+            if (duplicateCount > 0) {
+                logger.warn("   - Email already exists: " + email);
+                return false;
+            }
 
-        // 임시 사용자 정보 저장 또는 기존 토큰 업데이트
-        int result = userMapper.saveEmailVerificationToken(paramMap);
+            // 기존 미사용 인증 정보 삭제
+            emailVerificationMapper.deleteUnusedByEmail(email);
 
-        if (result > 0) {
-            // EmailService의 HTML 템플릿을 사용하여 예쁜 이메일 발송
-            boolean emailSent = emailService.sendSignupVerificationEmail(email, verificationToken);
-            return emailSent;
-        }
+            // 새 인증 코드 생성
+            String verificationToken = generateVerificationToken();
 
-        return false;
-    }
+            // 만료 시간 설정 (10분)
+            Date expireTime = new Date(System.currentTimeMillis() + (10 * 60 * 1000));
 
-    /**
-     * 아이디 찾기용 이메일 발송
-     */
-    public boolean sendFoundIdByEmail(Map<String, Object> paramMap) throws Exception {
-        logger.info("+ Start UserService.sendFoundIdByEmail");
-        logger.info("   - ParamMap : " + paramMap);
+            // 임시 테이블에 인증 정보 저장
+            EmailVerificationVO emailVerification = new EmailVerificationVO(email, verificationToken, expireTime);
+            int insertResult = emailVerificationMapper.insertEmailVerification(emailVerification);
 
-        // 이름과 연락처로 사용자 찾기
-        UserVO user = userMapper.selectUserByNameAndHp(paramMap);
+            if (insertResult > 0) {
+                // 6. 이메일 발송 (기존 EmailService 활용)
+                boolean emailSent = emailService.sendSignupVerificationEmail(email, verificationToken);
 
-        if (user != null) {
-            String email = (String) paramMap.get("email");
-            String foundId = user.getLoginId();
-
-            // 아이디 찾기 결과 이메일 발송
-            boolean emailSent = sendEmail(email, "JobFolio 아이디 찾기 결과",
-                    "안녕하세요! JobFolio입니다.\n\n" +
-                            "요청하신 아이디 찾기 결과입니다.\n\n" +
-                            "찾으신 아이디: " + foundId + "\n\n" +
-                            "감사합니다.");
-
-            return emailSent;
-        }
-
-        return false;
-    }
-
-    /**
-     * 비밀번호 재설정용 이메일 인증번호 발송
-     */
-    public boolean sendPasswordResetEmailVerification(Map<String, Object> paramMap) throws Exception {
-        logger.info("+ Start UserService.sendPasswordResetEmailVerification");
-        logger.info("   - ParamMap : " + paramMap);
-
-        // 사용자 존재 여부 확인
-        UserVO user = userMapper.selectUserForPasswordReset(paramMap);
-
-        if (user != null) {
-            String email = (String) paramMap.get("loginId");
-
-            // 고유한 토큰 생성
-            String resetToken = generateVerificationToken();
-
-            // DB에 비밀번호 재설정 토큰 저장
-            Map<String, Object> tokenMap = new HashMap<>();
-            tokenMap.put("loginId", email);
-            tokenMap.put("resetToken", resetToken);
-
-            int result = userMapper.savePasswordResetToken(tokenMap);
-
-            if (result > 0) {
-                // 비밀번호 재설정 토큰 이메일 발송
-                boolean emailSent = sendEmail(email, "JobFolio 비밀번호 재설정",
-                        "안녕하세요! JobFolio입니다.\n\n" +
-                                "비밀번호 재설정을 위한 인증 토큰입니다.\n\n" +
-                                "인증 토큰: " + resetToken + "\n\n" +
-                                "보안을 위해 5분 내에 인증을 완료해주세요.");
+                if (emailSent) {
+                    logger.info("   - Email verification sent successfully to: " + email);
+                } else {
+                    logger.error("   - Failed to send email to: " + email);
+                }
 
                 return emailSent;
             }
+
+        } catch (Exception e) {
+            logger.error("Error in sendSignupEmailVerification", e);
         }
 
         return false;
@@ -237,20 +184,102 @@ public class UserService {
         logger.info("+ Start UserService.verifyEmailToken");
         logger.info("   - Email : " + email);
 
-        Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("loginId", email);
-        paramMap.put("emailVerifyToken", inputToken);
+        try {
+            // 임시 테이블에서 유효한 토큰 확인
+            EmailVerificationVO verification = emailVerificationMapper.selectByVerificationCode(inputToken);
 
-        // 유효한 토큰인지 확인 (만료시간 포함)
-        UserVO user = userMapper.selectByEmailVerifyToken(paramMap);
+            if (verification != null && verification.getEmail().equals(email)) {
+                //  인증 완료 처리
+                int updateResult = emailVerificationMapper.updateVerificationUsed(verification.getId());
+
+                if (updateResult > 0) {
+                    logger.info("   - Email verification completed successfully for: " + email);
+                    return true;
+                }
+            } else {
+                logger.warn("   - Invalid or expired token for email: " + email);
+            }
+
+        } catch (Exception e) {
+            logger.error("Error in verifyEmailToken", e);
+        }
+
+        return false;
+    }
+
+    /**
+     * 이메일 인증 상태 확인
+     */
+    public boolean isEmailVerified(String email) throws Exception {
+        logger.info("+ Start UserService.isEmailVerified");
+        logger.info("   - Email : " + email);
+
+        try {
+            EmailVerificationVO verification = emailVerificationMapper.selectRecentByEmail(email);
+            return verification != null && "Y".equals(verification.getIsUsed());
+        } catch (Exception e) {
+            logger.error("Error in isEmailVerified", e);
+            return false;
+        }
+    }
+
+    /**
+     * 아이디 찾기용 이메일 발송 (기존 유지)
+     */
+    public boolean sendFoundIdByEmail(Map<String, Object> paramMap) throws Exception {
+        logger.info("+ Start UserService.sendFoundIdByEmail");
+        logger.info("   - ParamMap : " + paramMap);
+
+        // 이름과 연락처로 사용자 찾기
+        UserVO user = userMapper.selectUserByNameAndHp(paramMap);
 
         if (user != null) {
-            // 인증 완료 처리
-            Map<String, Object> updateMap = new HashMap<>();
-            updateMap.put("loginId", email);
-            userMapper.completeEmailVerification(updateMap);
+            String email = (String) paramMap.get("email");
+            String foundId = user.getLoginId();
+            String regDate = user.getRegDate();
 
-            return true;
+            // EmailService의 새로운 메서드 활용
+            return emailService.sendFoundIdEmail(email, foundId, regDate);
+        }
+
+        return false;
+    }
+
+    /**
+     * 비밀번호 재설정용 이메일 인증번호 발송
+     */
+    public boolean sendPasswordResetEmailVerification(Map<String, Object> paramMap) throws Exception {
+        logger.info("+ Start UserService.sendPasswordResetEmailVerification");
+        logger.info("   - ParamMap : " + paramMap);
+
+        try {
+            // 사용자 존재 여부 확인
+            UserVO user = userMapper.selectUserForPasswordReset(paramMap);
+
+            if (user != null) {
+                String email = (String) paramMap.get("loginId");
+
+                //  기존 미사용 인증 정보 삭제
+                emailVerificationMapper.deleteUnusedByEmail(email);
+
+                //  새 리셋 토큰 생성
+                String resetToken = generateVerificationToken();
+
+                //  만료 시간 설정 (5분)
+                Date expireTime = new Date(System.currentTimeMillis() + (5 * 60 * 1000));
+
+                //  임시 테이블에 리셋 토큰 저장
+                EmailVerificationVO resetVerification = new EmailVerificationVO(email, resetToken, expireTime);
+                int insertResult = emailVerificationMapper.insertEmailVerification(resetVerification);
+
+                if (insertResult > 0) {
+                    //  비밀번호 재설정 이메일 발송
+                    return emailService.sendPasswordResetEmail(email, resetToken);
+                }
+            }
+
+        } catch (Exception e) {
+            logger.error("Error in sendPasswordResetEmailVerification", e);
         }
 
         return false;
@@ -263,14 +292,13 @@ public class UserService {
         logger.info("+ Start UserService.verifyPasswordResetToken");
         logger.info("   - Email : " + email);
 
-        Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("loginId", email);
-        paramMap.put("resetToken", inputToken);
-
-        // 유효한 재설정 토큰인지 확인
-        UserVO user = userMapper.selectByPasswordResetToken(paramMap);
-
-        return user != null;
+        try {
+            EmailVerificationVO verification = emailVerificationMapper.selectByVerificationCode(inputToken);
+            return verification != null && verification.getEmail().equals(email);
+        } catch (Exception e) {
+            logger.error("Error in verifyPasswordResetToken", e);
+            return false;
+        }
     }
 
     /**
@@ -280,29 +308,35 @@ public class UserService {
         logger.info("+ Start UserService.resetPassword");
         logger.info("   - ParamMap : " + paramMap);
 
-        String email = (String) paramMap.get("loginId");
-        String newPassword = (String) paramMap.get("newPassword");
-        String resetToken = (String) paramMap.get("resetToken");
+        try {
+            String email = (String) paramMap.get("loginId");
+            String newPassword = (String) paramMap.get("newPassword");
+            String resetToken = (String) paramMap.get("resetToken");
 
-        // 토큰 재확인
-        if (verifyPasswordResetToken(email, resetToken)) {
-            // 새 비밀번호로 업데이트 + 토큰 삭제
-            Map<String, Object> updateMap = new HashMap<>();
-            updateMap.put("loginId", email);
-            updateMap.put("newPassword", newPassword);
+            //  토큰 재확인
+            if (verifyPasswordResetToken(email, resetToken)) {
+                //  임시 테이블에서 해당 토큰을 사용 완료로 처리
+                EmailVerificationVO verification = emailVerificationMapper.selectByVerificationCode(resetToken);
+                if (verification != null) {
+                    emailVerificationMapper.updateVerificationUsed(verification.getId());
+                }
 
-            int updateResult = userMapper.updatePasswordAndClearToken(updateMap);
+                //  새 비밀번호로 업데이트
+                Map<String, Object> updateMap = new HashMap<>();
+                updateMap.put("loginId", email);
+                updateMap.put("newPassword", newPassword);
 
-            if (updateResult > 0) {
-                // 비밀번호 변경 완료 알림 이메일 발송
-                sendEmail(email, "JobFolio 비밀번호 변경 완료",
-                        "안녕하세요! JobFolio입니다.\n\n" +
-                                "비밀번호가 성공적으로 변경되었습니다.\n\n" +
-                                "만약 본인이 변경하지 않았다면 즉시 고객센터로 연락해주세요.\n\n" +
-                                "감사합니다.");
+                int updateResult = userMapper.updatePassword(updateMap);  // 기존 메서드 활용
 
-                return true;
+                if (updateResult > 0) {
+                    //  비밀번호 변경 완료 알림 이메일 발송
+                    emailService.sendPasswordChangeNotification(email);
+                    return true;
+                }
             }
+
+        } catch (Exception e) {
+            logger.error("Error in resetPassword", e);
         }
 
         return false;
@@ -318,35 +352,9 @@ public class UserService {
     }
 
     /**
-     * 6자리 인증번호 생성 (예비용)
+     * 6자리 인증번호 생성
      */
     private String generateVerificationCode() {
         return String.format("%06d", (int)(Math.random() * 1000000));
-    }
-
-    /**
-     * 이메일 발송 (SMTP)
-     */
-    private boolean sendEmail(String to, String subject, String content) throws Exception {
-        logger.info("Sending email to: " + to);
-        logger.info("Subject: " + subject);
-        logger.info("Content: " + content);
-
-        try {
-            // EmailService를 사용하여 실제 이메일 발송
-            boolean result = emailService.sendSimpleEmail(to, subject, content);
-
-            if (result) {
-                logger.info("Email sent successfully to: " + to);
-            } else {
-                logger.error("Failed to send email to: " + to);
-            }
-
-            return result;
-
-        } catch (Exception e) {
-            logger.error("Error sending email to: " + to, e);
-            return false;
-        }
     }
 }
