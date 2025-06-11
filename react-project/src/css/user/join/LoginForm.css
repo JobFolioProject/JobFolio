@@ -1,0 +1,170 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.08);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.loginform-modal-content {
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+  width: 400px;
+  max-width: 90%;
+  padding: 2.2rem;
+  position: relative;
+  text-align: center;
+}
+
+.loginform-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3.0rem;
+}
+
+.login-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #333;
+  margin: 0;
+  font-family: 'Noto Sans KR', '맑은 고딕', 'Malgun Gothic', sans-serif;
+}
+
+.loginform-subtitle {
+  font-size: 1.1rem;
+  color: #666;
+  margin: 0;
+  font-family: 'Noto Sans KR', '맑은 고딕', 'Malgun Gothic', sans-serif;
+}
+
+.loginform-form {
+  width: 100%;
+  margin-top: 8px;
+}
+
+.form-label {
+  font-size: 1.1rem;
+  color: #666;
+  font-weight: 500;
+  margin-bottom: 6px;
+  text-align: left;
+  display: block;
+  font-family: 'Noto Sans KR', '맑은 고딕', 'Malgun Gothic', sans-serif;
+}
+
+/* 기본 input 스타일 - 브라우저 기본값 제거 */
+.form-control {
+  border-radius: 8px;
+  border: 1.5px solid #d0e3ff !important; /* !important 추가 */
+  font-size: 1rem;
+  padding: 12px 14px;
+  margin-top: 4px;
+  margin-bottom: 2px;
+  background: #f8fbff !important; /* !important 추가 */
+  transition: all 0.2s ease; /* all로 변경하고 ease 추가 */
+  width: 100%;
+  box-sizing: border-box;
+  text-align: left;
+  color: #333;
+  font-family: 'Noto Sans KR', '맑은 고딕', 'Malgun Gothic', sans-serif;
+  outline: none !important; /* 기본 outline 제거 */
+  box-shadow: none !important; /* 기본 box-shadow 제거 */
+}
+
+/* 포커스 상태 */
+.loginform-modal-content input.form-control:focus {
+  border: 1.5px solid #4fc3f7 !important;
+  background: #fff !important;
+  box-shadow: 0 0 0 3px rgba(179, 224, 255, 0.5) !important; /* 투명도 조정 */
+  outline: none !important;
+}
+
+/* 호버 상태 추가 */
+.form-control:hover:not(:focus) {
+  border-color: #b3d9ff !important;
+  background: #f0f8ff !important;
+}
+
+.form-control::placeholder {
+  color: #aaa;
+  text-align: left;
+  font-size: 1rem;
+  font-family: 'Noto Sans KR', '맑은 고딕', 'Malgun Gothic', sans-serif;
+}
+
+.loginform-btn {
+  background: linear-gradient(90deg, #7bb6ff 0%, #4fc3f7 100%) !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 8px !important;
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding: 14px 0;
+  margin-top: 10px;
+  margin-bottom: 0;
+  width: 100%;
+  display: block;
+  font-family: 'Noto Sans KR', '맑은 고딕', 'Malgun Gothic', sans-serif;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(79,195,247,0.08);
+  transition: background 0.2s, color 0.2s;
+}
+
+.loginform-btn:hover {
+  background: linear-gradient(90deg, #4fc3f7 0%, #7bb6ff 100%) !important;
+  color: #fff !important;
+  opacity: 0.95;
+  transform: translateY(-2px);
+}
+
+.loginform-links {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.1rem;
+  margin-bottom: 2rem;   
+  font-size: 0.9rem;
+  color: #666;
+  font-family: 'Noto Sans KR', '맑은 고딕', 'Malgun Gothic', sans-serif;
+  justify-content: center;
+  align-items: center;
+}
+
+.loginform-link {
+  cursor: pointer;
+  color: #666;
+  transition: color 0.2s;
+}
+
+.loginform-link:hover {
+  color: #007bff;
+  text-decoration: underline;
+}
+
+.loginform-divider {
+  color: #ccc;
+  cursor: default;
+  margin: 0 6px;
+  font-size: 1.1em;
+}
+
+.close-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #666;
+}
+
+.close-button:hover {
+  color: #333;
+}
