@@ -30,6 +30,7 @@ import SubscriptManagement from "./components/admin/adminComponents/SubscriptMan
 import TemplateManagement from "./components/admin/adminComponents/TemplateManagement";
 import Configuration from "./components/admin/adminComponents/Configuration";
 import ResumeModify from "./components/resume/ResumeModify";
+import Join from "./components/user/join/JoinForm";
 
 function App() {
   return (
@@ -50,6 +51,7 @@ function AppContent() {
         <Routes>
           <Route path="/" element={<Main />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/join" element={<Join />} />
 
           <Route path="/resume/write" element={<Resume />} />
 

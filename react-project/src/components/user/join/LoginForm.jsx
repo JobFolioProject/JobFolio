@@ -38,6 +38,7 @@ const LoginForm = ({ onClose }) => {
   };
 
   const goToJoin = () => {
+    onClose();
     navigate("/join");
   };
 
