@@ -51,8 +51,8 @@
     margin-top: 30px;
 }
 
-img.likeIcon {
-    width: 25px;
+.likeIcon {
+    color: #818191;
 }
 
 .resumeItemDetail p {
