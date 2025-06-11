@@ -1,3 +1,207 @@
 .payment {
-    margin-top: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 200px;
+    margin-bottom: 200px;
 }
+
+.paymentWrap {
+    width: 1400px;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.paymentTitleSection {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-bottom: 50px;
+}
+
+.paymentTitle1 {
+    margin-bottom: -10px;
+    font-size: 50px;
+    font-weight: 700;
+    color: #373737;
+}
+
+.paymentTitle2 {
+    font-size: 58px;
+    font-weight: 700;
+    color: #373737;
+}
+
+.paymentTitlePoint {
+    color: #5350ff;
+}
+
+.paymentTitlePoint2 {
+    font-size: 78px;
+    color: #5350ff;
+}
+
+.paymentCardSection {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+}
+/* 기본 카드 스타일 */
+.paymentCard {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 50px;
+    border-radius: 40px;
+    width: 300px;
+    height: 380px;
+    margin: 30px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.paymentCardButton {
+    margin: 35px auto 0 auto;
+    width: 90%;
+    height: 55px;
+    border-radius: 30px;
+    background-color: #5350ff;
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: 700;
+    border: none;
+}
+
+.paymentCardTitle {
+    color: rgb(70 70 70);
+    font-size: 30px;
+    font-weight: 700;
+}
+
+.paymentCard hr {
+    margin: 20px 0;
+    border: 1px solid #5350ff;
+}
+
+.paymentCardPrice {
+    width: 100%;
+    text-align: end;
+    font-size: 36px;
+    font-weight: 600;
+    color: rgb(64 64 64);
+}
+
+.paymentCardDescList {
+    padding-left: 30px;
+}
+
+.paymentCardDescList_li {
+    line-height: 2;
+    color: #898989;
+    font-weight: 600;
+}
+
+.paymentCardBottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: column;
+}
+
+/* 짝수 카드 스타일 */
+.paymentCardSection .paymentCard:nth-child(even) {
+    background-color: #5350ff;
+}
+
+.paymentCardSection .paymentCard:nth-child(even) .paymentCardTitle {
+    color: #ffffff;
+}
+
+.paymentCardSection .paymentCard:nth-child(even) .paymentCardButton {
+    background-color: #ffffff;
+    color: rgb(64 64 64);
+}
+
+.paymentCardSection .paymentCard:nth-child(even) hr {
+    border-color: #ffffff;
+}
+
+.paymentCardSection .paymentCard:nth-child(even) .paymentCardPrice {
+    color: #ffffff;
+}
+
+.paymentCardSection .paymentCard:nth-child(even) .paymentCardDescList_li {
+    color: #ffffff;
+}
+
+.paymentDescSection {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 100px;
+    padding: 60px 0px 60px 0px;
+    background-color: #ffffff;
+    border-radius: 20px;
+}
+
+/* 안내문 */
+.accordion {
+    width: 80%;
+    height: 100%;
+    padding: 50px 20px;
+    line-height: 1.5;
+  }
+  
+  details {
+    width: 100%;
+    margin: 0 auto 10px;
+    overflow: hidden;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    border-top: 1px solid #d3d3d3;
+    border-bottom: 1px solid #d3d3d3;
+}
+  
+  summary {
+    display: block;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 700;
+    color: #373737;
+  }
+  
+  summary:before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: calc(var(--left-padding) / 2);
+    margin-top: calc(var(--arrow-width) * -1);
+    border-width: var(--arrow-width);
+    border-style: solid;
+    border-color: transparent transparent transparent #fff;
+    transform-origin: calc(var(--arrow-width) / 2) 50%;
+    transition: var(--transition-duration) transform ease;
+  }
+  
+  details[open] > summary:before {
+    transform: rotate(90deg);
+  }
+
+  .question span {
+    font-weight: 700;
+    color: #5350ff;
+    margin-right: 10px;
+  }
+  
+  .answer {
+    font-size: 14px;
+    color: #6f6f6f;
+    margin-top: 20px;
+  }
