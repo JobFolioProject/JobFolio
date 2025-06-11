@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import "../../css/resume/ResumeModify.css";
 import ResumeSidebar from "./ResumeSidebar";
+import ResumeEditModal from "./ResumeEditModal";
 
 const ResumeModify = () => {
-  const [aiComment, setAiComment] = useState({});
   const [fixedPath, setFixedPath] = useState("/resources/html/");
-  const [profileText, setProfileText] = useState("");
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const iframeRef = useRef(null);
 
@@ -22,29 +22,20 @@ const ResumeModify = () => {
     return () => iframe.removeEventListener("load", onLoad);
   }, []);
 
-  useEffect(() => {
-    async function fetchAndExtract() {
-      const res = await fetch(fixedPath + "example.html");
-      const htmlString = await res.text();
-
-      const parser = new window.DOMParser();
-      const doc = parser.parseFromString(htmlString, "text/html");
-
-      const profileDiv = doc.querySelector(".section-content.profile");
-      if (profileDiv) {
-      }
-    }
-  }, []);
+  const handleOpenModal = () => setIsEditModalOpen(true);
+  const handleCloseModal = () => setIsEditModalOpen(false);
 
   return (
     <div>
-      <ResumeSidebar/>
+      <ResumeSidebar />
       <div className="resume">
         <div className="resumeContent">
           <h2 className="title">이력서 수정</h2>
           <iframe ref={iframeRef} src={fixedPath + "example.html"} />
           <div className="buttonRow">
-            <button className="primaryBtn">이력서 수정</button>
+            <button className="primaryBtn" onClick={handleOpenModal}>
+              이력서 수정
+            </button>
           </div>
           <div className="aiSection">
             <h2 className="aiTitle">AI Comment</h2>
@@ -60,6 +51,13 @@ const ResumeModify = () => {
           </div>
         </div>
       </div>
+      <ResumeEditModal
+        open={isEditModalOpen}
+        onClose={handleCloseModal}
+        props={{
+          fixedPath,
+        }}
+      ></ResumeEditModal>
     </div>
   );
 };
