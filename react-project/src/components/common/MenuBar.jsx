@@ -29,7 +29,7 @@ const MenuBar = () => {
         <Link to="/">JOBFOLIO</Link>
         </div>
         <ul>
-        <li><Link to="/resume">이력서</Link></li>
+        <li><Link to="/resume/write">이력서</Link></li>
         <li><Link to="/interview">면접연습</Link></li>
         <li><Link to="/pay">이용권</Link></li>
         <li><Link to="/community/notice">커뮤니티</Link></li>
