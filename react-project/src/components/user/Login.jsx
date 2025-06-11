@@ -1,12 +1,12 @@
-import '../../css/user/join.css';
+import '../../css/user/join/join.css';
 import { useNavigate } from 'react-router-dom'
 
-const Login = ({onClose}) => {
+const Login = ({onClose, onLoginClick}) => {
     const navigate = useNavigate();
 
     const userLogin = () => {
-        sessionStorage.setItem('loginUser', "user");
-        window.location.href = '/';
+        onLoginClick();
+        onClose();
     }
 
     const naverLogin = () => {

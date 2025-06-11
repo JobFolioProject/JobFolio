@@ -73,6 +73,7 @@
 .login-text {
     width: 100%;
     text-align: center;
+    font-weight: bold;
 }
 
 .kakao-login {
@@ -89,6 +90,8 @@
     background-color: #f2f3f377;
     color: #000000;
     justify-content: center;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .user-login img {
