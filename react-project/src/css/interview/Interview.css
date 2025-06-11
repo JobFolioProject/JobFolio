@@ -1,3 +1,74 @@
 .interview {
     margin-top: 100px;
 }
+
+.interview-banner img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.interview-banner h1 {
+    position: absolute;
+    top: 120px;
+    left: 10%;
+    transform: translate(-50%, -50%);
+    color: #ffffff;
+    font-size: 2.5rem;
+    font-weight: 900;
+}
+.interview-banner .interview-description {
+    position: absolute;
+    top: 200px;
+    left: 13%;
+    color: #ffffff;
+    transform: translate(-50%, -50%);
+}
+.interview-banner .interview-description p {
+    margin: 0;
+}
+
+.interview .interview-wrapper {    
+    display: flex;    
+    position: relative;
+    justify-content: center;
+}
+.interview .interview-wrapper .interview-container {    
+    display: flex;    
+    width: 70%;
+}
+
+.interview .interview-container-left {
+    flex: 50%;
+    flex-shrink: 0;
+}
+.interview .interview-container-right {
+    flex: 50%;
+    flex-shrink: 0;
+}
+
+.interview .interview-container-left .interview-container-left-content {    
+    margin: 20px;
+    min-height: 450px;
+    border-radius: 10px;
+}
+.interview .interview-container-left .interview-container-left-content > textarea{    
+    height: 200px;
+    width: 620px;
+}
+.interview .interview-container-left .interview-container-left-content > div{    
+    display: flex;
+    justify-content: center;
+}
+.interview .interview-container-right .interview-container-right-content {
+    margin: 20px;
+    min-height: 600px;
+    border: 1px solid black;
+    border-radius: 10px;
+}
+.interview .interview-container-right .interview-container-right-content .interview-gpt-practice textarea{
+    margin: 10px;
+    min-height: 600px;
+    min-width: 600px;
+    border: none;    
+}
