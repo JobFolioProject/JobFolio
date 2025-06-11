@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.happyjob.jobfolio.service.chatgpt.ChatgptService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,10 +39,11 @@ public class ChatgptController {
 	private final String className = this.getClass().toString();
 
 	// chatgpt Key
-	private static final String CHATGPT_API_KEY = "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";
-	
+	@Value("${chatgpt.api.key}")
+	private String CHATGPT_API_KEY;
+
 	private static final String CHATGPT_TURBO_API_KEY = "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";
-	
+
 	@Autowired
 	private ChatgptService chatgptService;
 	
