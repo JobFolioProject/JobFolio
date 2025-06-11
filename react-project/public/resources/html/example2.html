@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Creative Resume Template</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      body {
+        margin: 0;
+        font-family: "Segoe UI", "Roboto", Arial, sans-serif;
+        background: linear-gradient(120deg, #1b263b 0%, #415a77 100%);
+        color: #21243d;
+      }
+      .container {
+        max-width: 940px;
+        margin: 48px auto;
+        background: #f8f9fa;
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 8px 28px 0 rgba(33, 36, 61, 0.12);
+        display: flex;
+        flex-direction: column;
+      }
+      @media (min-width: 900px) {
+        .container {
+          flex-direction: row;
+        }
+      }
+      .left {
+        background: #0d1b2a;
+        color: #e0e1dd;
+        flex: 0 0 320px;
+        min-width: 220px;
+        padding: 36px 24px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100%;
+      }
+      .avatar {
+        width: 110px;
+        height: 110px;
+        border-radius: 50%;
+        background: #415a77;
+        margin-bottom: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 38px;
+        font-weight: bold;
+        color: #e0e1dd;
+        letter-spacing: 2px;
+      }
+      .left table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 14px;
+      }
+      .left td {
+        padding: 6px 0;
+        font-size: 1rem;
+        vertical-align: top;
+      }
+      .section-title {
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: #778da9;
+        font-weight: bold;
+        margin: 40px 0 16px 0;
+        font-size: 1.12rem;
+      }
+      .lang-cert-container {
+        width: 100%;
+      }
+      .lang-cert-table td {
+        padding: 5px 0;
+        font-size: 1rem;
+        color: #e0e1dd;
+      }
+      .right {
+        flex: 1;
+        padding: 36px 38px;
+        min-width: 260px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+      }
+      .top-name-block {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .name {
+        font-size: 2.15rem;
+        font-weight: 700;
+        letter-spacing: 2px;
+        color: #1b263b;
+        margin-bottom: 2px;
+      }
+      .role {
+        font-size: 1.18rem;
+        color: #415a77;
+        font-weight: 500;
+        margin-bottom: 18px;
+      }
+      .personal-statement {
+        margin: 18px 0 34px 0;
+        font-size: 1.09rem;
+        color: #27304d;
+        line-height: 1.6;
+      }
+      .section-block {
+        margin-bottom: 32px;
+        background: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 2px 12px 0 rgba(120, 138, 169, 0.02);
+        padding: 26px 24px 18px 24px;
+      }
+      .section-block:last-child {
+        margin-bottom: 0;
+      }
+      .block-title {
+        color: #0d1b2a;
+        font-weight: 600;
+        font-size: 1.14rem;
+        margin-bottom: 14px;
+        letter-spacing: 1px;
+        border-left: 4px solid #415a77;
+        padding-left: 11px;
+      }
+      .edu-table,
+      .work-table,
+      .proj-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 12px;
+      }
+      .edu-table td,
+      .work-table td,
+      .proj-table td {
+        vertical-align: top;
+        font-size: 1.04rem;
+        padding: 3px 10px 2px 0;
+        color: #1b263b;
+      }
+      .edu-table .date,
+      .work-table .date {
+        white-space: nowrap;
+        color: #778da9;
+        font-size: 0.98rem;
+      }
+      .work-table .job-title {
+        font-weight: 600;
+        color: #415a77;
+        margin-bottom: 2px;
+      }
+      .proj-title {
+        color: #1b263b;
+        font-weight: 600;
+        font-size: 1.06rem;
+      }
+      .proj-desc {
+        color: #415a77;
+        font-size: 0.98rem;
+      }
+      @media (max-width: 700px) {
+        .container {
+          flex-direction: column;
+          margin: 0;
+          border-radius: 0;
+        }
+        .right,
+        .left {
+          padding: 22px 12px;
+        }
+        .section-block {
+          padding: 18px 11px 12px 11px;
+        }
+        .name {
+          font-size: 1.4rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="left">
+        <div class="avatar">AB</div>
+        <div style="width: 100%">
+          <table>
+            <tr>
+              <td style="font-weight: 600">Email</td>
+              <td>your.email@example.com</td>
+            </tr>
+            <tr>
+              <td style="font-weight: 600">Phone</td>
+              <td>+1 234 567 8901</td>
+            </tr>
+            <tr>
+              <td style="font-weight: 600">Homepage</td>
+              <td>your-portfolio.com</td>
+            </tr>
+          </table>
+        </div>
+        <div class="section-title" style="margin-top: 36px">
+          Languages & Certifications
+        </div>
+        <div class="lang-cert-container">
+          <table class="lang-cert-table">
+            <tr>
+              <td>English</td>
+              <td>Fluent</td>
+            </tr>
+            <tr>
+              <td>French</td>
+              <td>B1 Intermediate</td>
+            </tr>
+            <tr>
+              <td>AWS Certified Dev</td>
+              <td>2024</td>
+            </tr>
+            <tr>
+              <td>UI/UX Cert.</td>
+              <td>2023</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="right">
+        <div class="top-name-block">
+          <div class="name">Alex Brown</div>
+          <div class="role">Frontend Developer & Creative Designer</div>
+        </div>
+        <div class="personal-statement">
+          Motivated and passionate frontend developer dedicated to delivering
+          delightful and accessible digital experiences. Skilled in modern
+          JavaScript frameworks, creative problem-solving, and cross-functional
+          collaboration. Adept at transforming ideas into beautiful, high-impact
+          products.
+        </div>
+        <div class="section-block" style="margin-bottom: 24px">
+          <div class="block-title">Projects</div>
+          <table class="proj-table">
+            <tr>
+              <td>
+                <div class="proj-title">Interactive Portfolio Website</div>
+                <div class="proj-desc">
+                  A dynamic, single-page personal site with 3D effects and
+                  dark/light theming, built using React and Three.js. <br />
+                  <span style="color: #778da9">www.your-portfolio.com</span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="proj-title">E-Commerce Dashboard UI</div>
+                <div class="proj-desc">
+                  Designed and implemented a responsive admin UI, including
+                  charts and analytics with D3.js, for a leading retail client.
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="proj-title">Open Source CSS Toolkit</div>
+                <div class="proj-desc">
+                  Creator of an accessible, modular CSS library used by over
+                  2000 developers.
+                </div>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="section-block" style="margin-bottom: 24px">
+          <div class="block-title">Education</div>
+          <table class="edu-table">
+            <tr>
+              <td>
+                <div style="font-weight: 600">B.Sc. Computer Science</div>
+                <div style="color: #415a77">State University</div>
+              </td>
+              <td class="date" style="text-align: right">2018 – 2022</td>
+            </tr>
+            <tr>
+              <td>
+                <div style="font-weight: 600">UX/UI Design Bootcamp</div>
+                <div style="color: #415a77">Creative Academy</div>
+              </td>
+              <td class="date" style="text-align: right">2022</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="section-block">
+          <div class="block-title">Work Experience</div>
+          <table class="work-table">
+            <tr>
+              <td style="width: 70%">
+                <div class="job-title">Frontend Developer</div>
+                <div style="color: #415a77">PixelFoundry, Remote</div>
+                <div>
+                  Developed scalable SPAs, collaborated on design systems, and
+                  optimized web apps for accessibility and performance.
+                </div>
+              </td>
+              <td class="date" style="text-align: right">2023 – Present</td>
+            </tr>
+            <tr>
+              <td>
+                <div class="job-title">Junior Web Designer</div>
+                <div style="color: #415a77">Bright Studio, NY</div>
+                <div>
+                  Supported UI prototyping, asset creation, and maintained
+                  client brand guidelines.
+                </div>
+              </td>
+              <td class="date" style="text-align: right">2022 – 2023</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
