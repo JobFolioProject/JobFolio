@@ -20,8 +20,9 @@
   margin-right: auto;
   justify-content: center;
 }
-.community-notice-container .community-notice-wrapper{
-  width: 1200px;  
+.community-notice-container
+ .community-notice-wrapper{
+  width: 1000px;  
 
 }
 .community-notice-content ul{
@@ -33,7 +34,140 @@
   display: flex;
 }
 
-.community-notice-container .community-notice-wrapper .community-notice-top {
+.community-notice-container
+ .community-notice-wrapper
+ .community-notice-category {
   display: flex;
   justify-content: space-between;
+}
+.community-notice-container
+ .community-notice-wrapper
+ .community-notice-category
+ .community-notice-tap ul{
+  list-style-type: none;
+  display: flex;
+  flex-wrap: wrap;
+  padding-left: 0;
+}
+.community-notice-container
+ .community-notice-wrapper
+ .community-notice-category
+ .community-notice-tap ul li a{
+  padding: 15px;
+}
+.community-notice-container
+ .community-notice-wrapper
+ .community-notice-category
+ .community-notice-search {
+  display: flex;
+  align-items: center;
+}
+.community-notice-container
+ .community-notice-wrapper
+ .community-notice-category
+ .community-notice-search
+ .community-notice-search-container{
+  position: relative;
+}
+.community-notice-container
+ .community-notice-wrapper
+ .community-notice-category
+ .community-notice-search
+ .community-notice-search-container 
+ input {
+  width: 100px;
+  padding: 10px 0px 10px 40px;
+  border: solid 1px #333;
+  border-radius: 5px;
+  transition: all .2s ease-in-out;
+  outline: none;
+  opacity: 0.8;
+}
+.community-notice-container
+ .community-notice-wrapper
+ .community-notice-category
+ .community-notice-search
+ .community-notice-search-container 
+ svg {
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translate(0, -50%);
+}
+.community-notice-container
+ .community-notice-wrapper
+ .community-notice-category
+ .community-notice-search
+ .community-notice-search-container 
+ input:focus {
+  opacity: 1;
+  width: 150px;
+}
+.community-notice-container
+ .community-notice-wrapper
+ .community-notice-section
+ .community-notice-head {
+  display: flex;
+  width: 1000px;
+  padding: 16px 0 16px;
+  border-top: 2px solid black;
+  border-bottom: 1px solid black;
+}
+.community-notice-container
+ .community-notice-wrapper  
+ .community-notice-section
+ .community-notice-body ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+.community-notice-container
+ .community-notice-wrapper
+ .community-notice-section
+ .community-notice-body
+ ul
+ li
+ a {
+  display: flex;
+  box-sizing: border-box;
+  padding: 10px 0px 10px 0px;
+  align-items: center;  
+  border-bottom: 1px solid rgb(230, 230, 230);
+}
+.community-notice-container
+ .community-notice-wrapper
+ .community-notice-section
+ .community-notice-head
+ .notice-head-col{
+ text-align: center; 
+}
+.community-notice-container 
+  .community-notice-wrapper 
+  .community-notice-section 
+  .community-notice-body 
+  .title {
+    box-sizing: border-box;
+    padding-left: 100px; 
+}
+.community-notice-container .community-notice-wrapper .community-notice-section .community-notice-head .num,
+.community-notice-container .community-notice-wrapper .community-notice-section .community-notice-body .num{
+  width: 10%;
+  text-align: center;
+}
+.community-notice-container .community-notice-wrapper .community-notice-section .community-notice-head .title,
+.community-notice-container .community-notice-wrapper .community-notice-section .community-notice-body .title{
+  width: 70%;
+}
+.community-notice-container .community-notice-wrapper .community-notice-section .community-notice-head .write,
+.community-notice-container .community-notice-wrapper .community-notice-section .community-notice-body .write{
+  width: 10%;
+  text-align: center;
+}
+.community-notice-container .community-notice-wrapper .community-notice-section .community-notice-head .author,
+.community-notice-container .community-notice-wrapper .community-notice-section .community-notice-body .author{
+  width: 10%;
+  text-align: center;
+}
+.community-notice-pagination {
+  border-top: 2px solid black;
 }

@@ -17,8 +17,8 @@ const Footer = () => {
             <div className="box">
                 Resume
                 <br /><br />
-                <a href="/resume">Produce Resume </a><br/>
-                <a href="/resume">Update Resume</a><br/>
+                <a href="/resume/write">Produce Resume </a><br/>
+                <a href="/resume/edit">Update Resume</a><br/>
             </div>
             <div className="box">
                 More

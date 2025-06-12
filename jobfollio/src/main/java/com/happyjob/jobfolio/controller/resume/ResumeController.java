@@ -29,6 +29,14 @@ public class ResumeController {
 
     }
 
+//    // 이력서 작성 페이지에 해당 유저의 스킬목록을 조회
+//    @RequestMapping("/write")
+//    public Map<String,Object> skillInfoResume(@RequestParam int user_no){
+//        Map<String,Object> resultMap = new HashMap<>();
+//        return resultMap;
+//    }
+
+  
     @RequestMapping("/insertResumeInfo")
     public Map<String,Object> insertResumeInfo(@RequestParam Map<String,Object> paramMap){
         Map<String,Object> resultMap = new HashMap<>();
@@ -42,6 +50,9 @@ public class ResumeController {
 
 
 
+
+
+
         resultMap.put("result", result);
 
 
@@ -49,6 +60,31 @@ public class ResumeController {
         return resultMap;
 
     }
+
+    @RequestMapping("/generateCoverLetter")
+    public Map<String,Object> generateCoverLetter(@RequestParam Map<String,Object> paramMap){
+        Map<String,Object> resultMap = new HashMap<>();
+
+        ResumeInfoVO resumeInfoVO = new ResumeInfoVO();
+
+        resumeInfoVO.setTitle(paramMap.get("title").toString());
+        resumeInfoVO.setDesired_position(paramMap.get("desired_position").toString());
+
+        int result = resumeService.insertResumeInfo(resumeInfoVO);
+
+
+
+
+
+
+        resultMap.put("result", result);
+
+
+
+        return resultMap;
+
+    }
+
 
 
 
