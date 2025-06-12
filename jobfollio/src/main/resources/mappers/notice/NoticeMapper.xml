@@ -17,6 +17,19 @@
 		ORDER BY priority DESC
 	</select>
 	
+	<select id="selectOne" parameterType="int" resultType="com.happyjob.jobfolio.vo.notice.BoardInfoVo"> 
+		SELECT
+			board_no AS id,
+			board_type,
+			title AS question,
+			content AS answer,
+			write_date AS createdAt,
+			author AS writer,
+			priority
+		FROM tb_board
+		WHERE board_no = #{id}
+	</select>
+	
 	<!-- 이용안내 등록 -->
 	<insert id="insertBoardInfo" parameterType="com.happyjob.jobfolio.vo.notice.BoardInfoVo">
 		
@@ -46,7 +59,58 @@
 	
 	<!-- Java에서 호출해서 priority값을 구하는 쿼리 -->
 	<select id="getNextPriority" resultType="int">
-		SELECT IFNULL(MAX(priority), 0) + 1 FROM tb_board
+		SELECT IFNULL(MAX(priority), 0) + 1 
+		FROM tb_board
+		WHERE board_type = #{board_type}
 	</select>
+	
+	<select id="getNextBoardNo" parameterType="String" resultType="int">
+		SELECT IFNULL(MAX(board_no), 0) + 1
+		FROM tb_board
+		WHERE board_type = #{board_type}
+	</select>
+	
+	<update id="shiftPriorityAfterDelete" parameterType="map">
+		UPDATE tb_board
+		SET priority = priority -1
+		WHERE board_type = #{board_type}
+			AND priority > #{priority}
+	</update>
+	
+	<!-- 선택사항 삭제 -->
+	<delete id="deleteBoardInfo" parameterType="java.util.List">
+		DELETE FROM tb_board
+		WHERE board_no IN
+		<foreach item="id" collection="ids" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+	
+	<delete id="deleteBoardInfoById" parameterType="int"> 
+		DELETE FROM tb_board
+		WHERE board_no = #{id}
+	</delete>
+	
+	<update id="updateBoardInfo" parameterType="com.happyjob.jobfolio.vo.notice.BoardInfoVo">
+		UPDATE tb_board
+		SET title = #{question},
+		 	content = #{answer},
+		 	write_date = NOW()
+	 	WHERE board_no = #{id}
+	</update>
+	
+	<update id="shiftPriorities" parameterType="map">
+		UPDATE tb_board
+		SET priority = priority + 1
+		WHERE board_type = #{board_type}
+			AND board_no != #{id}
+			AND priority >= #{newpriority}
+	</update>
+	
+	<update id="updateOwnPriority" parameterType="map"> 
+		UPDATE tb_board
+		SET priority = #{priority}
+		WHERE board_no = #{id}
+	</update>
 	
 </mapper>

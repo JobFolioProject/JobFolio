@@ -32,9 +32,29 @@ public class BoardInfoService {
 	}
 	
 	public void insertBoardInfo(BoardInfoVo vo) {
-		vo.setPriority(boardInfoRepository.getNextPriority());
+		int nexBoardNo = boardInfoRepository.getNextBoardNo(vo.getBoard_type());
+		vo.setId(nexBoardNo);
+		vo.setPriority(boardInfoRepository.getNextPriority(vo.getBoard_type()));
 		boardInfoRepository.insertBoardInfo(vo);
 	}
 	
+	public void deleteBoardInfo(List<Integer> ids) {
+		for(int id : ids) {
+			BoardInfoVo item = boardInfoRepository.selectOne(id);
+			if(item != null) {
+				boardInfoRepository.shiftPriorityAfterDelete(item.getBoard_type(), item.getPriority());
+				boardInfoRepository.deleteBoardInfoById(id);
+			}
+		}
+	}
+	
+	public void updateBoardInfo(BoardInfoVo vo) {
+		boardInfoRepository.updateBoardInfo(vo);
+	}
+	
+	public void updatePriority(int id, String board_type, int newPriority) {
+		boardInfoRepository.shiftPriorities(id, board_type, newPriority); //밑에 애들 밀기
+		boardInfoRepository.updateOwnPriority(id, newPriority); // 본인 우선순서 바꾸기 
+	}
 	
 }
