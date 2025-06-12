@@ -63,7 +63,7 @@ public class MypageController {
     // ======================================== 이력서 내역 =============================================
     // 마이페이지 - 이력서 내역 조회
     @GetMapping("/resumeDetail/{userNo}")
-    public Map<String, Object> resumeDetailList(@PathVariable Long userNo) {
+    public Map<String, Object> resumeDetailList(@PathVariable(name = "user_no") Long userNo) {
 
         // 해당 유저의 이력서 리스트를 찾아 불러오기
 //        List<ResumeInfoVO> resumeList = mypageService.resumeDetailList(userNo);
@@ -78,8 +78,8 @@ public class MypageController {
     // 마이페이지 - 내 커리어 조회
     // 유저 정보, 기술, 언어, 자격증, 학력을 조회
     // /api/myPage/{userNo}/career 엔드포인트
-    @GetMapping("/{userNo}/career")
-    public ResponseEntity<CareerAllDto> myCareerById(@PathVariable Long userNo) {
+    @GetMapping("/{user_no}/career")
+    public ResponseEntity<CareerAllDto> myCareerById(@PathVariable(name = "user_no") Long userNo) {
 
         //서비스 호출 - userNo를 넘겨서 모든 데이터를 조회
         CareerAllDto dto = mypageService.getMyCareerInfo(userNo);
@@ -88,46 +88,46 @@ public class MypageController {
     }
 
     // 기술 스택
-    @PostMapping("/{userNo}/skills")
-    public ResponseEntity<String> addSkill(@PathVariable Long userNo, @RequestBody SkillVO skillVO) {
+    @PostMapping("/{user_no}/skills")
+    public ResponseEntity<String> addSkill(@PathVariable(name = "user_no") Long userNo, @RequestBody SkillVO skillVO) {
 
         mypageService.addSkill(skillVO);
         return new ResponseEntity<>("기술 사항이 정상적으로 추가되었습니다.", HttpStatus.CREATED);
     }
 
     //학력
-    @PostMapping("/{userNo}/educations")
-    public ResponseEntity<String> addeducation(@PathVariable Long userNo, @RequestBody EduInfoVO eduInfoVO) {
+    @PostMapping("/{user_no}/educations")
+    public ResponseEntity<String> addeducation(@PathVariable(name = "user_no") Long userNo, @RequestBody EduInfoVO eduInfoVO) {
 
         mypageService.addeducation(eduInfoVO);
         return new ResponseEntity<>("학력 사항이 정상적으로 추가되었습니다.", HttpStatus.CREATED);
     }
 
     // 언어
-    @PostMapping("/{userNo}/languages")
-    public ResponseEntity<String> addLanguage(@PathVariable Long userNo, @RequestBody LanguageSkillVO languageSkillVO) {
+    @PostMapping("/{user_no}/languages")
+    public ResponseEntity<String> addLanguage(@PathVariable(name = "user_no") Long userNo, @RequestBody LanguageSkillVO languageSkillVO) {
         mypageService.addlanguage(languageSkillVO);
         return new ResponseEntity<>("언어 능력이 정상적으로 추가되었습니다.", HttpStatus.CREATED);
     }
 
     // 자격증
-    @PostMapping("/{userNo}/certificates")
-    public ResponseEntity<String> addCertificate(@PathVariable Long userNo, @RequestBody CertificateVO certificateVO) {
+    @PostMapping("/{user_no}/certificates")
+    public ResponseEntity<String> addCertificate(@PathVariable(name = "user_no") Long userNo, @RequestBody CertificateVO certificateVO) {
 
         mypageService.addcertificate(certificateVO);
         return new ResponseEntity<>("자격 사항이 정상적으로 추가되었습니다.", HttpStatus.CREATED);
     }
 
     // 경력
-    @PostMapping("/{userNo}/careerhistories")
-    public ResponseEntity<String> addCareerHistory(@PathVariable Long userNo, @RequestBody CareerHistoryVO careerHistoryVO) {
+    @PostMapping("/{user_no}/careerhistories")
+    public ResponseEntity<String> addCareerHistory(@PathVariable(name = "user_no") Long userNo, @RequestBody CareerHistoryVO careerHistoryVO) {
         mypageService.addcareerhistory(careerHistoryVO);
         return new ResponseEntity<>("경력 사항이 정상적으로 추가되었습니다.", HttpStatus.CREATED);
     }
 
     // 마이페이지 - 내 커리어 수정
-    @PutMapping("/myCareer/{userNo}/update")
-    public Map<String, Object> modifyMyCareer(@PathVariable Long userNo, @RequestParam String name) {
+    @PutMapping("/myCareer/{user_no}/update")
+    public Map<String, Object> modifyMyCareer(@PathVariable(name = "user_no") Long userNo, @RequestParam String name) {
 
 
         Map<String, Object> resultMap = new HashMap<>();
@@ -138,7 +138,7 @@ public class MypageController {
 
     // ======================================== 결재 내역 =============================================
     // 마이페이지 - 결재 내역 조회
-    @GetMapping("/payHistory/{userNo}")
+    @GetMapping("/payHistory/{user_no}")
     public Map<String, Object> payHistory(@PathVariable Long userNo) {
         Map<String, Object> resultMap = new HashMap<String, Object>();
 
@@ -147,7 +147,7 @@ public class MypageController {
 
     // ======================================== 좋아요 내역 =============================================
     // 마이페이지 - 좋아요 내역 조회
-    @GetMapping("/postLike/{userNo}")
+    @GetMapping("/postLike/{user_no}")
     public Map<String, Object> postLike(@PathVariable Long userNo) {
         Map<String, Object> resultMap = new HashMap<String, Object>();
 

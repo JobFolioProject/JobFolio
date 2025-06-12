@@ -47,9 +47,9 @@
 
 .paymentCardSection {
     display: flex;
-    justify-content: center;
+    /* justify-content: center; */
     align-items: center;
-    flex-direction: row;
+    flex-wrap: wrap;
 }
 /* 기본 카드 스타일 */
 .paymentCard {
