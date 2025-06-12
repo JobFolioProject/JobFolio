@@ -2,6 +2,7 @@ package com.happyjob.jobfolio.repository.mypage;
 
 import com.happyjob.jobfolio.vo.mypage.*;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -9,20 +10,20 @@ import java.util.List;
 public interface MypageMapper {
 
 //    // 유저 정보 조회
-//    public UserVO selectUserInfo(Long userNo);
+//    public UserVO selectUserInfo(@Param("user_no")Long userNo);
     
     // 내 커리어 - 유저 커리어 조회
-    public CareerAllDto getMyCareerInfo(Long userNo);
+    public CareerAllDto getMyCareerInfo(@Param("user_no") Long userNo);
     // 학력 조회
-    public List<EduInfoVO> getEducationListByUserNo(Long userNo);
+    public List<EduInfoVO> getEducationListByUserNo(@Param("user_no") Long userNo);
     // 언어 조회
-    public List<LanguageSkillVO> getLanguageSkillListByUserNo(Long userNo);
+    public List<LanguageSkillVO> getLanguageSkillListByUserNo(@Param("user_no")Long userNo);
     // 스킬 조회
-    public List<SkillVO> getSkillListByUserNo(Long userNo);
+    public List<SkillVO> getSkillListByUserNo(@Param("user_no")Long userNo);
     // 자격증 조회
-    public List<CertificateVO> getCertificateListByUserNo(Long userNo);
+    public List<CertificateVO> getCertificateListByUserNo(@Param("user_no")Long userNo);
     // 걍략 조회
-    public  List<CareerHistoryVO> getCareerHistoryListByUserNo(Long userNo);
+    public  List<CareerHistoryVO> getCareerHistoryListByUserNo(@Param("user_no")Long userNo);
 
     // insert
     // 기술 스택 추가
