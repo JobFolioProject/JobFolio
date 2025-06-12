@@ -2,6 +2,8 @@ import '../../css/resume/Resume.css'; // 스타일 따로 작성
 import ResumeSidebar from './ResumeSidebar';
 import React, { use, useState, useEffect} from 'react';
 import DropDown from './ResumeDropdown';
+import ResumeAiCoverLetter from './ResumeAiCovLetter';
+import PrettyBtn from './PrettyBtn'; // PrettyBtn 컴포넌트 임포트
 
 const Resume = () => {
     // 이력서 작성 페이지 컴포넌트
@@ -15,6 +17,7 @@ const Resume = () => {
     // test!!! 기술/툴 드롭다운 옵션 샘플데이터
     const dummySkillOptions = ['JavaScript', 'Python', 'Java', 'C++', 'React', 'Node.js', 'HTML/CSS', 'SQL', 'Git', 'Docker'];
 
+    // 이력서 작성 폼 데이터 상태
     const [formData, setFormData] = useState({
         title: '',
         desired_position: '',
@@ -39,6 +42,11 @@ const Resume = () => {
             },
         ],
     });
+
+    //내가 쓴 자기소개서 상태
+    const [myCoverLetter, setMyCoverLetter] = useState(''); // 자기소개서 상태
+
+
 
     // const handleChange = (event) =>{
     //     setFormData({
@@ -93,7 +101,19 @@ const Resume = () => {
     }));
   };
 
-  // 경령 사항 추가 핸들러
+  // 학력 삭제 핸들러 (인덱스)
+    const removeEducation = (index) => {
+        setFormData((prev) => {
+            const newEducation = [...prev.education];
+            newEducation.splice(index,1); // 해당 인덱스의 학력 항목 삭제
+            return {
+                ...prev,
+                education: newEducation, // 업데이트된 학력 배열로 설정
+            }
+        })
+    }
+
+  // 경력 사항 추가 핸들러
 
   const addExperience = () => {
     setFormData((prev) =>({
@@ -104,11 +124,24 @@ const Resume = () => {
             start_date: '',
             end_date:'',
             company_name:'',
+            position:'',
             notes:'',
            }
         ]
     }));
   }
+
+  // 경력 사항 삭제 핸들러 (인덱스)
+  const removeExperience = (index) => {
+    setFormData((prev) => {
+      const newExperience = [...prev.experience];
+      newExperience.splice(index, 1); // 해당 인덱스의 경력 항목 삭제
+      return {
+        ...prev,
+        experience: newExperience, // 업데이트된 경력 배열로 설정
+      };
+    });
+  };
 
   // 경력 입력 변경 핸들러 (필드 이름, 값)
   const handleExperienceChange = (index, e) => {
@@ -143,7 +176,7 @@ const Resume = () => {
                     이력서를 작성하는 페이지입니다.
                     <br />
                 </p>
-            <form>
+            <form onSubmit={handleSubmit}>
                         <label>
                             <div><span>제목</span></div> {/* 제목을 div로 감싸고 */}
                             <div><input type="text" name="title" onChange={handleChange} value={formData.title}/></div> {/* 인풋을 div로 감쌉니다 */}
@@ -160,7 +193,7 @@ const Resume = () => {
                         <label>
                             <span>기술스택/툴</span><br />
 
-                            {/* <div><input type="text" name="skill_tool" onChange={handleChange} value={formData.skill_tool}/></div> */}
+                            <div><input type="text" name="skill_tool" onChange={handleChange} value={formData.skill_tool}/></div>
                             <DropDown
                                 options={dummySkillOptions}
                                 selected={formData.skill_tool}
@@ -175,6 +208,7 @@ const Resume = () => {
                                 />
                                 {/* 드롭다운 컴포넌트 사용 */}
                                 {formData.skill_tool && <p>선택한 기술: {formData.skill_tool}</p>}
+                                <br />
                         </label>
                         <br />
                         <label>
@@ -182,92 +216,71 @@ const Resume = () => {
                             <div><input type="text" name="link_url" onChange={handleChange} value={formData.link_url}/></div>
                         </label>
                         <br />
-                    <label>
-                            <div><span>
-                                학력
-                                <button
-                                  type="button"
-                                  onClick={addEducation}
-                                  disabled={formData.education.length >= 3}
-                                >
-                                    +
-                                </button>
-                                </span></div>
+                         <label>
+                            <div><span>학력</span></div>
                         </label>
-                        {/* 학력 입력 폼 */}
-                        {formData.education.map((edu, index) => (
+                            {formData.education.map((edu, index) => (
                             <div key={index} className="education-row">
-                                <input
-                                type="text"
-                                name="school_name"
-                                placeholder="학교명"
-                                onChange={(e) => handleEducationChange(index, e)}
-                                value={edu.school_name}
-                                />
-                                <input
-                                type="text"
-                                name="enroll_date"
-                                placeholder="입학일"
-                                onChange={(e) => handleEducationChange(index, e)}
-                                value={edu.enroll_date}
-                                />
-                                <input
-                                type="text"
-                                name="grad_date"
-                                placeholder="졸업일"
-                                onChange={(e) => handleEducationChange(index, e)}
-                                value={edu.grad_date}
-                                />
-                                <input
-                                type="text"
-                                name="major"
-                                placeholder="전공"
-                                onChange={(e) => handleEducationChange(index, e)}
-                                value={edu.major}
-                                />
-                                <input
-                                type="text"
-                                name="sub_major"
-                                placeholder="복수전공"
-                                onChange={(e) => handleEducationChange(index, e)}
-                                value={edu.sub_major}
-                                />
-                                <input
-                                type="text"
-                                name="gpa"
-                                placeholder="학점"
-                                onChange={(e) => handleEducationChange(index, e)}
-                                value={edu.gpa}
-                                />
+                                <input type="text" name="school_name" placeholder="학교명" onChange={(e) => handleEducationChange(index, e)}value={edu.school_name}/>
+                                <input type="text" name="enroll_date" placeholder="입학일" onChange={(e) => handleEducationChange(index, e)} value={edu.enroll_date}/>
+                                <input type="text" name="grad_date" placeholder="졸업일" onChange={(e) => handleEducationChange(index, e)} value={edu.grad_date}/>
+                                <input type="text" name="major" placeholder="전공" onChange={(e) => handleEducationChange(index, e)} value={edu.major}/>
+                                <input type="text" name="sub_major" placeholder="복수전공" onChange={(e) => handleEducationChange(index, e)} value={edu.sub_major}/>
+                                <input type="text" name="gpa" placeholder="학점" onChange={(e) => handleEducationChange(index, e)} value={edu.gpa}/>
                                 {/* <input type="text" name="enroll_date" placeholder="입학일" onChange={handleChange} value={formData.enroll_date} />
                                 <input type="text" name="grad_date" placeholder="졸업일" onChange={handleChange} value={formData.grad_date} />
                                 <input type="text" name="major" placeholder="전공" onChange={handleChange} value={formData.major} />
                                 <input type="text" name="sub_major" placeholder="복수전공" onChange={handleChange} value={formData.sub_major} />
                                 <input type="text" name="gpa" placeholder="학점" onChange={handleChange} value={formData.gpa} /> */}
+                                <PrettyBtn type="button" size= "sm" onClick={addEducation} disabled={formData.education.length >= 4}>추가</PrettyBtn>    
+                                <PrettyBtn type="button" size= "sm" onClick={() => removeEducation(index)} disabled={formData.education.length <= 1}>삭제</PrettyBtn>
                             </div>
-                        ))}
+                            ))}
                         <br />
                         <label>
-                            <div><span>경력
-                                <button
-                                 type='button'
-                                 onClick={addExperience}
-                                 disabled={formData.experience.length >= 4}>
-                                    +
-                                </button></span></div>
+                            <div><span>경력</span></div>
                         </label>
-                            {/* <div><textarea name="experience" rows="4" cols="50" onChange={handleChange} value={formData.experience}></textarea></div> */}
-                            {formData.experience.map((exp,index)=>(
-                                <div key={index} className='experience-row'>
+                            {formData.experience.map((exp, index) => (
+                            <div key={index} className='experience-row'>
+                                <div className='experience-row input'>
                                     <input type='text' name='start_date' placeholder='시작일' onChange={(e) => handleExperienceChange(index, e)} value={exp.start_date}/>
                                     <input type='text' name='end_date' placeholder='종료일' onChange={(e) => handleExperienceChange(index, e)} value={exp.end_date}/>
                                     <input type='text' name='company_name' placeholder='회사명' onChange={(e) => handleExperienceChange(index, e)} value={exp.company_name}/>
-                                    <input type='text' name='notes' placeholder='상세내용' onChange={(e) => handleExperienceChange(index, e)} value={exp.notes}/>
                                 </div>
+                                    <input type='text' name='position' placeholder='직무' onChange={(e) => handleExperienceChange(index, e)} value={exp.position}/>
+                                    <input type='text' name='notes' placeholder='상세내용' onChange={(e) => handleExperienceChange(index, e)} value={exp.notes}/>
+                                <PrettyBtn type="button" size= "sm" onClick={addExperience} disabled={formData.experience.length >= 4}>추가</PrettyBtn>    
+                                <PrettyBtn type="button" size= "sm" onClick={() => removeExperience(index)} disabled={formData.experience.length <= 1}>삭제</PrettyBtn>
+                            </div>
                             ))}
                         <br />
-                        <button type="submit" onClick={handleSubmit}>이력서 제출</button>
+                        <label>
+                            {/*내가 작성한 자소서는 DB에 저장할것인지???*/}
+                            <div><span>자기소개서</span></div> 
+                            <div>
+                                <textarea
+                                className='my-cover-letter-section'
+                                name="coverLetter"
+                                rows="6"
+                                cols="50"
+                                value={myCoverLetter}
+                                onChange={(e) => setMyCoverLetter(e.target.value)}
+                                placeholder="자기소개서를 입력하세요"
+                                />
+                            </div>
+                        </label>
+                        <br />
+                        <div style={{ display: 'flex', justifyContent: 'center' }}>
+                            <PrettyBtn type="submit" onClick={handleSubmit} >이력서 제출</PrettyBtn>
+                        </div>
+                        <br/>
                     </form>
+                    <ResumeAiCoverLetter
+                        formData={formData}
+                        myCoverLetter={myCoverLetter}
+                        setMyCoverLetter={setMyCoverLetter} // 자기소개서 상태를 자식 컴포넌트에 전달
+                        setFormData={setFormData} // formData 상태를 자식 컴포넌트에 전달
+                     />
                 </div>
                 </div>
         </div>
