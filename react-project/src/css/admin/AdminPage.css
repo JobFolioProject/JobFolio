@@ -5,7 +5,6 @@
 /* Reset & 기본 스타일 */
 .admin-main{
     display: flex;
-    margin-top: 70px;
     color: black;
 }
 
