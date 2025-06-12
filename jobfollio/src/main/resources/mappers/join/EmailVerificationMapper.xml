@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.happyjob.jobfolio.repository.join.EmailVerificationMapper">
+
+    <!-- 이메일 인증 정보 저장 -->
+    <insert id="insertEmailVerification" parameterType="com.happyjob.jobfolio.vo.join.EmailVerificationVO" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_email_verification (
+        email,
+        verification_code,
+        expire_time,
+        created_at,
+        is_used
+        ) VALUES (
+        #{email},
+        #{verificationCode},
+        #{expireTime},
+        NOW(),
+        'N'
+        )
+    </insert>
+
+    <!-- 인증 코드로 유효한 인증 정보 조회 -->
+    <select id="selectByVerificationCode" parameterType="String" resultType="com.happyjob.jobfolio.vo.join.EmailVerificationVO">
+        <![CDATA[
+        SELECT
+            id,
+            email,
+            verification_code as verificationCode,
+            expire_time as expireTime,
+            created_at as createdAt,
+            is_used as isUsed,
+            used_at as usedAt
+        FROM tb_email_verification
+        WHERE verification_code = #{verificationCode}
+          AND is_used = 'N'
+          AND expire_time > NOW()
+        ORDER BY created_at DESC
+            LIMIT 1
+        ]]>
+    </select>
+
+    <!-- 이메일로 최근 인증 정보 조회 -->
+    <select id="selectRecentByEmail" parameterType="String" resultType="com.happyjob.jobfolio.vo.join.EmailVerificationVO">
+        SELECT
+        id,
+        email,
+        verification_code as verificationCode,
+        expire_time as expireTime,
+        created_at as createdAt,
+        is_used as isUsed,
+        used_at as usedAt
+        FROM tb_email_verification
+        WHERE email = #{email}
+        ORDER BY created_at DESC
+        LIMIT 1
+    </select>
+
+    <!-- 인증 완료 처리 -->
+    <update id="updateVerificationUsed" parameterType="Long">
+        UPDATE tb_email_verification
+        SET is_used = 'Y',
+            used_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <!-- 이메일별 미사용 인증 정보 삭제 -->
+    <delete id="deleteUnusedByEmail" parameterType="String">
+        DELETE FROM tb_email_verification
+        WHERE email = #{email}
+        AND is_used = 'N'
+    </delete>
+
+    <!-- 만료된 인증 정보 개수 조회  -->
+    <select id="countExpiredVerifications" resultType="int">
+        <![CDATA[
+        SELECT COUNT(*)
+        FROM tb_email_verification
+        WHERE expire_time < NOW()
+        ]]>
+    </select>
+
+</mapper>
