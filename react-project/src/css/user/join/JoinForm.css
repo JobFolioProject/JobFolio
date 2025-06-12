@@ -86,3 +86,19 @@
   font-size: 0.95rem;
   color: #1976d2;
 }
+
+/* JoinForm.css에 추가 */
+.jf-joinform-input.error {
+  border: 2px solid #ff4757;
+}
+
+.jf-joinform-error {
+  color: #ff4757;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+.jf-joinform-label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
