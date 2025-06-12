@@ -10,6 +10,9 @@ import com.happyjob.jobfolio.vo.notice.BoardInfoVo;
 @Mapper
 public interface BoardInfoRepository {
 	
-	List<BoardInfoVo> selectByBoardType(@Param("boardTypeCd") String boardTypeCd);
+	List<BoardInfoVo> selectByBoardType(@Param("board_type") String board_type);
+	
+	int getNextPriority();
+	void insertBoardInfo(BoardInfoVo vo);
 
 }
