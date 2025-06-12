@@ -5,18 +5,18 @@
 
     <!-- 사용자 정보 ResultMap -->
     <resultMap id="userResultMap" type="com.happyjob.jobfolio.vo.join.UserVO">
-        <id property="userNo" column="user_no"/>
-        <result property="loginId" column="login_id"/>
-        <result property="userType" column="user_type"/>
-        <result property="userName" column="user_name"/>
+        <id property="user_no" column="user_no"/>
+        <result property="login_id" column="login_id"/>
+        <result property="user_type" column="user_type"/>
+        <result property="user_name" column="user_name"/>
         <result property="password" column="password"/>
         <result property="birthday" column="birthday"/>
         <result property="sex" column="sex"/>
         <result property="hp" column="hp"/>
-        <result property="regDate" column="reg_date"/>
-        <result property="withdrawalDate" column="withdrawal_date"/>
-        <result property="statusYn" column="status_yn"/>
-        <result property="expireDays" column="expire_days"/>
+        <result property="reg_date" column="reg_date"/>
+        <result property="withdrawal_date" column="withdrawal_date"/>
+        <result property="status_yn" column="status_yn"/>
+        <result property="expire_days" column="expire_days"/>
         <result property="address" column="address"/>
         <result property="hobby" column="hobby"/>
         <result property="notes" column="notes"/>
@@ -25,7 +25,7 @@
     <!-- ================= 기본 CRUD ================= -->
 
     <!-- 사용자 등록  -->
-    <insert id="insertUser" parameterType="map" useGeneratedKeys="true" keyProperty="userNo">
+    <insert id="insertUser" parameterType="map" useGeneratedKeys="true" keyProperty="user_no">
         INSERT INTO tb_userinfo (
         login_id,
         user_type,
@@ -40,9 +40,9 @@
         hobby,
         notes
         ) VALUES (
-        #{loginId},
-        COALESCE(#{userType}, 'C'),
-        #{userName},
+        #{login_id},
+        COALESCE(#{user_type}, 'C'),
+        #{user_name},
         #{password},
         #{birthday},
         #{sex},

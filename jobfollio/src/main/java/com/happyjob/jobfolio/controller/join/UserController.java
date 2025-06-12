@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.LogManager;
@@ -147,7 +146,13 @@ public class UserController {
         try {
             String verifiedEmail = (String) session.getAttribute("verifiedEmail");
             Date emailVerifiedAt = (Date) session.getAttribute("emailVerifiedAt");
-            String inputEmail = (String) paramMap.get("loginId");
+            String inputEmail = (String) paramMap.get("login_id");  // ✅ 수정
+
+            // 디버깅 로그 추가
+            logger.info("=== 이메일 검증 디버깅 ===");
+            logger.info("세션 인증 이메일: " + verifiedEmail);
+            logger.info("입력 이메일: " + inputEmail);
+            logger.info("ParamMap 전체: " + paramMap);
 
             if (verifiedEmail == null || emailVerifiedAt == null) {
                 resultMap.put("result", "N");
@@ -165,13 +170,21 @@ public class UserController {
                 return ResponseEntity.badRequest().body(resultMap);
             }
 
+            if (inputEmail == null) {
+                resultMap.put("result", "N");
+                resultMap.put("message", "이메일 정보가 누락되었습니다.");
+                return ResponseEntity.badRequest().body(resultMap);
+            }
+
             if (!verifiedEmail.equals(inputEmail)) {
+                logger.warn("이메일 불일치 - 세션: '" + verifiedEmail + "', 입력: '" + inputEmail + "'");
                 resultMap.put("result", "N");
                 resultMap.put("message", "인증된 이메일과 입력한 이메일이 일치하지 않습니다.");
                 return ResponseEntity.badRequest().body(resultMap);
             }
 
-            String[] requiredFields = {"loginId", "userName", "password", "hp"};
+            // 필수 필드 검증 - 프론트엔드 파라미터 이름에 맞춤
+            String[] requiredFields = {"login_id", "user_name", "password", "hp"};  // ✅ 수정
             for (String field : requiredFields) {
                 if (paramMap.get(field) == null || paramMap.get(field).toString().trim().isEmpty()) {
                     resultMap.put("result", "N");
@@ -263,7 +276,7 @@ public class UserController {
         Map<String, Object> resultMap = new HashMap<>();
 
         try {
-            String loginId = (String) paramMap.get("loginId");
+            String loginId = (String) paramMap.get("login_id");      // ✅ 수정
             String password = (String) paramMap.get("password");
 
             if (loginId == null || password == null) {
@@ -272,13 +285,18 @@ public class UserController {
                 return ResponseEntity.badRequest().body(resultMap);
             }
 
-            UserVO user = userService.loginUser(paramMap);
+            // UserService에 전달할 paramMap 준비
+            Map<String, Object> serviceMap = new HashMap<>();
+            serviceMap.put("loginId", loginId);  // 서비스에서는 loginId로 사용
+            serviceMap.put("password", password);
+
+            UserVO user = userService.loginUser(serviceMap);
 
             if (user != null && user.getPassword().equals(password)) {
-                session.setAttribute("userNo", user.getUserNo());
-                session.setAttribute("loginId", user.getLoginId());
-                session.setAttribute("userName", user.getUserName());
-                session.setAttribute("userType", user.getUserType());
+                session.setAttribute("userNo", user.getUser_no());
+                session.setAttribute("loginId", user.getLogin_id());
+                session.setAttribute("userName", user.getUser_name());
+                session.setAttribute("userType", user.getUser_type());
 
                 resultMap.put("result", "Y");
                 resultMap.put("message", "로그인이 완료되었습니다.");
@@ -337,7 +355,7 @@ public class UserController {
         Map<String, Object> resultMap = new HashMap<>();
 
         try {
-            String userName = (String) paramMap.get("userName");
+            String userName = (String) paramMap.get("user_name");    // ✅ 수정
             String hp = (String) paramMap.get("hp");
             String email = (String) paramMap.get("email");
 
@@ -347,7 +365,13 @@ public class UserController {
                 return ResponseEntity.badRequest().body(resultMap);
             }
 
-            boolean emailSent = userService.sendFoundIdByEmail(paramMap);
+            // UserService에 전달할 paramMap 준비
+            Map<String, Object> serviceMap = new HashMap<>();
+            serviceMap.put("userName", userName);  // 서비스에서는 userName으로 사용
+            serviceMap.put("hp", hp);
+            serviceMap.put("email", email);
+
+            boolean emailSent = userService.sendFoundIdByEmail(serviceMap);
 
             if (emailSent) {
                 resultMap.put("result", "Y");
@@ -381,8 +405,8 @@ public class UserController {
         Map<String, Object> resultMap = new HashMap<>();
 
         try {
-            String loginId = (String) paramMap.get("loginId");
-            String userName = (String) paramMap.get("userName");
+            String loginId = (String) paramMap.get("login_id");      // ✅ 수정
+            String userName = (String) paramMap.get("user_name");    // ✅ 수정
             String hp = (String) paramMap.get("hp");
 
             if (loginId == null || userName == null || hp == null) {
@@ -391,7 +415,13 @@ public class UserController {
                 return ResponseEntity.badRequest().body(resultMap);
             }
 
-            boolean emailSent = userService.sendPasswordResetEmailVerification(paramMap);
+            // UserService에 전달할 paramMap 준비
+            Map<String, Object> serviceMap = new HashMap<>();
+            serviceMap.put("loginId", loginId);    // 서비스에서는 loginId로 사용
+            serviceMap.put("userName", userName);  // 서비스에서는 userName으로 사용
+            serviceMap.put("hp", hp);
+
+            boolean emailSent = userService.sendPasswordResetEmailVerification(serviceMap);
 
             if (emailSent) {
                 resultMap.put("result", "Y");
@@ -425,9 +455,9 @@ public class UserController {
         Map<String, Object> resultMap = new HashMap<>();
 
         try {
-            String loginId = (String) paramMap.get("loginId");
-            String resetToken = (String) paramMap.get("resetToken");
-            String newPassword = (String) paramMap.get("newPassword");
+            String loginId = (String) paramMap.get("login_id");        // ✅ 수정
+            String resetToken = (String) paramMap.get("reset_token");  // ✅ 수정
+            String newPassword = (String) paramMap.get("new_password"); // ✅ 수정
 
             if (loginId == null || resetToken == null || newPassword == null) {
                 resultMap.put("result", "N");
@@ -435,7 +465,13 @@ public class UserController {
                 return ResponseEntity.badRequest().body(resultMap);
             }
 
-            boolean resetSuccess = userService.resetPassword(paramMap);
+            // UserService에 전달할 paramMap 준비
+            Map<String, Object> serviceMap = new HashMap<>();
+            serviceMap.put("loginId", loginId);
+            serviceMap.put("resetToken", resetToken);
+            serviceMap.put("newPassword", newPassword);
+
+            boolean resetSuccess = userService.resetPassword(serviceMap);
 
             if (resetSuccess) {
                 resultMap.put("result", "Y");
