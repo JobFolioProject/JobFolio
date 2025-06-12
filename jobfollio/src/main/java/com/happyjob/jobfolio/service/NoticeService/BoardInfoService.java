@@ -27,8 +27,13 @@ public class BoardInfoService {
 		this.boardInfoRepository = boardInfoRepository; 
 	}
 	
-	public List<BoardInfoVo> getBoardsByType(String boardTypeCd) { 
-		return boardInfoRepository.selectByBoardType(boardTypeCd);
+	public List<BoardInfoVo> getBoardsByType(String board_type) { 
+		return boardInfoRepository.selectByBoardType(board_type);
+	}
+	
+	public void insertBoardInfo(BoardInfoVo vo) {
+		vo.setPriority(boardInfoRepository.getNextPriority());
+		boardInfoRepository.insertBoardInfo(vo);
 	}
 	
 	
