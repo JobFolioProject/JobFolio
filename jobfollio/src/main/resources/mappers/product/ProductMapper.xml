@@ -17,6 +17,11 @@
 		ORDER BY 	sub_period ASC
 
 	</select>
+
+	<select id="productCnt" parameterType="map" resultType="int">
+		SELECT 	COUNT(*)
+		FROM 	tb_product_info
+	</select>
 	
    	<!-- 관리자 페이지 이용권 목록 조회 -->
 	<select id = "productList" parameterType="java.util.Map" resultType = "com.happyjob.jobfolio.vo.product.ProductModel">
