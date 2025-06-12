@@ -2,73 +2,73 @@ package com.happyjob.jobfolio.vo.mypage;
 
 public class CertificateVO {
 
-    private Integer userNo; // 유저 아이디
-    private Integer certificationNo; // 회원일련번호
-    private String certificateNo; // 자격증 번호
-    private String certificateName; // 자격증 이름
-    private String issuingOrg; // 발행기관
-    private String acquiredDate; // 취득일
+    private Long user_no; // 유저 아이디
+    private Integer certification_no; // 회원일련번호
+    private String certificate_no; // 자격증 번호
+    private String certificate_name; // 자격증 이름
+    private String issuing_org; // 발행기관
+    private String acquired_date; // 취득일
     private String notes; // 특이사항
 
     @Override
     public String toString() {
         return "CertificateModel{" +
-                "userNo=" + userNo +
-                ", certificationNo=" + certificationNo +
-                ", certificateNo='" + certificateNo + '\'' +
-                ", certificateName='" + certificateName + '\'' +
-                ", issuingOrg='" + issuingOrg + '\'' +
-                ", acquiredDate='" + acquiredDate + '\'' +
+                "userNo=" + user_no +
+                ", certificationNo=" + certification_no +
+                ", certificateNo='" + certificate_no + '\'' +
+                ", certificateName='" + certificate_name + '\'' +
+                ", issuingOrg='" + issuing_org + '\'' +
+                ", acquiredDate='" + acquired_date + '\'' +
                 ", notes='" + notes + '\'' +
                 '}';
     }
 
-    public Integer getUserNo() {
-        return userNo;
+    public Long getUser_no() {
+        return user_no;
     }
 
-    public void setUserNo(Integer userNo) {
-        this.userNo = userNo;
+    public void setUser_no(Long user_no) {
+        this.user_no = user_no;
     }
 
-    public Integer getCertificationNo() {
-        return certificationNo;
+    public Integer getCertification_no() {
+        return certification_no;
     }
 
-    public void setCertificationNo(Integer certificationNo) {
-        this.certificationNo = certificationNo;
+    public void setCertification_no(Integer certification_no) {
+        this.certification_no = certification_no;
     }
 
-    public String getCertificateNo() {
-        return certificateNo;
+    public String getCertificate_no() {
+        return certificate_no;
     }
 
-    public void setCertificateNo(String certificateNo) {
-        this.certificateNo = certificateNo;
+    public void setCertificate_no(String certificate_no) {
+        this.certificate_no = certificate_no;
     }
 
-    public String getCertificateName() {
-        return certificateName;
+    public String getCertificate_name() {
+        return certificate_name;
     }
 
-    public void setCertificateName(String certificateName) {
-        this.certificateName = certificateName;
+    public void setCertificate_name(String certificate_name) {
+        this.certificate_name = certificate_name;
     }
 
-    public String getIssuingOrg() {
-        return issuingOrg;
+    public String getIssuing_org() {
+        return issuing_org;
     }
 
-    public void setIssuingOrg(String issuingOrg) {
-        this.issuingOrg = issuingOrg;
+    public void setIssuing_org(String issuing_org) {
+        this.issuing_org = issuing_org;
     }
 
-    public String getAcquiredDate() {
-        return acquiredDate;
+    public String getAcquired_date() {
+        return acquired_date;
     }
 
-    public void setAcquiredDate(String acquiredDate) {
-        this.acquiredDate = acquiredDate;
+    public void setAcquired_date(String acquired_date) {
+        this.acquired_date = acquired_date;
     }
 
     public String getNotes() {
