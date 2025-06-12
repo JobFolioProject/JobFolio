@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.happyjob.jobfolio.repository.resume.ResumeMapper;
+import com.happyjob.jobfolio.vo.join.UserVO;
 import com.happyjob.jobfolio.vo.resume.LinkInfoVO;
 import com.happyjob.jobfolio.vo.resume.ResumeInfoVO;
 import com.happyjob.jobfolio.vo.resume.ResumeLikeVO;
@@ -24,7 +25,7 @@ import java.util.List;
 @Service
 public class ResumeService {
 
-    @Value("chatgpt.api.key")
+    @Value("${chatgpt.api.key}")
     private String api_key;
 
     private String template =
@@ -107,7 +108,7 @@ public class ResumeService {
                     "        <tr><th>학교명</th><th>전공</th><th>기간</th></tr>\n" +
                     "      </thead>\n" +
                     "      <tbody class=\"education\">\n" +
-                    "        <!-- education 배열을 순회하며 <tr><td class=\"school_name\">...</td><td class=\"enroll_date\">...</td><td class=\"grad_date\">...</td><td class=\"major\">...</td><td class=\"sub_major\">...</td><td class=\"gpa\">...</td></tr> 생성 -->\n" +
+                    "        <!-- education 배열을 순회하며 <tr><td>...</td></tr> 생성 -->\n" +
                     "      </tbody>\n" +
                     "    </table>\n" +
                     "\n" +
@@ -178,7 +179,6 @@ public class ResumeService {
             // system 메시지: 지시 + template
             ObjectNode sysMsg = messages.addObject();
             sysMsg.put("role", "system");
-            String template="";
             sysMsg.put("content",
                     "You are to respond **only** with a fully filled HTML resume template.  \n"
                             + "The template uses CSS class names that exactly match the keys in the user data JSON.  \n"
@@ -252,6 +252,10 @@ public class ResumeService {
 
     public int insertTemplate(TemplateVO templateVO){
         return resumeMapper.insertTemplate(templateVO);
+    }
+
+    public UserVO getUserByUserNo(Long userNo) {
+        return resumeMapper.getUserByUserNo(userNo);
     }
 
 //    // 스킬 목록 조회
