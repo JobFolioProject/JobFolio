@@ -8,86 +8,84 @@
   transition: background-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.resume-btn.sm {
+.resume-btn .sm {
   padding: 4px 10px;
   font-size: 0.85rem;
   height: 40px;
   margin-bottom: 10px;
 }
 
-.resume-btn.md {
+.resume-btn .md {
   padding: 10px 24px;
   font-size: 1rem;
 }
 
-.resume-btn.lg {
+.resume-btn .lg {
   padding: 14px 32px;
   font-size: 1.1rem;
 }
 
 /* Variants */
-.resume-btn.primary {
+.resume-btn .primary {
   background: #e3f2fd;
   color: #1976d2;
 }
 
-.resume-btn.primary:hover {
+.resume-btn .primary:hover {
   background: #bbdefb;
 }
 
-.resume-btn.primary:active {
+.resume-btn .primary:active {
   background: #90caf9;
 }
 
-.resume-btn.secondary {
+.resume-btn .secondary {
   background: #f5f5f5;
   color: #424242;
 }
 
-.resume-btn.secondary:hover {
+.resume-btn .secondary:hover {
   background: #e0e0e0;
 }
 
-.resume-btn.secondary:active {
+.resume-btn .secondary:active {
   background: #bdbdbd;
 }
 
-.resume-btn.danger {
+.resume-btn .danger {
   background: #ffebee;
   color: #d32f2f;
 }
 
-.resume-btn.danger:hover {
+.resume-btn .danger:hover {
   background: #ffcdd2;
 }
 
-.resume-btn.danger:active {
+.resume-btn .danger:active {
   background: #ef9a9a;
 }
 
-.resume-btn.outlined {
+.resume-btn .outlined {
   background: transparent;
   border: 2px solid #1976d2;
   color: #1976d2;
 }
 
-.resume-btn.outlined:hover {
+.resume-btn .outlined:hover {
   background: #e3f2fd;
 }
 
-.resume-btn.outlined:active {
+.resume-btn .outlined:active {
   background: #bbdefb;
 }
 
 /* Disabled state */
-.resume-btn.disabled {
+.resume-btn .disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-.resume-btn.disabled:hover{
+.resume-btn .disabled:hover {
   background: inherit;
   color: inherit;
 }
-
-
