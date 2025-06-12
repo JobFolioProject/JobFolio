@@ -1,6 +1,5 @@
 package com.happyjob.jobfolio.controller.shopping;
 
-import com.happyjob.jobfolio.vo.notice.NoticeModel;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;

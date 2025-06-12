@@ -28,4 +28,8 @@ public interface ResumeMapper {
     int insertTemplate(TemplateVO templateVO);
 
 
+//    // 스킬 목록 조회
+//    List<SkillInfoVO> selectSkillInfoList(int user_no);
+
+
 }
