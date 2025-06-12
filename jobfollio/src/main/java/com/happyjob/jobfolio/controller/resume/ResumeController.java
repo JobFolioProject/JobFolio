@@ -50,6 +50,33 @@ public class ResumeController {
 
 
 
+
+
+
+        resultMap.put("result", result);
+
+
+
+        return resultMap;
+
+    }
+
+    @RequestMapping("/generateCoverLetter")
+    public Map<String,Object> generateCoverLetter(@RequestParam Map<String,Object> paramMap){
+        Map<String,Object> resultMap = new HashMap<>();
+
+        ResumeInfoVO resumeInfoVO = new ResumeInfoVO();
+
+        resumeInfoVO.setTitle(paramMap.get("title").toString());
+        resumeInfoVO.setDesired_position(paramMap.get("desired_position").toString());
+
+        int result = resumeService.insertResumeInfo(resumeInfoVO);
+
+
+
+
+
+
         resultMap.put("result", result);
 
 
