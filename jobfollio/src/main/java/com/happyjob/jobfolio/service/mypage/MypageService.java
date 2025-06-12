@@ -1,6 +1,7 @@
 package com.happyjob.jobfolio.service.mypage;
 
 import com.happyjob.jobfolio.repository.mypage.MypageMapper;
+import com.happyjob.jobfolio.vo.join.UserVO;
 import com.happyjob.jobfolio.vo.mypage.*;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -21,6 +22,11 @@ public class MypageService {
     @Autowired
     private MypageMapper mypageMapper;
 
+    // 회원정보 조회
+    public UserVO getUserInfo(Long userNo) {
+        return mypageMapper.selectUserInfo(userNo);
+    }
+
     public void deleteByUserId(Long userNo) {
         logger.info("Calling deleteByUserId for user ID: " + userNo);
     }
@@ -29,7 +35,6 @@ public class MypageService {
         logger.info("Calling updateByUserId for user ID: " + userNo);
         // 예: MyCareerInfoRequestDto를 받아 여러 테이블을 업데이트하는 로직
     }
-
     // 커리어 조회
     public CareerAllDto getMyCareerInfo(Long userNo) {
         logger.info("getMyCareerInfo() 호출 userNo: " + userNo);
@@ -75,11 +80,8 @@ public class MypageService {
         return mypageMapper.insertCertificate(certificateVO);
     }
     // 경력 추가
+
     public CareerHistoryVO addcareerhistory(CareerHistoryVO careerHistoryVO) {
         return mypageMapper.insertCareerHistory(careerHistoryVO);
     }
-
-//    public UserVO getUserInfo(Long userNo) {
-//        return mypageMapper.selectUserInfo(userNo);
-//    }
 }
