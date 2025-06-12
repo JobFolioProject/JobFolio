@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.happyjob.jobfolio.repository.mypage.MypageMapper">
+    <resultMap id="careerDtoResultMap" type="com.happyjob.jobfolio.vo.mypage.CareerAllDto">
+        <id property="userNo" column="U_USER_NO"/>
+        <result property="hobby" column="U_HOBBY"/>
+        <result property="notes" column="U_NOTES"/>
+    </resultMap>
+
+    <resultMap id="eduInfoResultMap" type="com.happyjob.jobfolio.vo.mypage.EduInfoVO">
+        <id property="eduNo" column="E_EDU_NO"/>
+        <result property="userNo" column="E_USER_NO"/>
+        <result property="schoolName" column="E_SCHOOL_NAME"/>
+        <result property="enrollDate" column="E_ENROLL_DATE"/>
+        <result property="gradDate" column="E_GRAD_DATE"/>
+        <result property="eduStatus" column="E_EDU_STATUS"/>
+        <result property="major" column="E_MAJOR"/>
+        <result property="subMajor" column="E_SUB_MAJOR"/>
+        <result property="gpa" column="E_GPA"/>
+        <result property="notes" column="E_NOTES"/>
+    </resultMap>
+
+    <resultMap id="languageSkillResultMap" type="com.happyjob.jobfolio.vo.mypage.LanguageSkillVO">
+        <id property="userNo" column="L_USER_NO"/>
+        <id property="language" column="L_LANGUAGE"/>
+        <result property="level" column="L_LEVEL"/>
+    </resultMap>
+
+    <resultMap id="skillResultMap" type="com.happyjob.jobfolio.vo.mypage.SkillVO">
+        <id property="userNo" column="S_USER_NO"/>
+        <result property="expLevel" column="S_EXP_LEVEL"/>
+        <result property="skillTool" column="S_SKILL_TOOL"/>
+        <association property="skill" javaType="com.happyjob.jobfolio.vo.system.DetailcodeModel">
+            <result property="group_code" column="SK_GROUP_CODE"/>
+            <result property="detail_code" column="SK_DETAIL_CODE"/>
+            <result property="detail_name" column="SK_DETAIL_NAME"/>
+        </association>
+    </resultMap>
+
+    <resultMap id="certificateResultMap" type="com.happyjob.jobfolio.vo.mypage.CertificateVO">
+        <id property="certificationNo" column="C_CERTIFICATION_NO"/>
+        <result property="userNo" column="C_USER_NO"/>
+        <result property="certificateNo" column="C_CERTIFICATE_NO"/>
+        <result property="certificateName" column="C_CERTIFICATE_NAME"/>
+        <result property="issuingOrg" column="C_ISSUING_ORG"/>
+        <result property="acquiredDate" column="C_ACQUIRED_DATE"/>
+        <result property="notes" column="C_NOTES"/>
+    </resultMap>
+
+    <resultMap id="careerHistoryResultMap" type="com.happyjob.jobfolio.vo.mypage.CareerHistoryVO">
+        <id property="careerNo" column="H_CAREER_NO"/>
+        <result property="userNo" column="H_USER_NO"/>
+        <result property="companyName" column="H_COMPANY_NAME"/>
+        <result property="startDate" column="H_START_DATE"/>
+        <result property="endDate" column="H_END_DATE"/>
+        <result property="position" column="H_POSITION"/>
+        <result property="notes" column="H_NOTES"/>
+    </resultMap>
+
+    <select id="getMyCareerInfo" parameterType="long" resultMap="careerDtoResultMap">
+        SELECT
+            U.user_no AS U_USER_NO,
+            U.hobby AS U_HOBBY,
+            U.notes AS U_NOTES
+        FROM
+            tb_userinfo U
+        WHERE
+            U.user_no = #{userNo}
+    </select>
+
+    <select id="getEducationListByUserNo" parameterType="long" resultMap="eduInfoResultMap">
+        SELECT
+            edu_no AS E_EDU_NO,
+            user_no AS E_USER_NO,
+            school_name AS E_SCHOOL_NAME,
+            enroll_date AS E_ENROLL_DATE,
+            grad_date AS E_GRAD_DATE,
+            edu_status AS E_EDU_STATUS,
+            major AS E_MAJOR,
+            sub_major AS E_SUB_MAJOR,
+            gpa AS E_GPA,
+            notes AS E_NOTES
+        FROM
+            tb_edu_info
+        WHERE user_no = #{userNo}
+    </select>
+
+    <select id="getLanguageSkillListByUserNo" parameterType="long" resultMap="languageSkillResultMap">
+        SELECT
+            user_no AS L_USER_NO,
+            language AS L_LANGUAGE,
+            level AS L_LEVEL
+        FROM
+            tb_language_skill
+        WHERE user_no = #{userNo}
+    </select>
+
+    <select id="getSkillListByUserNo" parameterType="long" resultMap="skillResultMap">
+        SELECT
+            S.user_no AS S_USER_NO,
+            DCC.group_code AS SK_GROUP_CODE,
+            DCC.detail_code AS SK_DETAIL_CODE,
+            DCC.detail_name AS SK_DETAIL_NAME,
+            S.exp_level AS S_EXP_LEVEL,
+            S.skill_tool AS S_SKILL_TOOL
+        FROM
+            tb_skill S
+                LEFT JOIN tb_detail_code DCC ON S.group_code = DCC.group_code AND S.skill_code = DCC.detail_code
+        WHERE S.user_no = #{userNo}
+    </select>
+
+    <select id="getCertificateListByUserNo" parameterType="long" resultMap="certificateResultMap">
+        SELECT
+            certification_no AS C_CERTIFICATION_NO,
+            user_no AS C_USER_NO,
+            certificate_no AS C_CERTIFICATE_NO,
+            certificate_name AS C_CERTIFICATE_NAME,
+            issuing_org AS C_ISSUING_ORG,
+            acquired_date AS C_ACQUIRED_DATE,
+            notes AS C_NOTES
+        FROM
+            tb_certification
+        WHERE user_no = #{userNo}
+    </select>
+
+    <select id="getCareerHistoryListByUserNo" parameterType="long" resultMap="careerHistoryResultMap">
+        SELECT
+            career_no AS H_CAREER_NO,
+            user_no AS H_USER_NO,
+            company_name AS H_COMPANY_NAME,
+            start_date AS H_START_DATE,
+            end_date AS H_END_DATE,
+            position AS H_POSITION,
+            notes AS H_NOTES
+        FROM
+            tb_career_history
+        WHERE user_no = #{userNo}
+    </select>
+
+</mapper>
