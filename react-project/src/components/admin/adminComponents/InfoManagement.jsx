@@ -6,25 +6,6 @@ import AdminSideBar from '../AdminSideBar';
 import { useState, useEffect } from 'react';
 import Pagination from '../../common/Pagination.jsx'; 
 
-/*
-const mockData = Array.from({ length: 14 }, (_, i) => ({
-  id: 14 - i,
-  question: `이용안내 항목 예시 ${14 - i}`,
-  answer: `
-구매한 사용권을 전혀 사용하지 않은 경우에 한해 구매일로부터 7일 이내(발급일 기준, 구매일 포함)아래 고객센터(카카오톡 혹은 이메일)로 환불 의사를 전달해 주실 경우 100% 환불이 진행됩니다.
-
-단, 사용권을 일부 사용하거나 환불 기한이 지난 경우에는 잔여 사용권이 있더라도 부분 환불이 불가능합니다.
-
-추가로, 위 조건을 충족하여 환불이 진행되면 결제 내역은 즉시 취소되나 결제 수단별(카드사)로 실제 환급이 이루어지기까지는 카드사 사정에 따라 상이할 수 있습니다.
-
-(앱에서 구매한 경우, 구매한 스토어에서 환불 여부를 결정하며 하이잡 서비스에서는 환불 여부를 결정하지 못합니다.)
-  `,
-  createdAt: `2024-06-${(14 - i).toString().padStart(2, '0')}`,
-  writer: '운영자',
-  priority : i
-}));
-*/
-
 const InfoManagement = () => {
   const [data, setData] = useState([]);
   const [selected, setSelected] = useState([]);
@@ -32,9 +13,12 @@ const InfoManagement = () => {
   const [detailItem, setDetailItem] = useState(null);    
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [modalMode, setModalMode] = useState('edit');
+  const [priorityMap, setPriorityMap] = useState({});    // 우선순위 수정중 
 
     useEffect(() => {
-    axios.get('/api/info/list')
+    axios.get('/api/board/list', {
+      params : {board_type : "I"}
+    })
       .then((res) => {
         if (Array.isArray(res.data)) {
           setData(res.data);
@@ -46,6 +30,58 @@ const InfoManagement = () => {
         console.error('이용안내 불러오기 실패:', err);
       });
   }, []);
+
+  const handleDeleteSelected = () => {
+    if (selected.length === 0) {
+      alert(" 삭제할 항목을 선택해주세요. ");
+      return;
+    }
+
+    if (!window.confirm("삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.")) 
+      return;
+
+    axios.post('/api/board/delete', selected)
+      .then(() => axios.get('/api/board/list', {
+        params: { board_type: "I"}
+      }))
+      .then((res) => {
+        setData(res.data);
+        setSelected([]);
+      })
+      .catch((err) => {
+        console.error("삭제 실패 : ", err);
+        alert("삭제 중 오류 발생");
+      });
+  };
+
+  const handlePriorityUpdate = (item) => {
+    const newPriority = priorityMap[item.id];
+
+    if (newPriority === undefined || newPriority === item.priority){
+      return;
+    }
+
+    axios.post('/api/board/updatePriority', {
+      id: item.id,
+      board_type : item.board_type || "I",
+      newPriority : newPriority
+    })
+    .then(() => {
+      return axios.get('/api/board/list', {
+        params : { board_type: item.board_type || "I"}
+      });
+    })
+    .then((res) => {
+      setData(res.data);
+      setPriorityMap({});
+    })
+    .catch((err) => {
+      console.error('우선순위 업데이트 실패 : ', err);
+      alert('우선순위 저장 실패');
+    });
+  };
+
+  
 
   const itemsPerPage = 10;
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -80,11 +116,13 @@ const InfoManagement = () => {
         <div className = 'info-section-title-box'>
         <h2>커뮤니티 관리</h2>
         </div>
+
+        <div className = 'info-section-content-box'>
         <div className='info-header'>
           <h3>이용안내</h3>
           <p className='info-warning'>삭제할 경우 복구가 어려우며, 하이잡 이용자에게 해당 항목이 즉시 비노출됩니다. 삭제 시 신중히 선택 바랍니다.</p>
           <div className='info-controls'>
-            <button>선택 삭제</button>
+            <button onClick={handleDeleteSelected}>선택 삭제</button>
             <button onClick={openNewPostModal}>이용안내 등록</button>
           </div>
         </div>
@@ -94,8 +132,11 @@ const InfoManagement = () => {
         item={detailItem}
         onClose={() => setIsDetailOpen(false)}
         mode={modalMode}
+        boardType = "I"     // board_type으로 해야하나?? 몰라 
         onSaved={() => {
-          axios.get('/api/info/list')
+          axios.get('/api/board/list', {
+            params: { board_type: "I"}
+          })
           .then((res) => setData(res.data))
           .catch((err) => console.error(err));
         }}
@@ -115,7 +156,7 @@ const InfoManagement = () => {
             </tr>
           </thead>
           <tbody>
-            {currentItems.map((item) => (
+            {currentItems.map((item, i) => (
               <tr key={item.id}>
                 <td>
                   <input
@@ -124,7 +165,7 @@ const InfoManagement = () => {
                     onChange={() => toggleCheckbox(item.id)}
                   />
                 </td>
-                <td>{item.id}</td>
+                <td>{i++}</td>
                 <td
                     className = "info-title"
                     onClick={() => openDetail(item)}
@@ -132,7 +173,19 @@ const InfoManagement = () => {
                     {item.question}
                 </td>
                 <td>{item.createdAt}</td>
-                <td><input className='input-priority' value={item.priority} onChange={(e) => {}}></input></td>
+                <td>
+                  <input 
+                    className='input-priority' 
+                    type = 'number'
+                    value={priorityMap[item.id] ?? item.priority} 
+                    onChange={(e) => {
+                      const newVal = parseInt(e.target.value, 10);
+                      setPriorityMap((prev) => ({...prev, [item.id]: newVal}));
+                    }}
+                    onBlur = {() => handlePriorityUpdate(item)}
+                    />
+                  
+                </td>
                 <td>{item.writer}</td>
               </tr>
             ))}
@@ -145,6 +198,7 @@ const InfoManagement = () => {
           setCurrentPage={setCurrentPage}
         />
 
+      </div>
       </div>
     </div>
   );
