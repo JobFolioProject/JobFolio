@@ -2,13 +2,14 @@ import { Link } from 'react-router-dom';
 import {  useState } from 'react';
 import '../../css/common/MenuBar.css';
 import Login from '../user/Login';
-
+import LoginForm from '../user/join/LoginForm';
 
 const MenuBar = () => {
     const loginUser = sessionStorage.getItem('loginUser'); // loginUser 객체를 JSON.parse로 파싱
     const status = loginUser?.status || ''; // loginUser가 null일때 status를 빈 문자열로 초기화
     const [menuOpen, setMenuOpen] = useState(false); // 메뉴 열고 닫기
     const [showLoginModal, setShowLoginModal] = useState(false); // 모달 열기 상태
+    const [showLoginForm, setShowLoginForm] = useState(false);
 
     const toggleMenu = () => {
     setMenuOpen(!menuOpen); // 메뉴 상태를 토글
@@ -18,6 +19,10 @@ const MenuBar = () => {
     const logout = () => {
     sessionStorage.removeItem('loginUser');
     window.location.href = '/';
+    };
+
+    const handleLoginClick = () => {
+        setShowLoginForm(true);
     };
 
     return (
@@ -50,7 +55,8 @@ const MenuBar = () => {
              <span onClick={() => setShowLoginModal(true)} style={{ cursor: 'pointer' }}>LOG IN</span>
         )}
         </div>
-        {showLoginModal && <Login onClose={() => setShowLoginModal(false)} />}
+        {showLoginModal && <Login onClose={() => setShowLoginModal(false)} onLoginClick={handleLoginClick} />}
+        {showLoginForm && <LoginForm onClose={() => setShowLoginForm(false)} />}
     </div>
     );
 };
