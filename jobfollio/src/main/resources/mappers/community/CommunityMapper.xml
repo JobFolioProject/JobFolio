@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE mapper
+        PUBLIC '-//mybatis.org//DTD Mapper 3.0//EN'
+        'http://mybatis.org/dtd/mybatis-3-mapper.dtd'>
+<mapper namespace='com.happyjob.jobfolio.repository.community.CommunityMapper'>
+
+    <select id="selectBoardListPaged" parameterType="map" resultType="com.happyjob.jobfolio.vo.community.CommunityBoardVo">
+        SELECT
+            b.board_no AS boardNo,
+            b.board_type AS boardType,
+            b.title,
+            b.content,
+            b.write_date AS writeDate,
+            b.author,
+            u.user_name AS authorName,
+            b.priority
+        FROM tb_board b
+                 JOIN tb_userinfo u ON b.author = u.user_no
+        WHERE b.board_type = #{boardType}
+            <if test="search != null and search != ''">
+                AND b.title LIKE CONCAT('%', #{search}, '%')
+            </if>
+        ORDER BY b.priority DESC, b.write_date DESC
+            LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="countBoardList" parameterType="map" resultType="int">
+        SELECT COUNT(*)
+        FROM tb_board
+        WHERE board_type = #{boardType}
+        <if test="search != null and search != ''">
+            AND title LIKE CONCAT('%', #{search}, '%')
+        </if>
+    </select>
+
+</mapper>
