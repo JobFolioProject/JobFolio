@@ -157,7 +157,7 @@
 /* 입력 필드 그룹 가로 배치(이름/생년월일/성별 등) */
 .jf-joinform-field-group.flex-row {
   flex-direction: row;
-  gap: 8px;
+  gap: 12px;
 }
 .jf-joinform-field-group.flex-row > div {
   flex: 1;
@@ -171,7 +171,7 @@
 .gender-box-wrap {
   display: flex;
   gap: 12px;
-  margin-top: 6px;
+  margin-top: 0;
 }
 .gender-box {
   flex: 1;
@@ -247,4 +247,9 @@
   background: #fff;
   padding: 0 4px;
   z-index: 2;
+  margin-bottom: 4px;
+}
+
+.floating-input.has-value {
+  padding-top: 28px;
 }
