@@ -3,7 +3,7 @@
 
 <mapper namespace="com.happyjob.jobfolio.repository.join.UserMapper">
 
-    <!-- 사용자 정보 ResultMap (정리된 버전) -->
+    <!-- 사용자 정보 ResultMap -->
     <resultMap id="userResultMap" type="com.happyjob.jobfolio.vo.join.UserVO">
         <id property="userNo" column="user_no"/>
         <result property="loginId" column="login_id"/>
@@ -24,7 +24,7 @@
 
     <!-- ================= 기본 CRUD ================= -->
 
-    <!-- 사용자 등록 (간소화된 버전) -->
+    <!-- 사용자 등록  -->
     <insert id="insertUser" parameterType="map" useGeneratedKeys="true" keyProperty="userNo">
         INSERT INTO tb_userinfo (
         login_id,
@@ -48,7 +48,7 @@
         #{sex},
         #{hp},
         NOW(),
-        'N',  <!-- 활성 상태 ('Y'=탈퇴, 'N'=활성) -->
+        'N',  <!-- ('Y'=탈퇴, 'N'=활성) -->
         #{address},
         #{hobby},
         #{notes}
@@ -60,11 +60,11 @@
         SELECT COUNT(*)
         FROM tb_userinfo
         WHERE login_id = #{loginId}
-        AND status_yn = 'N'  <!-- 활성 사용자만 -->
+        AND status_yn = 'N'
         AND withdrawal_date IS NULL
     </select>
 
-    <!-- 로그인ID로 사용자 조회 (간소화된 버전) -->
+    <!-- 로그인ID로 사용자 조회  -->
     <select id="selectUserByLoginId" parameterType="map" resultMap="userResultMap">
         SELECT
         user_no,
@@ -84,7 +84,7 @@
         notes
         FROM tb_userinfo
         WHERE login_id = #{loginId}
-        AND status_yn = 'N'  <!-- 활성 사용자만 -->
+        AND status_yn = 'N'
         AND withdrawal_date IS NULL
         ORDER BY reg_date DESC
         LIMIT 1
@@ -110,7 +110,7 @@
         notes
         FROM tb_userinfo
         WHERE user_no = #{userNo}
-        AND status_yn = 'N'  <!-- 활성 사용자만 -->
+        AND status_yn = 'N'
         AND withdrawal_date IS NULL
     </select>
 
@@ -126,7 +126,7 @@
         hobby = #{hobby},
         notes = #{notes}
         WHERE user_no = #{userNo}
-        AND status_yn = 'N'  <!-- 활성 사용자만 -->
+        AND status_yn = 'N'
         AND withdrawal_date IS NULL
     </update>
 
@@ -135,15 +135,15 @@
         UPDATE tb_userinfo
         SET password = #{newPassword}
         WHERE login_id = #{loginId}
-        AND status_yn = 'N'  <!-- 활성 사용자만 -->
+        AND status_yn = 'N'
         AND withdrawal_date IS NULL
     </update>
 
-    <!-- 회원 탈퇴 (상태 변경) -->
+    <!-- 회원 탈퇴  -->
     <update id="withdrawUser" parameterType="map">
         UPDATE tb_userinfo
         SET
-        status_yn = 'Y',  <!-- 탈퇴 상태 -->
+        status_yn = 'Y',
         withdrawal_date = NOW(),
         user_name = '탈퇴회원',
         hp = NULL,
@@ -151,7 +151,7 @@
         hobby = NULL,
         notes = '회원탈퇴'
         WHERE user_no = #{userNo}
-        AND status_yn = 'N'  <!-- 활성 사용자만 -->
+        AND status_yn = 'N'
         AND withdrawal_date IS NULL
     </update>
 
@@ -165,7 +165,7 @@
         FROM tb_userinfo
         WHERE user_name = #{userName}
         AND hp = #{hp}
-        AND status_yn = 'N'  <!-- 활성 사용자만 -->
+        AND status_yn = 'N'
         AND withdrawal_date IS NULL
         ORDER BY reg_date DESC
         LIMIT 1
@@ -182,9 +182,9 @@
         WHERE login_id = #{loginId}
         AND user_name = #{userName}
         AND hp = #{hp}
-        AND status_yn = 'N'  <!-- 활성 사용자만 -->
+        AND status_yn = 'N'
         AND withdrawal_date IS NULL
-        AND reg_date >= DATE_SUB(NOW(), INTERVAL 2 YEAR)  <!-- 2년 이내 가입자만 -->
+        AND reg_date >= DATE_SUB(NOW(), INTERVAL 2 YEAR)
     </select>
 
 </mapper>
