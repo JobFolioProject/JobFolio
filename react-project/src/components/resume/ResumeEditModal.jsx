@@ -161,9 +161,7 @@ const ResumeEditModal = ({ open, onClose, props }) => {
     );
 
     //자기소개서 정보
-    const coverLetterDiv = Array.from(doc.querySelectorAll(".coverLetter")).map(
-      (el) => el.textContent.trim()
-    );
+    const coverLetterDiv = doc.querySelector(".coverLetter");
 
     const careers = companyNameDiv.map((name, index) => ({
       company_name: name,
@@ -240,6 +238,9 @@ const ResumeEditModal = ({ open, onClose, props }) => {
     const careerPositionDateDiv = doc.querySelectorAll(".position");
     const careerNotesDiv = doc.querySelectorAll(".career_notes");
 
+    //경력사항 전체 리스트
+    const careerList = doc.querySelector(".section-content.career ul");
+
     //학력사항 정보
     const schoolNameDiv = doc.querySelectorAll(".school_name");
     const majorDiv = doc.querySelectorAll(".major");
@@ -250,11 +251,17 @@ const ResumeEditModal = ({ open, onClose, props }) => {
     const gpaDiv = doc.querySelectorAll(".gpa");
     const eduNotesDiv = doc.querySelectorAll(".notes");
 
+    //학력사항 전체 리스트
+    const eduList = doc.querySelector(".section-content.education ul");
+
     //기술스택 정보
     const skillCodeDiv = doc.querySelectorAll(".skill_code");
     const groupCodeDiv = doc.querySelectorAll(".group_code");
     const expLevelDiv = doc.querySelectorAll(".exp_level");
     const skillToolDiv = doc.querySelectorAll(".skill_tool");
+
+    //기술사항 전체 리스트
+    const skillList = doc.querySelector(".skills-list");
 
     //자격증정보
     const certNameDiv = doc.querySelectorAll(".certificate_name");
@@ -263,15 +270,20 @@ const ResumeEditModal = ({ open, onClose, props }) => {
     const certIssueDiv = doc.querySelectorAll(".issuing_org");
     const certNotesDiv = doc.querySelectorAll(".cert_notes");
 
+    //자격증 전체 리스트
+    const certList = doc.querySelector(".section-content.certification");
+
     //언어정보
     const langDiv = doc.querySelectorAll(".language");
     const levelDiv = doc.querySelectorAll(".level");
 
+    //언어 전체 리스트
+    const langList = doc.querySelector(".section-content.lang");
+
     //자기소개서 정보
-    const coverLetterDiv = doc.querySelectorAll(".coverLetter");
+    const coverLetterDiv = doc.querySelector(".coverLetter");
 
     //사용자가 입력한 textarea값을 각각 class 값에 적용
-
     nameDiv.innerText = resumeInfo.name;
     posDiv.innerText = resumeInfo.desired_position;
     addressDiv.innerText = resumeInfo.address;
@@ -280,6 +292,7 @@ const ResumeEditModal = ({ open, onClose, props }) => {
     linkDiv.innerText = resumeInfo.link;
     coverLetterDiv.innerText = resumeInfo.coverLetter;
 
+    //입력한 경력 사항 정보 iframe에 반영
     resumeInfo.career.forEach((career, index) => {
       if (companyNameDiv[index]) {
         companyNameDiv[index].innerText = career.company_name;
@@ -290,6 +303,26 @@ const ResumeEditModal = ({ open, onClose, props }) => {
       }
     });
 
+    //경력사항 추가, 삭제시
+    if (careerList) {
+      careerList.innerHTML = "";
+
+      resumeInfo.career.forEach((career) => {
+        const li = doc.createElement("li");
+        li.innerHTML = `
+          <strong>
+        <span class="company_name">${career.company_name}</span>
+        (<span class="career_start_date">${career.start_date}</span>
+        ~ <span class="career_end_date">${career.end_date}</span>)
+      </strong><br />
+      - <span class="position">${career.position}</span><br />
+      - <span class="career_notes">${career.notes}</span>
+        `;
+        careerList.appendChild(li);
+      });
+    }
+
+    //입력한 학력 사항 정보 iframe에 반영
     resumeInfo.education.forEach((education, index) => {
       if (schoolNameDiv[index]) {
         schoolNameDiv[index].innerText = education.school_name;
@@ -303,6 +336,30 @@ const ResumeEditModal = ({ open, onClose, props }) => {
       }
     });
 
+    //학력사항 추가, 삭제시
+    if (eduList) {
+      eduList.innerHTML = "";
+
+      resumeInfo.education.forEach((edu) => {
+        const li = doc.createElement("li");
+        li.innerHTML = `
+         <strong
+                ><span class="school_name">${edu.school_name}</span>
+                <span class="major">${edu.major}</span></strong
+              ><br />
+              <span class="edu_status">${edu.edu_status}</span> (<span class="enroll_date"
+                >${edu.enroll_date}</span
+              >
+              ~ <span class="grad_date">${edu.grad_date}</span>)<br />
+              <span class="sub_major">${edu.sub_major}</span><br />
+              <span class="gpa">${edu.gpa}</span><br />
+              <span class="notes">${edu.notes}</span>
+        `;
+        eduList.appendChild(li);
+      });
+    }
+
+    //입력한 기술스택 정보 iframe에 반영
     resumeInfo.skills.forEach((skill, index) => {
       if (skillCodeDiv[index]) {
         skillCodeDiv[index].innerText = skill.skill_code;
@@ -312,6 +369,23 @@ const ResumeEditModal = ({ open, onClose, props }) => {
       }
     });
 
+    //기술 스택 추가/삭제 시
+    if (skillList) {
+      let htmlCode = "";
+      resumeInfo.skills.forEach((skill) => {
+        htmlCode += `
+          <div class="skill-chip">
+            <span class="group_code">${skill.group_code}</span>
+            <span class="skill_code">${skill.skill_code}</span>
+            <span class="exp_level">${skill.exp_level}</span>
+            <span class="skill_tool">${skill.skill_tool}</span>
+          </div>
+        `;
+      });
+      skillList.innerHTML = htmlCode;
+    }
+
+    // 입력한 자격증 정보 iframe에 반영
     resumeInfo.certifications.forEach((cert, index) => {
       if (certNameDiv[index]) {
         certNameDiv[index].innerText = cert.certificate_name;
@@ -322,12 +396,41 @@ const ResumeEditModal = ({ open, onClose, props }) => {
       }
     });
 
+    if (certList) {
+      let htmlCode = "";
+      resumeInfo.certifications.forEach((cert) => {
+        htmlCode += `
+          -<span class="certificate_name">${cert.certificate_name}</span> (<span
+            class="acquired_date"
+            >${cert.acquired_date}</span
+          >)
+          <span class="certificate_no">${cert.certificate_no}</span>
+          <span class="issuing_org">${cert.issuing_org}</span>
+          <span class="cert_notes">${cert.notes}</span><br/>
+        `;
+      });
+      certList.innerHTML = htmlCode;
+    }
+
+    // 입력한 외국어 역량 정보 iframe에 반영
     resumeInfo.languages.forEach((lang, index) => {
       if (langDiv[index]) {
         langDiv[index].innerText = lang.language;
-        langDiv[index].innerText = lang.level;
+        levelDiv[index].innerText = lang.level;
       }
     });
+
+    // 외국어 역량 추가, 삭제시
+    if (langList) {
+      let htmlCode = "";
+      resumeInfo.languages.forEach((lang) => {
+        htmlCode += `
+          - <span class="language">${lang.language}</span> <span class="level">${lang.level}</span>
+          <br />
+        `;
+      });
+      langList.innerHTML = htmlCode;
+    }
 
     return doc.documentElement.outerHTML;
   };
@@ -502,6 +605,7 @@ const ResumeEditModal = ({ open, onClose, props }) => {
           </div>
         </label>
 
+        {/*링크 클릭시 */}
         {selectedRadio === "link" && (
           <div className="toggleInput">
             <input
@@ -517,9 +621,31 @@ const ResumeEditModal = ({ open, onClose, props }) => {
             />
           </div>
         )}
+
+        {/*경력 클릭시 */}
         {selectedRadio === "career" && (
           <>
-            <button className="addCareerBtn">이력사항 추가</button>
+            <button
+              className="addrBtn"
+              onClick={() => {
+                setResumeInfo({
+                  ...resumeInfo,
+                  career: [
+                    ...resumeInfo.career,
+                    {
+                      company_name: "",
+                      start_date: "",
+                      end_date: "",
+                      position: "",
+                      notes: "",
+                    },
+                  ],
+                });
+              }}
+            >
+              {" "}
+              경력사항 추가
+            </button>
             {resumeInfo.career.map((career, index) => (
               <div className="toggleInput" key={index}>
                 <label>
@@ -608,10 +734,526 @@ const ResumeEditModal = ({ open, onClose, props }) => {
                     }}
                   />
                 </label>
-                <button className="deleteCareerBtn">삭제</button>
+                <button
+                  className="deleteCareerBtn"
+                  onClick={() => {
+                    setResumeInfo({
+                      ...resumeInfo,
+                      career: resumeInfo.career.filter(
+                        (_, idx) => idx !== index
+                      ),
+                    });
+                  }}
+                >
+                  삭제
+                </button>
               </div>
             ))}
           </>
+        )}
+        {/*학력 클릭시 */}
+        {selectedRadio === "edu" && (
+          <>
+            <button
+              className="addrBtn"
+              onClick={() => {
+                setResumeInfo({
+                  ...resumeInfo,
+                  education: [
+                    ...resumeInfo.education,
+                    {
+                      school_name: "",
+                      enroll_date: "",
+                      grad_date: "",
+                      edu_status: "",
+                      major: "",
+                      sub_major: "",
+                      gpa: "",
+                      notes: "",
+                    },
+                  ],
+                });
+              }}
+            >
+              {" "}
+              학력사항 추가
+            </button>
+            {resumeInfo.education.map((edu, index) => (
+              <div className="toggleInput" key={index}>
+                <label>
+                  <div>학교명</div>
+                  <input
+                    type="text"
+                    value={edu.school_name}
+                    onChange={(e) => {
+                      setResumeInfo({
+                        ...resumeInfo,
+                        education: resumeInfo.education.map((item, idx) =>
+                          idx === index
+                            ? { ...item, school_name: e.target.value }
+                            : item
+                        ),
+                      });
+                    }}
+                  />
+                </label>
+
+                <label>
+                  <div>입학날짜</div>
+                  <input
+                    type="text"
+                    value={edu.enroll_date}
+                    onChange={(e) => {
+                      setResumeInfo({
+                        ...resumeInfo,
+                        education: resumeInfo.education.map((item, idx) =>
+                          idx === index
+                            ? { ...item, enroll_date: e.target.value }
+                            : item
+                        ),
+                      });
+                    }}
+                  />
+                </label>
+                <label>
+                  <div>졸업날짜</div>
+                  <input
+                    type="text"
+                    value={edu.grad_date}
+                    onChange={(e) => {
+                      setResumeInfo({
+                        ...resumeInfo,
+                        education: resumeInfo.education.map((item, idx) =>
+                          idx === index
+                            ? { ...item, grad_date: e.target.value }
+                            : item
+                        ),
+                      });
+                    }}
+                  />
+                </label>
+                <label>
+                  <div>학력상태</div>
+                  <input
+                    type="text"
+                    value={edu.edu_status}
+                    onChange={(e) => {
+                      setResumeInfo({
+                        ...resumeInfo,
+                        education: resumeInfo.education.map((item, idx) =>
+                          idx === index
+                            ? { ...item, edu_status: e.target.value }
+                            : item
+                        ),
+                      });
+                    }}
+                  />
+                </label>
+                <label>
+                  <div>전공</div>
+                  <input
+                    type="text"
+                    value={edu.major}
+                    onChange={(e) => {
+                      setResumeInfo({
+                        ...resumeInfo,
+                        education: resumeInfo.education.map((item, idx) =>
+                          idx === index
+                            ? { ...item, major: e.target.value }
+                            : item
+                        ),
+                      });
+                    }}
+                  />
+                </label>
+                <label>
+                  <div>부전공</div>
+                  <input
+                    type="text"
+                    value={edu.sub_major}
+                    onChange={(e) => {
+                      setResumeInfo({
+                        ...resumeInfo,
+                        education: resumeInfo.education.map((item, idx) =>
+                          idx === index
+                            ? { ...item, sub_major: e.target.value }
+                            : item
+                        ),
+                      });
+                    }}
+                  />
+                </label>
+                <label>
+                  <div>학점</div>
+                  <input
+                    type="text"
+                    value={edu.gpa}
+                    onChange={(e) => {
+                      setResumeInfo({
+                        ...resumeInfo,
+                        education: resumeInfo.education.map((item, idx) =>
+                          idx === index
+                            ? { ...item, gpa: e.target.value }
+                            : item
+                        ),
+                      });
+                    }}
+                  />
+                </label>
+                <label>
+                  <div>특이사항</div>
+                  <input
+                    type="text"
+                    value={edu.notes}
+                    onChange={(e) => {
+                      setResumeInfo({
+                        ...resumeInfo,
+                        education: resumeInfo.education.map((item, idx) =>
+                          idx === index
+                            ? { ...item, notes: e.target.value }
+                            : item
+                        ),
+                      });
+                    }}
+                  />
+                </label>
+                <button
+                  className="deleteCareerBtn"
+                  onClick={() => {
+                    setResumeInfo({
+                      ...resumeInfo,
+                      education: resumeInfo.education.filter(
+                        (_, idx) => idx !== index
+                      ),
+                    });
+                  }}
+                >
+                  삭제
+                </button>
+              </div>
+            ))}
+          </>
+        )}
+        {/*기술스택 클릭시 */}
+        {selectedRadio === "skill" && (
+          <>
+            <button
+              className="addrBtn"
+              onClick={() => {
+                setResumeInfo({
+                  ...resumeInfo,
+                  skills: [
+                    ...resumeInfo.skills,
+                    {
+                      skill_code: "",
+                      group_code: "",
+                      exp_level: "",
+                      skill_tool: "",
+                    },
+                  ],
+                });
+              }}
+            >
+              {" "}
+              기술스택 추가
+            </button>
+            {resumeInfo.skills.map((skill, index) => (
+              <div className="toggleInput" key={index}>
+                <label>
+                  <div>스킬명</div>
+                  <input
+                    type="text"
+                    value={skill.skill_code}
+                    onChange={(e) => {
+                      setResumeInfo({
+                        ...resumeInfo,
+                        skills: resumeInfo.skills.map((item, idx) =>
+                          idx === index
+                            ? { ...item, skill_code: e.target.value }
+                            : item
+                        ),
+                      });
+                    }}
+                  />
+                </label>
+
+                <label>
+                  <div>숙련도</div>
+                  <input
+                    type="text"
+                    value={skill.exp_level}
+                    onChange={(e) => {
+                      setResumeInfo({
+                        ...resumeInfo,
+                        skills: resumeInfo.skills.map((item, idx) =>
+                          idx === index
+                            ? { ...item, exp_level: e.target.value }
+                            : item
+                        ),
+                      });
+                    }}
+                  />
+                </label>
+                <label>
+                  <div>툴</div>
+                  <input
+                    type="text"
+                    value={skill.skill_tool}
+                    onChange={(e) => {
+                      setResumeInfo({
+                        ...resumeInfo,
+                        skills: resumeInfo.skills.map((item, idx) =>
+                          idx === index
+                            ? { ...item, skill_tool: e.target.value }
+                            : item
+                        ),
+                      });
+                    }}
+                  />
+                </label>
+                <button
+                  className="deleteCareerBtn"
+                  onClick={() => {
+                    setResumeInfo({
+                      ...resumeInfo,
+                      skills: resumeInfo.skills.filter(
+                        (_, idx) => idx !== index
+                      ),
+                    });
+                  }}
+                >
+                  삭제
+                </button>
+              </div>
+            ))}
+          </>
+        )}
+        {/*외국어 역량 클릭시 */}
+        {selectedRadio === "language" && (
+          <>
+            <button
+              className="addrBtn"
+              onClick={() => {
+                setResumeInfo({
+                  ...resumeInfo,
+                  languages: [
+                    ...resumeInfo.languages,
+                    {
+                      language: "",
+                      level: "",
+                    },
+                  ],
+                });
+              }}
+            >
+              {" "}
+              외국어 역량 추가
+            </button>
+            {resumeInfo.languages.map((lang, index) => (
+              <div className="toggleInput" key={index}>
+                <label>
+                  <div>언어</div>
+                  <input
+                    type="text"
+                    value={lang.language}
+                    onChange={(e) => {
+                      setResumeInfo({
+                        ...resumeInfo,
+                        languages: resumeInfo.languages.map((item, idx) =>
+                          idx === index
+                            ? { ...item, language: e.target.value }
+                            : item
+                        ),
+                      });
+                    }}
+                  />
+                </label>
+
+                <label>
+                  <div>등급</div>
+                  <input
+                    type="text"
+                    value={lang.level}
+                    onChange={(e) => {
+                      setResumeInfo({
+                        ...resumeInfo,
+                        languages: resumeInfo.languages.map((item, idx) =>
+                          idx === index
+                            ? { ...item, level: e.target.value }
+                            : item
+                        ),
+                      });
+                    }}
+                  />
+                </label>
+
+                <button
+                  className="deleteCareerBtn"
+                  onClick={() => {
+                    setResumeInfo({
+                      ...resumeInfo,
+                      languages: resumeInfo.languages.filter(
+                        (_, idx) => idx !== index
+                      ),
+                    });
+                  }}
+                >
+                  삭제
+                </button>
+              </div>
+            ))}
+          </>
+        )}
+        {/*자격증 클릭시 */}
+        {selectedRadio === "certification" && (
+          <>
+            <button
+              className="addrBtn"
+              onClick={() => {
+                setResumeInfo({
+                  ...resumeInfo,
+                  certifications: [
+                    ...resumeInfo.certifications,
+                    {
+                      certificate_no: "",
+                      certificate_name: "",
+                      issuing_org: "",
+                      acquired_date: "",
+                      notes: "",
+                    },
+                  ],
+                });
+              }}
+            >
+              {" "}
+              자격증 추가
+            </button>
+            {resumeInfo.certifications.map((cert, index) => (
+              <div className="toggleInput" key={index}>
+                <label>
+                  <div>자격증 번호</div>
+                  <input
+                    type="text"
+                    value={cert.certificate_no}
+                    onChange={(e) => {
+                      setResumeInfo({
+                        ...resumeInfo,
+                        certifications: resumeInfo.certifications.map(
+                          (item, idx) =>
+                            idx === index
+                              ? { ...item, certificate_no: e.target.value }
+                              : item
+                        ),
+                      });
+                    }}
+                  />
+                </label>
+
+                <label>
+                  <div>자격증명</div>
+                  <input
+                    type="text"
+                    value={cert.certificate_name}
+                    onChange={(e) => {
+                      setResumeInfo({
+                        ...resumeInfo,
+                        certifications: resumeInfo.certifications.map(
+                          (item, idx) =>
+                            idx === index
+                              ? { ...item, certificate_name: e.target.value }
+                              : item
+                        ),
+                      });
+                    }}
+                  />
+                </label>
+                <label>
+                  <div>발행기관</div>
+                  <input
+                    type="text"
+                    value={cert.issuing_org}
+                    onChange={(e) => {
+                      setResumeInfo({
+                        ...resumeInfo,
+                        certifications: resumeInfo.certifications.map(
+                          (item, idx) =>
+                            idx === index
+                              ? { ...item, issuing_org: e.target.value }
+                              : item
+                        ),
+                      });
+                    }}
+                  />
+                </label>
+                <label>
+                  <div>취득일</div>
+                  <input
+                    type="text"
+                    value={cert.acquired_date}
+                    onChange={(e) => {
+                      setResumeInfo({
+                        ...resumeInfo,
+                        certifications: resumeInfo.certifications.map(
+                          (item, idx) =>
+                            idx === index
+                              ? { ...item, acquired_date: e.target.value }
+                              : item
+                        ),
+                      });
+                    }}
+                  />
+                </label>
+                <label>
+                  <div>특이사항</div>
+                  <input
+                    type="text"
+                    value={cert.notes}
+                    onChange={(e) => {
+                      setResumeInfo({
+                        ...resumeInfo,
+                        certifications: resumeInfo.certifications.map(
+                          (item, idx) =>
+                            idx === index
+                              ? { ...item, notes: e.target.value }
+                              : item
+                        ),
+                      });
+                    }}
+                  />
+                </label>
+                <button
+                  className="deleteCareerBtn"
+                  onClick={() => {
+                    setResumeInfo({
+                      ...resumeInfo,
+                      certifications: resumeInfo.certifications.filter(
+                        (_, idx) => idx !== index
+                      ),
+                    });
+                  }}
+                >
+                  삭제
+                </button>
+              </div>
+            ))}
+          </>
+        )}
+
+        {/*자기소개서 클릭시 */}
+        {selectedRadio === "cover_letter" && (
+          <div className="toggleInput">
+            <textarea
+              className="coverLetterTextarea"
+              rows={4}
+              value={resumeInfo.coverLetter}
+              onChange={(e) => {
+                setResumeInfo({
+                  ...resumeInfo,
+                  coverLetter: e.target.value,
+                });
+              }}
+            />
+          </div>
         )}
 
         <div className="buttonRow">

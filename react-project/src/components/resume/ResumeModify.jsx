@@ -58,6 +58,7 @@ const ResumeModify = () => {
           </div>
         </div>
       </div>
+
       <ResumeEditModal
         open={isEditModalOpen}
         onClose={handleCloseModal}
