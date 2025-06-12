@@ -1,108 +1,141 @@
 package com.happyjob.jobfolio.vo.usermgr;
 
 public class UserModel {
-	
-	private String loginID;     // 로그인 ID
+
+	private int user_no;
+	private String login_id;     // 로그인 ID
 	private String user_type;   // 사용자 종류 A : 관리자  B : User   공통코드 관리
-	private String name;        // 이름
-	private String password;    // 비밀번호 
-	private String sex;        // 성별 -- 남자 : M   여성 : W   
-	private String hp;          // 핸드폰 번호 -- XXX-XXXX-XXXX  
-	private String email;       // 이메일
-	private String regdate;     // 등록일자 
-	private String loc;         // 지역코드 -- 공통코드   02 : 서울
-	private String locname;     // 지역명
-	private String birthday;    // 생년월일  
-	private String zipcd;       // 우편번호    	
-	private String addr;        // 주소
-	private String dtladdr;     // 상세주소 
-	
-	
-	
-	public String getLoginID() {
-		return loginID;
+	private String user_name;        // 이름
+	private String password;    // 비밀번호
+	private String birthday;    // 생년월일
+	private String sex;        // 성별 -- 남자 : M   여성 : W
+	private String hp;          // 핸드폰 번호 -- XXX-XXXX-XXXX
+	private String reg_date;     // 등록일자
+	private String withdrawal_date;
+	private String status_yn;         // 지역코드 -- 공통코드   02 : 서울
+	private String expire_days;     // 지역명
+	private String address;        // 주소
+	private String hobby;       // 우편번호
+	private String note;     // 상세주소
+
+
+	public int getUser_no() {
+		return user_no;
 	}
-	public void setLoginID(String loginID) {
-		this.loginID = loginID;
+
+	public void setUser_no(int user_no) {
+		this.user_no = user_no;
 	}
+
+	public String getLogin_id() {
+		return login_id;
+	}
+
+	public void setLogin_id(String login_id) {
+		this.login_id = login_id;
+	}
+
 	public String getUser_type() {
 		return user_type;
 	}
+
 	public void setUser_type(String user_type) {
 		this.user_type = user_type;
 	}
-	public String getName() {
-		return name;
+
+	public String getUser_name() {
+		return user_name;
 	}
-	public void setName(String name) {
-		this.name = name;
+
+	public void setUser_name(String user_name) {
+		this.user_name = user_name;
 	}
+
 	public String getPassword() {
 		return password;
 	}
+
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	public String getSex() {
-		return sex;
-	}
-	public void setSex(String sex) {
-		this.sex = sex;
-	}
-	public String getHp() {
-		return hp;
-	}
-	public void setHp(String hp) {
-		this.hp = hp;
-	}
-	public String getEmail() {
-		return email;
-	}
-	public void setEmail(String email) {
-		this.email = email;
-	}
-	public String getRegdate() {
-		return regdate;
-	}
-	public void setRegdate(String regdate) {
-		this.regdate = regdate;
-	}
-	public String getLoc() {
-		return loc;
-	}
-	public void setLoc(String loc) {
-		this.loc = loc;
-	}
-	public String getLocname() {
-		return locname;
-	}
-	public void setLocname(String locname) {
-		this.locname = locname;
-	}
+
 	public String getBirthday() {
 		return birthday;
 	}
+
 	public void setBirthday(String birthday) {
 		this.birthday = birthday;
 	}
-	public String getZipcd() {
-		return zipcd;
+
+	public String getSex() {
+		return sex;
 	}
-	public void setZipcd(String zipcd) {
-		this.zipcd = zipcd;
+
+	public void setSex(String sex) {
+		this.sex = sex;
 	}
-	public String getAddr() {
-		return addr;
+
+	public String getHp() {
+		return hp;
 	}
-	public void setAddr(String addr) {
-		this.addr = addr;
+
+	public void setHp(String hp) {
+		this.hp = hp;
 	}
-	public String getDtladdr() {
-		return dtladdr;
+
+	public String getReg_date() {
+		return reg_date;
 	}
-	public void setDtladdr(String dtladdr) {
-		this.dtladdr = dtladdr;
+
+	public void setReg_date(String reg_date) {
+		this.reg_date = reg_date;
 	}
-	
-	
+
+	public String getWithdrawal_date() {
+		return withdrawal_date;
+	}
+
+	public void setWithdrawal_date(String withdrawal_date) {
+		this.withdrawal_date = withdrawal_date;
+	}
+
+	public String getStatus_yn() {
+		return status_yn;
+	}
+
+	public void setStatus_yn(String status_yn) {
+		this.status_yn = status_yn;
+	}
+
+	public String getExpire_days() {
+		return expire_days;
+	}
+
+	public void setExpire_days(String expire_days) {
+		this.expire_days = expire_days;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getHobby() {
+		return hobby;
+	}
+
+	public void setHobby(String hobby) {
+		this.hobby = hobby;
+	}
+
+	public String getNote() {
+		return note;
+	}
+
+	public void setNote(String note) {
+		this.note = note;
+	}
 }
