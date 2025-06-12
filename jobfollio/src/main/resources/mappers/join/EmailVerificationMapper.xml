@@ -6,7 +6,7 @@
     <!-- 이메일 인증 정보 저장 -->
     <insert id="insertEmailVerification" parameterType="com.happyjob.jobfolio.vo.join.EmailVerificationVO" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_email_verification (
-        email,                 <!-- 새 테이블의 email 컬럼 사용 -->
+        email,
         verification_code,
         expire_time,
         created_at,
@@ -25,7 +25,7 @@
         <![CDATA[
         SELECT
             id,
-            email,                 <!-- 새 테이블의 email 컬럼 사용 -->
+            email,
             verification_code as verificationCode,
             expire_time as expireTime,
             created_at as createdAt,
@@ -44,14 +44,14 @@
     <select id="selectRecentByEmail" parameterType="String" resultType="com.happyjob.jobfolio.vo.join.EmailVerificationVO">
         SELECT
         id,
-        email,                 <!-- 새 테이블의 email 컬럼 사용 -->
+        email,
         verification_code as verificationCode,
         expire_time as expireTime,
         created_at as createdAt,
         is_used as isUsed,
         used_at as usedAt
         FROM tb_email_verification
-        WHERE email = #{email}     <!-- 새 테이블의 email 컬럼 사용 -->
+        WHERE email = #{email}
         ORDER BY created_at DESC
         LIMIT 1
     </select>
@@ -67,11 +67,11 @@
     <!-- 이메일별 미사용 인증 정보 삭제 -->
     <delete id="deleteUnusedByEmail" parameterType="String">
         DELETE FROM tb_email_verification
-        WHERE email = #{email}     <!-- 새 테이블의 email 컬럼 사용 -->
+        WHERE email = #{email}
         AND is_used = 'N'
     </delete>
 
-    <!-- 만료된 인증 정보 개수 조회 (모니터링용) -->
+    <!-- 만료된 인증 정보 개수 조회  -->
     <select id="countExpiredVerifications" resultType="int">
         <![CDATA[
         SELECT COUNT(*)
