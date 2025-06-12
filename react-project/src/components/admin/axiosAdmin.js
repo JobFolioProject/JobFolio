@@ -14,9 +14,9 @@ instanceAdmin.interceptors.request.use((config) => {
     //     return Promise.reject("Not logged in");  
     //   }
   
-    const loginObj = sessionStorage.getItem('loginUser') || '{}'
-     if (loginObj !== 'admin') {
-        window.location.href = "/emptyAdmin";  // 페이지 리로드
+    const loginObj = JSON.parse(sessionStorage.getItem('user')) || '{}'
+     if (loginObj.userType !== 'A' && loginObj.userType !== 'B') {
+        window.location.href = "/";  // 페이지 리로드
         return Promise.reject("Not logged in");  
       }
 
