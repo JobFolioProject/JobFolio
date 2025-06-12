@@ -28,5 +28,11 @@ public class ResumeController {
 
     }
 
+//    // 이력서 작성 페이지에 해당 유저의 스킬목록을 조회
+//    @RequestMapping("/write")
+//    public Map<String,Object> skillInfoResume(@RequestParam int user_no){
+//        Map<String,Object> resultMap = new HashMap<>();
+//        return resultMap;
+//    }
 
 }
