@@ -1,5 +1,7 @@
 import '../../css/community/CommuNotice.css';
+import { Link, NavLink } from 'react-router-dom';
 import CommuMenuBar from './CommuMenuBar';
+import SearchIcon from '@mui/icons-material/Search';
 
 const CommuNotice = () => {
    
@@ -14,46 +16,65 @@ const CommuNotice = () => {
             <div className="community-notice-wrapper">
                 <div className="communitiy-notice-title">
                     <h1>
-                        공지사항 페이지 입니다.
+                        공지사항
                     </h1>
                 </div>
-                <div className='community-notice-top'>
+                <div className='community-notice-category'>
                     <div className='community-notice-tap'>
                         <ul className='notice-tap-list'>
-                            <li>전체</li>
-                            <li>중요</li>
-                            <li>안내</li>
+                            <li><NavLink to="/">전체</NavLink></li>
+                            <li><NavLink to="/">중요</NavLink></li>
+                            <li><NavLink to="/">안내</NavLink></li>
                         </ul>
                     </div>
                     <div className='community-notice-search'>
-                        <input type="text" name="" id="" placeholder='검색'/>
+                        <div className="community-notice-search-container">
+                            <SearchIcon className='community-notice-search-icon'/>
+                            <input className='community-notice-search-input' type="text" name="" id="" placeholder='검색'/>
+                        </div>
                     </div>
                 </div>
-                <div className="community-notice-content">
-                    <div className="community-notice-emphasize">
-                        <ul>
-                            <li>
-                                필독사항1
-                            </li>
-                            <li>
-                                필독사항2
-                            </li>
-                            <li>
-                                필독사항3
-                            </li>
-                        </ul>                    
+                <div className="community-notice-section">
+                    <div className="community-notice-head">
+                        <div className='notice-head-col num'>번호</div>
+                        <div className='notice-head-col title'>제목</div>
+                        <div className='notice-head-col write'>작성일</div>
+                        <div className='notice-head-col author'>작성자</div>
                     </div>
-                    <div className="community-notice-standard">
-                        <ul>
-                            <li>
-                                일반공지1
-                            </li>
-                            <li>
-                                일반공지2
-                            </li>
-                            <li>
-                                일반공지3
-                            </li>
+                    <div className="community-notice-body">
+                        <ul className="community-notice-list">
+                            <li className='community-notice-list-item'>
+                                <Link to="/">
+                                    <div className='notice-body-col num'>1</div>
+                                    <div className='notice-body-col title'>공지사항입니다</div>
+                                    <div className='notice-body-col write'>2025-06-10</div>
+                                    <div className='notice-body-col author'>관리자1</div>
+                                </Link>
+                            </li>                            
+                            <li className='community-notice-list-item'>
+                                <Link to="/">
+                                    <div className='notice-body-col num'>1</div>
+                                    <div className='notice-body-col title'>공지사항입니다</div>
+                                    <div className='notice-body-col write'>2025-06-10</div>
+                                    <div className='notice-body-col author'>관리자1</div>
+                                </Link>
+                            </li>                            
+                            <li className='community-notice-list-item'>
+                                <Link to="/">
+                                    <div className='notice-body-col num'>1</div>
+                                    <div className='notice-body-col title'>공지사항입니다</div>
+                                    <div className='notice-body-col write'>2025-06-10</div>
+                                    <div className='notice-body-col author'>관리자1</div>
+                                </Link>
+                            </li>                            
+                            <li className='community-notice-list-item'>
+                                <Link to="/">
+                                    <div className='notice-body-col num'>1</div>
+                                    <div className='notice-body-col title'>공지사항입니다</div>
+                                    <div className='notice-body-col write'>2025-06-10</div>
+                                    <div className='notice-body-col author'>관리자1</div>
+                                </Link>
+                            </li>                            
                         </ul>
                     </div>
                     <div className="community-notice-pagination">

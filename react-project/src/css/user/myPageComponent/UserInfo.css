@@ -1,4 +1,4 @@
-.UserInfo{
+.UserInfo {
     margin-top: 100px;
     display: flex;
     flex-direction: row;
@@ -22,20 +22,18 @@
     border: 1px solid #e9e9e9;
 }
 
-
 .userInfobuttonWrap {
     display: flex;
     justify-content: end;
 }
 
-.userInfoRow{
+.userInfoRow {
     display: flex;
     align-items: center;
 }
 
 .userInfobuttonWrap_button {
-    display: flex
-;
+    display: flex;
     justify-content: space-between;
 }
 
@@ -54,7 +52,7 @@ button.userInfoBackButton {
     border: 1px solid;
     height: 45px;
     width: 100px;
-    color: #3183FF;
+    color: #3183ff;
     margin-top: 5px;
     margin-left: 10px;
 }
