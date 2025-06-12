@@ -2,6 +2,7 @@ import '../../css/resume/Resume.css'; // 스타일 따로 작성
 import ResumeSidebar from './ResumeSidebar';
 import React, { use, useState, useEffect} from 'react';
 import DropDown from './ResumeDropdown';
+import axios from 'axios';
 
 const Resume = () => {
     // 이력서 작성 페이지 컴포넌트
@@ -16,6 +17,7 @@ const Resume = () => {
     const dummySkillOptions = ['JavaScript', 'Python', 'Java', 'C++', 'React', 'Node.js', 'HTML/CSS', 'SQL', 'Git', 'Docker'];
 
     const [formData, setFormData] = useState({
+        userNo: 4,
         title: '',
         desired_position: '',
         skill_tool: '',
@@ -38,6 +40,7 @@ const Resume = () => {
                 gpa: '',
             },
         ],
+        introduction: '',
     });
 
     // const handleChange = (event) =>{
@@ -74,6 +77,20 @@ const Resume = () => {
       };
     });
   };
+
+  const save = async ()=>{
+
+
+    await axios.post("/resume/insertResumeInfo", formData,  { headers: { "Content-Type": "application/json" } })
+    .then((res)=>{
+
+        console.log(res.data.html);
+    })
+    .catch((err)=>{
+        console.log(err)
+    })
+
+  }
 
    //학력 추가 버튼 클릭 시 새 학력 항목 추가
   const addEducation = () => {
@@ -266,7 +283,7 @@ const Resume = () => {
                                 </div>
                             ))}
                         <br />
-                        <button type="submit" onClick={handleSubmit}>이력서 제출</button>
+                        <button onClick={save}>이력서 제출</button>
                     </form>
                 </div>
                 </div>
