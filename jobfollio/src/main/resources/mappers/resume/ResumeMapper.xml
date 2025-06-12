@@ -3,6 +3,24 @@
 
 <mapper namespace="com.happyjob.jobfolio.repository.resume.ResumeMapper">
 
+	<resultMap id="UserVOMap" type="com.happyjob.jobfolio.vo.join.UserVO">
+		<id     property="userNo"         column="user_no"/>
+		<result property="loginId"        column="login_id"/>
+		<result property="userType"       column="user_type"/>
+		<result property="userName"       column="user_name"/>
+		<result property="password"       column="password"/>
+		<result property="birthday"       column="birthday"/>
+		<result property="sex"            column="sex"/>
+		<result property="hp"             column="hp"/>
+		<result property="regDate"        column="reg_date"/>
+		<result property="withdrawalDate" column="withdrawal_date"/>
+		<result property="statusYn"       column="status_yn"/>
+		<result property="expireDays"     column="expire_days"/>
+		<result property="address"        column="address"/>
+		<result property="hobby"          column="hobby"/>
+		<result property="notes"          column="notes"/>
+	</resultMap>
+
 	<select id="selectResumeInfo"
 			parameterType="int"
 			resultType="com.happyjob.jobfolio.vo.resume.ResumeInfoVO">
@@ -111,6 +129,31 @@
 					 #{file_lopath}
 				 )
 	</insert>
+
+	<select id="getUserByUserNo"
+			parameterType="long"
+			resultMap="UserVOMap">
+		SELECT
+			user_no,
+			login_id,
+			user_type,
+			user_name,
+			password,
+			birthday,
+			sex,
+			hp,
+			DATE_FORMAT(reg_date, '%Y-%m-%d %H:%i:%s')    AS reg_date,
+			DATE_FORMAT(withdrawal_date, '%Y-%m-%d %H:%i:%s') AS withdrawal_date,
+			status_yn,
+			expire_days,
+			address,
+			hobby,
+			notes
+		FROM tb_userinfo
+		WHERE user_no = #{userNo}
+		  AND status_yn = 'N'
+		  AND withdrawal_date IS NULL
+	</select>
 
 
 <!--	<select id="selectSkillInfoList"-->

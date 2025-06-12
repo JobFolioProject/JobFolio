@@ -16,12 +16,14 @@ const Resume = () => {
         alert('이력서가 제출되었습니다.');
     }
 
+    let restext = "";
+
     // test!!! 기술/툴 드롭다운 옵션 샘플데이터
     const dummySkillOptions = ['JavaScript', 'Python', 'Java', 'C++', 'React', 'Node.js', 'HTML/CSS', 'SQL', 'Git', 'Docker'];
 
     // 이력서 작성 폼 데이터 상태
     const [formData, setFormData] = useState({
-        userNo: 4,
+        user_no: 4,
         title: '',
         desired_position: '',
         skill_tool: '',
@@ -44,11 +46,9 @@ const Resume = () => {
                 gpa: '',
             },
         ],
-        introduction: '',
+        coverLetter: '',
     });
 
-    //내가 쓴 자기소개서 상태
-    const [myCoverLetter, setMyCoverLetter] = useState(''); // 자기소개서 상태
 
 
 
@@ -93,7 +93,10 @@ const Resume = () => {
     await axios.post("/resume/insertResumeInfo", formData,  { headers: { "Content-Type": "application/json" } })
     .then((res)=>{
 
-        console.log(res.data.html);
+        
+        const parsedAnswer = JSON.parse(res.data.html);
+        restext = parsedAnswer.choices[0].message.content;
+        console.log(restext);
     })
     .catch((err)=>{
         console.log(err)
@@ -274,6 +277,7 @@ const Resume = () => {
                         <br />
 
                         <button onClick={save}>이력서 제출</button>
+
                         <label>
                             {/*내가 작성한 자소서는 DB에 저장할것인지???*/}
                             <div><span>자기소개서</span></div> 
@@ -283,8 +287,8 @@ const Resume = () => {
                                 name="coverLetter"
                                 rows="6"
                                 cols="50"
-                                value={myCoverLetter}
-                                onChange={(e) => setMyCoverLetter(e.target.value)}
+                                value={formData.coverLetter}
+                                onChange={(e) => setFormData({ ...formData, coverLetter: e.target.value })}
                                 placeholder="자기소개서를 입력하세요"
                                 />
                             </div>
@@ -297,8 +301,8 @@ const Resume = () => {
                     </form>
                     <ResumeAiCoverLetter
                         formData={formData}
-                        myCoverLetter={myCoverLetter}
-                        setMyCoverLetter={setMyCoverLetter} // 자기소개서 상태를 자식 컴포넌트에 전달
+                        myCoverLetter={formData.coverLetter}
+                        setMyCoverLetter={(value) => setFormData({ ...formData, coverLetter: value })}
                         setFormData={setFormData} // formData 상태를 자식 컴포넌트에 전달
                      />
                 </div>
