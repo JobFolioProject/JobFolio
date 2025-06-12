@@ -1,0 +1,88 @@
+.jf-joinform-wrapper {
+  max-width: 420px;
+  margin: 40px auto;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+  padding: 40px 32px;
+}
+
+.jf-joinform-title {
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.jf-joinform-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.jf-joinform-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.jf-joinform-label {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.jf-joinform-input {
+  padding: 10px 12px;
+  border: 1.5px solid #d0e3ff;
+  border-radius: 8px;
+  font-size: 1rem;
+  background: #f8fbff;
+  outline: none;
+  transition: border 0.2s;
+}
+
+.jf-joinform-input:focus {
+  border: 1.5px solid #4fc3f7;
+  background: #fff;
+}
+
+.jf-joinform-btn {
+  margin-top: 6px;
+  padding: 8px 0;
+  background: linear-gradient(90deg, #7bb6ff 0%, #4fc3f7 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.jf-joinform-btn:hover {
+  background: linear-gradient(90deg, #4fc3f7 0%, #7bb6ff 100%);
+}
+
+.jf-joinform-submit {
+  margin-top: 2rem;
+  padding: 12px 0;
+  background: #05233f;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.jf-joinform-submit:hover {
+  background: #174a7c;
+}
+
+.jf-joinform-msg {
+  margin-top: 4px;
+  font-size: 0.95rem;
+  color: #1976d2;
+}

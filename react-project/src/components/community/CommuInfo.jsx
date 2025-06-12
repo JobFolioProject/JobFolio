@@ -1,8 +1,9 @@
 import '../../css/community/CommuInfo.css';
 import CommuMenuBar from './CommuMenuBar';
-import { useState } from 'react';
+import { useState , useEffect } from 'react';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
+/*
 const mockData = [
   {
     id: 1,
@@ -35,10 +36,22 @@ const mockData = [
       '네트워크 문제이거나 서버 오류일 수 있습니다. 잠시 후 다시 시도하거나 고객센터로 문의해주세요.'
   }
 ];
+*/
 
 
 const CommuInfo = () => {
+  const [ infoList, setInfoList ] = useState([]);
   const [openItem, setOpenItem] = useState(null);
+
+  useEffect(() => {
+    fetch('/api/info/list')
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(' 뭐받았노:' , data);
+        setInfoList(data);
+      })
+      .catch((err) => console.error('이용안내 불러오기 대실패:', err))
+  },[])
 
   const toggleItem = (id) => {
     setOpenItem((prev) => (prev === id ? null : id));
@@ -51,8 +64,9 @@ const CommuInfo = () => {
             <h1>이용안내</h1>
         </div>
     <CommuMenuBar/>
+
         <ul className="faq-list">
-        {mockData.map((item) => (
+        {infoList.map((item) => (
           <li key={item.id} className={`faq-item ${openItem === item.id ? 'open' : ''}`}>
             <div className="question" onClick={() => toggleItem(item.id)}>
               <ChevronRightIcon className="icon" /> 
