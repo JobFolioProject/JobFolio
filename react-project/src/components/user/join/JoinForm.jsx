@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import "../../../css/user/join/JoinForm.css";
 import axios from "axios";
 
+
+
 const JoinForm = () => {
   const [email, setEmail] = useState("");
   const [emailToken, setEmailToken] = useState("");
@@ -17,6 +19,8 @@ const JoinForm = () => {
   const [tokenMsg, setTokenMsg] = useState("");
   const [joinMsg, setJoinMsg] = useState("");
   const [joinError, setJoinError] = useState("");
+
+  axios.defaults.withCredentials = true;
 
   // 이메일 인증번호 발송
   const handleSendEmail = async () => {
