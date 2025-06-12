@@ -43,15 +43,35 @@ public class AdminService {
     }
 
     // 등급별 고객 데이터 반환
-    public Map<String, Integer> getConsumerDistribution() {
-        Map<String, Object> rawData = adminMapper.calculateUserVIPDistribution();
-        // BigDecimal 데이터를 Integer로 변환
-        Map<String, Integer> processedData = new HashMap<>();
-        processedData.put("VIP1", ((BigDecimal) rawData.get("VIP1")).intValue());
-        processedData.put("VIP2", ((BigDecimal) rawData.get("VIP2")).intValue());
-        processedData.put("VIP3", ((BigDecimal) rawData.get("VIP3")).intValue());
-        processedData.put("NOMAL", ((BigDecimal) rawData.get("NOMAL")).intValue());
-        return processedData;
+    public Map<String,Integer> getConsumerDistribution() {
+        // 1) 매퍼 호출
+        Map<String,Object> raw = adminMapper.getConsumerDistribution();
+        if (raw == null) {
+            raw = new HashMap<>();
+        }
+
+        // 2) Object → int 안전 변환 헬퍼
+        //    (BigDecimal, Long, Integer 모두 처리)
+        Map<String,Integer> result = new HashMap<>();
+        result.put("normal",                 toInt(raw.get("normal")));
+        result.put("subscribe1",             toInt(raw.get("subscribe1")));
+        result.put("subscribe2",             toInt(raw.get("subscribe2")));
+        result.put("subscribe3",             toInt(raw.get("subscribe3")));
+        result.put("expire_days_null_count", toInt(raw.get("expire_days_null_count")));
+        return result;
+    }
+
+    /** null-safe Object → int */
+    private int toInt(Object obj) {
+        if (obj == null) return 0;
+        if (obj instanceof Number) {
+            return ((Number) obj).intValue();
+        }
+        try {
+            return Integer.parseInt(obj.toString());
+        } catch (NumberFormatException e) {
+            return 0;
+        }
     }
 
     // 월별 가입 고객 데이터 반환
