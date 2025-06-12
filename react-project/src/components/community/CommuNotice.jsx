@@ -29,8 +29,8 @@ const CommuNotice = () => {
                     </div>
                     <div className='community-notice-search'>
                         <div className="community-notice-search-container">
-                            <SearchIcon className='community-notice-search-icon'/>
                             <input className='community-notice-search-input' type="text" name="" id="" placeholder='검색'/>
+                            <SearchIcon className='community-notice-search-icon'/>
                         </div>
                     </div>
                 </div>
