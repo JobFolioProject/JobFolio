@@ -1,5 +1,6 @@
 package com.happyjob.jobfolio.repository.resume;
 
+import com.happyjob.jobfolio.vo.join.UserVO;
 import com.happyjob.jobfolio.vo.resume.LinkInfoVO;
 import com.happyjob.jobfolio.vo.resume.ResumeInfoVO;
 import com.happyjob.jobfolio.vo.resume.ResumeLikeVO;
@@ -26,6 +27,8 @@ public interface ResumeMapper {
     List<TemplateVO> selectAllTemplates();
 
     int insertTemplate(TemplateVO templateVO);
+
+    UserVO getUserByUserNo(Long userNo);
 
 
 //    // 스킬 목록 조회
