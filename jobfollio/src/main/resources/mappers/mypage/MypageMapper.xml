@@ -8,14 +8,14 @@
     </resultMap>
 
     <resultMap id="eduInfoResultMap" type="com.happyjob.jobfolio.vo.mypage.EduInfoVO">
-        <id property="eduNo" column="E_EDU_NO"/>
+        <id property="edu_no" column="E_EDU_NO"/>
         <result property="user_no" column="E_USER_NO"/>
-        <result property="schoolName" column="E_SCHOOL_NAME"/>
-        <result property="enrollDate" column="E_ENROLL_DATE"/>
-        <result property="gradDate" column="E_GRAD_DATE"/>
-        <result property="eduStatus" column="E_EDU_STATUS"/>
+        <result property="school_name" column="E_SCHOOL_NAME"/>
+        <result property="enroll_date" column="E_ENROLL_DATE"/>
+        <result property="grad_date" column="E_GRAD_DATE"/>
+        <result property="edu_status" column="E_EDU_STATUS"/>
         <result property="major" column="E_MAJOR"/>
-        <result property="subMajor" column="E_SUB_MAJOR"/>
+        <result property="sub_major" column="E_SUB_MAJOR"/>
         <result property="gpa" column="E_GPA"/>
         <result property="notes" column="E_NOTES"/>
     </resultMap>
@@ -28,8 +28,8 @@
 
     <resultMap id="skillResultMap" type="com.happyjob.jobfolio.vo.mypage.SkillVO">
         <id property="user_no" column="S_USER_NO"/>
-        <result property="expLevel" column="S_EXP_LEVEL"/>
-        <result property="skillTool" column="S_SKILL_TOOL"/>
+        <result property="exp_level" column="S_EXP_LEVEL"/>
+        <result property="skill_tool" column="S_SKILL_TOOL"/>
         <association property="skill" javaType="com.happyjob.jobfolio.vo.system.DetailcodeModel">
             <result property="group_code" column="SK_GROUP_CODE"/>
             <result property="detail_code" column="SK_DETAIL_CODE"/>
@@ -38,21 +38,21 @@
     </resultMap>
 
     <resultMap id="certificateResultMap" type="com.happyjob.jobfolio.vo.mypage.CertificateVO">
-        <id property="certificationNo" column="C_CERTIFICATION_NO"/>
+        <id property="certification_no" column="C_CERTIFICATION_NO"/>
         <result property="user_no" column="C_USER_NO"/>
-        <result property="certificateNo" column="C_CERTIFICATE_NO"/>
-        <result property="certificateName" column="C_CERTIFICATE_NAME"/>
-        <result property="issuingOrg" column="C_ISSUING_ORG"/>
-        <result property="acquiredDate" column="C_ACQUIRED_DATE"/>
+        <result property="certificate_no" column="C_CERTIFICATE_NO"/>
+        <result property="certificate_name" column="C_CERTIFICATE_NAME"/>
+        <result property="issuing_org" column="C_ISSUING_ORG"/>
+        <result property="acquired_date" column="C_ACQUIRED_DATE"/>
         <result property="notes" column="C_NOTES"/>
     </resultMap>
 
     <resultMap id="careerHistoryResultMap" type="com.happyjob.jobfolio.vo.mypage.CareerHistoryVO">
-        <id property="careerNo" column="H_CAREER_NO"/>
+        <id property="career_no" column="H_CAREER_NO"/>
         <result property="user_no" column="H_USER_NO"/>
-        <result property="companyName" column="H_COMPANY_NAME"/>
-        <result property="startDate" column="H_START_DATE"/>
-        <result property="endDate" column="H_END_DATE"/>
+        <result property="company_name" column="H_COMPANY_NAME"/>
+        <result property="start_date" column="H_START_DATE"/>
+        <result property="end_date" column="H_END_DATE"/>
         <result property="position" column="H_POSITION"/>
         <result property="notes" column="H_NOTES"/>
     </resultMap>
