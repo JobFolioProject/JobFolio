@@ -2,8 +2,10 @@ import '../../css/resume/Resume.css'; // 스타일 따로 작성
 import ResumeSidebar from './ResumeSidebar';
 import React, { use, useState, useEffect} from 'react';
 import DropDown from './ResumeDropdown';
+import axios from 'axios';
 import ResumeAiCoverLetter from './ResumeAiCovLetter';
 import PrettyBtn from './PrettyBtn'; // PrettyBtn 컴포넌트 임포트
+
 
 const Resume = () => {
     // 이력서 작성 페이지 컴포넌트
@@ -19,6 +21,7 @@ const Resume = () => {
 
     // 이력서 작성 폼 데이터 상태
     const [formData, setFormData] = useState({
+        userNo: 4,
         title: '',
         desired_position: '',
         skill_tool: '',
@@ -41,6 +44,7 @@ const Resume = () => {
                 gpa: '',
             },
         ],
+        introduction: '',
     });
 
     //내가 쓴 자기소개서 상태
@@ -82,6 +86,20 @@ const Resume = () => {
       };
     });
   };
+
+  const save = async ()=>{
+
+
+    await axios.post("/resume/insertResumeInfo", formData,  { headers: { "Content-Type": "application/json" } })
+    .then((res)=>{
+
+        console.log(res.data.html);
+    })
+    .catch((err)=>{
+        console.log(err)
+    })
+
+  }
 
    //학력 추가 버튼 클릭 시 새 학력 항목 추가
   const addEducation = () => {
@@ -254,6 +272,8 @@ const Resume = () => {
                             </div>
                             ))}
                         <br />
+
+                        <button onClick={save}>이력서 제출</button>
                         <label>
                             {/*내가 작성한 자소서는 DB에 저장할것인지???*/}
                             <div><span>자기소개서</span></div> 
