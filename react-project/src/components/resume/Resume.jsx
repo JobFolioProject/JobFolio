@@ -1,6 +1,7 @@
 import '../../css/resume/Resume.css'; // 스타일 따로 작성
 import ResumeSidebar from './ResumeSidebar';
 import React, { use, useState, useEffect} from 'react';
+import DropDown from './ResumeDropdown';
 
 const Resume = () => {
     // 이력서 작성 페이지 컴포넌트
@@ -11,12 +12,22 @@ const Resume = () => {
         alert('이력서가 제출되었습니다.');
     }
 
+    // test!!! 기술/툴 드롭다운 옵션 샘플데이터
+    const dummySkillOptions = ['JavaScript', 'Python', 'Java', 'C++', 'React', 'Node.js', 'HTML/CSS', 'SQL', 'Git', 'Docker'];
+
     const [formData, setFormData] = useState({
         title: '',
         desired_position: '',
         skill_tool: '',
         link_url: '',
-        experience: '',
+        experience: [
+            {
+                start_date:'',
+                end_date:'',
+                company_name:'',
+                notes:'',
+            },
+        ],
         education: [
             {
                 school_name: '',
@@ -82,6 +93,43 @@ const Resume = () => {
     }));
   };
 
+  // 경령 사항 추가 핸들러
+
+  const addExperience = () => {
+    setFormData((prev) =>({
+        ...prev,
+        experience: [
+           ...prev.experience,
+           {
+            start_date: '',
+            end_date:'',
+            company_name:'',
+            notes:'',
+           } 
+        ]
+    }));
+  }
+
+  // 경력 입력 변경 핸들러 (필드 이름, 값)
+  const handleExperienceChange = (index, e) => {
+    const {name, value} = e.target;
+    setFormData((prev) => {
+        const newExperience = [...prev.experience]; // 기존 experience 배열 복사
+        newExperience[index] = { // 해당 인덱스의 항목만 업데이트
+            ...newExperience[index],
+            [name]: value,
+        }
+        return {
+            ...prev,
+            experience: newExperience, // 업데이트된 experience 배열로 설정
+        }
+    })
+  }
+
+
+  //자기소개 
+  
+
 
   
     return (
@@ -114,8 +162,35 @@ const Resume = () => {
 
                         {/* 나머지 부분도 동일하게 적용 */}
                         <label>
-                            <div><span>기술스택/툴</span></div>
+                            <span>기술스택/툴</span><br />
+
                             <div><input type="text" name="skill_tool" onChange={handleChange} value={formData.skill_tool}/></div>
+                            <DropDown 
+                                options={dummySkillOptions} 
+                                selected={formData.skill_tool}
+                                placeholder="기술/툴을 선택하세요"
+                                onSelect={(option)=>{
+                                    setFormData((prev) => ({
+                                        ...prev,
+                                        skill_tool: option // 선택한 기술/툴을 formData에 저장
+                                    }));
+                                    console.log("선택한 기술/툴:", option); // 선택한 옵션 확인
+                                }}
+                                />
+                                {/* 드롭다운 컴포넌트 사용 */}
+                                {formData.skill_tool && <p>선택한 기술: {formData.skill_tool}</p>}
+                            {/* <DropDown 
+                            options={dummySkillOptions} 
+                            selected={formData.skill_tool}
+                            placeholder="기술/툴을 선택하세요"
+                            onSelect={(option)=>{
+                                setFormData((prev) => ({
+                                    ...prev,
+                                    skill_tool: option // 선택한 기술/툴을 formData에 저장
+                                }));
+                                console.log("선택한 기술/툴:", option); // 선택한 옵션 확인
+                            }}
+                            /> */}
                         </label>
                         <br />
                         <label>
@@ -189,9 +264,27 @@ const Resume = () => {
                         ))}
                         <br />
                         <label>
-                            <div><span>경력</span> :</div>
-                            <div><textarea name="experience" rows="4" cols="50" onChange={handleChange} value={formData.experience}></textarea></div>
+                            <div><span>경력
+                                <button 
+                                 type='button' 
+                                 onClick={addExperience} 
+                                 disabled={formData.experience.length >= 4}>
+                                    +
+                                </button></span></div>
                         </label>
+                            {/* <div><textarea name="experience" rows="4" cols="50" onChange={handleChange} value={formData.experience}></textarea></div> */}
+                            {formData.experience.map((exp,index)=>(
+                                <div key={index} className='experience-group'>
+                                 <div className='experience-row'>
+                                    <input type='text' name='start_date' placeholder='시작일' onChange={(e) => handleExperienceChange(index, e)} value={exp.start_date}/>
+                                    <input type='text' name='end_date' placeholder='종료일' onChange={(e) => handleExperienceChange(index, e)} value={exp.end_date}/>
+                                    <input type='text' name='company_name' placeholder='회사명' onChange={(e) => handleExperienceChange(index, e)} value={exp.company_name}/>
+                                </div>
+                                <div className='experience-notes'>
+                                    <input type='text' name='notes' placeholder='업무 내용을 입력해주세요' onChange={(e) => handleExperienceChange(index, e)} value={exp.notes}/>
+                                </div>
+                                </div>
+                            ))}
                         <br />
                         <button type="submit" onClick={handleSubmit}>이력서 제출</button>
                     </form>

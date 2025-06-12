@@ -48,4 +48,8 @@ public class ResumeService {
         return resumeMapper.insertTemplate(templateVO);
     }
 
+//    // 스킬 목록 조회
+//    public List<SkillInfoVO> selectSkillInfoList(long user_no) {
+//
+//        return resumeMapper.selectSkillInfoList(user_no);}
 }
