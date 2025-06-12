@@ -10,11 +10,10 @@
 
 /* 메인 콘텐츠 */
 .admin-main .main-content {
+    margin-top: 10px;
     flex-grow: 1;
     padding: 20px;
-    background-color: white;
-    height: 100vh;
-    
+    background-color: white;   
 }
 
 /* 대시보드 카드 */
@@ -25,12 +24,12 @@
 }
 
 .admin-main .card {
-    
+    margin-top: 40px;
     background-color: #333;
     color: white;
     padding: 20px;
     border-radius: 8px;
-    width: 350px;
+    width: 330px;
     text-align: center;
 }
 
@@ -47,7 +46,7 @@
 
 .admin-main .chart, .chartTwo, .chart3, .projects {
     
-    width: 350px;
+    width: 330px;
     background-color: #f9f9f9;
     padding: 20px;
     border-radius: 8px;
