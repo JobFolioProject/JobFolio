@@ -1,0 +1,116 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE mapper
+        PUBLIC '-//mybatis.org//DTD Mapper 3.0//EN'
+        'http://mybatis.org/dtd/mybatis-3-mapper.dtd'>
+<mapper namespace='com.happyjob.jobfolio.repository.admin.AdminMapper'>
+
+    <!-- STATUS가 'Y' 또는 'A'인 회원 수 계산 -->
+    <select id='countMembersWithStatus' resultType='int'>
+        SELECT COUNT(*)
+        FROM tb_userinfo
+        WHERE status_yn IN ('Y','A')
+    </select>
+
+    <!-- 결제 내역 테이블의 총 수익 계산 -->
+    <select id='calculateTotalEarnings' resultType='int'>
+        SELECT COALESCE(SUM(amount), 0)
+        FROM tb_payment_his
+    </select>
+
+    <!-- 결제 내역 테이블의 구매자 수 계산 -->
+    <select id='calculateTotalConsumers' resultType='int'>
+        SELECT COUNT(DISTINCT user_no)
+        FROM tb_payment_his
+    </select>
+
+    <!-- 월별 수익 계산 -->
+    <select id='getMonthlyEarnings' resultType='map'>
+        SELECT
+            DATE_FORMAT(paid_date, '%Y-%m') AS month,
+            COALESCE(SUM(amount), 0) AS earnings
+        FROM tb_payment_his
+        GROUP BY DATE_FORMAT(paid_date, '%Y-%m')
+        ORDER BY month
+    </select>
+
+    <!-- 월별 가입 고객 수 조회 -->
+    <select id='getMonthlyMembers' resultType='map'>
+        SELECT
+            DATE_FORMAT(reg_date, '%Y-%m') AS month,
+            COUNT(*) AS memberCount
+        FROM tb_userinfo
+        WHERE status_yn IN ('Y','A')
+        GROUP BY DATE_FORMAT(reg_date, '%Y-%m')
+        ORDER BY month
+    </select>
+
+    <!-- 모든 회원 조회 -->
+    <select id='getAllMembers' resultType='com.happyjob.jobfolio.vo.usermgr.UserModel'>
+        SELECT
+            login_id   AS memberId,
+            password   AS memberPwd,
+            user_name  AS memberName,
+            login_id   AS email,
+            hp         AS phone,
+            birthday   AS birth,
+            address,
+            status_yn  AS status,
+            ''         AS pImg
+        FROM tb_userinfo
+    </select>
+
+    <!-- 구독 분포(전체/일반/구독자) -->
+    <select id='getSubscribeDistribution' resultType='map'>
+        SELECT
+            COUNT(*) AS totalUsers,
+            SUM(CASE WHEN user_no NOT IN (SELECT user_no FROM tb_payment_his) THEN 1 ELSE 0 END) AS generalUsers,
+            COUNT(DISTINCT CASE WHEN user_no IN (SELECT user_no FROM tb_payment_his) THEN user_no END) AS subscribedUsers
+        FROM tb_userinfo
+        WHERE status_yn IN ('Y','A')
+    </select>
+
+    <!-- 일반 회원 수 -->
+    <select id='getGeneralUsers' resultType='int'>
+        SELECT COUNT(*)
+        FROM tb_userinfo u
+        WHERE status_yn IN ('Y','A')
+          AND NOT EXISTS (
+            SELECT 1 FROM tb_payment_his p WHERE p.user_no = u.user_no
+        )
+    </select>
+
+    <!-- 회원 정보 수정 -->
+    <update id='updateMemberInfo' parameterType='com.happyjob.jobfolio.vo.usermgr.UserModel'>
+        UPDATE tb_userinfo
+        SET user_name  = #{memberName},
+            hp         = #{phone},
+            address    = #{address},
+            status_yn  = #{status}
+        WHERE login_id = #{memberId}
+    </update>
+
+    <!-- 회원 상태 변경 -->
+    <update id='updateMemberStatus' parameterType='map'>
+        UPDATE tb_userinfo
+        SET status_yn = #{status}
+        WHERE login_id = #{memberId}
+    </update>
+
+    <!-- VIP 및 일반 회원 분포 -->
+    <select id='calculateUserVIPDistribution' resultType='map'>
+        SELECT
+            SUM(CASE WHEN product_no = 1 THEN 1 ELSE 0 END) AS vip1,
+            SUM(CASE WHEN product_no = 2 THEN 1 ELSE 0 END) AS vip2,
+            SUM(CASE WHEN product_no = 3 THEN 1 ELSE 0 END) AS vip3,
+            COUNT(*) - COUNT(DISTINCT user_no)           AS normal
+        FROM tb_payment_his
+    </select>
+
+    <!-- 사용 기록 총 카운트 -->
+    <select id='countTotalTasks' resultType='int'>
+        SELECT COUNT(*)
+        FROM tb_project_history
+        WHERE status = 'Y'
+    </select>
+
+</mapper>
