@@ -6,12 +6,10 @@ const Login = ({ onClose, onLoginClick }) => {
 
   const userLogin = () => {
     onLoginClick();
-    sessionStorage.setItem('loginUser', "user");
-    window.location.href = '/'; // 메인 페이지로 이동
+    // sessionStorage.setItem('loginUser', "user");
+    // window.location.href = '/'; // 메인 페이지로 이동
     onClose();
   };
-
-
 
 const adminLogin=() => {
     sessionStorage.setItem('loginUser', "admin");
@@ -38,6 +36,7 @@ const adminLogin=() => {
 
   const goToJoin = () => {
     navigate("/join");
+    onClose();
   };
 
   return (
