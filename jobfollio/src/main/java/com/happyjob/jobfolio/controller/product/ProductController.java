@@ -49,35 +49,26 @@ public class ProductController {
 		return resultMap;
 	}
 
-	// 관리자 페이지 - 이용권 리스트 출력
 	@RequestMapping("/productList")
 	@ResponseBody
-	public Map<String, Object> productList(Model model, @RequestParam Map<String, Object> paramMap,
-			HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
+	public Map<String, Object> productList(@RequestParam Map<String, Object> paramMap) throws Exception {
 
-		logger.info("   - paramMap : " + paramMap);
-		//String title = (String) paramMap.get("title");
-
-		int currentPage = Integer.parseInt((String) paramMap.get("currentpage")); // 현재페이지
+		int currentPage = Integer.parseInt((String) paramMap.get("currentpage"));
 		int pageSize = Integer.parseInt((String) paramMap.get("pagesize"));
 		int pageIndex = (currentPage - 1) * pageSize;
-		
+
 		paramMap.put("pageIndex", pageIndex);
 		paramMap.put("pageSize", pageSize);
 
-		// 공지사항 목록 조회
 		List<ProductModel> productList = productService.productList(paramMap);
-		// 목록 수 추출해서 보내기
 		int productCnt = productService.productCnt(paramMap);
 
-		Map<String, Object> resultMap = new HashMap<String, Object>();
-		resultMap.put("listdate", productList); // success 용어 담기
-		resultMap.put("totalcnt", productCnt); // 리턴 값 해쉬에 담기
-		resultMap.put("pageSize", pageSize);
-		resultMap.put("currentPage", currentPage);
-
+		Map<String, Object> resultMap = new HashMap<>();
+		resultMap.put("productList", productList);
+		resultMap.put("totalcnt", productCnt);
 		return resultMap;
 	}
+
 
 	@PostMapping("/insertProduct")
 	@ResponseBody

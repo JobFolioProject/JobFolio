@@ -34,7 +34,6 @@ public class ProductModel {
 		this.product_detail = product_detail;
 	}
 
-
 	public int getPrice() {
 		return price;
 	}
