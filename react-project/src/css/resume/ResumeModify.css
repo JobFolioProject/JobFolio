@@ -1,50 +1,23 @@
-.sidebar {
-  margin-top: 50px;
-  width: 280px;
-  background: #f5f5f5;
-  padding: 24px 0;
-  border-right: 1px solid #ddd;
-  border-bottom: 1px solid #ddd;
-  height: 600px;
-  position: fixed;
-  top: 0;
-  left: 0;
+.resume_wrap {
+  margin-top: 0px;
+  display: flex;
 }
 
-.sidebar .menuTitle {
-  font-weight: bold;
-  font-size: 18px;
-  margin-bottom: 16px;
-  padding-left: 24px;
+.resumeContent {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 40px;
+  justify-content: center;
 }
 
-.sidebar .subMenu {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.sidebar .subMenuItem {
-  padding: 8px 24px;
-  cursor: pointer;
-  color: #333;
-}
-/* .resume {
-    margin-left: 220px;
-    padding: 40px;
-    display: flex;
-    justify-content: center;
-} */
-
-.resume .resumeContent {
-  border-bottom: 2px solid #888;
+.resumeContent .resumeModifyPart {
   padding-bottom: 24px;
   margin-bottom: 32px;
   max-width: 1300px;
   margin: 0 auto;
 }
 
-.resume .title {
+.resumeModifyPart .title {
   text-align: center;
   border-bottom: 2px solid #888;
   padding-bottom: 24px;
