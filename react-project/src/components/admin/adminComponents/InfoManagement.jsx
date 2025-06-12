@@ -1,9 +1,12 @@
 // InfoManagement.jsx
+import axios from 'axios';
 import '../../../css/admin/adminComponents/InfoManagement.css';
 import InfoManagementDetail from './InfoManagement_detail';
 import AdminSideBar from '../AdminSideBar';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import Pagination from '../../common/Pagination.jsx'; 
 
+/*
 const mockData = Array.from({ length: 14 }, (_, i) => ({
   id: 14 - i,
   question: `이용안내 항목 예시 ${14 - i}`,
@@ -20,21 +23,36 @@ const mockData = Array.from({ length: 14 }, (_, i) => ({
   writer: '운영자',
   priority : i
 }));
+*/
 
 const InfoManagement = () => {
-  const [data, setData] = useState(mockData);
+  const [data, setData] = useState([]);
   const [selected, setSelected] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [detailItem, setDetailItem] = useState(null);    
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [modalMode, setModalMode] = useState('edit');
 
+    useEffect(() => {
+    axios.get('/api/info/list')
+      .then((res) => {
+        if (Array.isArray(res.data)) {
+          setData(res.data);
+        } else {
+          console.error('예상치 못한 응답 데이터:', res.data);
+        }
+      })
+      .catch((err) => {
+        console.error('이용안내 불러오기 실패:', err);
+      });
+  }, []);
+
   const itemsPerPage = 10;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const sortedData = [...data].sort((a, b) => a.priority - b.priority);
   const currentItems = sortedData.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(mockData.length / itemsPerPage);
+  const totalPages = Math.ceil(data.length / itemsPerPage);
 
 
   const toggleCheckbox = (id) => {
@@ -76,6 +94,11 @@ const InfoManagement = () => {
         item={detailItem}
         onClose={() => setIsDetailOpen(false)}
         mode={modalMode}
+        onSaved={() => {
+          axios.get('/api/info/list')
+          .then((res) => setData(res.data))
+          .catch((err) => console.error(err));
+        }}
       />
     )}
   
@@ -109,28 +132,19 @@ const InfoManagement = () => {
                     {item.question}
                 </td>
                 <td>{item.createdAt}</td>
-                <td><input className='input-priority' value={item.priority}></input></td>
+                <td><input className='input-priority' value={item.priority} onChange={(e) => {}}></input></td>
                 <td>{item.writer}</td>
               </tr>
             ))}
           </tbody>
         </table>
 
-        <div className='pagination'>
-          <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1}>{'<<'}</button>
-          <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1}>{'<'}</button>
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map((num) => (
-            <button
-              key={num}
-              className={num === currentPage ? 'active' : ''}
-              onClick={() => setCurrentPage(num)}
-            >
-              {num}
-            </button>
-          ))}
-          <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages}>{'>'}</button>
-          <button onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages}>{'>>'}</button>
-        </div>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          setCurrentPage={setCurrentPage}
+        />
+
       </div>
     </div>
   );

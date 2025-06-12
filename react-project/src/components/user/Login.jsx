@@ -6,8 +6,17 @@ const Login = ({ onClose, onLoginClick }) => {
 
   const userLogin = () => {
     onLoginClick();
+    sessionStorage.setItem('loginUser', "user");
+    window.location.href = '/'; // 메인 페이지로 이동
     onClose();
   };
+
+
+
+const adminLogin=() => {
+    sessionStorage.setItem('loginUser', "admin");
+    window.location.href = '/'; // 메인 페이지로 이동v
+}
 
   const naverLogin = () => {
     sessionStorage.setItem("loginUser", "naver");
@@ -62,6 +71,8 @@ const Login = ({ onClose, onLoginClick }) => {
               />
               <span className="login-text">네이버로 로그인</span>
             </button>
+            <button onClick={userLogin}>유저 로그인</button>
+            <button onClick={adminLogin}>관리자 로그인</button>
           </div>
           <div className="login-links">
             <span onClick={goToFindPassword}>비밀번호 찾기</span>
