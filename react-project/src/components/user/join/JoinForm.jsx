@@ -3,6 +3,8 @@ import "../../../css/user/join/JoinForm.css";
 import axios from "axios";
 
 const JoinForm = () => {
+  axios.defaults.withCredentials = true;
+
   // 상태 정의
   const [email, setEmail] = useState("");
   const [emailToken, setEmailToken] = useState("");
@@ -62,10 +64,8 @@ const JoinForm = () => {
   };
   const validatePassword = (value) => {
     if (!value) return "비밀번호를 입력해주세요.";
-    if (value.length < 8) return "비밀번호는 8자 이상이어야 합니다.";
+    if (value.length < 4) return "비밀번호는 4자 이상이어야 합니다.";
     if (value.length > 100) return "비밀번호는 100자 이하로 입력해주세요.";
-    const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/;
-    if (!passwordRegex.test(value)) return "비밀번호는 영문, 숫자, 특수문자를 포함해야 합니다.";
     return "";
   };
   const formatPhoneNumber = (value) => {
@@ -248,7 +248,8 @@ const JoinForm = () => {
               disabled={isEmailVerified}
               autoComplete="off"
             />
-            <label className={`floating-label${focus.email || email ? ' active' : ''}`}>이메일 *</label>
+            <label className={`floating-label${focus.email || email ? ' active' : ''}`}>이메일</label>
+            {emailError && <div className="jf-joinform-tooltip-error">{emailError}</div>}
           </div>
           <button
             type="button"
@@ -259,7 +260,6 @@ const JoinForm = () => {
             인증번호 발송
           </button>
         </div>
-        {emailError && <div className="jf-joinform-error">{emailError}</div>}
         {emailMsg && <div className="jf-joinform-msg">{emailMsg}</div>}
         {/* 인증번호 + 인증버튼 */}
         <div className="jf-joinform-field-group email-row">
@@ -275,7 +275,8 @@ const JoinForm = () => {
               maxLength={12}
               autoComplete="off"
             />
-            <label className={`floating-label${focus.emailToken || emailToken ? ' active' : ''}`}>인증번호 *</label>
+            <label className={`floating-label${focus.emailToken || emailToken ? ' active' : ''}`}>인증번호</label>
+            {tokenError && <div className="jf-joinform-tooltip-error">{tokenError}</div>}
           </div>
           <button
             type="button"
@@ -286,7 +287,6 @@ const JoinForm = () => {
             이메일 인증
           </button>
         </div>
-        {tokenError && <div className="jf-joinform-error">{tokenError}</div>}
         {tokenMsg && <div className="jf-joinform-msg">{tokenMsg}</div>}
         {/* 이름 */}
         <div className="jf-joinform-field-group">
@@ -300,9 +300,9 @@ const JoinForm = () => {
               onBlur={() => setFocus(f => ({ ...f, userName: false }))}
               autoComplete="off"
             />
-            <label className={`floating-label${focus.userName || userName ? ' active' : ''}`}>이름 *</label>
+            <label className={`floating-label${focus.userName || userName ? ' active' : ''}`}>이름</label>
+            {nameError && <div className="jf-joinform-tooltip-error">{nameError}</div>}
           </div>
-          {nameError && <div className="jf-joinform-error">{nameError}</div>}
         </div>
         {/* 비밀번호 */}
         <div className="jf-joinform-field-group">
@@ -316,9 +316,9 @@ const JoinForm = () => {
               onBlur={() => setFocus(f => ({ ...f, password: false }))}
               autoComplete="off"
             />
-            <label className={`floating-label${focus.password || password ? ' active' : ''}`}>비밀번호 *</label>
+            <label className={`floating-label${focus.password || password ? ' active' : ''}`}>비밀번호</label>
+            {passwordError && <div className="jf-joinform-tooltip-error">{passwordError}</div>}
           </div>
-          {passwordError && <div className="jf-joinform-error">{passwordError}</div>}
         </div>
         {/* 생년월일 + 성별 한 줄 배치 */}
         <div className="jf-joinform-field-group flex-row">
@@ -333,15 +333,15 @@ const JoinForm = () => {
               placeholder=""
               autoComplete="off"
             />
-            <label className={`floating-label${focus.birthday || birthday ? ' active' : ''}`}>생년월일(예시: 20000131) *</label>
+            <label className={`floating-label${focus.birthday || birthday ? ' active' : ''}`}>생년월일(예시: 20000131)</label>
+            {birthdayError && <div className="jf-joinform-tooltip-error">{birthdayError}</div>}
           </div>
           <div className="gender-box-wrap" style={{ flex: 1 }}>
             <button type="button" className={`gender-box${sex === 'M' ? ' gender-selected' : ''}`} onClick={() => setSex('M')}>남자</button>
             <button type="button" className={`gender-box${sex === 'W' ? ' gender-selected' : ''}`} onClick={() => setSex('W')}>여자</button>
           </div>
         </div>
-        {birthdayError && <div className="jf-joinform-error">{birthdayError}</div>}
-        {joinError === "성별을 선택해주세요." && <div className="jf-joinform-error">성별을 선택해주세요.</div>}
+        {joinError === "성별을 선택해주세요." && <div className="jf-joinform-tooltip-error">성별을 선택해주세요.</div>}
         {/* 휴대폰번호 */}
         <div className="jf-joinform-field-group">
           <div className="floating-input-wrap">
@@ -355,9 +355,9 @@ const JoinForm = () => {
               placeholder=""
               autoComplete="off"
             />
-            <label className={`floating-label${focus.hp || hp ? ' active' : ''}`}>휴대폰번호 *</label>
+            <label className={`floating-label${focus.hp || hp ? ' active' : ''}`}>휴대폰번호</label>
+            {hpError && <div className="jf-joinform-tooltip-error">{hpError}</div>}
           </div>
-          {hpError && <div className="jf-joinform-error">{hpError}</div>}
         </div>
         {/* 주소 */}
         <div className="jf-joinform-field-group">
@@ -372,9 +372,9 @@ const JoinForm = () => {
               placeholder=""
               autoComplete="off"
             />
-            <label className={`floating-label${focus.address || address ? ' active' : ''}`}>주소 *</label>
+            <label className={`floating-label${focus.address || address ? ' active' : ''}`}>주소</label>
+            {addressError && <div className="jf-joinform-tooltip-error">{addressError}</div>}
           </div>
-          {addressError && <div className="jf-joinform-error">{addressError}</div>}
         </div>
         {/* 메시지 */}
         {joinMsg && (
@@ -387,7 +387,7 @@ const JoinForm = () => {
             {joinError}
           </div>
         )}
-        <button type="submit" className="jf-joinform-submit">
+        <button type="submit" className="jf-joinform-btn email-btn">
           회원가입
         </button>
       </form>
