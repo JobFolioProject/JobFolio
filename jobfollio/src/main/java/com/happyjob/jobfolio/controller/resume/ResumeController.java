@@ -66,8 +66,10 @@ public class ResumeController {
         ObjectNode root = mapper.createObjectNode();
 
         // 사용자 정보 매핑
-        root.put("name",  userVO.getUserName());      // name ← userName
-        root.put("email", userVO.getLoginId());       // email ← loginId
+
+        root.put("name",  userVO.getUser_name());      // name ← userName
+        root.put("email", userVO.getLogin_id());       // email ← loginId
+
         root.put("phone", userVO.getHp());            // phone ← hp
         root.put("website", paramMap.get("link_url").toString());
 

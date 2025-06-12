@@ -20,7 +20,7 @@
                           SELECT  1
                             FROM  tn_usr_mnu_atrt tb
                           WHERE ta.mnu_id = tb.mnu_id
-                               AND tb.user_type = #{userType}
+                               AND tb.user_type = #{user_type}
                      )
             AND ta.lvl=1
             AND hir_mnu_id = #{hir_mnu_id}

@@ -19,7 +19,7 @@
                              SELECT  1
                              FROM  tn_usr_mnu_atrt tb
                              WHERE ta.mnu_id = tb.mnu_id
-                                  AND tb.user_type = #{userType}
+                                  AND tb.user_type = #{user_type}
                            )
                   AND ta.lvl=0
                ORDER BY ta.odr
