@@ -233,7 +233,7 @@ const JoinForm = () => {
 
   return (
     <div className="jf-joinform-wrapper">
-      <h2 className="jf-joinform-title">회원가입</h2>
+      <h2 className="jf-joinform-title">회원가입하고 다양한 혜택을 누리세요!</h2>
       <form className="jf-joinform-form" onSubmit={handleJoin}>
         {/* 이메일 + 인증번호 발송 */}
         <div className="jf-joinform-field-group email-row">

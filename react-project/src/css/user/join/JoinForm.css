@@ -1,6 +1,6 @@
 .jf-joinform-wrapper {
-  max-width: 420px;
-  margin: 40px auto;
+  max-width: 500px;
+  margin: 100px auto;
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
@@ -8,16 +8,16 @@
 }
 
 .jf-joinform-title {
-  font-size: 2rem;
-  font-weight: bold;
-  text-align: center;
+  font-size: 1.2rem;
+  /* font-weight: bold; */
+  /* text-align: center; */
   margin-bottom: 2rem;
 }
 
 .jf-joinform-form {
   display: flex;
   flex-direction: column;
-  gap: 1.2rem;
+  gap: 1.3rem;
 }
 
 .jf-joinform-field-group {
@@ -32,15 +32,19 @@
   color: #333;
 }
 
-.jf-joinform-input,
-.floating-input {
+.jf-joinform-input {
   width: 100%;
   box-sizing: border-box;
+  padding-left: 12px;
 }
 
 .jf-joinform-input:focus {
-  border: 1.5px solid #4fc3f7;
-  background: #fff;
+  outline: none;
+}
+
+.jf-joinform-btn,
+.email-btn {
+  margin-left: 12px;
 }
 
 .jf-joinform-btn {
@@ -91,7 +95,7 @@
 .jf-joinform-error {
   color: #ff4757;
   font-size: 14px;
-  margin-top: 5px;
+  /* margin-top: 5px; */
 }
 
 .jf-joinform-label {
@@ -197,27 +201,38 @@
 /* 이메일/인증번호 입력과 버튼 한 줄 배치 */
 .email-row {
   display: flex;
-  align-items: flex-end;
+  flex-direction: row;
   gap: 12px;
   width: 100%;
 }
-
 .email-row .floating-input-wrap {
   flex: 1 1 0;
   min-width: 0;
+  width: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
-
 .email-row .email-btn {
   flex: none;
-  width: 120px;   /* 고정 너비 */
-  height: 44px;
-  margin: 0;
+  width: 120px;
+  height: 47px;
+  margin-left: 0;
   padding: 0 12px;
   font-size: 1rem;
   box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: center;
+  align-self: stretch;
+}
+.floating-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding-left: 12px;
+  padding-top: 20px;
+  padding-bottom: 8px;
+  height: 47px;
 }
 
 /* 플로팅 라벨 스타일 */
@@ -243,7 +258,7 @@
   top: 4px;
   left: 8px;
   font-size: 0.85rem;
-  color: #1976d2;
+  color: #aaa;  /* 포커스 갔을떄 색상 */
   background: #fff;
   padding: 0 4px;
   z-index: 2;
