@@ -5,18 +5,20 @@
     display: flex;
     align-content: center;
     justify-content: center;
+    padding-bottom: 80px; 
     min-width: 1200px;
+
  } 
 
 
 
-.resume-content {
+.resume_Wrap .resume-content {
   flex: 1;
   padding: 10px;
   padding-left: 0px;
 }
 
-.resume-content-form {
+.resume_Wrap .resume-content-form {
   margin-left: 0px;
   padding: 0 50px;
 }
@@ -32,7 +34,7 @@
   border-radius: 4px;
 }
 
-.resume-banner {
+.resume_Wrap .resume-banner {
   position: relative;
   top: 0; /* 상단에 고정 */
   left: 0; /* 왼쪽에 고정 */
@@ -74,6 +76,28 @@
 }
 
 .education-row input {
+  border: none;
+  outline: none;
+  /* background: none; */
+  background: #fff;
+  padding: 6px 10px;
+  border-bottom: 1px solid #ccc;
+  font-size: 14px;
+  min-width: 120px;
+  flex: 1 1 150px;   /* 공간 자동 분배, 최소 너비 150px */
+  /* flex: 1 1 calc(33.33% - 8px); 100% / 3 - gap 보정 */
+}
+
+
+/* 경력사항 */
+.experience-row {
+  display: flex;/* 인풋 나란히 배치 */
+  flex-wrap: wrap;   /* 한 줄에 다 안 들어가면 줄 바꿈 가능 */
+  gap: 12px;         /* input 사이 간격 */
+  width: 100%;
+}
+
+.experience-row input {
   border: none;
   outline: none;
   /* background: none; */
