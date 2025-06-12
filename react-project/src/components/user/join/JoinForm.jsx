@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import "../../../css/user/join/JoinForm.css";
 import axios from "axios";
 
@@ -15,6 +15,7 @@ const JoinForm = () => {
   const [hp, setHp] = useState("");
   const [birthday, setBirthday] = useState("");
   const [address, setAddress] = useState("");
+  const [detailAddress, setDetailAddress] = useState(""); // 상세주소 추가
   const [emailMsg, setEmailMsg] = useState("");
   const [tokenMsg, setTokenMsg] = useState("");
   const [joinMsg, setJoinMsg] = useState("");
@@ -38,7 +39,16 @@ const JoinForm = () => {
     hp: false,
     birthday: false,
     address: false,
+    detailAddress: false, // 상세주소 포커스 추가
   });
+
+  // 추가: 각 input에 ref 연결
+  const emailRef = useRef();
+  const nameRef = useRef();
+  const passwordRef = useRef();
+  const birthdayRef = useRef();
+  const hpRef = useRef();
+  const addressRef = useRef();
 
   // 검증 함수
   const validateEmail = (value) => {
@@ -110,16 +120,42 @@ const JoinForm = () => {
   const validateAddress = (value) => {
     if (!value) return "주소를 입력해주세요.";
     if (value.length > 500) return "주소는 500자 이하로 입력해주세요.";
-    const addressRegex = /^[a-zA-Z0-9가-힣\s]+$/;
-    if (!addressRegex.test(value)) return "주소는 한글, 영문, 숫자만 입력 가능합니다.";
     return "";
+  };
+
+  // 다음 주소 검색 함수
+  const handleAddressSearch = () => {
+    new window.daum.Postcode({
+      oncomplete: function(data) {
+        // 선택한 주소 정보
+        let fullAddress = data.roadAddress; // 도로명 주소
+        
+        // 건물명이 있으면 추가
+        if (data.buildingName) {
+          fullAddress += ` (${data.buildingName})`;
+        }
+        
+        // 우편번호 포함
+        fullAddress = `(${data.zonecode}) ${fullAddress}`;
+        
+        setAddress(fullAddress);
+        setAddressError(""); // 에러 초기화
+        
+        console.log("선택된 주소:", fullAddress);
+      }
+    }).open();
   };
 
   // 입력 핸들러 (검증 포함)
   const handleEmailChange = (e) => {
     const value = e.target.value;
     setEmail(value);
-    setEmailError(validateEmail(value));
+    if (!value) {
+      setEmailError("");
+    } else {
+      const error = validateEmail(value);
+      setEmailError(error === "이메일을 입력해주세요." ? "" : error);
+    }
   };
   const handleTokenChange = (e) => {
     const value = e.target.value.toUpperCase();
@@ -129,39 +165,61 @@ const JoinForm = () => {
   const handleNameChange = (e) => {
     const value = e.target.value;
     setUserName(value);
-    setNameError(validateName(value));
+    if (!value) {
+      setNameError("");
+    } else {
+      const error = validateName(value);
+      setNameError(error === "이름을 입력해주세요." ? "" : error);
+    }
   };
   const handlePasswordChange = (e) => {
     const value = e.target.value;
     setPassword(value);
-    setPasswordError(validatePassword(value));
+    if (!value) {
+      setPasswordError("");
+    } else {
+      const error = validatePassword(value);
+      setPasswordError(error === "비밀번호를 입력해주세요." ? "" : error);
+    }
   };
   const handlePhoneChange = (e) => {
     const formatted = formatPhoneNumber(e.target.value);
     setHp(formatted);
-    setHpError(validatePhone(formatted));
+    if (!formatted) {
+      setHpError("");
+    } else {
+      const error = validatePhone(formatted);
+      setHpError(error === "휴대폰번호를 입력해주세요." ? "" : error);
+    }
   };
   const handleBirthdayChange = (e) => {
     const formatted = formatBirthday(e.target.value);
     setBirthday(formatted);
-    setBirthdayError(validateBirthday(formatted));
+    if (!formatted) {
+      setBirthdayError("");
+    } else {
+      const error = validateBirthday(formatted);
+      setBirthdayError(error === "생년월일을 입력해주세요." ? "" : error);
+    }
   };
-  const handleAddressChange = (e) => {
-    const value = e.target.value;
-    setAddress(value);
-    setAddressError(validateAddress(value));
+  const handleDetailAddressChange = (e) => {
+    setDetailAddress(e.target.value);
   };
 
   // 이메일 인증번호 발송
   const handleSendEmail = async () => {
+    // 이메일이 비어있으면 아무 메시지도 띄우지 않음
+    if (!email) return;
     const error = validateEmail(email);
-    if (error) {
+    if (error && error !== "이메일을 입력해주세요.") {
       setEmailError(error);
       return;
     }
+    if (error === "이메일을 입력해주세요.") return;
     try {
       await axios.post("http://localhost:80/api/join/send-email-verification", { email });
-      setEmailMsg("인증번호가 이메일로 발송되었습니다.");
+      alert("인증이메일을 발송했습니다");
+      setEmailMsg("");
       setEmailError("");
     } catch (err) {
       setEmailMsg("이메일 발송에 실패했습니다.");
@@ -188,6 +246,10 @@ const JoinForm = () => {
     e.preventDefault();
     setJoinMsg("");
     setJoinError("");
+    
+    // 전체 주소 = 기본주소 + 상세주소
+    const fullAddress = detailAddress ? `${address} ${detailAddress}` : address;
+    
     // 모든 필드 검증
     const errors = {
       email: validateEmail(email),
@@ -195,15 +257,38 @@ const JoinForm = () => {
       password: validatePassword(password),
       phone: validatePhone(hp),
       birthday: validateBirthday(birthday),
-      address: validateAddress(address)
+      address: validateAddress(fullAddress)
     };
+    // 포커스 이동을 위한 ref 배열
+    const refs = [emailRef, nameRef, passwordRef, birthdayRef, hpRef, addressRef];
+    const errorOrder = [errors.email, errors.name, errors.password, errors.birthday, errors.phone, errors.address];
+    // 가장 먼저 빈값인 input에 포커스 이동
+    for (let i = 0; i < errorOrder.length; i++) {
+      if (errorOrder[i] && (errorOrder[i].includes('입력해주세요.') || errorOrder[i].includes('선택'))) {
+        if (refs[i] && refs[i].current) refs[i].current.focus();
+        break;
+      }
+    }
+    // 이메일이 비어있으면 이때만 에러 메시지 띄움
+    if (!email) setEmailError("이메일을 입력해주세요.");
+    else if (errors.email && errors.email !== "이메일을 입력해주세요.") setEmailError(errors.email);
+    else setEmailError("");
+    if (!userName) setNameError("이름을 입력해주세요.");
+    else if (errors.name && errors.name !== "이름을 입력해주세요.") setNameError(errors.name);
+    else setNameError("");
+    if (!password) setPasswordError("비밀번호를 입력해주세요.");
+    else if (errors.password && errors.password !== "비밀번호를 입력해주세요.") setPasswordError(errors.password);
+    else setPasswordError("");
+    if (!birthday) setBirthdayError("생년월일을 입력해주세요.");
+    else if (errors.birthday && errors.birthday !== "생년월일을 입력해주세요.") setBirthdayError(errors.birthday);
+    else setBirthdayError("");
+    if (!hp) setHpError("휴대폰번호를 입력해주세요.");
+    else if (errors.phone && errors.phone !== "휴대폰번호를 입력해주세요.") setHpError(errors.phone);
+    else setHpError("");
+    if (!fullAddress) setAddressError("주소를 입력해주세요.");
+    else if (errors.address && errors.address !== "주소를 입력해주세요.") setAddressError(errors.address);
+    else setAddressError("");
     if (Object.values(errors).some(error => error)) {
-      setEmailError(errors.email);
-      setNameError(errors.name);
-      setPasswordError(errors.password);
-      setHpError(errors.phone);
-      setBirthdayError(errors.birthday);
-      setAddressError(errors.address);
       setJoinError("입력값을 확인해주세요.");
       return;
     }
@@ -217,13 +302,13 @@ const JoinForm = () => {
     }
     try {
       await axios.post("http://localhost:80/api/join/register", {
-        loginId: email,
-        userName,
+        login_id: email,        // loginId → login_id 변경
+        user_name: userName,    // userName → user_name 변경
         password,
         sex,
         hp,
         birthday,
-        address,
+        address: fullAddress, // 합친 주소 전송
       });
       setJoinMsg("회원가입이 완료되었습니다. 로그인 후 이용해주세요.");
     } catch (err) {
@@ -247,6 +332,7 @@ const JoinForm = () => {
               onBlur={() => setFocus(f => ({ ...f, email: false }))}
               disabled={isEmailVerified}
               autoComplete="off"
+              ref={emailRef}
             />
             <label className={`floating-label${focus.email || email ? ' active' : ''}`}>이메일</label>
             {emailError && <div className="jf-joinform-tooltip-error">{emailError}</div>}
@@ -299,6 +385,7 @@ const JoinForm = () => {
               onFocus={() => setFocus(f => ({ ...f, userName: true }))}
               onBlur={() => setFocus(f => ({ ...f, userName: false }))}
               autoComplete="off"
+              ref={nameRef}
             />
             <label className={`floating-label${focus.userName || userName ? ' active' : ''}`}>이름</label>
             {nameError && <div className="jf-joinform-tooltip-error">{nameError}</div>}
@@ -315,6 +402,7 @@ const JoinForm = () => {
               onFocus={() => setFocus(f => ({ ...f, password: true }))}
               onBlur={() => setFocus(f => ({ ...f, password: false }))}
               autoComplete="off"
+              ref={passwordRef}
             />
             <label className={`floating-label${focus.password || password ? ' active' : ''}`}>비밀번호</label>
             {passwordError && <div className="jf-joinform-tooltip-error">{passwordError}</div>}
@@ -332,6 +420,7 @@ const JoinForm = () => {
               onBlur={() => setFocus(f => ({ ...f, birthday: false }))}
               placeholder=""
               autoComplete="off"
+              ref={birthdayRef}
             />
             <label className={`floating-label${focus.birthday || birthday ? ' active' : ''}`}>생년월일(예시: 20000131)</label>
             {birthdayError && <div className="jf-joinform-tooltip-error">{birthdayError}</div>}
@@ -354,28 +443,58 @@ const JoinForm = () => {
               onBlur={() => setFocus(f => ({ ...f, hp: false }))}
               placeholder=""
               autoComplete="off"
+              ref={hpRef}
             />
             <label className={`floating-label${focus.hp || hp ? ' active' : ''}`}>휴대폰번호</label>
             {hpError && <div className="jf-joinform-tooltip-error">{hpError}</div>}
           </div>
         </div>
-        {/* 주소 */}
-        <div className="jf-joinform-field-group">
+        {/* 주소 검색 */}
+        <div className="jf-joinform-field-group email-row">
           <div className="floating-input-wrap">
             <input
               type="text"
               className={`jf-joinform-input floating-input${address ? ' has-value' : ''}${addressError ? ' error' : ''}`}
               value={address}
-              onChange={handleAddressChange}
               onFocus={() => setFocus(f => ({ ...f, address: true }))}
               onBlur={() => setFocus(f => ({ ...f, address: false }))}
               placeholder=""
+              readOnly // 직접 입력 방지
+              onClick={handleAddressSearch} // 클릭 시 주소 검색
               autoComplete="off"
+              ref={addressRef}
             />
             <label className={`floating-label${focus.address || address ? ' active' : ''}`}>주소</label>
             {addressError && <div className="jf-joinform-tooltip-error">{addressError}</div>}
           </div>
+          <button
+            type="button"
+            className="jf-joinform-btn email-btn"
+            onClick={handleAddressSearch}
+          >
+            주소 검색
+          </button>
         </div>
+        
+        {/* 상세주소 (주소가 선택된 경우에만 표시) */}
+        {address && (
+          <div className="jf-joinform-field-group">
+            <div className="floating-input-wrap">
+              <input
+                type="text"
+                className={`jf-joinform-input floating-input${detailAddress ? ' has-value' : ''}`}
+                value={detailAddress}
+                onChange={handleDetailAddressChange}
+                onFocus={() => setFocus(f => ({ ...f, detailAddress: true }))}
+                onBlur={() => setFocus(f => ({ ...f, detailAddress: false }))}
+                placeholder=""
+                autoComplete="off"
+              />
+              <label className={`floating-label${focus.detailAddress || detailAddress ? ' active' : ''}`}>상세주소 (선택사항)</label>
+            </div>
+          </div>
+        )}
+        
         {/* 메시지 */}
         {joinMsg && (
           <div className="jf-joinform-msg" style={{ color: "green" }}>
