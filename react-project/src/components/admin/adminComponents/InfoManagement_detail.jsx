@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import '../../../css/admin/adminComponents/InfoManagement_detail.css';
 
-const InfoManagementDetail = ({ item, onClose, mode }) => {
+const InfoManagementDetail = ({ item, onClose, mode, onSaved }) => {
   
 
   const isEdit = mode === 'edit';
@@ -11,8 +12,24 @@ const InfoManagementDetail = ({ item, onClose, mode }) => {
 
   const paragraphs = editAnswer.split('\n\n'); 
 
+  const handleSave = async () => {
+    const payload = {
+      question: editQuestion,
+      answer: editAnswer,
+    };
 
-  if (!item && mode === 'edit'){ return null};
+    try {
+      await axios.post('/api/info', payload);
+      onSaved(); // 성공 후 목록 다시 불러오게 함
+      onClose(); // 모달 닫기
+    } catch (err) {
+      console.error('등록 실패:', err);
+      alert('등록에 실패했습니다.');
+    }
+  };
+
+
+  if (mode === 'edit' && !item ){ return null };
   
   return (
     <div className="detail-overlay" onClick={onClose}>
@@ -27,7 +44,7 @@ const InfoManagementDetail = ({ item, onClose, mode }) => {
               onChange={e => setEditQuestion(e.target.value)}
             />
           ) : (
-            <h2 className="detail-title">{item.question}</h2>
+            <h2 className="detail-title">{item?.question || ''}</h2>
           )}
         </div>
         <div className="detail-body">
@@ -54,7 +71,7 @@ const InfoManagementDetail = ({ item, onClose, mode }) => {
             {isEditing ? '취소' : '수정'}
           </button>
           {isEditing && (
-            <button className="btn-save" onClick={() => setIsEditing(false)}>
+            <button className="btn-save" onClick={handleSave}>
               저장
             </button>
           )}

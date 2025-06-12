@@ -36,6 +36,7 @@ public class ProductService {
 		return productMapper.productCnt(paramMap);
 	}
 
+
 	public void insertProduct(Map<String, Object> paramMap) throws Exception {
 		productMapper.insertProduct(paramMap);
 	}
