@@ -11,8 +11,6 @@ const Login = ({ onClose, onLoginClick }) => {
     onClose();
   };
 
-
-
 const adminLogin=() => {
     sessionStorage.setItem('loginUser', "admin");
     window.location.href = '/'; // 메인 페이지로 이동v

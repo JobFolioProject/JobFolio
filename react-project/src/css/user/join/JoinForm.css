@@ -32,14 +32,10 @@
   color: #333;
 }
 
-.jf-joinform-input {
-  padding: 10px 12px;
-  border: 1.5px solid #d0e3ff;
-  border-radius: 8px;
-  font-size: 1rem;
-  background: #f8fbff;
-  outline: none;
-  transition: border 0.2s;
+.jf-joinform-input,
+.floating-input {
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .jf-joinform-input:focus {
@@ -166,4 +162,89 @@
 .jf-joinform-field-group.flex-row > div {
   flex: 1;
   min-width: 0;
+}
+
+/* 성별 네모 박스 스타일 */
+.gender-row {
+  margin-top: 8px;
+}
+.gender-box-wrap {
+  display: flex;
+  gap: 12px;
+  margin-top: 6px;
+}
+.gender-box {
+  flex: 1;
+  border: 1.5px solid #d0e3ff;
+  border-radius: 8px;
+  background: #f8fbff;
+  color: #333;
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 12px 0;
+  cursor: pointer;
+  transition: background 0.2s, border 0.2s, color 0.2s;
+  width: 100%;
+  box-sizing: border-box;
+}
+.gender-box.gender-selected {
+  background: #e3f0ff;
+  border: 2px solid #1976d2;
+  color: #1976d2;
+  font-weight: bold;
+}
+
+/* 이메일/인증번호 입력과 버튼 한 줄 배치 */
+.email-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  width: 100%;
+}
+
+.email-row .floating-input-wrap {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.email-row .email-btn {
+  flex: none;
+  width: 120px;   /* 고정 너비 */
+  height: 44px;
+  margin: 0;
+  padding: 0 12px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 플로팅 라벨 스타일 */
+.floating-input-wrap {
+  position: relative;
+  flex: 1;
+}
+.floating-input {
+  padding-top: 20px;
+  padding-bottom: 8px;
+}
+.floating-label {
+  position: absolute;
+  left: 12px;
+  top: 16px;
+  color: #aaa;
+  font-size: 1rem;
+  pointer-events: none;
+  transition: all 0.18s cubic-bezier(0.4,0,0.2,1);
+  background: transparent;
+}
+.floating-label.active {
+  top: 4px;
+  left: 8px;
+  font-size: 0.85rem;
+  color: #1976d2;
+  background: #fff;
+  padding: 0 4px;
+  z-index: 2;
 }
