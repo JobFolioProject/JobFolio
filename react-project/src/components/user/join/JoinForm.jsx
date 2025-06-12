@@ -240,7 +240,7 @@ const JoinForm = () => {
           <div className="floating-input-wrap">
             <input
               type="email"
-              className={`jf-joinform-input floating-input ${emailError ? 'error' : ''}`}
+              className={`jf-joinform-input floating-input${email ? ' has-value' : ''}${emailError ? ' error' : ''}`}
               value={email}
               onChange={handleEmailChange}
               onFocus={() => setFocus(f => ({ ...f, email: true }))}
@@ -266,7 +266,7 @@ const JoinForm = () => {
           <div className="floating-input-wrap">
             <input
               type="text"
-              className={`jf-joinform-input floating-input ${tokenError ? 'error' : ''}`}
+              className={`jf-joinform-input floating-input${emailToken ? ' has-value' : ''}${tokenError ? ' error' : ''}`}
               value={emailToken}
               onChange={handleTokenChange}
               onFocus={() => setFocus(f => ({ ...f, emailToken: true }))}
@@ -293,7 +293,7 @@ const JoinForm = () => {
           <div className="floating-input-wrap">
             <input
               type="text"
-              className={`jf-joinform-input floating-input ${nameError ? 'error' : ''}`}
+              className={`jf-joinform-input floating-input${userName ? ' has-value' : ''}${nameError ? ' error' : ''}`}
               value={userName}
               onChange={handleNameChange}
               onFocus={() => setFocus(f => ({ ...f, userName: true }))}
@@ -309,7 +309,7 @@ const JoinForm = () => {
           <div className="floating-input-wrap">
             <input
               type="password"
-              className={`jf-joinform-input floating-input ${passwordError ? 'error' : ''}`}
+              className={`jf-joinform-input floating-input${password ? ' has-value' : ''}${passwordError ? ' error' : ''}`}
               value={password}
               onChange={handlePasswordChange}
               onFocus={() => setFocus(f => ({ ...f, password: true }))}
@@ -320,21 +320,34 @@ const JoinForm = () => {
           </div>
           {passwordError && <div className="jf-joinform-error">{passwordError}</div>}
         </div>
-        {/* 성별 */}
-        <div className="jf-joinform-field-group gender-row">
-          <label className="jf-joinform-label">성별 *</label>
-          <div className="gender-box-wrap">
+        {/* 생년월일 + 성별 한 줄 배치 */}
+        <div className="jf-joinform-field-group flex-row">
+          <div className="floating-input-wrap" style={{ flex: 2 }}>
+            <input
+              type="text"
+              className={`jf-joinform-input floating-input${birthday ? ' has-value' : ''}${birthdayError ? ' error' : ''}`}
+              value={birthday}
+              onChange={handleBirthdayChange}
+              onFocus={() => setFocus(f => ({ ...f, birthday: true }))}
+              onBlur={() => setFocus(f => ({ ...f, birthday: false }))}
+              placeholder=""
+              autoComplete="off"
+            />
+            <label className={`floating-label${focus.birthday || birthday ? ' active' : ''}`}>생년월일(예시: 20000131) *</label>
+          </div>
+          <div className="gender-box-wrap" style={{ flex: 1 }}>
             <button type="button" className={`gender-box${sex === 'M' ? ' gender-selected' : ''}`} onClick={() => setSex('M')}>남자</button>
             <button type="button" className={`gender-box${sex === 'W' ? ' gender-selected' : ''}`} onClick={() => setSex('W')}>여자</button>
           </div>
-          {joinError === "성별을 선택해주세요." && <div className="jf-joinform-error">성별을 선택해주세요.</div>}
         </div>
+        {birthdayError && <div className="jf-joinform-error">{birthdayError}</div>}
+        {joinError === "성별을 선택해주세요." && <div className="jf-joinform-error">성별을 선택해주세요.</div>}
         {/* 휴대폰번호 */}
         <div className="jf-joinform-field-group">
           <div className="floating-input-wrap">
             <input
               type="text"
-              className={`jf-joinform-input floating-input ${hpError ? 'error' : ''}`}
+              className={`jf-joinform-input floating-input${hp ? ' has-value' : ''}${hpError ? ' error' : ''}`}
               value={hp}
               onChange={handlePhoneChange}
               onFocus={() => setFocus(f => ({ ...f, hp: true }))}
@@ -346,29 +359,12 @@ const JoinForm = () => {
           </div>
           {hpError && <div className="jf-joinform-error">{hpError}</div>}
         </div>
-        {/* 생년월일 */}
-        <div className="jf-joinform-field-group">
-          <div className="floating-input-wrap">
-            <input
-              type="text"
-              className={`jf-joinform-input floating-input ${birthdayError ? 'error' : ''}`}
-              value={birthday}
-              onChange={handleBirthdayChange}
-              onFocus={() => setFocus(f => ({ ...f, birthday: true }))}
-              onBlur={() => setFocus(f => ({ ...f, birthday: false }))}
-              placeholder=""
-              autoComplete="off"
-            />
-            <label className={`floating-label${focus.birthday || birthday ? ' active' : ''}`}>생년월일(예시: 20000131) *</label>
-          </div>
-          {birthdayError && <div className="jf-joinform-error">{birthdayError}</div>}
-        </div>
         {/* 주소 */}
         <div className="jf-joinform-field-group">
           <div className="floating-input-wrap">
             <input
               type="text"
-              className={`jf-joinform-input floating-input ${addressError ? 'error' : ''}`}
+              className={`jf-joinform-input floating-input${address ? ' has-value' : ''}${addressError ? ' error' : ''}`}
               value={address}
               onChange={handleAddressChange}
               onFocus={() => setFocus(f => ({ ...f, address: true }))}
