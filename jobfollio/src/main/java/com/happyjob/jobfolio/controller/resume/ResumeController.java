@@ -37,10 +37,6 @@ public class ResumeController {
     public Map<String,Object> selectResumeInfo(@RequestParam int user_no){
         Map<String,Object> resultMap = new HashMap<>();
 
-
-
-
-
         return resultMap;
 
     }
@@ -59,10 +55,11 @@ public class ResumeController {
 
         ResumeInfoVO resumeInfoVO = new ResumeInfoVO();
         UserVO userVO = new UserVO();
+        Long userNo = Long.valueOf(paramMap.get("user_no").toString());
 
         try {
-            userVO = userService.getUserByUserNo(paramMap);
 
+            userVO = resumeService.getUserByUserNo(userNo);
 
         // 2) JSON 생성 로직
         ObjectMapper mapper = new ObjectMapper();
@@ -111,7 +108,6 @@ public class ResumeController {
 
         // certifications 배열
         @SuppressWarnings("unchecked")
-        Long userNo = Long.valueOf(paramMap.get("user_no").toString());
         List<CertificateVO> certs = mypageMapper.getCertificateListByUserNo(userNo);
         ArrayNode certArray = mapper.createArrayNode();
         for (CertificateVO cert : certs) {
@@ -124,8 +120,10 @@ public class ResumeController {
         root.set("certifications", certArray);
 
 
-        // introduction
-        root.put("introduction", paramMap.getOrDefault("introduction","").toString());
+            // coverLetter(또는 introduction) 기본값 처리
+            String intro = paramMap.getOrDefault("coverLetter", "")
+                    .toString();
+            root.put("introduction", intro);
 
         String html= resumeService.getChatResponse(root);
 
