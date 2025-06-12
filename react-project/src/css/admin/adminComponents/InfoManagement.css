@@ -12,6 +12,13 @@
   margin-bottom: 24px;
 }
 
+/* 본문 콘텐츠 배경 */
+.info-section-content-box {
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 20px;
+}
+
 /* 본문 콘텐츠 */
 .infoManagement .info-content {
   flex: 1;
