@@ -30,13 +30,13 @@ public class MypageController {
 
     // ======================================== 회원 정보 =============================================
     // 마이페이지 - 회원정보 조회
-//    @PostMapping("/userInfo/{userNo}")
-//    public ResponseEntity<UserVO> getUserInfo(@RequestParam Long userNo) {
-//
-//        UserVO userVO= mypageService.getUserInfo(userNo);
-//
-//        return ResponseEntity.ok(null);
-//    }
+    @GetMapping("/userInfo/{userNo}")
+    public ResponseEntity<UserVO> getUserInfo(@PathVariable("userNo") Long userNo) {
+
+        UserVO userVO= mypageService.getUserInfo(userNo);
+
+        return ResponseEntity.ok(userVO);
+    }
 
     // 마이페이지 - 회원 탈퇴
     @DeleteMapping("/userInfo/{userNo}/delete")

@@ -99,7 +99,7 @@ public class AdminController {
     @PutMapping("/customers/{memberId}")
     public ResponseEntity<String> updateCustomer(@PathVariable String memberId, @RequestBody UserModel updatedMember) {
         try {
-            updatedMember.setLoginID(memberId);
+            updatedMember.setLogin_id(memberId);
             int result = adminService.updateMember(updatedMember);
             if (result > 0) {
                 return ResponseEntity.ok("회원 정보가 수정되었습니다.");
