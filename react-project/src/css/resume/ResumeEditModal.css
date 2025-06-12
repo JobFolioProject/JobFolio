@@ -125,7 +125,7 @@
   color: #333;
 }
 
-.modal-content .addCareerBtn {
+.modal-content .addrBtn {
   background: #e3f2fd;
   color: #1976d2;
   border: none;
@@ -139,7 +139,7 @@
   margin-bottom: 20px;
 }
 
-.modal-content .addCareerBtn:hover {
+.modal-content .addBtn:hover {
   background: #bbdefb;
   color: #0d47a1;
 }
@@ -161,4 +161,17 @@
 .toggleInput .deleteCareerBtn:hover {
   background: #ffcdd2;
   color: #b71c1c;
+}
+
+.toggleInput .coverLetterTextarea {
+  width: 100%;
+  min-height: 100px;
+  border: 1.2px solid #e0e5ee;
+  border-radius: 8px;
+  font-size: 1rem;
+  padding: 10px 14px;
+  margin-bottom: 18px;
+  resize: vertical;
+  box-sizing: border-box;
+  background: #fff;
 }
