@@ -18,7 +18,7 @@ import com.happyjob.jobfolio.service.join.UserService;
 import com.happyjob.jobfolio.vo.join.UserVO;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 @RequestMapping("/api/join")
 public class UserController {
 
@@ -28,7 +28,7 @@ public class UserController {
     private UserService userService;
 
     /**
-     * 이메일 인증 토큰 발송 (리팩토링: 임시 테이블 사용)
+     * 이메일 인증 토큰 발송
      */
     @PostMapping("/send-email-verification")
     public ResponseEntity<Map<String, Object>> sendEmailVerification(
@@ -80,7 +80,7 @@ public class UserController {
     }
 
     /**
-     * 이메일 인증 토큰 확인 (리팩토링: 임시 테이블에서 조회 + 세션 관리 강화)
+     * 이메일 인증 토큰 확인
      */
     @PostMapping("/verify-email-token")
     public ResponseEntity<Map<String, Object>> verifyEmailToken(
@@ -131,7 +131,7 @@ public class UserController {
     }
 
     /**
-     * 회원가입 (리팩토링: 세션 검증 강화 + 한 번만 INSERT)
+     * 회원가입
      */
     @PostMapping("/register")
     public ResponseEntity<Map<String, Object>> registerUser(
@@ -206,7 +206,7 @@ public class UserController {
     }
 
     /**
-     * 이메일 인증 상태 확인 (신규 추가: React에서 상태 확인용)
+     * 이메일 인증 상태 확인
      */
     @GetMapping("/check-email-verification")
     public ResponseEntity<Map<String, Object>> checkEmailVerification(HttpSession session) {

@@ -1,5 +1,143 @@
-.adminPage{
+.main-content h1 {
+    color: rgb(156, 156, 156);
+}
+
+/* Reset & 기본 스타일 */
+.admin-main{
     display: flex;
-    flex-direction: row;
+    color: black;
+}
+
+/* 메인 콘텐츠 */
+.admin-main .main-content {
+    flex-grow: 1;
+    padding: 20px;
+    background-color: white;
+    height: 100vh;
+    
+}
+
+/* 대시보드 카드 */
+.admin-main .dashboard-cards {
+    display: flex;
+    gap: 20px;
+    justify-content: space-around;
+}
+
+.admin-main .card {
+    
+    background-color: #333;
+    color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 350px;
+    text-align: center;
+}
+
+.admin-main .card h3 {
+    margin-bottom: 10px;
+}
+
+/* 차트 및 프로젝트 섹션 */
+.admin-main .charts-projects {
+    justify-content: space-around;
+    display: flex;
+    gap: 20px;
+}
+
+.admin-main .chart, .chartTwo, .chart3, .projects {
+    
+    width: 350px;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+
+
+.admin-main .projects ul {
+    list-style-type: none;
+    padding: 0;
+}
+.admin-main .projects h3{
+    color: black;
+}
+.admin-main .projects ul li {
+    color: black;
+    background-color: rgb(225, 247, 255);
+    margin-bottom: 10px;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+.admin-main .projects ul li:hover {
+    background-color: rgb(98, 212, 253);
+}
+
+/* 고객 리스트 스타일 */
+.admin-main .customer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 40px;
+}
+
+.admin-main .customer h1 {
+    margin-bottom: 30px;
+    font-size: 28px;
+}
+
+.admin-main .customer-list {
+    width: 80%;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+.admin-main table {
     width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+    table-layout: auto;
+}
+
+.admin-main table th, table td {
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+.admin-main table th {
+    background-color: #2c2c2c;
+    color: white;
+    font-weight: normal;
+}
+
+.admin-main table td {
+    font-size: 16px;
+}
+
+.admin-main table tr:hover {
+    background-color: #f1f1f1;
+}
+
+.admin-main button {
+    padding: 8px 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.admin-main button:hover {
+    background-color: #45a049;
+    
+}
+
+.admin-main #mainText {
+    cursor: pointer;
+    color: white;
+    text-decoration: none;
 }
