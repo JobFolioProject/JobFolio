@@ -4,25 +4,25 @@ package com.happyjob.jobfolio.vo.mypage;
 // 외국어 역량 엔터티
 public class LanguageSkillVO {
 
-    private Integer userNo; // 유저 번호
+    private Long user_no; // 유저 번호
     private String language; // 언어
     private String level; // 등급
 
     @Override
     public String toString() {
         return "LanguageSkillVO{" +
-                "userNo=" + userNo +
+                "userNo=" + user_no +
                 ", language='" + language + '\'' +
                 ", level='" + level + '\'' +
                 '}';
     }
 
-    public Integer getUserNo() {
-        return userNo;
+    public Long getUser_no() {
+        return user_no;
     }
 
-    public void setUserNo(Integer userNo) {
-        this.userNo = userNo;
+    public void setUser_no(Long user_no) {
+        this.user_no = user_no;
     }
 
     public String getLanguage() {

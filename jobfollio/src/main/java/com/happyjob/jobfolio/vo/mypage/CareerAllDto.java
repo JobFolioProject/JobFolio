@@ -7,7 +7,7 @@ import java.util.List;
 public class CareerAllDto {
 
     // 유저 기본 정보
-    private Integer userNo;
+    private Long user_no;
     private String hobby;
     private String notes;
 
@@ -31,12 +31,12 @@ public class CareerAllDto {
         this.creerHistoryList = new ArrayList<>();
     }
 
-    public Integer getUserNo() {
-        return userNo;
+    public Long getUser_no() {
+        return user_no;
     }
 
-    public void setUserNo(Integer userNo) {
-        this.userNo = userNo;
+    public void setUser_no(Long user_no) {
+        this.user_no = user_no;
     }
 
     public String getHobby() {
