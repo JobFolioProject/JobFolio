@@ -1,3 +1,4 @@
+import axios from 'axios';
 import '../../css/community/CommuInfo.css';
 import CommuMenuBar from './CommuMenuBar';
 import { useState , useEffect } from 'react';
@@ -44,13 +45,14 @@ const CommuInfo = () => {
   const [openItem, setOpenItem] = useState(null);
 
   useEffect(() => {
-    fetch('/api/info/list')
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(' 뭐받았노:' , data);
-        setInfoList(data);
+    axios.get('/api/info/list')
+      .then((res) => {
+        console.log('받은 데이터:', res.data);
+        setInfoList(res.data);
       })
-      .catch((err) => console.error('이용안내 불러오기 대실패:', err))
+      .catch((err) => {
+        console.error('이용안내 불러오기 대실패:', err);
+      });
   },[])
 
   const toggleItem = (id) => {

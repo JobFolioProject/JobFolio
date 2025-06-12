@@ -10,8 +10,15 @@ public class BoardInfoVo {
 	private Date createdAt;
 	private int writer;
 	private int priority ;
+	private String board_type;
 	
 	
+	public String getBoard_type() {
+		return board_type;
+	}
+	public void setBoard_type(String board_type) {
+		this.board_type = board_type;
+	}
 	public int getId() {
 		return id;
 	}
