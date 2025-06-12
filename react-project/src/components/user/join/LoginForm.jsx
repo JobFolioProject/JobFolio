@@ -48,7 +48,7 @@ const LoginForm = ({ onClose }) => {
           loginTime: new Date().toISOString()
         };
         
-        sessionStorage.setItem("user", JSON.stringify(userInfo));
+        sessionStorage.setItem("user",JSON.stringify(userInfo));
         
         // 로그인 성공 알림
         alert(result.message || "로그인이 완료되었습니다.");
