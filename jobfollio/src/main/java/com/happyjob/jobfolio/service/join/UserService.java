@@ -235,8 +235,8 @@ public class UserService {
 
         if (user != null) {
             String email = (String) paramMap.get("email");
-            String foundId = user.getLoginId();
-            String regDate = user.getRegDate();
+            String foundId = user.getLogin_id();
+            String regDate = user.getReg_date();
 
             // EmailService의 새로운 메서드 활용
             return emailService.sendFoundIdEmail(email, foundId, regDate);
