@@ -1,43 +1,57 @@
+
 import axios from "axios";
-import "../../css/resume/Resume.css"; // 스타일 따로 작성
-import ResumeSidebar from "./ResumeSidebar";
-import React, { useState, useEffect } from "react";
+import '../../css/resume/Resume.css'; // 스타일 따로 작성
+import ResumeSidebar from './ResumeSidebar';
+import React, { use, useState, useEffect} from 'react';
+import DropDown from './ResumeDropdown';
 
 const Resume = () => {
   // 이력서 작성 페이지 컴포넌트
   // 이력서 작성 폼을 포함하고 있으며, 사이드바를 사용하여 다른 이력서 관련 페이지로 이동할 수 있습니다.
+  
   const handleSubmit = async () => {
     console.log("이력서 제출:", formData);
     const param = new URLSearchParams(Object.entries(formData));
 
-    await axios
-      .post("/resume/insertResumeInfo", param)
-      .then((res) => {
-        if (res.data.result === 1) {
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+    // test!!! 기술/툴 드롭다운 옵션 샘플데이터
+    const dummySkillOptions = ['JavaScript', 'Python', 'Java', 'C++', 'React', 'Node.js', 'HTML/CSS', 'SQL', 'Git', 'Docker'];
 
-  const [formData, setFormData] = useState({
-    title: "",
-    desired_position: "",
-    skill_tool: "",
-    link_url: "",
-    experience: "",
-    education: [
-      {
-        school_name: "",
-        enroll_date: "",
-        grad_date: "",
-        major: "",
-        sub_major: "",
-        gpa: "",
-      },
-    ],
-  });
+    const [formData, setFormData] = useState({
+        title: '',
+        desired_position: '',
+        skill_tool: '',
+        link_url: '',
+        experience: [
+            {
+                start_date:'',
+                end_date:'',
+                company_name:'',
+                notes:'',
+            },
+        ],
+        education: [
+            {
+                school_name: '',
+                enroll_date: '',
+                grad_date: '',
+                major: '',
+                sub_major: '',
+                gpa: '',
+            },
+        ],
+    });
+
+//    await axios
+//      .post("/resume/insertResumeInfo", param)
+//     .then((res) => {
+//        if (res.data.result === 1) {
+//        }
+//      })
+//      .catch((err) => {
+//        console.log(err);
+//      });
+//  };
+
 
   // const handleChange = (event) =>{
   //     setFormData({
@@ -92,6 +106,41 @@ const Resume = () => {
     }));
   };
 
+  // 경령 사항 추가 핸들러
+
+  const addExperience = () => {
+    setFormData((prev) =>({
+        ...prev,
+        experience: [
+           ...prev.experience,
+           {
+            start_date: '',
+            end_date:'',
+            company_name:'',
+            notes:'',
+           } 
+        ]
+    }));
+  }
+
+  // 경력 입력 변경 핸들러 (필드 이름, 값)
+  const handleExperienceChange = (index, e) => {
+    const {name, value} = e.target;
+    setFormData((prev) => {
+        const newExperience = [...prev.experience]; // 기존 experience 배열 복사
+        newExperience[index] = { // 해당 인덱스의 항목만 업데이트
+            ...newExperience[index],
+            [name]: value,
+        }
+        return {
+            ...prev,
+            experience: newExperience, // 업데이트된 experience 배열로 설정
+        }
+    })
+  }
+
+
+  //자기소개 
   useEffect(() => {
     //axios.post("/resume/selectResumeInfo")
   }, []);
@@ -112,6 +161,116 @@ const Resume = () => {
               <br />
             </p>
             <form>
+
+                        <label>
+                            <div><span>제목</span></div> {/* 제목을 div로 감싸고 */}
+                            <div><input type="text" name="title" onChange={handleChange} value={formData.title}/></div> {/* 인풋을 div로 감쌉니다 */}
+                        </label>
+                        <br /> {/* <br />은 이제 필요 없을 수 있습니다. 레이아웃에 따라 조절하세요. */}
+
+                        <label>
+                            <div><span>희망직무</span></div>
+                            <div><input type="text" name="desired_position" onChange={handleChange} value={formData.desired_position}/></div>
+                        </label>
+                        <br />
+
+                        {/* 나머지 부분도 동일하게 적용 */}
+                        <label>
+                            <span>기술스택/툴</span><br />
+
+                            <div><input type="text" name="skill_tool" onChange={handleChange} value={formData.skill_tool}/></div>
+                            <DropDown 
+                                options={dummySkillOptions} 
+                                selected={formData.skill_tool}
+                                placeholder="기술/툴을 선택하세요"
+                                onSelect={(option)=>{
+                                    setFormData((prev) => ({
+                                        ...prev,
+                                        skill_tool: option // 선택한 기술/툴을 formData에 저장
+                                    }));
+                                    console.log("선택한 기술/툴:", option); // 선택한 옵션 확인
+                                }}
+                                />
+                                {/* 드롭다운 컴포넌트 사용 */}
+                                {formData.skill_tool && <p>선택한 기술: {formData.skill_tool}</p>}
+                            {/* <DropDown 
+                            options={dummySkillOptions} 
+                            selected={formData.skill_tool}
+                            placeholder="기술/툴을 선택하세요"
+                            onSelect={(option)=>{
+                                setFormData((prev) => ({
+                                    ...prev,
+                                    skill_tool: option // 선택한 기술/툴을 formData에 저장
+                                }));
+                                console.log("선택한 기술/툴:", option); // 선택한 옵션 확인
+                            }}
+                            /> */}
+                        </label>
+                        <br />
+                        <label>
+                            <div><span>링크</span></div>
+                            <div><input type="text" name="link_url" onChange={handleChange} value={formData.link_url}/></div>
+                        </label>
+                        <br />
+                    <label>
+                            <div><span>
+                                학력
+                                <button 
+                                  type="button" 
+                                  onClick={addEducation}
+                                  disabled={formData.education.length >= 3}
+                                >
+                                    +
+                                </button>
+                                </span></div>
+                        </label>
+                        {/* 학력 입력 폼 */}
+                        {formData.education.map((edu, index) => (
+                            <div key={index} className="education-row">
+                                <input 
+                                type="text" 
+                                name="school_name" 
+                                placeholder="학교명" 
+                                onChange={(e) => handleEducationChange(index, e)} 
+                                value={edu.school_name} 
+                                />
+                                <input 
+                                type="text" 
+                                name="enroll_date" 
+                                placeholder="입학일" 
+                                onChange={(e) => handleEducationChange(index, e)} 
+                                value={edu.enroll_date} 
+                                />
+                                <input 
+                                type="text" 
+                                name="grad_date"
+                                placeholder="졸업일"
+                                onChange={(e) => handleEducationChange(index, e)}
+                                value={edu.grad_date}
+                                />
+                                <input 
+                                type="text" 
+                                name="major"
+                                placeholder="전공"
+                                onChange={(e) => handleEducationChange(index, e)}
+                                value={edu.major}
+                                />
+                                <input 
+                                type="text" 
+                                name="sub_major"
+                                placeholder="복수전공"
+                                onChange={(e) => handleEducationChange(index, e)}
+                                value={edu.sub_major}
+                                />
+                                <input 
+                                type="text" 
+                                name="gpa" 
+                                placeholder="학점" 
+                                onChange={(e) => handleEducationChange(index, e)} 
+                                value={edu.gpa} 
+                                />
+                                {/* <input type="text" name="enroll_date" placeholder="입학일" onChange={handleChange} value={formData.enroll_date} />
+
               <label>
                 <div>
                   <span>제목</span>
@@ -232,10 +391,40 @@ const Resume = () => {
                     value={edu.gpa}
                   />
                   {/* <input type="text" name="enroll_date" placeholder="입학일" onChange={handleChange} value={formData.enroll_date} />
+
                                 <input type="text" name="grad_date" placeholder="졸업일" onChange={handleChange} value={formData.grad_date} />
                                 <input type="text" name="major" placeholder="전공" onChange={handleChange} value={formData.major} />
                                 <input type="text" name="sub_major" placeholder="복수전공" onChange={handleChange} value={formData.sub_major} />
                                 <input type="text" name="gpa" placeholder="학점" onChange={handleChange} value={formData.gpa} /> */}
+                            </div>
+                        ))}
+                        <br />
+                        <label>
+                            <div><span>경력
+                                <button 
+                                 type='button' 
+                                 onClick={addExperience} 
+                                 disabled={formData.experience.length >= 4}>
+                                    +
+                                </button></span></div>
+                        </label>
+                            {/* <div><textarea name="experience" rows="4" cols="50" onChange={handleChange} value={formData.experience}></textarea></div> */}
+                            {formData.experience.map((exp,index)=>(
+                                <div key={index} className='experience-group'>
+                                 <div className='experience-row'>
+                                    <input type='text' name='start_date' placeholder='시작일' onChange={(e) => handleExperienceChange(index, e)} value={exp.start_date}/>
+                                    <input type='text' name='end_date' placeholder='종료일' onChange={(e) => handleExperienceChange(index, e)} value={exp.end_date}/>
+                                    <input type='text' name='company_name' placeholder='회사명' onChange={(e) => handleExperienceChange(index, e)} value={exp.company_name}/>
+                                </div>
+                                <div className='experience-notes'>
+                                    <input type='text' name='notes' placeholder='업무 내용을 입력해주세요' onChange={(e) => handleExperienceChange(index, e)} value={exp.notes}/>
+                                </div>
+                                </div>
+                            ))}
+                        <br />
+                        <button type="submit" onClick={handleSubmit}>이력서 제출</button>
+                    </form>
+
                 </div>
               ))}
               <br />
