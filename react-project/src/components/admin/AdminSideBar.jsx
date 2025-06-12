@@ -1,11 +1,39 @@
-import { NavLink } from 'react-router-dom';
-import {  useState } from 'react';
+import { NavLink, useLocation } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import "../../css/admin/AdminSideBar.css";
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
+
+const menuData = [
+  { name: "사이트 바로가기", path: "/" },
+  { name: "회원 관리", path: "/adminPage/userManagement" },
+  { name: "관리자 계정 관리", path: "/adminPage/adminManagement" },
+  { name: "이용권 현황", path: "/adminPage/subscriptStatus" },
+  {
+    name: "커뮤니티 관리",
+    children: [
+      { name: "공지사항", path: "/adminPage/noticeManagement" },
+      { name: "이력서", path: "/adminPage/resumeManagement" },
+      { name: "이용안내", path: "/adminPage/infoManagement" },
+      { name: "FAQ", path: "/adminPage/faqManagement" }
+    ]
+  },
+  { name: "상품 관리", path: "/adminPage/subscriptManagement" },
+  { name: "템플릿 관리", path: "/adminPage/templateManagement" },
+  { name: "설정값", path: "/adminPage/configuration" }
+];
 
 const AdminSideBar = () => {
+  const location = useLocation();
+  const [openMenu, setOpenMenu] = useState(null);
 
-  // 드롭 다운 메뉴
-  const [dropDownVisible, setDropDown] = useState(false);
+  // 커뮤니티 하위 경로 자동 열기
+  useEffect(() => {
+    const opened = menuData.find(menu =>
+      menu.children?.some(child => child.path === location.pathname)
+    );
+    setOpenMenu(opened?.name || null);
+  }, [location]);
 
   return (
     <div className="adminSideBar">
@@ -14,80 +42,43 @@ const AdminSideBar = () => {
           <h2 className="sideBarTitle">JobFolio</h2>
           <hr className="menuDivider" />
           <ul className="sideBarMenuList">
-            <li className="list-item">
-              <NavLink to="/" activeClassName="list-active">
-                사이트 바로가기
-              </NavLink>
-            </li>
-            <li className="list-item">
-              <NavLink to="/adminPage/userManagement" activeClassName="list-active">
-                회원 관리
-              </NavLink>
-            </li>
-            <li className="list-item">
-              <NavLink to="/adminPage/adminManagement" activeClassName="list-active">
-                관리자 계정 관리
-              </NavLink>
-            </li>
-            <li className="list-item">
-              <NavLink to="/adminPage/subscriptStatus" activeClassName="list-active">
-                이용권 현황
-              </NavLink>
-            </li>
-            <li className="list-item" onClick={(e) => setDropDown(!dropDownVisible)}>
-              <span className="dropDownMenuTitle">
-                커뮤니티 관리
-                <span className='arrow'>
-                {
-                  dropDownVisible ? " ∧" : " ∨"
-                }
-                </span>
-              </span>
-            </li>
-            <div className={`sideBarDropDownMenuList ${dropDownVisible ? 'slide-fade-in-dropdown' : 'slide-fade-out-dropdown'}`}>
-              <ul>
-                <li className="list-item">
-                  <NavLink to="/adminPage/noticeManagement" activeClassName="list-active">
-                    공지사항
+            {menuData.map((menu, idx) =>
+              menu.children ? (
+                <li key={idx} className="list-item">
+                  <div
+                    className={`dropDownMenuTitle ${openMenu === menu.name ? "list-active" : ""}`}
+                    onClick={() => setOpenMenu(openMenu === menu.name ? null : menu.name)}
+                  >
+                    {menu.name}
+                    <span className="arrow">
+                      {openMenu === menu.name ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
+                    </span>
+                  </div>
+                  <div className={`sideBarDropDownMenuList ${openMenu === menu.name ? 'slide-fade-in-dropdown' : 'slide-fade-out-dropdown'}`}>
+                    <ul>
+                      {menu.children.map((sub, subIdx) => (
+                        <li key={subIdx} className="list-item">
+                          <NavLink to={sub.path} className={({ isActive }) => isActive ? "list-active" : ""}>
+                            {sub.name}
+                          </NavLink>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </li>
+              ) : (
+                <li key={idx} className="list-item">
+                  <NavLink to={menu.path} className={({ isActive }) => isActive ? "list-active" : ""}>
+                    {menu.name}
                   </NavLink>
                 </li>
-                <li className="list-item">
-                  <NavLink to="/adminPage/resumeManagement" activeClassName="list-active">
-                    이력서
-                  </NavLink>
-                </li>
-                <li className="list-item">
-                  <NavLink to="/adminPage/infoManagement" activeClassName="list-active">
-                    이용안내
-                  </NavLink>
-                </li>
-                <li className="list-item">
-                  <NavLink to="/adminPage/faqManagement" activeClassName="list-active">
-                    FAQ
-                  </NavLink>
-                </li>
-              </ul>
-            </div>
-            <li className="list-item">
-              <NavLink to="/adminPage/subscriptManagement" activeClassName="list-active">
-                상품 관리
-              </NavLink>
-            </li>
-            <li className="list-item">
-              <NavLink to="/adminPage/templateManagement" activeClassName="list-active">
-                템플릿 관리
-              </NavLink>
-            </li>
-            <li className="list-item">
-              <NavLink to="/adminPage/configuration" activeClassName="list-active">
-                설정값
-              </NavLink>
-            </li>
+              )
+            )}
           </ul>
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default AdminSideBar;

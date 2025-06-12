@@ -1,88 +1,106 @@
 .adminSideBar {
   height: 100vh;
   width: 300px;
-  background-color: rgb(60,60,60);
+  background-color: rgb(60, 60, 60);
   position: sticky;
 }
 
 .adminSideBar .sideBarWrapper {
   width: 300px;
 }
+
 .adminSideBar .sideBarTitle {
   color: white;
   margin: 0;
   padding: 15px;
 }
+
 .adminSideBar .sideBarMenuList {
   list-style-type: none;
+  padding: 0;
 }
+
+.adminSideBar .sideBarMenuList .list-item {
+  margin: 5px 0;
+}
+
+.adminSideBar .sideBarMenuList .list-item a {
+  display: block;
+  width: 100%;
+  padding: 15px;
+  box-sizing: border-box;
+  color: white;
+  text-decoration: none;
+  border-radius: 10px;
+  transition: background-color 0.2s ease;
+}
+
+/* 활성 상태 */
+.adminSideBar .sideBarMenuList .list-item a.list-active {
+  background-color: rgb(50, 50, 50);
+}
+
+/* hover 효과 */
+.adminSideBar .sideBarMenuList .list-item a:hover {
+  background-color: rgb(50, 50, 50);
+}
+
+/* 드롭다운 타이틀도 a처럼 보여주기 */
+.adminSideBar .dropDownMenuTitle {
+  color: white;
+  padding: 15px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.adminSideBar .dropDownMenuTitle.list-active {
+  background-color: rgb(50, 50, 50);
+}
+
+.adminSideBar .arrow {
+  display: flex;
+  align-items: center;
+}
+
+/* 드롭다운 본체 */
 .adminSideBar .sideBarDropDownMenuList {
-  position: relative;
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: max-height 0.4s ease, opacity 0.4s ease, visibility 0.4s;
 }
 .adminSideBar .sideBarDropDownMenuList ul{
   list-style-type: none;
+  padding: 0 10px;                
+  box-sizing: border-box;
 }
-.adminSideBar .dropDownMenuTitle {
-  color: white;
+
+/* 드롭다운 열릴 때 */
+.adminSideBar .slide-fade-in-dropdown {
+  max-height: 500px;
+  opacity: 1;
+  visibility: visible;
 }
-.adminSideBar .sideBarMenuList li{
-  margin: 5px;
-  padding: 15px;
-  color: white;
-  cursor: pointer;
+
+/* 닫힐 때 */
+.adminSideBar .slide-fade-out-dropdown {
+  max-height: 0;
+  opacity: 0;
+  visibility: hidden;
 }
-.adminSideBar .sideBarMenuList li a{
+
+/* 하위 메뉴 들여쓰기 */
+.adminSideBar .sideBarDropDownMenuList .list-item a {
+  display: block;
+  width: 100%;
+  padding: 15px 10px 15px 30px;
+  box-sizing: border-box;
   color: white;
   text-decoration: none;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
 }
-.adminSideBar .sideBarMenuList li:hover,
-.adminSideBar .sideBarMenuList li:active{
-  background-color: rgb(50, 50, 50);
-  border-radius: 10px;
-}
-
-/* 드롭 다운 메뉴 애니메이션 */
-@keyframes slide-fade-in-dropdown-animation {
-  0% {
-    transform: translateY(-100%);
-  }
-
-  100% {
-    transform: translateY(0);
-  }
-}
-
-.slide-fade-in-dropdown {
-  overflow: hidden;
-}
-
-.slide-fade-in-dropdown > ul {
-  animation: slide-fade-in-dropdown-animation .6s ease;
-}
-
-@keyframes slide-fade-out-dropdown-animation {
-  0% {
-    transform: translateY(0);
-  }
-
-  100% {
-    transform: translateY(-100%);
-  }
-}
-
-.slide-fade-out-dropdown {
-  overflow: hidden;
-  display: none;
-}
-
-.slide-fade-out-dropdown > ul {
-  animation: slide-fade-out-dropdown-animation 0.6s ease;
-  animation-fill-mode: forwards;
-}
-
-.dropDownMenuTitle .arrow {
-  font-size : 10px;
-  text-align: center;
-}
-
-
