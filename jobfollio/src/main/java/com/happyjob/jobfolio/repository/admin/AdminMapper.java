@@ -32,7 +32,7 @@ public interface AdminMapper {
     int updateMemberStatus(String memberId, String status);
 
     // 등급별 고객 데이터 반환
-    Map<String, Object> calculateUserVIPDistribution();
+    Map<String, Object> getConsumerDistribution();
 
     // 월별 가입 고객 데이터 반환
     List<Map<String, Object>> getMonthlyMembers();
