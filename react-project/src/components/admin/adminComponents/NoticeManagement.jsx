@@ -19,7 +19,7 @@ const NoticeManagement = () => {
 
   const fetchNotices = () => {
     axios
-      .get('/community/list', {
+      .get('/api/community/list', {
         params: {
           boardType: 'N',
           page: currentPage,

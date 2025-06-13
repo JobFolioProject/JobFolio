@@ -19,7 +19,7 @@ const CommuNotice = () => {
     }, [currentPage]);
 
 const fetchNotices = () => {
-  axios.get("/community/list", {
+  axios.get("/api/community/list", {
     params: {
       boardType: "N",
       page: currentPage,
