@@ -27,7 +27,7 @@ const LoginForm = ({ onClose }) => {
 
     try {
       const response = await axios.post("http://localhost:80/api/join/login", {
-        login_id: loginId,  // ✅ 수정: loginId → login_id
+        login_id: loginId,  
         password: password,
       });
 
