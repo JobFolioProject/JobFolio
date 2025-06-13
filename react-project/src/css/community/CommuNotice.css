@@ -67,7 +67,8 @@
  .community-notice-category
  .community-notice-search
  .community-notice-search-container{
-  position: relative;
+  display: flex;
+  align-items: center;
 }
 .community-notice-container
  .community-notice-wrapper
@@ -75,24 +76,13 @@
  .community-notice-search
  .community-notice-search-container 
  input {
-  width: 100px;
-  padding: 10px 0px 10px 40px;
-  border: solid 1px #333;
-  border-radius: 5px;
-  transition: all .2s ease-in-out;
-  outline: none;
-  opacity: 0.8;
-}
-.community-notice-container
- .community-notice-wrapper
- .community-notice-category
- .community-notice-search
- .community-notice-search-container 
- svg {
-  position: absolute;
-  top: 50%;
-  left: 10px;
-  transform: translate(0, -50%);
+  flex: 1;
+  height: 30px;
+  padding: 0px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  box-sizing: border-box;
 }
 .community-notice-container
  .community-notice-wrapper
@@ -101,7 +91,25 @@
  .community-notice-search-container 
  input:focus {
   opacity: 1;
-  width: 150px;
+}
+.community-notice-search-btn {
+  height: 30px;
+  margin-left: 8px;
+  padding: 0px 10px;
+  display: flex;
+  align-items: center;  
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+.community-notice-search-btn:hover {
+  background-color: #333;
+  color: white;
+}
+.community-notice-search-icon {
+  margin-right: 5px;
 }
 .community-notice-container
  .community-notice-wrapper
@@ -129,9 +137,11 @@
  li
  a {
   display: flex;
+  align-items: center;
+  padding: 10px 0;
   box-sizing: border-box;
-  padding: 10px 0px 10px 0px;
-  align-items: center;  
+  width: 100%;
+  height: 100%; 
   border-bottom: 1px solid rgb(230, 230, 230);
 }
 .community-notice-container
@@ -145,6 +155,18 @@
   .community-notice-wrapper 
   .community-notice-section 
   .community-notice-body 
+  .notice-body-col {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  height: 100%;
+  padding: 0 8px;
+  font-size: 14px;
+}
+.community-notice-container 
+  .community-notice-wrapper 
+  .community-notice-section 
+  .community-notice-body 
   .title {
     box-sizing: border-box;
     padding-left: 100px; 
@@ -152,6 +174,7 @@
 .community-notice-container .community-notice-wrapper .community-notice-section .community-notice-head .num,
 .community-notice-container .community-notice-wrapper .community-notice-section .community-notice-body .num{
   width: 10%;
+  justify-content: center;
   text-align: center;
 }
 .community-notice-container .community-notice-wrapper .community-notice-section .community-notice-head .title,
@@ -161,11 +184,13 @@
 .community-notice-container .community-notice-wrapper .community-notice-section .community-notice-head .write,
 .community-notice-container .community-notice-wrapper .community-notice-section .community-notice-body .write{
   width: 10%;
+  justify-content: center;
   text-align: center;
 }
 .community-notice-container .community-notice-wrapper .community-notice-section .community-notice-head .author,
 .community-notice-container .community-notice-wrapper .community-notice-section .community-notice-body .author{
   width: 10%;
+  justify-content: center;
   text-align: center;
 }
 .community-notice-pagination {

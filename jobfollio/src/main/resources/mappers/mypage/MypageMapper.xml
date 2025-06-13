@@ -137,4 +137,27 @@
         WHERE user_no = #{user_no}
     </select>
 
+    <select id="selectUserInfo" parameterType="map" resultType="com.happyjob.jobfolio.vo.join.UserVO">
+        SELECT
+            user_no,
+            login_id,
+            user_type,
+            user_name,
+            password,
+            birthday,
+            sex,
+            hp,
+            DATE_FORMAT(reg_date, '%Y-%m-%d %H:%i:%s') AS reg_date,
+            DATE_FORMAT(withdrawal_date, '%Y-%m-%d %H:%i:%s') AS withdrawal_date,
+            status_yn,
+            expire_days,
+            address,
+            hobby,
+            notes
+        FROM tb_userinfo
+        WHERE user_no = #{user_no}
+          AND status_yn = 'N'
+          AND withdrawal_date IS NULL
+    </select>
+
 </mapper>

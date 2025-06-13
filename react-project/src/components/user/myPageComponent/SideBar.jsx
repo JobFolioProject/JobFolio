@@ -2,7 +2,7 @@ import '../../../css/user/myPageComponent/SideBar.css';
 import { NavLink } from 'react-router-dom';
 
 const SideBar = () => {
-      const loginUser = sessionStorage.getItem('loginUser'); 
+      const loginUser = JSON.parse(sessionStorage.getItem('user')); 
 
     return (
     <div className="mySideBarMenu">
@@ -10,7 +10,7 @@ const SideBar = () => {
         <div className="userInfo">
           <p className="imogi">🖐</p>  
           <p>반가워요</p>
-          <div className="userNameWrap"><p className="userName">{loginUser}</p>님</div>
+          <div className="userNameWrap"><p className="userName">{loginUser.userName}</p>님</div>
         </div>
         <hr className="menuDivider" />
           <li>
