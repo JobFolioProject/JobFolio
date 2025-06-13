@@ -1,0 +1,132 @@
+/* Quill snow 테마 */
+@import 'quill/dist/quill.snow.css';
+
+/* 모달 전체 래퍼 */
+.noticeManagementDetail {
+}
+
+/* 모달 백드롭 */
+.noticeManagementDetail .modal-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex; align-items: center; justify-content: center;
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s, opacity 0.2s ease-in-out;
+  z-index: 1000;
+}
+
+/* 모달이 보이는 상태 */
+.noticeManagementDetail.modal-show .modal-overlay {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* 모달 콘텐츠 박스 */
+.noticeManagementDetail .modal-content {
+  background: #fff;
+  border-radius: 8px;
+  width: 80%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 24px;
+  position: relative;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transform: scale(0.95);
+  transition: all 0.2s ease-in-out;
+}
+
+.noticeManagementDetail.modal-show .modal-overlay .modal-content {
+  transform: scale(1);
+}
+
+/* 닫기 버튼 (X) */
+.noticeManagementDetail .modal-close {
+  position: absolute;
+  top: 12px; right: 12px;
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+/* 읽기 모드: 툴바 숨김 */
+.noticeManagementDetail .ql-readonly .ql-toolbar {
+  display: none;
+}
+
+/* 읽기 모드: 제목 input 배경 */
+.noticeManagementDetail .input-readonly {
+  background-color: #f5f5f5;
+}
+
+/* 버튼 영역 */
+.noticeManagementDetail .modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+/* 공통 버튼 스타일 */
+.noticeManagementDetail .modal-actions button {
+  padding: 8px 16px;
+  font-size: 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+/* 취소 버튼 */
+.noticeManagementDetail .btn-cancel {
+  border: 1px solid #ccc;
+  background: transparent;
+  color: #333;
+}
+.noticeManagementDetail .btn-cancel:hover {
+  background: #f5f5f5;
+}
+
+/* 저장 버튼 */
+.noticeManagementDetail .btn-save {
+  border: none;
+  background: #1976d2;
+  color: #fff;
+}
+.noticeManagementDetail .btn-save:disabled {
+  background: #90caf9;
+  cursor: not-allowed;
+}
+.noticeManagementDetail .btn-save:not(:disabled):hover {
+  background: #115293;
+}
+
+/* 삭제 버튼 */
+.noticeManagementDetail .btn-delete {
+  border: none;
+  background: #d32f2f;
+  color: #fff;
+}
+.noticeManagementDetail .btn-delete:hover {
+  background: #b71c1c;
+}
+
+/* 반응형 처리 */
+@media (max-width: 600px) {
+  .noticeManagementDetail .modal-content {
+    width: 90%;
+    padding: 16px;
+  }
+
+  .noticeManagementDetail .modal-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .noticeManagementDetail .modal-actions button {
+    width: 100%;
+  }
+}

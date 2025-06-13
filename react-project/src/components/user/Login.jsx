@@ -6,13 +6,16 @@ const Login = ({ onClose, onLoginClick }) => {
 
   const userLogin = () => {
     onLoginClick();
-    // sessionStorage.setItem('loginUser', "user");
-    // window.location.href = '/'; // 메인 페이지로 이동
+    sessionStorage.setItem('loginUser', "user");
+    sessionStorage.setItem('user', JSON.stringify({userNo: 4, loginId: "sadklasd@naver.com", userName: "크리미", userType: "C"}));
+    window.location.href = '/'; // 메인 페이지로 이동
+    
     onClose();
   };
 
 const adminLogin=() => {
     sessionStorage.setItem('loginUser', "admin");
+    sessionStorage.setItem('user', JSON.stringify({userNo: 1, loginId: "admin@a.com", userName: "관리자0", userType: "A"}));
     window.location.href = '/'; // 메인 페이지로 이동v
 }
 

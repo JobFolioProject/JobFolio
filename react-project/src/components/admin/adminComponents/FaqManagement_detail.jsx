@@ -1,16 +1,42 @@
 // FaqManagement_detail.jsx
 import React, { useState } from 'react';
+import axios from 'axios';
 import '../../../css/admin/adminComponents/FaqManagement_detail.css';
 
-const FaqManagementDetail = ({ item, onClose, mode }) => {
+const FaqManagementDetail = ({ item, onClose, mode, onSaved, boardType }) => {
   const isEdit = mode === 'edit';
-  const [isEditing, setIsEditing] = useState(mode === 'post');
+  const isPost = mode === 'post';
+  const [isEditing, setIsEditing] = useState(isPost);
   const [editQuestion, setEditQuestion] = useState(item?.question || '');
   const [editAnswer, setEditAnswer] = useState(item?.answer || '');
 
   const paragraphs = editAnswer.split('\n\n');
 
-  if (!item && mode === 'edit') return null;
+  const handleSave = async () => {
+    const payload = {
+      id : item?.id,
+      question : editQuestion,
+      answer : editAnswer,
+      board_type : boardType
+    };
+
+    try {
+      if(isEdit) {
+        await axios.put('/api/board', payload);
+      }else {
+        await axios.post('/api/board', payload);
+      }
+
+      onSaved();
+      onClose();
+
+    }catch (err) {
+      console.error('등록 실패:',err);
+      alert('등록에 실패했습니다.');
+    }
+  };
+
+  if (isEdit && !item ) {return null};
 
   return (
     <div className="detail-overlay" onClick={onClose}>
@@ -26,7 +52,7 @@ const FaqManagementDetail = ({ item, onClose, mode }) => {
               onChange={e => setEditQuestion(e.target.value)}
             />
           ) : (
-            <h2 className="detail-title">{editQuestion}</h2>
+            <h2 className="detail-title">{item?.question || ''}</h2>
           )}
         </div>
 
@@ -52,7 +78,7 @@ const FaqManagementDetail = ({ item, onClose, mode }) => {
             </button>
           )}
           {isEditing && (
-            <button className="btn-save" onClick={() => setIsEditing(false)}>
+            <button className="btn-save" onClick={handleSave}>
               저장
             </button>
           )}
