@@ -1,117 +1,210 @@
+/* Resume.css */
 
+/* 전체 페이지 배경 */
+body {
+    background-color: #f7f9fc;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
 
-.resume_Wrap {
-    margin-top: 0px;
+/* 이력서 콘텐츠 박스 */
+.resume-content-form {
+    padding: 40px;
+    max-width: 960px;
+    margin: 50px auto;
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease-in-out;
+}
+
+/* 제목 */
+.resume-content-form h1 {
+    color: #1f2937;
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+/* 부제 */
+.resume-content-form p {
+    color: #6b7280;
+    text-align: center;
+    font-size: 1rem;
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+/* 라벨 그룹 */
+.resume-content-form label {
+    display: block;
+    margin-bottom: 25px;
+}
+
+.resume-content-form label > div {
     display: flex;
-    align-content: center;
-    justify-content: center;
-    padding-bottom: 80px; 
-    min-width: 1200px;
-
- } 
-
-
-
-.resume_Wrap .resume-content {
-  flex: 1;
-  padding: 10px;
-  padding-left: 0px;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
 }
 
-.resume_Wrap .resume-content-form {
-  margin-left: 0px;
-  padding: 0 50px;
+.resume-content-form label span {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #374151;
+    min-width: 90px;
 }
 
+/* 인풋 & 텍스트에어리어 */
 .resume-content-form input[type="text"],
-.resume-content-form input[type="email"],   
-.resume-content-form input[type="tel"],
 .resume-content-form textarea {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+    flex: 1;
+    padding: 14px 16px;
+    font-size: 15px;
+    color: #111827;
+    /* background: #f9fbfd; */
+    background: #ffffff;
+    border: 1px solid #dbeafe;
+    border-radius: 10px;
+    transition: 0.2s ease-in-out;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.03);
 }
 
-.resume_Wrap .resume-banner {
-  position: relative;
-  top: 0; /* 상단에 고정 */
-  left: 0; /* 왼쪽에 고정 */
-  right: 0; /* 오른쪽에 고정 */
-  height: 200px; /* 배너 높이 */
-  /* z-index: 10; 다른 요소 위에 표시 */
+.resume-content-form input:focus,
+.resume-content-form textarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
 }
 
-.resume-banner img {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-  position: relative;
-  z-index: 20;
+.resume-content-form input::placeholder,
+.resume-content-form textarea::placeholder {
+    color: #9ca3af;
 }
 
-.resume-banner h1 {
-  position: absolute;
-  top: 120px;
-  left: 10%;
-  transform: translate(-50%, -50%);
-  color: #ffffff;
-  font-size: 2.5rem;
-  font-weight: 900;
-}
-
-.resume-banner span {
-  /* margin-right: 20px; */
-  background: none;
-  border-bottom: 1px solid #ccc; /* 밑줄 효과 */
-}
-
-/* 학력사항 */
-.education-row {
-  display: flex;/* 인풋 나란히 배치 */
-  flex-wrap: wrap;   /* 한 줄에 다 안 들어가면 줄 바꿈 가능 */
-  gap: 12px;         /* input 사이 간격 */
-  width: 100%;
-}
-
-.education-row input {
-  border: none;
-  outline: none;
-  /* background: none; */
-  background: #fff;
-  padding: 6px 10px;
-  border-bottom: 1px solid #ccc;
-  font-size: 14px;
-  min-width: 120px;
-  flex: 1 1 150px;   /* 공간 자동 분배, 최소 너비 150px */
-  /* flex: 1 1 calc(33.33% - 8px); 100% / 3 - gap 보정 */
-}
-
-
-/* 경력사항 */
+/* 학력 및 경력 영역 공통 */
+.education-row,
 .experience-row {
-  display: flex;/* 인풋 나란히 배치 */
-  flex-wrap: wrap;   /* 한 줄에 다 안 들어가면 줄 바꿈 가능 */
-  gap: 12px;         /* input 사이 간격 */
-  width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 18px;
+    padding: 18px;
+    border: 1px dashed #dbeafe;
+    border-radius: 10px;
+    background: #f9fbfd;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.02);
+      /* 추가: 자식 요소들이 넘칠 경우 스크롤이 아닌 줄바꿈을 유도하므로,
+      명시적으로 justify-content를 설정하여 공간 분배를 명확히 할 수 있습니다.
+      '학력' 항목이 보더 밖으로 넘치는 문제 해결하고 싶어서 추가해봄 */
+    justify-content: flex-start; /* 또는 space-between, center 등 상황에 맞게 */
+}
+/* .education-row input, */
+/* .experience-row input, */
+/* .experience-row textarea, */
+/* .education-row .date-range-wrapper, */
+/* .experience-row .date-range-wrapper { */
+    /* flex: 1; */
+    /* min-width: 140px; */
+/* } */
+
+/* 학력 항목 내 입력 필드 조정 */
+.education-row > input[type="text"]{
+    /* 학교명/전공 필드가 나머지 필드보다 더 많은 공간을 차지하도록 합니다. */
+    /* flex: 3; // flex: 2보다 더 넓게 사용하려면 3 등으로 조절 */
+    flex: 1 1 250px; /* flex-grow: 1, flex-shrink: 1, flex-basis: 250px. 최소 너비 250px 보장. */
+    min-width: 250px; /* 충분한 최소 너비로 지정하여 텍스트가 잘리지 않도록 합니다. */
+    max-width: 400px; /* 너무 커지지 않도록 최대 너비를 설정할 수도 있습니다. */
 }
 
-.experience-row input {
-  border: none;
-  outline: none;
-  /* background: none; */
-  background: #fff;
-  padding: 6px 10px;
-  border-bottom: 1px solid #ccc;
-  font-size: 14px;
-  min-width: 120px;
-  flex: 1 1 150px;   /* 공간 자동 분배, 최소 너비 150px */
-  /* flex: 1 1 calc(33.33% - 8px); 100% / 3 - gap 보정 */
+/* 학력 및 경력 영역 공통 - 날짜 입력 및 텍스트에어리어 */
+/* flex: 1; min-width: 140px; 규칙은 제거하거나 더 구체적인 선택자로 재정의해야 합니다. */
+/* 아래처럼 더 구체적인 선택자로 날짜 래퍼에만 flex 속성을 지정하는 것이 좋습니다. */
+.education-row .date-range-wrapper,
+.experience-row .date-range-wrapper {
+    /* flex: none; // 이전에 추가했지만, 아래 flex shorthand가 더 명확합니다. */
+    /* flex-grow: 0, flex-shrink: 0, flex-basis: auto; */
+    flex: 0 0 auto; /* 공간이 남아도 늘어나지 않고(0), 공간이 부족해도 줄어들지 않으며(0), 콘텐츠 크기(auto)에 따라 너비가 결정됩니다. */
+    /* width: auto; // DateRangePicker.css에서 최종 너비를 결정하도록 합니다. */
+    min-width: 270px; /* '시작일 ~ 종료일' 전체를 담을 수 있는 최소 너비. DateRangePicker.css의 width와 맞춰 조절 */
+}
+
+/* Calendar 컴포넌트 DatePicker 정리 */
+/* DatePicker 컴포넌트 내부의 input 필드 너비는 DateRangePicker.css에서 120px로 설정했으므로 유지됩니다. */
+/* .education-row .react-datepicker__input-container input,
+.experience-row .react-datepicker__input-container input {
+    width: 100%; // 이는 date-range-wrapper 내부에서 100%를 의미합니다.
+} */
+
+/* 경력 항목 날짜+회사명 묶음 */
+.experience-row > div:first-child {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    flex: 2;
+    min-width: 300px;
+}
+
+/* 삭제 버튼 */
+.education-row .PrettyBtn,
+.experience-row .PrettyBtn {
+    margin-left: auto;
+    align-self: center;
+    min-width: 70px;
+    background-color: #fef2f2;
+    border: 1px solid #fca5a5;
+    color: #b91c1c;
+    border-radius: 6px;
+    font-weight: 600;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.education-row .PrettyBtn:hover,
+.experience-row .PrettyBtn:hover {
+    background-color: #fecaca;
+}
+
+/* 항목 제목 + 추가 버튼 */
+.resume-content-form label > div:has(.PrettyBtn) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.resume-content-form label > div:has(.PrettyBtn) span {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+/* 자기소개서 영역 */
+.my-cover-letter-section {
+    min-height: 200px;
+    resize: vertical;
+}
+
+/* 제출 버튼 */
+.resume-content-form .PrettyBtn[type="submit"] {
+    display: block;
+    margin: 40px auto 0;
+    background: linear-gradient(to right, #3b82f6, #60a5fa);
+    border: none;
+    border-radius: 10px;
+    padding: 14px 30px;
+    color: white;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
 
-
-
-
-
+.resume-content-form .PrettyBtn[type="submit"]:hover {
+    background: linear-gradient(to right, #2563eb, #3b82f6);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+}
+ 
