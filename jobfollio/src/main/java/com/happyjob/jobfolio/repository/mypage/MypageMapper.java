@@ -1,5 +1,6 @@
 package com.happyjob.jobfolio.repository.mypage;
 
+import com.happyjob.jobfolio.vo.join.UserVO;
 import com.happyjob.jobfolio.vo.mypage.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -9,9 +10,9 @@ import java.util.List;
 @Mapper
 public interface MypageMapper {
 
-//    // 유저 정보 조회
-//    public UserVO selectUserInfo(@Param("user_no")Long userNo);
-    
+    // 유저 정보 조회
+    public UserVO selectUserInfo(@Param("user_no")Long userNo);
+
     // 내 커리어 - 유저 커리어 조회
     public CareerAllDto getMyCareerInfo(@Param("user_no") Long userNo);
     // 학력 조회
@@ -36,7 +37,5 @@ public interface MypageMapper {
     public CertificateVO insertCertificate(CertificateVO certificateVO);
     // 경력 사항 추가
     public CareerHistoryVO insertCareerHistory(CareerHistoryVO careerHistoryVO);
-
-
 
 }
