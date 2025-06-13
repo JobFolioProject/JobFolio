@@ -77,21 +77,19 @@ const SubscriptManagement = () => {
           </div>
         </div>
        
-              {isDetailOpen && (
-                  
-      <SubscriptManagementDetail
-        item={detailItem}
-        onClose={() => setIsDetailOpen(false)}
-        mode={modalMode}
-        onSaved={() => {
-          axios.get('/product/productList')
-          .then((res) => setData(res.data))
-          .catch((err) => console.error(err));
-        }}
-      />
-    )}
+        {isDetailOpen && (              
+          <SubscriptManagementDetail
+            item={detailItem}
+            onClose={() => setIsDetailOpen(false)}
+            mode={modalMode}
+            onSaved={() => {
+              axios.get('/product/productList')
+              .then((res) => setData(res.data))
+              .catch((err) => console.error(err));
+            }}
+          />
+        )}
   
-
         <table className='info-table'>
           <thead>
             <tr>
