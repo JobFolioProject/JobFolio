@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import '../../../css/admin/adminComponents/InfoManagement_detail.css';
 
-const InfoManagementDetail = ({ item, onClose, mode, onSaved }) => {
+const InfoManagementDetail = ({ item, onClose, mode, onSaved, boardType }) => {
   
 
   const isEdit = mode === 'edit';
@@ -14,20 +14,27 @@ const InfoManagementDetail = ({ item, onClose, mode, onSaved }) => {
 
   const handleSave = async () => {
     const payload = {
+      id : item?.id,    // 이거 있어야하나?? 
       question: editQuestion,
       answer: editAnswer,
+      board_type : boardType 
     };
 
     try {
-      await axios.post('/api/info', payload);
+      if (mode === 'edit') {
+        await axios.put('/api/board', payload); // 수정요청하는거 
+      } else {
+        await axios.post('/api/board', payload); // 새로 등록
+      }
+      
       onSaved(); // 성공 후 목록 다시 불러오게 함
       onClose(); // 모달 닫기
+
     } catch (err) {
       console.error('등록 실패:', err);
       alert('등록에 실패했습니다.');
     }
   };
-
 
   if (mode === 'edit' && !item ){ return null };
   
