@@ -28,7 +28,7 @@ const UserInfo = () => {
             hp : data.hp,
             email: data.login_id,
             addr: data.address,
-            expire_days : data.expire_days,
+            expire_days : data.expire_days ?? "미구독",
         });
         console.log(data);
         
@@ -68,9 +68,10 @@ const UserInfo = () => {
 
                 <div className="userInfoRow">
                     <p>이름</p>
-                    <input type="text" className="userInfoInput"  
+                    <input type="text" className={`userInfoInput ${isEditing ? 'userInfoInput--editable' : ''}`}  
                     value={userInfo.user_name} 
                     onChange={(e) =>setUserInfo({...userInfo,user_name: e.target.value})} 
+                    
                     readOnly={!isEditing}
                     />
                 </div>
@@ -78,7 +79,7 @@ const UserInfo = () => {
 
                 <div className="userInfoRow">
                     <p>연락처</p>
-                    <input type="text" className="userInfoInput"  
+                    <input type="text" className={`userInfoInput ${isEditing ? 'userInfoInput--editable' : ''}`}  
                     value={userInfo.hp} 
                     onChange={(e) =>setUserInfo({...userInfo,hp: e.target.value})} 
                     readOnly={!isEditing}
@@ -88,7 +89,7 @@ const UserInfo = () => {
 
                 <div className="userInfobuttonWrap_button">
                     <p>이메일</p>
-                    <input type="text" className="userInfoInput"  
+                    <input type="text" className={`userInfoInput ${isEditing ? 'userInfoInput--editable' : ''}`}  
                     value={userInfo.email} 
                     onChange={(e) =>setUserInfo({...userInfo,hp: e.target.value})} 
                     readOnly={!isEditing}
@@ -99,7 +100,7 @@ const UserInfo = () => {
 
                 <div className="userInfoRow">
                     <p>주소</p>
-                    <input type="text" className="userInfoInput"  
+                    <input type="text" className={`userInfoInput ${isEditing ? 'userInfoInput--editable' : ''}`}  
                     value={userInfo.addr} 
                     onChange={(e) =>setUserInfo({...userInfo,addr: e.target.value})} 
                     readOnly={!isEditing}
@@ -109,7 +110,7 @@ const UserInfo = () => {
 
                 <div className="userInfoRow">
                     <p>구독마감일자</p>
-                    <input type="text" className="userInfoInput"  
+                    <input type="text" className={`userInfoInput ${isEditing ? 'userInfoInput--editable' : ''}`}  
                     value={userInfo.expire_days} 
                     onChange={(e) =>setUserInfo({...userInfo, expire_days: e.target.value})} 
                     readOnly={!isEditing}
