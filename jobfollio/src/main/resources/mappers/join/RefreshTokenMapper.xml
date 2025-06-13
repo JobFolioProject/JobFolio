@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.happyjob.jobfolio.repository.join.RefreshTokenMapper">
+
+    <!-- Refresh Token 저장 -->
+    <insert id="insertRefreshToken" parameterType="com.happyjob.jobfolio.vo.join.RefreshTokenVO"
+            useGeneratedKeys="true" keyProperty="token_id">
+        INSERT INTO tb_refresh_token (
+            user_no,
+            token_hash,
+            user_agent,
+            expires_at,
+            created_at,
+            last_used_at,
+            is_revoked
+        ) VALUES (
+                     #{user_no},
+                     #{token_hash},
+                     #{user_agent},
+                     #{expires_at},
+                     NOW(),
+                     NOW(),
+                     'N'
+                 )
+    </insert>
+
+    <!-- 토큰 해시로 조회 -->
+    <select id="selectByTokenHash" parameterType="String" resultType="com.happyjob.jobfolio.vo.join.RefreshTokenVO">
+        SELECT
+            token_id,
+            user_no,
+            token_hash,
+            user_agent,
+            expires_at,
+            created_at,
+            last_used_at,
+            is_revoked,
+            revoked_at,
+            revoked_reason
+        FROM tb_refresh_token
+        WHERE token_hash = #{token_hash}
+    </select>
+
+    <!-- 토큰 ID로 조회 -->
+    <select id="selectByTokenId" parameterType="Long" resultType="com.happyjob.jobfolio.vo.join.RefreshTokenVO">
+        SELECT
+            token_id,
+            user_no,
+            token_hash,
+            user_agent,
+            expires_at,
+            created_at,
+            last_used_at,
+            is_revoked,
+            revoked_at,
+            revoked_reason
+        FROM tb_refresh_token
+        WHERE token_id = #{token_id}
+    </select>
+
+    <!-- 사용자별 활성 토큰 목록 조회 -->
+    <select id="selectActiveTokensByUserNo" parameterType="Integer" resultType="com.happyjob.jobfolio.vo.join.RefreshTokenVO">
+        SELECT
+            token_id,
+            user_no,
+            token_hash,
+            user_agent,
+            expires_at,
+            created_at,
+            last_used_at,
+            is_revoked,
+            revoked_at,
+            revoked_reason
+        FROM tb_refresh_token
+        WHERE user_no = #{user_no}
+          AND is_revoked = 'N'
+          AND expires_at > NOW()
+        ORDER BY created_at DESC
+    </select>
+
+    <!-- 마지막 사용 시간 업데이트 -->
+    <update id="updateLastUsedAt" parameterType="Long">
+        UPDATE tb_refresh_token
+        SET last_used_at = NOW()
+        WHERE token_id = #{token_id}
+    </update>
+
+    <!-- 특정 토큰 무효화 -->
+    <update id="invalidateToken" parameterType="Map">
+        UPDATE tb_refresh_token
+        SET is_revoked = 'Y',
+            revoked_at = NOW(),
+            revoked_reason = #{revoked_reason}
+        WHERE token_id = #{token_id}
+    </update>
+
+    <!-- 사용자의 모든 토큰 무효화 -->
+    <update id="invalidateUserTokens" parameterType="Map">
+        UPDATE tb_refresh_token
+        SET is_revoked = 'Y',
+            revoked_at = NOW(),
+            revoked_reason = #{revoked_reason}
+        WHERE user_no = #{user_no}
+          AND is_revoked = 'N'
+    </update>
+
+    <!-- 만료된 토큰 삭제 (배치 작업용) -->
+    <delete id="deleteExpiredTokens">
+        DELETE FROM tb_refresh_token
+        WHERE expires_at < NOW()
+        OR (is_revoked = 'Y' AND revoked_at < DATE_SUB(NOW(), INTERVAL 30 DAY))
+    </delete>
+
+    <!-- 무효화된 토큰 삭제 (배치 작업용) -->
+    <delete id="deleteRevokedTokens">
+        DELETE FROM tb_refresh_token
+        WHERE is_revoked = 'Y'
+        AND revoked_at < DATE_SUB(NOW(), INTERVAL 7 DAY)
+    </delete>
+
+    <!-- 사용자별 활성 토큰 개수 조회 -->
+    <select id="countActiveTokensByUserNo" parameterType="Integer" resultType="int">
+        SELECT COUNT(*)
+        FROM tb_refresh_token
+        WHERE user_no = #{user_no}
+          AND is_revoked = 'N'
+          AND expires_at > NOW()
+    </select>
+
+    <!-- 오래된 토큰 삭제 (최대 보관 개수 제한) -->
+    <delete id="deleteOldTokensByUserNo" parameterType="Map">
+        DELETE FROM tb_refresh_token
+        WHERE token_id IN (
+            SELECT token_id FROM (
+                                     SELECT token_id
+                                     FROM tb_refresh_token
+                                     WHERE user_no = #{user_no}
+                                       AND is_revoked = 'N'
+                                     ORDER BY created_at ASC
+                                         LIMIT #{delete_count}
+                                 ) AS old_tokens
+        )
+    </delete>
+
+    <!-- 관리자용 - 모든 활성 토큰과 사용자 정보 조회 -->
+    <select id="selectAllActiveTokensWithUser" resultType="Map">
+        SELECT
+        rt.token_id,
+        rt.user_no,
+        u.user_name,
+        u.login_id,
+        rt.user_agent,
+        rt.created_at as login_time,
+        rt.last_used_at,
+        rt.expires_at,
+        CASE
+        WHEN rt.expires_at < NOW() THEN 'EXPIRED'
+        WHEN rt.is_revoked = 'Y' THEN 'REVOKED'
+        ELSE 'ACTIVE'
+        END as status
+        FROM tb_refresh_token rt
+        INNER JOIN tb_userinfo u ON rt.user_no = u.user_no
+        WHERE rt.is_revoked = 'N'
+        ORDER BY rt.created_at DESC
+        LIMIT 100
+    </select>
+
+    <!-- 최근 토큰 조회 (사용자별) -->
+    <select id="selectMostRecentByUserNo" parameterType="Integer" resultType="com.happyjob.jobfolio.vo.join.RefreshTokenVO">
+        SELECT
+            token_id,
+            user_no,
+            token_hash,
+            user_agent,
+            expires_at,
+            created_at,
+            last_used_at,
+            is_revoked,
+            revoked_at,
+            revoked_reason
+        FROM tb_refresh_token
+        WHERE user_no = #{user_no}
+          AND is_revoked = 'N'
+        ORDER BY created_at DESC
+            LIMIT 1
+    </select>
+
+    <!-- 가장 오래된 토큰들 조회 (동시 접속 제한용) -->
+    <select id="selectOldestTokensByUserNo" parameterType="Map" resultType="com.happyjob.jobfolio.vo.join.RefreshTokenVO">
+        SELECT
+            token_id,
+            user_no,
+            token_hash,
+            user_agent,
+            expires_at,
+            created_at,
+            last_used_at,
+            is_revoked,
+            revoked_at,
+            revoked_reason
+        FROM tb_refresh_token
+        WHERE user_no = #{user_no}
+          AND is_revoked = 'N'
+        ORDER BY created_at ASC
+            LIMIT #{limit_count}
+    </select>
+
+    <!-- 현재 활성 사용자 번호 목록 조회 (배치 작업용) -->
+    <select id="selectActiveUserNumbers" resultType="Integer">
+        SELECT DISTINCT user_no
+        FROM tb_refresh_token
+        WHERE is_revoked = 'N'
+          AND expires_at > NOW()
+    </select>
+
+</mapper>
