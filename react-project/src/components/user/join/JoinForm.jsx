@@ -114,7 +114,7 @@ const JoinForm = () => {
     if (day < 1 || day > 31) return "올바른 일을 입력해주세요.";
     const inputDate = new Date(year, month - 1, day);
     if (inputDate.getFullYear() !== year || inputDate.getMonth() !== month - 1 || inputDate.getDate() !== day) return "유효하지 않은 날짜입니다.";
-    if (inputDate > now) return "미래 날짜는 입력할 수 없습니다.";
+    if (inputDate > now) return "올바른 날짜를 입력해주세요.";
     return "";
   };
   const validateAddress = (value) => {

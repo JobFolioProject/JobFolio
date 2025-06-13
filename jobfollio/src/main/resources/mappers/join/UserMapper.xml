@@ -24,7 +24,7 @@
 
     <!-- ================= 기본 CRUD ================= -->
 
-    <!-- 사용자 등록  -->
+    <!-- 사용자 등록 -->
     <insert id="insertUser" parameterType="map" useGeneratedKeys="true" keyProperty="user_no">
         INSERT INTO tb_userinfo (
         login_id,
@@ -48,7 +48,7 @@
         #{sex},
         #{hp},
         NOW(),
-        'N',  <!-- ('Y'=탈퇴, 'N'=활성) -->
+        'N',  <!-- 'N'사용상태, 'Y'=탈퇴상태 -->
         #{address},
         #{hobby},
         #{notes}
@@ -59,132 +59,132 @@
     <select id="checkLoginIdDuplicate" parameterType="map" resultType="int">
         SELECT COUNT(*)
         FROM tb_userinfo
-        WHERE login_id = #{loginId}
-        AND status_yn = 'N'
-        AND withdrawal_date IS NULL
+        WHERE login_id = #{login_id}
+          AND status_yn = 'N'
+          AND withdrawal_date IS NULL
     </select>
 
-    <!-- 로그인ID로 사용자 조회  -->
+    <!-- 로그인ID로 사용자 조회 -->
     <select id="selectUserByLoginId" parameterType="map" resultMap="userResultMap">
         SELECT
-        user_no,
-        login_id,
-        user_type,
-        user_name,
-        password,
-        birthday,
-        sex,
-        hp,
-        DATE_FORMAT(reg_date, '%Y-%m-%d %H:%i:%s') AS reg_date,
-        DATE_FORMAT(withdrawal_date, '%Y-%m-%d %H:%i:%s') AS withdrawal_date,
-        status_yn,
-        expire_days,
-        address,
-        hobby,
-        notes
+            user_no,
+            login_id,
+            user_type,
+            user_name,
+            password,
+            birthday,
+            sex,
+            hp,
+            DATE_FORMAT(reg_date, '%Y-%m-%d %H:%i:%s') AS reg_date,
+            DATE_FORMAT(withdrawal_date, '%Y-%m-%d %H:%i:%s') AS withdrawal_date,
+            status_yn,
+            expire_days,
+            address,
+            hobby,
+            notes
         FROM tb_userinfo
-        WHERE login_id = #{loginId}
-        AND status_yn = 'N'
-        AND withdrawal_date IS NULL
+        WHERE login_id = #{login_id}
+          AND status_yn = 'N'
+          AND withdrawal_date IS NULL
         ORDER BY reg_date DESC
-        LIMIT 1
+            LIMIT 1
     </select>
 
     <!-- 사용자번호로 사용자 조회 -->
     <select id="selectUserByUserNo" parameterType="map" resultMap="userResultMap">
         SELECT
-        user_no,
-        login_id,
-        user_type,
-        user_name,
-        password,
-        birthday,
-        sex,
-        hp,
-        DATE_FORMAT(reg_date, '%Y-%m-%d %H:%i:%s') AS reg_date,
-        DATE_FORMAT(withdrawal_date, '%Y-%m-%d %H:%i:%s') AS withdrawal_date,
-        status_yn,
-        expire_days,
-        address,
-        hobby,
-        notes
+            user_no,
+            login_id,
+            user_type,
+            user_name,
+            password,
+            birthday,
+            sex,
+            hp,
+            DATE_FORMAT(reg_date, '%Y-%m-%d %H:%i:%s') AS reg_date,
+            DATE_FORMAT(withdrawal_date, '%Y-%m-%d %H:%i:%s') AS withdrawal_date,
+            status_yn,
+            expire_days,
+            address,
+            hobby,
+            notes
         FROM tb_userinfo
-        WHERE user_no = #{userNo}
-        AND status_yn = 'N'
-        AND withdrawal_date IS NULL
+        WHERE user_no = #{user_no}
+          AND status_yn = 'N'
+          AND withdrawal_date IS NULL
     </select>
 
     <!-- 사용자 정보 수정 -->
     <update id="updateUser" parameterType="map">
         UPDATE tb_userinfo
         SET
-        user_name = #{userName},
-        birthday = #{birthday},
-        sex = #{sex},
-        hp = #{hp},
-        address = #{address},
-        hobby = #{hobby},
-        notes = #{notes}
-        WHERE user_no = #{userNo}
-        AND status_yn = 'N'
-        AND withdrawal_date IS NULL
+            user_name = #{user_name},
+            birthday = #{birthday},
+            sex = #{sex},
+            hp = #{hp},
+            address = #{address},
+            hobby = #{hobby},
+            notes = #{notes}
+        WHERE user_no = #{user_no}
+          AND status_yn = 'N'
+          AND withdrawal_date IS NULL
     </update>
 
     <!-- 비밀번호 변경 -->
     <update id="updatePassword" parameterType="map">
         UPDATE tb_userinfo
         SET password = #{newPassword}
-        WHERE login_id = #{loginId}
-        AND status_yn = 'N'
-        AND withdrawal_date IS NULL
+        WHERE login_id = #{login_id}
+          AND status_yn = 'N'
+          AND withdrawal_date IS NULL
     </update>
 
-    <!-- 회원 탈퇴  -->
+    <!-- 회원 탈퇴 -->
     <update id="withdrawUser" parameterType="map">
         UPDATE tb_userinfo
         SET
-        status_yn = 'Y',
-        withdrawal_date = NOW(),
-        user_name = '탈퇴회원',
-        hp = NULL,
-        address = NULL,
-        hobby = NULL,
-        notes = '회원탈퇴'
-        WHERE user_no = #{userNo}
-        AND status_yn = 'N'
-        AND withdrawal_date IS NULL
+            status_yn = 'Y',
+            withdrawal_date = NOW(),
+            user_name = '탈퇴회원',
+            hp = NULL,
+            address = NULL,
+            hobby = NULL,
+            notes = '회원탈퇴'
+        WHERE user_no = #{user_no}
+          AND status_yn = 'N'
+          AND withdrawal_date IS NULL
     </update>
 
-    <!-- 이름과 연락처로 사용자 조회 (아이디 찾기) -->
+    <!-- 이름과 연락처로 사용자 조회 -->
     <select id="selectUserByNameAndHp" parameterType="map" resultMap="userResultMap">
         SELECT
-        user_no,
-        login_id,
-        user_name,
-        DATE_FORMAT(reg_date, '%Y-%m-%d') AS reg_date
+            user_no,
+            login_id,
+            user_name,
+            DATE_FORMAT(reg_date, '%Y-%m-%d') AS reg_date
         FROM tb_userinfo
-        WHERE user_name = #{userName}
-        AND hp = #{hp}
-        AND status_yn = 'N'
-        AND withdrawal_date IS NULL
+        WHERE user_name = #{user_name}
+          AND hp = #{hp}
+          AND status_yn = 'N'
+          AND withdrawal_date IS NULL
         ORDER BY reg_date DESC
-        LIMIT 1
+            LIMIT 1
     </select>
 
     <!-- 비밀번호 찾기용 사용자 검증 -->
     <select id="selectUserForPasswordReset" parameterType="map" resultMap="userResultMap">
         SELECT
-        user_no,
-        login_id,
-        user_name,
-        hp
+            user_no,
+            login_id,
+            user_name,
+            hp
         FROM tb_userinfo
-        WHERE login_id = #{loginId}
-        AND user_name = #{userName}
-        AND hp = #{hp}
-        AND status_yn = 'N'
-        AND withdrawal_date IS NULL
-        AND reg_date >= DATE_SUB(NOW(), INTERVAL 2 YEAR)
+        WHERE login_id = #{login_id}
+          AND user_name = #{user_name}
+          AND hp = #{hp}
+          AND status_yn = 'N'
+          AND withdrawal_date IS NULL
+          AND reg_date >= DATE_SUB(NOW(), INTERVAL 2 YEAR)
     </select>
 
 </mapper>
