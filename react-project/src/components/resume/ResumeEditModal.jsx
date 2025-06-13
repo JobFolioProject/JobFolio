@@ -7,9 +7,12 @@ import EduSectionModify from "./EduSectionModify";
 import SkillSectionModify from "./SkillSectionModify";
 import LanguageSectionModify from "./LanguageSectionModify";
 import CertSectionModify from "./CertSectionModify";
+import axios from "axios";
 
 const ResumeEditModal = ({ open, onClose, props }) => {
+  const [initHtmlcontent, setInitHtmlContent] = useState("");
   const [htmlContent, setHtmlContent] = useState("");
+  const [initalResumeInfo, setInitialResumeInfo] = useState(null);
   const [resumeInfo, setResumeInfo] = useState({
     name: "",
     address: "",
@@ -17,6 +20,9 @@ const ResumeEditModal = ({ open, onClose, props }) => {
     hp: "",
     desired_position: "",
     link: "",
+    resumeNo: "",
+    templateNo: "",
+    coverLetter: "",
     education: [
       {
         school_name: "",
@@ -61,7 +67,6 @@ const ResumeEditModal = ({ open, onClose, props }) => {
         notes: "",
       },
     ],
-    coverLetter: "",
   });
   const [selectedRadio, setSelectedRadio] = useState("");
   const [fixedPath, setFixedPath] = useState(props.fixedPath);
@@ -71,159 +76,166 @@ const ResumeEditModal = ({ open, onClose, props }) => {
   useEffect(() => {
     fetch(fixedPath + "example.html")
       .then((res) => res.text())
-      .then((html) => setHtmlContent(html));
+      .then((html) => {
+        setHtmlContent(html);
+        setInitHtmlContent(html);
+      });
   }, []);
 
   // htmlContent에 있는 특정 class별로 변수 set
   useEffect(() => {
-    const parser = new window.DOMParser();
-    const doc = parser.parseFromString(htmlContent, "text/html");
-    const nameDiv = doc.querySelector(".userName");
-    const posDiv = doc.querySelector(".desired_position");
-    const addressDiv = doc.querySelector(".address");
-    const emailDiv = doc.querySelector(".email");
-    const hpDiv = doc.querySelector(".hp");
-    const linkDiv = doc.querySelector(".link");
+    if (!initalResumeInfo && htmlContent) {
+      const parser = new window.DOMParser();
+      const doc = parser.parseFromString(htmlContent, "text/html");
+      const nameDiv = doc.querySelector(".userName");
+      const posDiv = doc.querySelector(".desired_position");
+      const addressDiv = doc.querySelector(".address");
+      const emailDiv = doc.querySelector(".email");
+      const hpDiv = doc.querySelector(".hp");
+      const linkDiv = doc.querySelector(".link");
 
-    //경력사항 정보
-    const companyNameDiv = Array.from(
-      doc.querySelectorAll(".company_name")
-    ).map((el) => el.textContent.trim());
-    const careerStartDateDiv = Array.from(
-      doc.querySelectorAll(".career_start_date")
-    ).map((el) => el.textContent.trim());
-    const careerEndDateDiv = Array.from(
-      doc.querySelectorAll(".career_end_date")
-    ).map((el) => el.textContent.trim());
-    const careerPositionDateDiv = Array.from(
-      doc.querySelectorAll(".position")
-    ).map((el) => el.textContent.trim());
-    const careerNotesDiv = Array.from(
-      doc.querySelectorAll(".career_notes")
-    ).map((el) => el.textContent.trim());
+      //경력사항 정보
+      const companyNameDiv = Array.from(
+        doc.querySelectorAll(".company_name")
+      ).map((el) => el.textContent.trim());
+      const careerStartDateDiv = Array.from(
+        doc.querySelectorAll(".career_start_date")
+      ).map((el) => el.textContent.trim());
+      const careerEndDateDiv = Array.from(
+        doc.querySelectorAll(".career_end_date")
+      ).map((el) => el.textContent.trim());
+      const careerPositionDateDiv = Array.from(
+        doc.querySelectorAll(".position")
+      ).map((el) => el.textContent.trim());
+      const careerNotesDiv = Array.from(
+        doc.querySelectorAll(".career_notes")
+      ).map((el) => el.textContent.trim());
 
-    //학력사항 정보
-    const schoolNameDiv = Array.from(doc.querySelectorAll(".school_name")).map(
-      (el) => el.textContent.trim()
-    );
-    const majorDiv = Array.from(doc.querySelectorAll(".major")).map((el) =>
-      el.textContent.trim()
-    );
-    const eduStatusDiv = Array.from(doc.querySelectorAll(".edu_status")).map(
-      (el) => el.textContent.trim()
-    );
-    const enrollDateDiv = Array.from(doc.querySelectorAll(".enroll_date")).map(
-      (el) => el.textContent.trim()
-    );
-    const gradDateDiv = Array.from(doc.querySelectorAll(".grad_date")).map(
-      (el) => el.textContent.trim()
-    );
-    const subMajorDiv = Array.from(doc.querySelectorAll(".sub_major")).map(
-      (el) => el.textContent.trim()
-    );
-    const gpaDiv = Array.from(doc.querySelectorAll(".gpa")).map((el) =>
-      el.textContent.trim()
-    );
-    const eduNotesDiv = Array.from(doc.querySelectorAll(".notes")).map((el) =>
-      el.textContent.trim()
-    );
+      //학력사항 정보
+      const schoolNameDiv = Array.from(
+        doc.querySelectorAll(".school_name")
+      ).map((el) => el.textContent.trim());
+      const majorDiv = Array.from(doc.querySelectorAll(".major")).map((el) =>
+        el.textContent.trim()
+      );
+      const eduStatusDiv = Array.from(doc.querySelectorAll(".edu_status")).map(
+        (el) => el.textContent.trim()
+      );
+      const enrollDateDiv = Array.from(
+        doc.querySelectorAll(".enroll_date")
+      ).map((el) => el.textContent.trim());
+      const gradDateDiv = Array.from(doc.querySelectorAll(".grad_date")).map(
+        (el) => el.textContent.trim()
+      );
+      const subMajorDiv = Array.from(doc.querySelectorAll(".sub_major")).map(
+        (el) => el.textContent.trim()
+      );
+      const gpaDiv = Array.from(doc.querySelectorAll(".gpa")).map((el) =>
+        el.textContent.trim()
+      );
+      const eduNotesDiv = Array.from(doc.querySelectorAll(".notes")).map((el) =>
+        el.textContent.trim()
+      );
 
-    //기술스택 정보
-    const skillCodeDiv = Array.from(doc.querySelectorAll(".skill_code")).map(
-      (el) => el.textContent.trim()
-    );
-    const groupCodeDiv = Array.from(doc.querySelectorAll(".group_code")).map(
-      (el) => el.textContent.trim()
-    );
-    const expLevelDiv = Array.from(doc.querySelectorAll(".exp_level")).map(
-      (el) => el.textContent.trim()
-    );
-    const skillToolDiv = Array.from(doc.querySelectorAll(".skill_tool")).map(
-      (el) => el.textContent.trim()
-    );
+      //기술스택 정보
+      const skillCodeDiv = Array.from(doc.querySelectorAll(".skill_code")).map(
+        (el) => el.textContent.trim()
+      );
+      const groupCodeDiv = Array.from(doc.querySelectorAll(".group_code")).map(
+        (el) => el.textContent.trim()
+      );
+      const expLevelDiv = Array.from(doc.querySelectorAll(".exp_level")).map(
+        (el) => el.textContent.trim()
+      );
+      const skillToolDiv = Array.from(doc.querySelectorAll(".skill_tool")).map(
+        (el) => el.textContent.trim()
+      );
 
-    //자격증정보
-    const certNameDiv = Array.from(
-      doc.querySelectorAll(".certificate_name")
-    ).map((el) => el.textContent.trim());
-    const acquiredDiv = Array.from(doc.querySelectorAll(".acquired_date")).map(
-      (el) => el.textContent.trim()
-    );
-    const certNoDiv = Array.from(doc.querySelectorAll(".certificate_no")).map(
-      (el) => el.textContent.trim()
-    );
-    const certIssueDiv = Array.from(doc.querySelectorAll(".issuing_org")).map(
-      (el) => el.textContent.trim()
-    );
-    const certNotesDiv = Array.from(doc.querySelectorAll(".cert_notes")).map(
-      (el) => el.textContent.trim()
-    );
+      //자격증정보
+      const certNameDiv = Array.from(
+        doc.querySelectorAll(".certificate_name")
+      ).map((el) => el.textContent.trim());
+      const acquiredDiv = Array.from(
+        doc.querySelectorAll(".acquired_date")
+      ).map((el) => el.textContent.trim());
+      const certNoDiv = Array.from(doc.querySelectorAll(".certificate_no")).map(
+        (el) => el.textContent.trim()
+      );
+      const certIssueDiv = Array.from(doc.querySelectorAll(".issuing_org")).map(
+        (el) => el.textContent.trim()
+      );
+      const certNotesDiv = Array.from(doc.querySelectorAll(".cert_notes")).map(
+        (el) => el.textContent.trim()
+      );
 
-    //언어정보
-    const langDiv = Array.from(doc.querySelectorAll(".language")).map((el) =>
-      el.textContent.trim()
-    );
-    const levelDiv = Array.from(doc.querySelectorAll(".level")).map((el) =>
-      el.textContent.trim()
-    );
+      //언어정보
+      const langDiv = Array.from(doc.querySelectorAll(".language")).map((el) =>
+        el.textContent.trim()
+      );
+      const levelDiv = Array.from(doc.querySelectorAll(".level")).map((el) =>
+        el.textContent.trim()
+      );
 
-    //자기소개서 정보
-    const coverLetterDiv = doc.querySelector(".coverLetter");
+      //자기소개서 정보
+      const coverLetterDiv = doc.querySelector(".coverLetter");
 
-    const careers = companyNameDiv.map((name, index) => ({
-      company_name: name,
-      start_date: careerStartDateDiv[index] || "",
-      end_date: careerEndDateDiv[index] || "",
-      position: careerPositionDateDiv[index] || "",
-      notes: careerNotesDiv[index] || "",
-    }));
+      const careers = companyNameDiv.map((name, index) => ({
+        company_name: name,
+        start_date: careerStartDateDiv[index] || "",
+        end_date: careerEndDateDiv[index] || "",
+        position: careerPositionDateDiv[index] || "",
+        notes: careerNotesDiv[index] || "",
+      }));
 
-    const educations = schoolNameDiv.map((name, index) => ({
-      school_name: name,
-      major: majorDiv[index] || "",
-      edu_status: eduStatusDiv[index] || "",
-      enroll_date: enrollDateDiv[index] || "",
-      grad_date: gradDateDiv[index] || "",
-      sub_major: subMajorDiv[index] || "",
-      gpa: gpaDiv[index] || "",
-      notes: eduNotesDiv[index] || "",
-    }));
+      const educations = schoolNameDiv.map((name, index) => ({
+        school_name: name,
+        major: majorDiv[index] || "",
+        edu_status: eduStatusDiv[index] || "",
+        enroll_date: enrollDateDiv[index] || "",
+        grad_date: gradDateDiv[index] || "",
+        sub_major: subMajorDiv[index] || "",
+        gpa: gpaDiv[index] || "",
+        notes: eduNotesDiv[index] || "",
+      }));
 
-    const skillList = skillCodeDiv.map((code, index) => ({
-      skill_code: code,
-      group_code: groupCodeDiv[index] || "",
-      exp_level: expLevelDiv[index] || "",
-      skill_tool: skillToolDiv[index] || "",
-    }));
+      const skillList = skillCodeDiv.map((code, index) => ({
+        skill_code: code,
+        group_code: groupCodeDiv[index] || "",
+        exp_level: expLevelDiv[index] || "",
+        skill_tool: skillToolDiv[index] || "",
+      }));
 
-    const certificationList = certNameDiv.map((cert, index) => ({
-      certificate_name: cert,
-      certificate_no: certNoDiv[index] || "",
-      issuing_org: certIssueDiv[index] || "",
-      acquired_date: acquiredDiv[index] || "",
-      notes: certNotesDiv[index] || "",
-    }));
+      const certificationList = certNameDiv.map((cert, index) => ({
+        certificate_name: cert,
+        certificate_no: certNoDiv[index] || "",
+        issuing_org: certIssueDiv[index] || "",
+        acquired_date: acquiredDiv[index] || "",
+        notes: certNotesDiv[index] || "",
+      }));
 
-    const languageList = langDiv.map((lang, index) => ({
-      language: lang || "",
-      level: levelDiv[index] || "",
-    }));
+      const languageList = langDiv.map((lang, index) => ({
+        language: lang || "",
+        level: levelDiv[index] || "",
+      }));
 
-    setResumeInfo((prev) => ({
-      ...prev,
-      name: nameDiv ? nameDiv.innerText : "",
-      desired_position: posDiv ? posDiv.innerText : "",
-      address: addressDiv ? addressDiv.innerText : "",
-      email: emailDiv ? emailDiv.innerText : "",
-      hp: hpDiv ? hpDiv.innerText : "",
-      link: linkDiv ? linkDiv.innerText : "",
-      career: careers,
-      education: educations,
-      skills: skillList,
-      certifications: certificationList,
-      languages: languageList,
-      coverLetter: coverLetterDiv ? coverLetterDiv.innerText : "",
-    }));
+      const parsedResumeInfo = {
+        name: nameDiv ? nameDiv.innerText : "",
+        desired_position: posDiv ? posDiv.innerText : "",
+        address: addressDiv ? addressDiv.innerText : "",
+        email: emailDiv ? emailDiv.innerText : "",
+        hp: hpDiv ? hpDiv.innerText : "",
+        link: linkDiv ? linkDiv.innerText : "",
+        career: careers,
+        education: educations,
+        skills: skillList,
+        certifications: certificationList,
+        languages: languageList,
+        coverLetter: coverLetterDiv ? coverLetterDiv.innerText : "",
+      };
+
+      setResumeInfo(parsedResumeInfo);
+      setInitialResumeInfo(parsedResumeInfo);
+    }
   }, [htmlContent]);
 
   // 수정할때마다 실시간으로 iframe에 변경된 사항 적용
@@ -410,6 +422,7 @@ const ResumeEditModal = ({ open, onClose, props }) => {
           -<span class="certificate_name">${cert.certificate_name}</span> (<span
             class="acquired_date"
             >${cert.acquired_date}</span
+
           >)
           <span class="certificate_no">${cert.certificate_no}</span>
           <span class="issuing_org">${cert.issuing_org}</span>
@@ -438,7 +451,6 @@ const ResumeEditModal = ({ open, onClose, props }) => {
       });
       langList.innerHTML = htmlCode;
     }
-
     return doc.documentElement.outerHTML;
   };
 
@@ -465,8 +477,38 @@ const ResumeEditModal = ({ open, onClose, props }) => {
     };
   }, [resumeInfo, htmlContent]);
 
+  // radio 버튼 클릭 이벤트
   const toggleRadio = (event) => {
     setSelectedRadio(event.target.id);
+  };
+
+  // 이력서 수정 버튼 클릭 이벤트
+  const saveModify = async () => {
+    // const updatedHtml = getPreviewHtml();
+    await axios
+      .post("/resume/saveModifiedResume", { resumeInfo: resumeInfo })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+
+  const changeSelectedTemplate = () => {
+    fetch(fixedPath + "example-copy.html")
+      .then((res) => res.text())
+      .then((html) => setHtmlContent(html));
+  };
+
+  const handleClose = () => {
+    //모달창 닫을 시 기본값 초기화
+    if (initalResumeInfo && initHtmlcontent) {
+      setHtmlContent(initHtmlcontent);
+      setResumeInfo(initalResumeInfo);
+    }
+    setSelectedRadio("");
+    onClose();
   };
 
   if (!open) return null;
@@ -555,8 +597,13 @@ const ResumeEditModal = ({ open, onClose, props }) => {
         )}
 
         <div className="buttonRow">
-          <button className="secondaryBtn">수정 사항 저장</button>
-          <button className="modal-close secondaryBtn" onClick={onClose}>
+          <button className="secondaryBtn" onClick={changeSelectedTemplate}>
+            템플릿 변경 (테스트)
+          </button>
+          <button className="secondaryBtn" onClick={saveModify}>
+            수정 사항 저장
+          </button>
+          <button className="modal-close secondaryBtn" onClick={handleClose}>
             닫기
           </button>
         </div>
