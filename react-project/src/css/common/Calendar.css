@@ -1,0 +1,136 @@
+/* DateRangePicker.css */
+
+/* 전체 날짜 범위 래퍼 */
+.date-range-wrapper {
+  display: flex; /* 날짜 선택기를 가로로 정렬합니다. */
+  align-items: center; /* 세로 중앙 정렬합니다. */
+  font-family: 'Pretendard', 'Noto Sans KR', sans-serif; /* 가독성 좋은 한글 폰트를 사용합니다. */
+  gap:10px;/*********문제 해결 포인트. 날짜 입력 필드와 구분자 사이의 간격을 조절합니다. */
+
+}
+
+/* 개별 날짜 선택기 입력 필드 */
+.react-datepicker-wrapper {
+  display: inline-block; /* 인라인 블록으로 정렬을 유연하게 합니다. */
+}
+
+.react-datepicker__input-container input {
+  width: 120px; /* 입력 필드의 너비를 지정합니다. */
+  padding: 10px 15px; /* 내부 여백을 넉넉하게 주어 클릭하기 편하게 합니다. */
+  border: 1px solid #cce7ed; /* 하늘색 계열의 테두리로 포인트를 줍니다. */
+  border-radius: 5px; /* 입력 필드 모서리도 둥글게 처리합니다. */
+  font-size: 15px; /* 글자 크기를 적당히 조절하여 잘 보이게 합니다. */
+  color: #333; /* 어두운 회색 글자색으로 가독성을 높입니다. */
+  cursor: pointer; /* 마우스 오버 시 포인터 모양으로 변경하여 클릭 가능함을 알립니다. */
+  transition: all 0.2s ease-in-out; /* 부드러운 호버 효과를 위해 트랜지션을 추가합니다. */
+}
+
+.react-datepicker__input-container input:focus {
+  outline: none; /* 포커스 시 기본 아웃라인을 제거합니다. */
+  border-color: #87ceeb; /* 포커스 시 더 진한 하늘색 테두리로 강조합니다. */
+  box-shadow: 0 0 0 3px rgba(135, 206, 235, 0.3); /* 하늘색 그림자를 추가하여 선택된 느낌을 줍니다. */
+}
+
+/* 플레이스홀더 텍스트 스타일 */
+.react-datepicker__input-container input::placeholder {
+  color: #a0a0a0; /* 연한 회색으로 플레이스홀더 텍스트를 표시합니다. */
+}
+
+/* 날짜 구분자 ( ~ ) -> 화살표 아이콘으로 변경 */
+.date-range-separator {
+  margin: 0 5px; /* 날짜 선택기 사이에 여백을 줍니다. */
+  color: #87ceeb; /* 하늘색으로 구분자를 표시하여 디자인 통일성을 높입니다. */
+  font-size: 1.5em; /* 글자 크기를 키워 눈에 띄게 합니다. */
+  /* 기존 ~ 대신 화살표 아이콘으로 변경 */
+  content: '→'; /* 이 부분을 추가하거나 변경합니다. */
+  font-weight: bold; /* 볼드체로 강조합니다. */
+  /* 추가: 아이콘 폰트(Font Awesome 등)를 사용하는 경우 */
+  /* font-family: 'Font Awesome 5 Free'; */
+  /* font-weight: 900; */
+  /* content: '\f061'; */ /* Font Awesome의 오른쪽 화살표 유니코드 */
+}
+
+
+/********** 선택된 날짜 (달력 내부) */
+.react-datepicker__day--selected,
+.react-datepicker__day--keyboard-selected,
+.react-datepicker__day--in-selecting-range {
+  background-color: #ffcc80 !important; /* 주황색 배경으로 선택된 날짜를 강조합니다. */
+  color: #fff !important; /* 흰색 글자색으로 가독성을 높입니다. */
+  border-radius: 50%; /* 원형으로 만들어 귀여움을 더합니다. */
+  transition: background-color 0.2s ease-in-out; /* 부드러운 변화를 위해 트랜지션을 추가합니다. */
+}
+
+/* 날짜 호버 시 (달력 내부) */
+.react-datepicker__day:not(.react-datepicker__day--selected):hover,
+.react-datepicker__month-text:not(.react-datepicker__month-text--selected):hover,
+.react-datepicker__quarter-text:not(.react-datepicker__quarter-text--selected):hover,
+.react-datepicker__year-text:not(.react-datepicker__year-text--selected):hover {
+  background-color: #e0f2f7; /* 마우스 오버 시 하늘색 배경으로 변경됩니다. */
+  border-radius: 50%; /* 호버 시에도 둥근 모양을 유지합니다. */
+}
+
+/* 달력 헤더 (월/년도 표시 부분) */
+.react-datepicker__header {
+  background-color: #fff; /* 흰색 배경으로 깔끔하게 유지합니다. */
+  border-bottom: 1px solid #eee; /* 얇은 회색 아래 테두리를 추가합니다. */
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+/*===============수정할 부분====================================================*/
+/* react-datepicker__navigation--next 어디에?  navigation--next위치 찾기.*/
+
+/* 이전/다음 달 이동 버튼 */
+.react-datepicker__navigation {
+  border: 0.7em solid transparent; /* 기본 화살표 스타일을 재정의합니다. */
+  cursor: pointer;
+  top: 15px; /* 버튼 위치를 조정합니다. */
+}
+
+.react-datepicker__navigation--previous {
+  border-right-color: #fff; /* 연한 하늘색 화살표 */
+  left: 15px;
+}
+
+.react-datepicker__navigation--next {
+  border-left-color: #fff; /* 연한 하늘색 화살표 */
+  right: 15px;
+}
+
+.react-datepicker__navigation:hover {
+  border-color: transparent; /* 호버 시 기본 테두리 제거 */
+}
+
+.react-datepicker__navigation--previous:hover {
+  border-right-color: #87ceeb; /* 호버 시 진한 하늘색 화살표 */
+}
+
+.react-datepicker__navigation--next:hover {
+  border-left-color: #87ceeb; /* 호버 시 진한 하늘색 화살표 */
+}
+
+/* 달력 내 요일 표시 (Sun, Mon, Tue...) */
+.react-datepicker__day-name {
+  color: #666; /* 요일 텍스트 색상을 지정합니다. */
+  font-weight: bold; /* 요일 텍스트를 볼드 처리합니다. */
+}
+
+/* 날짜 클리어 버튼 (x 표시) */
+.react-datepicker__close-button {
+  position: absolute;
+  right: 10px; /* 오른쪽에서 10px 떨어진 위치 */
+  top: 50%; /* 세로 중앙 정렬을 위해 50% 설정 */
+  transform: translateY(-50%); /* 정확한 세로 중앙 정렬 */
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 1.5em; /* 클리어 버튼 아이콘 크기 */
+  color: #b0c4de; /* 연한 하늘색으로 표시 */
+  cursor: pointer;
+  outline: none;
+  transition: color 0.2s ease-in-out;
+}
+
+.react-datepicker__close-button:hover {
+  color: #87ceeb; /* 호버 시 더 진한 하늘색으로 변경 */
+}  
