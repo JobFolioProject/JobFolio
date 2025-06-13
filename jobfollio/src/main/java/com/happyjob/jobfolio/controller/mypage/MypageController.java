@@ -91,37 +91,76 @@ public class MypageController {
     @PostMapping("/{user_no}/skills")
     public ResponseEntity<String> addSkill(@PathVariable(name = "user_no") Long userNo, @RequestBody SkillVO skillVO) {
 
+
         mypageService.addSkill(skillVO);
         return new ResponseEntity<>("기술 사항이 정상적으로 추가되었습니다.", HttpStatus.CREATED);
     }
 
-    //학력
+    //학력 저장
     @PostMapping("/{user_no}/educations")
-    public ResponseEntity<String> addeducation(@PathVariable(name = "user_no") Long userNo, @RequestBody EduInfoVO eduInfoVO) {
-
-        mypageService.addeducation(eduInfoVO);
+    public ResponseEntity<String> addEducation(@PathVariable(name = "user_no") Long userNo, @RequestBody EduInfoVO eduInfoVO) {
+        // URL에서 받은 user_no를 eduInfoVO에 설정
+        eduInfoVO.setUser_no(userNo);
+        // 서비스 호출
+        mypageService.addEducation(eduInfoVO);
         return new ResponseEntity<>("학력 사항이 정상적으로 추가되었습니다.", HttpStatus.CREATED);
+    }
+    // 학력 수정
+    @PutMapping("/{user_no}/educations/{edu_no}")
+    public ResponseEntity<String> updateEducation(@PathVariable(name = "user_no") Long userNo, @PathVariable(name = "edu_no") Integer eduNo,  @RequestBody EduInfoVO eduInfoVO){
+        eduInfoVO.setUser_no(userNo);
+        eduInfoVO.setEdu_no(eduNo);
+        mypageService.updateByUserNoAndEduNo(eduInfoVO);
+        return new ResponseEntity<>("학력 사항이 정상적으로 수정되었습니다.", HttpStatus.CREATED);
+    }
+    // 학력 삭제
+    @DeleteMapping("/{user_no}/educations/{edu_no}")
+    public ResponseEntity<String> deleteEducation(@PathVariable(name = "user_no") Long userNo, @PathVariable(name = "edu_no") Integer eduNo) {
+        // 서비스 호출
+        mypageService.deleteByUserNoAndEduNo(userNo,eduNo);
+        return new ResponseEntity<>("학력 사항이 정상적으로 삭제되었습니다", HttpStatus.CREATED);
     }
 
     // 언어
     @PostMapping("/{user_no}/languages")
     public ResponseEntity<String> addLanguage(@PathVariable(name = "user_no") Long userNo, @RequestBody LanguageSkillVO languageSkillVO) {
-        mypageService.addlanguage(languageSkillVO);
+        mypageService.addLanguage(languageSkillVO);
         return new ResponseEntity<>("언어 능력이 정상적으로 추가되었습니다.", HttpStatus.CREATED);
+    }
+    @PutMapping("/{user_no}/languages/{laguages}")
+    public ResponseEntity<String> updateLaguage(@PathVariable(name = "user_no") Long userNo, @PathVariable String laguages, @RequestBody LanguageSkillVO languageSkillVO) {
+        languageSkillVO.setUser_no(userNo);
+        languageSkillVO.setLanguage(laguages);
+        mypageService.updateLanguage(languageSkillVO);
+        return new ResponseEntity<>("언어 정보가 정상적으로 수정되었습니다.", HttpStatus.CREATED);
+    }
+    @DeleteMapping("/{user_no}/languages/{languages}")
+    public ResponseEntity<String> deleteLanguage(@PathVariable(name = "user_no") Long userNo, @PathVariable String languages) {
+        mypageService.deleteLanguage(userNo);
+        return new ResponseEntity<>("언어 정보가 정상적으로 삭제되었습니다.", HttpStatus.CREATED);
     }
 
     // 자격증
     @PostMapping("/{user_no}/certificates")
     public ResponseEntity<String> addCertificate(@PathVariable(name = "user_no") Long userNo, @RequestBody CertificateVO certificateVO) {
 
-        mypageService.addcertificate(certificateVO);
+        mypageService.addCertificate(certificateVO);
         return new ResponseEntity<>("자격 사항이 정상적으로 추가되었습니다.", HttpStatus.CREATED);
     }
+
+    @PutMapping("/{user_no}/certificates/{certification_no}")
+    public ResponseEntity<String> updateCertificateion(@PathVariable(name = "user_no") Long userNo, @PathVariable Integer certification_no, @RequestBody CertificateVO certificateVO) {
+        certificateVO.setUser_no(userNo);
+        certificateVO.setCertification_no(certification_no);
+
+        return new ResponseEntity<>("<UNK> <UNK> <UNK> <UNK>.", HttpStatus.CREATED);
+    }
+
 
     // 경력
     @PostMapping("/{user_no}/careerhistories")
     public ResponseEntity<String> addCareerHistory(@PathVariable(name = "user_no") Long userNo, @RequestBody CareerHistoryVO careerHistoryVO) {
-        mypageService.addcareerhistory(careerHistoryVO);
+        mypageService.addCareerhistory(careerHistoryVO);
         return new ResponseEntity<>("경력 사항이 정상적으로 추가되었습니다.", HttpStatus.CREATED);
     }
 

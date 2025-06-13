@@ -15,27 +15,35 @@ public interface MypageMapper {
 
     // 내 커리어 - 유저 커리어 조회
     public CareerAllDto getMyCareerInfo(@Param("user_no") Long userNo);
+
     // 학력 조회
     public List<EduInfoVO> getEducationListByUserNo(@Param("user_no") Long userNo);
+    public Integer insertEducation(EduInfoVO eduInfoVO); // 학력 정보 추가
+    public void deleteEducation(@Param("user_no") Long userNo,@Param("edu_no") Integer eduNo);  // 학력 정보 제거
+    public void updateEducation(EduInfoVO eduInfoVO); // 학력 정보 업데이트
+
     // 언어 조회
     public List<LanguageSkillVO> getLanguageSkillListByUserNo(@Param("user_no")Long userNo);
+    public Integer insertLanguageSkill(LanguageSkillVO languageSkillVO);
+    public void deleteLanguageSkill(@Param("user_no")Long userNo);
+    public void updateLanguageSkill(LanguageSkillVO languageSkillVO);
+
     // 스킬 조회
     public List<SkillVO> getSkillListByUserNo(@Param("user_no")Long userNo);
+    public Integer insertSkill(SkillVO skillVO);
+    public void deleteSkill(@Param("user_no")Long userNo);
+    public void updateSkill(SkillVO skillVO);
+
     // 자격증 조회
     public List<CertificateVO> getCertificateListByUserNo(@Param("user_no")Long userNo);
+    public Integer insertCertificate(CertificateVO certificateVO);
+    public void deleteCertificate(@Param("user_no")Long userNo);
+    public void updateCertificate(CertificateVO certificateVO);
+
     // 걍략 조회
     public  List<CareerHistoryVO> getCareerHistoryListByUserNo(@Param("user_no")Long userNo);
-
-    // insert
-    // 기술 스택 추가
-    public SkillVO insertSkill(SkillVO skillVO);
-    // 학력 정보 추가
-    public EduInfoVO insertEducation(EduInfoVO eduInfoVO);
-    // 언어 능력 추가
-    public LanguageSkillVO insertLanguage(LanguageSkillVO languageSkillVO);
-    // 자격증 추가
-    public CertificateVO insertCertificate(CertificateVO certificateVO);
-    // 경력 사항 추가
     public CareerHistoryVO insertCareerHistory(CareerHistoryVO careerHistoryVO);
+    public void deleteCareerHistory(@Param("user_no")Long userNo, String careerHistory);
+    public void updateCareerHistory(CareerHistoryVO careerHistoryVO);
 
 }

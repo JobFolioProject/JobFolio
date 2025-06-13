@@ -1,0 +1,267 @@
+.careerInfoSection {
+    margin-bottom: 20px;
+    border-radius: 8px;
+    padding: 20px;
+    background-color: #fff;
+}
+
+/* 헤더: "학력" 텍스트와 "추가" 버튼 - 나란히 정렬 */
+.careerInfoHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 5px;
+    border-bottom: 2px solid #eee;
+}
+
+.careerInfoHeader p {
+    margin: 0;
+    padding: 0;
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #333;
+}
+
+/* "추가" 버튼 스타일 */
+.plusFunction {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 10px;
+    transition: color 0.2s ease-in-out;
+    justify-content: flex-end;
+}
+.plusFunction:hover {
+    color: #007bff; /* 마우스 오버 시 밝은 파란색으로 변경 */
+    /* 마우스 오버 시 배경색 변화는 원치 않으므로 이 줄은 제거합니다. */
+    /* background-color: #e9f5ff; */
+}
+
+.plusIcon {
+    font-size: 18px !important;
+    margin-left: 5px;
+}
+
+/* 각 항목 표시 (예: 학교이름 - 학년, 상태 등등) */
+.careerItemDisplay {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #f0f0f0;
+    margin-bottom: 5px;
+}
+
+/* 추가 +  글자색 */
+
+.careerItemDisplay:last-child {
+    border-bottom: none;
+}
+
+.careerItemDisplay p {
+    margin: 0;
+    flex-grow: 1;
+    color: #555;
+    font-size: 15px;
+    line-height: 1.4;
+}
+
+/* 수정/삭제 아이콘 그룹 */
+.itemActions {
+    display: flex;
+    gap: 10px;
+}
+
+.itemActions .editIcon,
+.itemActions .deleteIcon {
+    cursor: pointer;
+    font-size: 20px !important;
+    color: #666;
+    transition: color 0.2s ease-in-out;
+}
+
+.itemActions .editIcon:hover {
+    color: #007bff;
+}
+
+.itemActions .deleteIcon:hover {
+    color: #dc3545;
+}
+
+/* 비어있을 때 메시지 */
+.emptyMessage {
+    text-align: center;
+    color: #888;
+    padding: 30px 0;
+    margin: 0;
+    font-style: italic;
+    font-size: 1.1em;
+    background-color: #fcfcfc;
+    border-radius: 4px;
+}
+
+/* --- 학력 추가/수정 폼 박스 디자인 --- */
+.educationFormBox {
+    border: 1px solid #cceeff; /* 테두리 색상 */
+    margin-top: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 */
+    align-items: baseline;
+}
+
+.educationFormBox .formTitle {
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #0056b3;
+    font-size: 1.3em;
+    text-align: center;
+}
+
+/* 폼 행 (두 개 이상의 필드를 가로로 정렬) */
+.formRow {
+    display: flex;
+    gap: 15px; /* 컬럼 사이 간격 */
+    align-items: flex-start; /* 상단 정렬 */
+    flex-wrap: wrap; /* 작은 화면에서 줄바꿈 */
+}
+
+/* 폼 컬럼 (각 입력 필드를 포함하는 div) */
+.formCol,
+.formColFull,
+.formColHalf {
+    display: flex;
+    flex-direction: column; /* 레이블과 입력 필드를 세로로 정렬 */
+}
+
+/* 전체 너비 컬럼 */
+.formColFull {
+    flex: 1 1 100%; /* 항상 전체 너비 차지 */
+}
+
+/* 2분할 컬럼 (입학년월/졸업년월, 학력상태/전공 등) */
+.formCol {
+    flex: 1 1 calc(50% - 7.5px); /* 2개 컬럼, gap 고려 */
+    min-width: 150px; /* 최소 너비 */
+}
+
+/* 학점처럼 더 세분화된 반쪽 컬럼 */
+.formColHalf {
+    flex: 1 1 calc(25% - 7.5px); /* 4개 컬럼 (학점/학점, 다른 필드) */
+    min-width: 100px;
+    display: flex; /* 내부 요소 정렬 */
+    flex-direction: column;
+}
+
+/* 레이블 스타일 */
+.educationFormBox label {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+/* 필수 필드 표시 */
+.educationFormBox .requiredLabel::after {
+    content: ' *'; /* '*' 문자 추가 */
+    color: #dc3545; /* 빨간색 */
+    margin-left: 2px;
+}
+
+/* 입력 필드 (input, select, textarea) 공통 스타일 */
+.educationFormBox input,
+.educationFormBox select,
+.educationFormBox textarea {
+    width: 150px; /* 부모 컬럼의 100% */
+    padding: 12px;
+    border: 1px solid #a0cbed; /* 테두리 색상 */
+    border-radius: 6px;
+    box-sizing: border-box; /* 패딩, 보더가 너비에 포함 */
+    font-size: 13px;
+    background-color: #ffffff;
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.educationFormBox input:focus,
+.educationFormBox select:focus,
+.educationFormBox textarea:focus {
+    outline: none;
+    border-color: #007bff; /* 포커스 시 테두리 색상 */
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25); /* 포커스 시 그림자 */
+}
+
+.educationFormBox select {
+    appearance: none;
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 18px;
+}
+
+.educationFormBox textarea {
+    min-height: 180px;
+    resize: vertical;
+    min-width: 800px;
+}
+
+/* 학점 입력 필드 특정 스타일 */
+.educationFormBox .gpaInput {
+    width: 100%; /* 부모 컬럼의 100% */
+}
+
+.educationFormBox .gpaDivider {
+    position: relative; /* 슬래시 위치 조절용 */
+    align-items: center; /* 세로 중앙 정렬 */
+    flex-direction: row; /* 레이블과 input을 가로로 정렬 */
+    gap: 5px;
+}
+
+.educationFormBox .gpaDivider .gpaSlash {
+    font-size: 1.5em;
+    color: #666;
+    margin: 0 5px;
+}
+
+/* 폼 버튼 컨테이너 */
+.educationFormBox .formButtons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+/* 폼 버튼 공통 스타일 */
+.educationFormBox .formButtons button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 15px;
+    transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+}
+
+.educationFormBox .formButtons button:first-child {
+    /* 취소 버튼 */
+    background-color: #dcdcdc;
+    color: #333;
+}
+.educationFormBox .formButtons button:first-child:hover {
+    background-color: #c0c0c0;
+    transform: translateY(-1px);
+}
+
+.educationFormBox .formButtons button:last-child {
+    /* 저장 버튼 */
+    background-color: #007bff;
+    color: white;
+}
+.educationFormBox .formButtons button:last-child:hover {
+    background-color: #005dc0;
+    transform: translateY(-1px);
+}
+
+.educationInputArea {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}

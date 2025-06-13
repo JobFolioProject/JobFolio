@@ -160,4 +160,47 @@
           AND withdrawal_date IS NULL
     </select>
 
+    <!--  학력 사항  -->
+    <insert id="insertEducation" parameterType="com.happyjob.jobfolio.vo.mypage.EduInfoVO">
+
+        INSERT INTO
+            tb_edu_info(
+                user_no,
+                school_name,
+                enroll_date,
+                grad_date,
+                edu_status,
+                major,
+                sub_major,
+                gpa,
+                notes
+                )
+            VALUES(
+                #{user_no},
+                #{school_name},
+                #{enroll_date},
+                #{grad_date},
+                #{edu_status},
+                #{major},
+                #{sub_major},
+                #{gpa},
+                #{notes})
+    </insert>
+    <delete id="deleteEducation">
+        DELETE FROM tb_edu_info WHERE user_no = #{user_no} AND edu_no = #{edu_no}
+    </delete>
+    <update id="updateEducation" parameterType="com.happyjob.jobfolio.vo.mypage.EduInfoVO">
+        UPDATE tb_edu_info
+        SET user_no = #{user_no},
+            school_name = #{school_name},
+            enroll_date = #{enroll_date},
+                grad_date = #{grad_date},
+                edu_status = #{edu_status},
+                major = #{major},
+                sub_major = #{sub_major},
+                gpa = #{gpa},
+                notes = #{notes}
+        WHERE user_no = #{user_no} AND edu_no = #{edu_no}
+    </update>
+
 </mapper>

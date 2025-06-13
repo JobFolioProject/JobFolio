@@ -19,7 +19,7 @@ const MyCareer = () => {
 
     // userNo를 sessionStorage에서 가져와 상태로 관리
     // TODO: [임시 테스트용] 실제 userNo는 sessionStorage에서 불러오도록 변경해야 함
-    const [userNo, setUserNo] = useState(4);
+    const [userNo, setUserNo] = useState(4); // <---- null로
 
     // 컴포넌트 마운트 시 sessionStorage에서 userNo를 읽어오는 useEffect
     /*
@@ -141,27 +141,22 @@ const MyCareer = () => {
                     educationList={careerData.educationList}
                     onListChange={handleEducationListChange}
                 />
-                <hr className="userCareerHr" />
                 <CertificateSection
                     userNo={userNo}
                     certificateList={careerData.certificateList}
                     onListChange={handleCertificateListChange}
                 />
-                <hr className="userCareerHr" />
                 <LanguageSection
                     userNo={userNo}
                     languageSkillList={careerData.languageSkillList}
                     onListChange={handleLanguageListChange}
                 />
-                <hr className="userCareerHr" />
                 <CareerHistorySection
                     userNo={userNo}
                     careerHistoryList={careerData.careerHistoryList}
                     onListChange={handleCareerHistoryListChange}
                 />
-                <hr className="userCareerHr" />
                 <SkillSection userNo={userNo} skillList={careerData.skillList} onListChange={handleSkillListChange} />
-                <hr className="userCareerHr" />
             </div>
         </div>
     );
