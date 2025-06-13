@@ -22,17 +22,17 @@
 		SELECT 	COUNT(*)
 		FROM 	tb_product_info
 	</select>
-	
-   	<!-- 관리자 페이지 이용권 목록 조회 -->
+
+	<!-- 관리자 페이지 이용권 목록 조회 -->
 	<select id = "productList" parameterType="java.util.Map" resultType = "com.happyjob.jobfolio.vo.product.ProductModel">
-        /*com.happyjob.jobfolio.repository.product.ProductMapper.productList*/
+		/*com.happyjob.jobfolio.repository.product.ProductMapper.productList*/
 			SELECT    	product_no
-				,   	product_name
-				,   	product_detail
-				,   	price
-				,   	sub_period
-				,   	created_date
-				,   	use_yn
+				 ,   	product_name
+				 ,   	product_detail
+				 ,   	price
+				 ,   	sub_period
+				 ,		DATE_FORMAT(created_date, '%Y-%m-%d') AS created_date
+				 ,   	use_yn
 			FROM      	tb_product_info
 			ORDER BY 	created_date DESC
 			LIMIT 		#{pageIndex}, #{pageSize}
