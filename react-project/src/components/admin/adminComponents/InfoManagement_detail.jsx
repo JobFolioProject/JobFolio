@@ -6,7 +6,8 @@ const InfoManagementDetail = ({ item, onClose, mode, onSaved, boardType }) => {
   
 
   const isEdit = mode === 'edit';
-  const [isEditing, setIsEditing] = useState(mode === 'post');
+  const isPost = mode === 'post';
+  const [isEditing, setIsEditing] = useState(isPost);
   const [editQuestion, setEditQuestion] = useState(item?.question || '');
   const [editAnswer, setEditAnswer] = useState(item?.answer || '');
 
@@ -21,7 +22,7 @@ const InfoManagementDetail = ({ item, onClose, mode, onSaved, boardType }) => {
     };
 
     try {
-      if (mode === 'edit') {
+      if (isEdit) {
         await axios.put('/api/board', payload); // 수정요청하는거 
       } else {
         await axios.post('/api/board', payload); // 새로 등록
@@ -36,7 +37,7 @@ const InfoManagementDetail = ({ item, onClose, mode, onSaved, boardType }) => {
     }
   };
 
-  if (mode === 'edit' && !item ){ return null };
+  if (isEdit && !item ){ return null };
   
   return (
     <div className="detail-overlay" onClick={onClose}>
