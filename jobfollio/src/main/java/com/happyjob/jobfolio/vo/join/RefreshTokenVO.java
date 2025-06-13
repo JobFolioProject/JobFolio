@@ -4,10 +4,10 @@ import java.util.Date;
 
 public class RefreshTokenVO {
 
-    private Long token_id;           // 토큰 ID (BIGINT AUTO_INCREMENT)
-    private Integer user_no;         // 사용자 번호 (INT - tb_userinfo 참조)
+    private Long token_id;           // 토큰 ID
+    private Long user_no;            // 사용자 번호
     private String token_hash;       // 토큰 해시값
-    private String user_agent;       // User-Agent 정보
+    private String user_agent;       // User-Agent
     private Date expires_at;         // 만료 시간
     private Date created_at;         // 생성 시간
     private Date last_used_at;       // 마지막 사용 시간
@@ -18,8 +18,8 @@ public class RefreshTokenVO {
     // 기본 생성자
     public RefreshTokenVO() {}
 
-    // 생성자
-    public RefreshTokenVO(Integer user_no, String token_hash, Date expires_at) {
+    // 생성자 (필수 필드)
+    public RefreshTokenVO(Long user_no, String token_hash, Date expires_at) {
         this.user_no = user_no;
         this.token_hash = token_hash;
         this.expires_at = expires_at;
@@ -35,11 +35,11 @@ public class RefreshTokenVO {
         this.token_id = token_id;
     }
 
-    public Integer getUser_no() {
+    public Long getUser_no() {
         return user_no;
     }
 
-    public void setUser_no(Integer user_no) {
+    public void setUser_no(Long user_no) {
         this.user_no = user_no;
     }
 

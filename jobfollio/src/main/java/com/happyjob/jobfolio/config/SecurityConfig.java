@@ -67,7 +67,7 @@ public class SecurityConfig {
                 .antMatchers("/api/admin/**").hasAnyAuthority("ROLE_A", "ROLE_B")
 
                 // 일반 사용자(A, B, C) 접근 가능 경로
-                .antMatchers("/api/user/**").hasAnyAuthority("ROLE_A", "ROLE_B", "ROLE_C")
+                .antMatchers("/api/**").hasAnyAuthority("ROLE_A", "ROLE_B", "ROLE_C")
 
                 // OAuth2 관련 경로 (추후 소셜 로그인용)
                 .antMatchers("/oauth2/**", "/login/oauth2/**").permitAll()
