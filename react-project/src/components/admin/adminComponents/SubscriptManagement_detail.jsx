@@ -25,16 +25,16 @@ const SubscriptManagementDetail = ({ item, onClose, mode, onSaved }) => {
   }, [item]);
 
   const handleSave = async () => {
-    const payload = {
-      product_name: productName,
-      product_detail: productDetail,
-      price,
-      sub_period: subPeriod,
-      use_yn: useYn
-    };
+    const formData = new URLSearchParams();
+    formData.append('product_name', productName);
+    formData.append('product_detail', productDetail);
+    formData.append('price', price);
+    formData.append('sub_period', subPeriod);
+    formData.append('use_yn', useYn);
 
     try {
-      await axios.post('/product/productList', payload); // API 경로 수정 필요 시 수정
+      await axios.post('/product/insertProduct', formData);
+      
       onSaved();
       onClose();
     } catch (err) {
