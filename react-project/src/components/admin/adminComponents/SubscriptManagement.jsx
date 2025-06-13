@@ -1,8 +1,7 @@
 import axios from 'axios';
+import '../../../css/admin/adminComponents/InfoManagement.css';
 
-import '../../../css/admin/adminComponents/SubscriptManagement.css';
-
-import InfoManagementDetail from './InfoManagement_detail';
+import SubscriptManagementDetail from './SubscriptManagement_detail';
 import AdminSideBar from '../AdminSideBar';
 import { useState, useEffect } from 'react';
 import Pagination from '../../common/Pagination.jsx'; 
@@ -78,21 +77,19 @@ const SubscriptManagement = () => {
           </div>
         </div>
        
-              {isDetailOpen && (
-                  
-      <InfoManagementDetail
-        item={detailItem}
-        onClose={() => setIsDetailOpen(false)}
-        mode={modalMode}
-        onSaved={() => {
-          axios.get('/product/productList')
-          .then((res) => setData(res.data))
-          .catch((err) => console.error(err));
-        }}
-      />
-    )}
+        {isDetailOpen && (              
+          <SubscriptManagementDetail
+            item={detailItem}
+            onClose={() => setIsDetailOpen(false)}
+            mode={modalMode}
+            onSaved={() => {
+              axios.get('/product/productList')
+              .then((res) => setData(res.data))
+              .catch((err) => console.error(err));
+            }}
+          />
+        )}
   
-
         <table className='info-table'>
           <thead>
             <tr>
