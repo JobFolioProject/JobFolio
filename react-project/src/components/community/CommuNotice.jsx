@@ -12,6 +12,7 @@ const CommuNotice = () => {
     const [totalCount, setTotalCount] = useState(0);
     const [searchKeyword, setSearchKeyword] = useState('');
     const pageSize = 10;
+    const totalPages = Math.ceil(totalCount / pageSize);
 
   useEffect(() => {
         fetchNotices();
@@ -33,7 +34,6 @@ const fetchNotices = () => {
   });
 };
 
-  const totalPages = Math.ceil(totalCount / pageSize);
     return (
     <>
       <div className="notice-banner">

@@ -1,5 +1,213 @@
-.noticeManagement{
-    display: flex;
-    flex-direction: row;
-    width: 100%;
+/* 메인 컨테이너 */
+.noticeManagement {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+
+/* 콘텐츠 영역 */
+.noticeManagement .notice-content {
+  flex: 1;
+  padding: 40px;
+  background-color: #f5f5f5;
+}
+
+/* 제목 박스 */
+.noticeManagement .notice-section-title-box {
+  background-color: #ffffff;
+  border-radius: 10px;
+  margin-bottom: 24px;
+  box-sizing: border-box;
+}
+
+/* 콘텐츠 박스 */
+.noticeManagement .notice-section-content-box {
+  background-color: #ffffff;
+  border-radius: 20px;
+}
+
+/* 내부 공통 박스 (타이틀/콘텐츠 너비 일치용) */
+.noticeManagement .notice-inner-box {
+  padding: 16px 24px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-sizing: border-box;
+}
+
+/* 제목 텍스트 */
+.noticeManagement .notice-inner-box h2 {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 24px;
+}
+
+/* 섹션 제목 및 안내 */
+.noticeManagement .notice-header h3 {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.noticeManagement .notice-warning {
+  color: red;
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+
+/* 버튼 컨트롤 영역 */
+.noticeManagement .notice-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.noticeManagement .notice-left-controls {
+  display: flex;
+  gap: 10px;
+}
+
+.noticeManagement .notice-right-controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  gap: 10px;
+}
+
+/* 공통 버튼 스타일 */
+.noticeManagement .notice-button {
+  font-size: 14px;
+  height: 36px; 
+  padding: 0 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+  cursor: pointer;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.noticeManagement .notice-button:hover {
+  border-color: #222;
+}
+.noticeManagement .notice-search-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.noticeManagement .community-notice-search-input,
+.noticeManagement .notice-button {
+  height: 36px;
+  vertical-align: middle;
+  box-sizing: border-box;
+}
+
+/* 검색 input */
+.noticeManagement .community-notice-search-input {
+  padding: 6px 12px;
+  font-size: 14px;
+  height: 36px;
+  line-height: 1.5;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+/* 테이블 */
+.noticeManagement .notice-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  background-color: #fff;
+  font-size: 14px;
+  margin-top: 12px;
+}
+
+.noticeManagement .notice-table th,
+.noticeManagement .notice-table td {
+  border-bottom: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+  word-break: break-word;
+}
+
+.noticeManagement .notice-table th {
+  background-color: #f2f2f2;
+}
+
+/* 컬럼 비율 설정 */
+.noticeManagement .notice-table th.col-checkbox,
+.noticeManagement .notice-table td.col-checkbox {
+  width: 5%;
+}
+
+.noticeManagement .notice-table th.col-number,
+.noticeManagement .notice-table td.col-number {
+  width: 10%;
+}
+
+.noticeManagement .notice-table th.col-title,
+.noticeManagement .notice-table td.col-title {
+  width: 60%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.noticeManagement .notice-table th.col-date,
+.noticeManagement .notice-table td.col-date {
+  width: 10%;
+}
+
+.noticeManagement .notice-table th.col-priority,
+.noticeManagement .notice-table td.col-priority {
+  width: 5%;
+}
+
+.noticeManagement .notice-table th.col-writer,
+.noticeManagement .notice-table td.col-writer {
+  width: 10%;
+}
+
+/* 제목 hover 효과 */
+.noticeManagement .notice-title {
+  cursor: pointer;
+}
+
+.noticeManagement .notice-title:hover {
+  color: #084298;
+  text-decoration: underline;
+}
+
+/* 페이징 */
+.noticeManagement .pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  margin-top: 24px;
+}
+
+.noticeManagement .pagination button,
+.noticeManagement .pagination span {
+  background: none;
+  border: none;
+  font-size: 14px;
+  padding: 6px 10px;
+  cursor: pointer;
+  color: #333;
+}
+
+.noticeManagement .pagination button.active {
+  font-weight: bold;
+  color: #fff;
+  background-color: #444;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
 }
