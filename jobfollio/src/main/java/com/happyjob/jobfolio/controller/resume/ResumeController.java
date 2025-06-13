@@ -113,14 +113,13 @@ public class ResumeController {
 
             // certifications 배열
             @SuppressWarnings("unchecked")
-            Long userNo = Long.valueOf(paramMap.get("user_no").toString());
-            List<CertificateVO> certs = mypageMapper.getCertificateListByUserNo(userNo);
+            List<CertificateVO> certs = mypageMapper.getCertificateListByUserNo(user_no);
             ArrayNode certArray = mapper.createArrayNode();
             for (CertificateVO cert : certs) {
                 ObjectNode node = mapper.createObjectNode();
-                node.put("name", cert.getCertificateName());
-                node.put("issuing_org", cert.getIssuingOrg());
-                node.put("date", cert.getAcquiredDate());
+                node.put("name", cert.getCertificate_name());
+                node.put("issuing_org", cert.getIssuing_org());
+                node.put("date", cert.getAcquired_date());
                 certArray.add(node);
             }
             root.set("certifications", certArray);
@@ -142,8 +141,8 @@ public class ResumeController {
                     .asText();
 
             // ❶ 저장할 경로 생성
-            String outputDir = "D:/resume_output";
-            String fileName  = "resume_" + userNo + ".html";
+            String outputDir = "X:/resume_output";
+            String fileName  = "resume_" + user_no + ".html";
             Path   dirPath   = Paths.get(outputDir);
             Path   filePath  = dirPath.resolve(fileName);
 
