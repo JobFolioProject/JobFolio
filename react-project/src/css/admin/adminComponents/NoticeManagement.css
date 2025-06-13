@@ -1,4 +1,4 @@
-/* 메인 컨테이너 */
+/* 공지사항 관리 메인 컨테이너 */
 .noticeManagement {
   display: flex;
   flex-direction: row;
@@ -26,10 +26,9 @@
   border-radius: 20px;
 }
 
-/* 내부 공통 박스 (타이틀/콘텐츠 너비 일치용) */
+/* 내부 공통 박스 */
 .noticeManagement .notice-inner-box {
   padding: 16px 24px;
-  background-color: #ffffff;
   border-radius: 10px;
   box-sizing: border-box;
 }
@@ -41,7 +40,7 @@
   margin-bottom: 24px;
 }
 
-/* 섹션 제목 및 안내 */
+/* 섹션 제목 및 안내문 */
 .noticeManagement .notice-header h3 {
   font-size: 18px;
   font-weight: bold;
@@ -54,7 +53,7 @@
   margin-bottom: 10px;
 }
 
-/* 버튼 컨트롤 영역 */
+/* 버튼 컨트롤 */
 .noticeManagement .notice-controls {
   display: flex;
   justify-content: space-between;
@@ -76,35 +75,30 @@
   gap: 10px;
 }
 
-/* 공통 버튼 스타일 */
+/* 공통 버튼 */
 .noticeManagement .notice-button {
   font-size: 14px;
-  height: 36px; 
+  height: 36px;
   padding: 0 12px;
   border: 1px solid #ccc;
   border-radius: 4px;
   background-color: #fff;
   cursor: pointer;
-  box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-sizing: border-box;
 }
 
 .noticeManagement .notice-button:hover {
   border-color: #222;
 }
+
+/* 검색 그룹 */
 .noticeManagement .notice-search-group {
   display: flex;
   align-items: center;
   gap: 8px;
-}
-
-.noticeManagement .community-notice-search-input,
-.noticeManagement .notice-button {
-  height: 36px;
-  vertical-align: middle;
-  box-sizing: border-box;
 }
 
 /* 검색 input */
@@ -115,6 +109,14 @@
   line-height: 1.5;
   border: 1px solid #ccc;
   border-radius: 4px;
+  box-sizing: border-box;
+}
+
+/* 공통 높이 맞춤 */
+.noticeManagement .community-notice-search-input,
+.noticeManagement .notice-button {
+  height: 36px;
+  vertical-align: middle;
   box-sizing: border-box;
 }
 
@@ -140,7 +142,12 @@
   background-color: #f2f2f2;
 }
 
-/* 컬럼 비율 설정 */
+/* 테이블 hover 효과 */
+.noticeManagement .notice-table tbody tr:hover {
+  background-color: #f9f9f9;
+}
+
+/* 열 비율 */
 .noticeManagement .notice-table th.col-checkbox,
 .noticeManagement .notice-table td.col-checkbox {
   width: 5%;
@@ -174,14 +181,31 @@
   width: 10%;
 }
 
-/* 제목 hover 효과 */
+/* 제목 hover */
 .noticeManagement .notice-title {
   cursor: pointer;
+  position: relative;
 }
 
 .noticeManagement .notice-title:hover {
   color: #084298;
   text-decoration: underline;
+}
+
+/* 제목 툴팁 효과 */
+.noticeManagement .notice-title:hover::after {
+  content: attr(data-title);
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #333;
+  color: #fff;
+  padding: 6px 10px;
+  font-size: 12px;
+  white-space: normal;
+  max-width: 300px;
+  z-index: 100;
+  border-radius: 4px;
 }
 
 /* 페이징 */
@@ -210,4 +234,24 @@
   border-radius: 50%;
   width: 28px;
   height: 28px;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .noticeManagement .notice-controls {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .noticeManagement .notice-right-controls {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
+  .noticeManagement .notice-button,
+  .noticeManagement .community-notice-search-input {
+    width: 100%;
+    max-width: 100%;
+  }
 }
