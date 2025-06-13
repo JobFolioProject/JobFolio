@@ -11,7 +11,7 @@ public interface ProductMapper {
 
 	// 메인 페이지 - 이용권 리스트 조회
 	public List<ProductModel> mainProductList(Map<String, Object> paramMap);
-	
+
 	// 관리자 페이지 - 이용권 리스트 조회
 	public List<ProductModel> productList(Map<String, Object> paramMap);
 
@@ -26,5 +26,5 @@ public interface ProductMapper {
 
 	// 이용권 삭제
 	public void deleteProduct(Map<String, Object> paramMap) throws Exception;
-	
+
 }
