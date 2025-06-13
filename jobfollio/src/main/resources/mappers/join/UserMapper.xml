@@ -60,58 +60,57 @@
         SELECT COUNT(*)
         FROM tb_userinfo
         WHERE login_id = #{login_id}
-          AND status_yn = 'N'
-          AND withdrawal_date IS NULL
+        <!-- 🔥 수정: 조건부로 탈퇴한 계정 제외 -->
+        <if test="exclude_withdrawn != null and exclude_withdrawn == 'Y'">
+            AND status_yn = 'N'
+            AND withdrawal_date IS NULL
+        </if>
     </select>
 
     <!-- 로그인ID로 사용자 조회 -->
     <select id="selectUserByLoginId" parameterType="map" resultMap="userResultMap">
         SELECT
-            user_no,
-            login_id,
-            user_type,
-            user_name,
-            password,
-            birthday,
-            sex,
-            hp,
-            DATE_FORMAT(reg_date, '%Y-%m-%d %H:%i:%s') AS reg_date,
-            DATE_FORMAT(withdrawal_date, '%Y-%m-%d %H:%i:%s') AS withdrawal_date,
-            status_yn,
-            expire_days,
-            address,
-            hobby,
-            notes
+        user_no,
+        login_id,
+        user_type,
+        user_name,
+        password,
+        birthday,
+        sex,
+        hp,
+        DATE_FORMAT(reg_date, '%Y-%m-%d %H:%i:%s') AS reg_date,
+        DATE_FORMAT(withdrawal_date, '%Y-%m-%d %H:%i:%s') AS withdrawal_date,
+        status_yn,
+        expire_days,
+        address,
+        hobby,
+        notes
         FROM tb_userinfo
         WHERE login_id = #{login_id}
-          AND status_yn = 'N'
-          AND withdrawal_date IS NULL
         ORDER BY reg_date DESC
-            LIMIT 1
+        LIMIT 1
     </select>
 
     <!-- 사용자번호로 사용자 조회 -->
     <select id="selectUserByUserNo" parameterType="map" resultMap="userResultMap">
         SELECT
-            user_no,
-            login_id,
-            user_type,
-            user_name,
-            password,
-            birthday,
-            sex,
-            hp,
-            DATE_FORMAT(reg_date, '%Y-%m-%d %H:%i:%s') AS reg_date,
-            DATE_FORMAT(withdrawal_date, '%Y-%m-%d %H:%i:%s') AS withdrawal_date,
-            status_yn,
-            expire_days,
-            address,
-            hobby,
-            notes
+        user_no,
+        login_id,
+        user_type,
+        user_name,
+        password,
+        birthday,
+        sex,
+        hp,
+        DATE_FORMAT(reg_date, '%Y-%m-%d %H:%i:%s') AS reg_date,
+        DATE_FORMAT(withdrawal_date, '%Y-%m-%d %H:%i:%s') AS withdrawal_date,
+        status_yn,
+        expire_days,
+        address,
+        hobby,
+        notes
         FROM tb_userinfo
         WHERE user_no = #{user_no}
-          AND status_yn = 'N'
-          AND withdrawal_date IS NULL
     </select>
 
     <!-- 사용자 정보 수정 -->
