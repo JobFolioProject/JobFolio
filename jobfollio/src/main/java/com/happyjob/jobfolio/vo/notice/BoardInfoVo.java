@@ -55,6 +55,11 @@ public class BoardInfoVo {
 	public void setPriority(int priority) {
 		this.priority = priority;
 	}
+	@Override
+	public String toString() {
+		return "BoardInfoVo [id=" + id + ", question=" + question + ", answer=" + answer + ", createdAt=" + createdAt
+				+ ", writer=" + writer + ", priority=" + priority + ", board_type=" + board_type + "]";
+	}
 	
 	
 	
