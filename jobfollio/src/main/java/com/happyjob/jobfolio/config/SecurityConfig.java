@@ -15,6 +15,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.happyjob.jobfolio.security.JwtAuthenticationFilter;
+import com.happyjob.jobfolio.security.handler.CustomAccessDeniedHandler;
 
 import java.util.Arrays;
 
@@ -24,6 +25,9 @@ public class SecurityConfig {
 
     @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    @Autowired
+    private CustomAccessDeniedHandler customAccessDeniedHandler;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -44,6 +48,12 @@ public class SecurityConfig {
                 // 세션 사용하지 않음 (JWT 사용하므로)
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+
+                .and()
+
+                // 예외 처리 설정 추가 (현업 방식)
+                .exceptionHandling()
+                .accessDeniedHandler(customAccessDeniedHandler)
 
                 .and()
 
