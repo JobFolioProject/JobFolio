@@ -18,7 +18,7 @@ public interface MypageMapper {
 
     // 학력 조회
     public List<EduInfoVO> getEducationListByUserNo(@Param("user_no") Long userNo);
-    public void insertEducation(EduInfoVO eduInfoVO); // 학력 정보 추가
+    public Integer insertEducation(EduInfoVO eduInfoVO); // 학력 정보 추가
     public void deleteEducation(@Param("user_no") Long userNo,@Param("edu_no") Integer eduNo);  // 학력 정보 제거
     public void updateEducation(EduInfoVO eduInfoVO); // 학력 정보 업데이트
 
@@ -41,8 +41,8 @@ public interface MypageMapper {
     public void updateCertificate(CertificateVO certificateVO);
 
     // 걍략 조회
-    public List<CareerHistoryVO> getCareerHistoryListByUserNo(@Param("user_no")Long userNo);
-    public Integer insertCareerHistory(CareerHistoryVO careerHistoryVO);
+    public  List<CareerHistoryVO> getCareerHistoryListByUserNo(@Param("user_no")Long userNo);
+    public CareerHistoryVO insertCareerHistory(CareerHistoryVO careerHistoryVO);
     public void deleteCareerHistory(@Param("user_no")Long userNo, String careerHistory);
     public void updateCareerHistory(CareerHistoryVO careerHistoryVO);
 
