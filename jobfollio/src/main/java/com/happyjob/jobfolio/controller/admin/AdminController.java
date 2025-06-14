@@ -172,5 +172,35 @@ public class AdminController {
         }
     }
 
+    @GetMapping("/super/system-info")
+    public ResponseEntity<Map<String, Object>> getSuperAdminSystemInfo() {
+        try {
+            Map<String, Object> systemInfo = new HashMap<>();
 
+            systemInfo.put("serverName", "JobFolio Admin Server");
+            systemInfo.put("version", "1.0.0");
+            systemInfo.put("environment", "Development");
+            systemInfo.put("serverTime", java.time.LocalDateTime.now().toString());
+
+            systemInfo.put("totalUsers", adminService.getTotalUsers());
+            systemInfo.put("totalEarnings", adminService.getTotalEarnings());
+            systemInfo.put("serverStatus", "RUNNING");
+            systemInfo.put("databaseConnection", "ACTIVE");
+
+            Map<String, Object> securityInfo = new HashMap<>();
+            securityInfo.put("activeTokens", "Protected Information");
+            securityInfo.put("lastBackup", "2025-06-14 23:00:00");
+            securityInfo.put("securityLevel", "HIGH");
+            systemInfo.put("securityInfo", securityInfo);
+
+            return ResponseEntity.ok(systemInfo);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("error", "시스템 정보 조회 중 오류가 발생했습니다.");
+            errorResponse.put("message", "최고관리자에게 문의하세요.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
 }
