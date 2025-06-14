@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-@RequestMapping("/community")
+@RequestMapping("/api/community")
 public class CommunityController {
 
     // Set logger

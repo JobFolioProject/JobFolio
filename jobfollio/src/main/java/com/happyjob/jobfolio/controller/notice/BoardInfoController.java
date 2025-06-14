@@ -31,6 +31,7 @@ public class BoardInfoController {
         return boardInfoService.getBoardsByType(boardType);
     }
     
+    // 게시글 등록
     @PostMapping
     public ResponseEntity<String> insertBoardInfo(@RequestBody BoardInfoVo vo) {
     	try {
@@ -48,6 +49,7 @@ public class BoardInfoController {
     	return ResponseEntity.ok("삭제 성공");
     }
     
+
     @PutMapping
     public ResponseEntity<String> updateBoardInfo(@RequestBody BoardInfoVo vo){
     	try {

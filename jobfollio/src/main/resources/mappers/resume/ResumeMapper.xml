@@ -22,7 +22,6 @@
 	<insert id="insertResumeInfo"
 			parameterType="com.happyjob.jobfolio.vo.resume.ResumeInfoVO">
 		INSERT INTO tb_resume_info (
-			resume_no,
 			user_no,
 			title,
 			desired_position,
@@ -31,7 +30,6 @@
 			resume_file_pypath,
 			resume_file_lopath
 		) VALUES (
-					 #{resume_no},
 					 #{user_no},
 					 #{title},
 					 #{desired_position},
@@ -95,6 +93,18 @@
 			file_lopath
 		FROM tb_template
 		ORDER BY template_no
+	</select>
+
+	<select id="selectTemplateByNum"
+			parameterType="int"
+			resultType="com.happyjob.jobfolio.vo.resume.TemplateVO">
+		SELECT
+			template_no,
+			template_name,
+			file_pypath,
+			file_lopath
+		FROM tb_template
+		where template_no=#{template_no}
 	</select>
 
 	<insert id="insertTemplate"

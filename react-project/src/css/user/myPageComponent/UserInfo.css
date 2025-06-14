@@ -91,6 +91,10 @@ input.userInfoInput {
     background-color: #f5f5f5;
 }
 
+.userInfoInput--editable {
+  background-color: #fff;
+}
+
 .careerInfoRow {
     margin-top: 20px;
     margin-bottom: 20px;

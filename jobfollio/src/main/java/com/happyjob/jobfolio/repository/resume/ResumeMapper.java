@@ -26,6 +26,8 @@ public interface ResumeMapper {
 
     List<TemplateVO> selectAllTemplates();
 
+    TemplateVO selectTemplateByNum(int template_no);
+
     int insertTemplate(TemplateVO templateVO);
 
     UserVO getUserByUserNo(Long userNo);

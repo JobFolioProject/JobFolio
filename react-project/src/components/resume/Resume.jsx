@@ -6,6 +6,8 @@ import DropDown from './ResumeDropdown';
 import ResumeAiCoverLetter from './ResumeAiCovLetter';
 import PrettyBtn from './PrettyBtn'; // PrettyBtn 컴포넌트 임포트
 import Calendar from '../common/Calendar';
+import axios from 'axios';
+import TemplateSelection from './TemplateSelection';
 
 const Resume = () => {
     // 이력서 작성 페이지 컴포넌트
@@ -45,9 +47,68 @@ const Resume = () => {
             },
         ],
         coverLetter: '', // 자기소개서 상태 추가
+        template_no : null, //
     });
 
+//test!!!!!!
 
+    const selectResumeInfo = async() => {
+        await axios.get("/resume/selectResumeInfo", { user_no: 4 })
+        .then((res)=>{
+            console.log(res.data);
+        })
+        .catch((err)=>{
+            console.log(err);
+        })
+    }
+
+    useEffect(()=>{
+        selectResumeInfo();
+    },[])
+
+
+
+    //템플렛 정보 요청하고 받아오기. >>> 
+    //백쪽은 그럼 select * from tb_template;.
+    //그리고 이거는 뭐... json 형태로 res에 들어오겠나?
+    //그럼 
+    
+    // const [tempInfos, setTempInfos] = useState({  //템플렛이 가져올때마 변하는 값도 아닌데... 이렇게 변화를 감지하는 게 맞나??? 일단은 템플렛 정보들만 가져와서 변수 안에 저장해서 사용하면 되는데...
+    //     template_no:null,
+    //     template_name:'',
+    //     file_pypath:'',
+    //     file_lopath:'',
+    // });
+    
+
+    // const templateInfo = async() => {
+    //     await axios.get("/resume/templateInfo")
+    //     .then((res)=>{
+    //         setTempInfos((prev)=>({ 
+    //             ...prev,
+
+    //         }));
+    //     })
+    //     .catch((err)=>{
+    //         console.log(err)
+    //     })
+    // }
+
+
+
+    // const selectResumeInfo = async() => {
+    //     await axios.get("/resume/selectResumeInfo", { user_no: 4 })
+    //     .then((res)=>{
+    //         console.log(res.data);
+    //     })
+    //     .catch((err)=>{
+    //         console.log(err);
+    //     })
+    // }
+
+    // useEffect(()=>{
+    //     selectResumeInfo();
+    // },[])
 
 
 
@@ -325,6 +386,13 @@ const Resume = () => {
                             <PrettyBtn type="submit" onClick={handleSubmit} >이력서 제출</PrettyBtn>
                         </div>
                         <br/>
+                        <label>
+                            <div><span>Template</span></div>
+                        </label>
+                            <div className='templete-test'>
+                                <TemplateSelection>템플렛선택</TemplateSelection>
+                            </div>
+                        <br/>
                     </form>
                     <ResumeAiCoverLetter
                         formData={formData}
@@ -332,6 +400,8 @@ const Resume = () => {
                         setMyCoverLetter={(value) => setFormData({ ...formData, coverLetter: value })}
                         setFormData={setFormData} // formData 상태를 자식 컴포넌트에 전달
                      />
+                     <br/>
+                     
                 </div>
                 </div>
         </div>

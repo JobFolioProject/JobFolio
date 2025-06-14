@@ -20,6 +20,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.BufferedReader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 @Service
@@ -158,69 +164,83 @@ public class ResumeService {
     private RestTemplate restTemplate = new RestTemplate();
     private final String chatGptApiUrl = "https://api.openai.com/v1/chat/completions";
 
-    public String getChatResponse(ObjectNode root) {
+    public String getChatResponse(ObjectNode root, String file) {
+
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(api_key);
 
         try {
-            // 1) JSON Body 생성
-            ObjectMapper om = new ObjectMapper();
-            ObjectNode body = om.createObjectNode();
-            body.put("model", "gpt-3.5-turbo");
-            ArrayNode messages = body.putArray("messages");
 
-            String userDataJson = om.writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(root);
+            String filePath = "X:/resume_output/template/test-template 2.html";
+            Path path = Paths.get(filePath);
+            try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
+                StringBuilder sb = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line).append(System.lineSeparator());
+                }
+                System.out.println(sb.toString());
+                template = sb.toString();
+                }
 
-            String userInput = "제대로하면 10불줄게";
+                // 1) JSON Body 생성
+                ObjectMapper om = new ObjectMapper();
+                ObjectNode body = om.createObjectNode();
+                body.put("model", "gpt-3.5-turbo");
+                ArrayNode messages = body.putArray("messages");
 
-            // system 메시지: 지시 + template
-            ObjectNode sysMsg = messages.addObject();
-            sysMsg.put("role", "system");
-            sysMsg.put("content",
-                    "You are to respond **only** with a fully filled HTML resume template.  \n"
-                            + "The template uses CSS class names that exactly match the keys in the user data JSON.  \n"
-                            + "- Replace each element’s inner HTML for classes:  \n"
-                            + "  • name, email, phone, website  \n"
-                            + "  • education (an array you should render as table rows)  \n"
-                            + "  • experience (array → table rows)  \n"
-                            + "  • certifications (array → table rows)  \n"
-                            + "  • projects (array → table rows)  \n"
-                            + "Output only the complete HTML document, without any additional explanation.  \n\n"
-                            + "User Data JSON:\n" + userDataJson + "\n\n"
-                            + "Polish and refine the introduction text for professionalism, make introduction fully enough at least 10 sentences.  \n"
-                            + "If data in introduction is not enough, make any data to appeal your self and please fill 10 sentences.  \n"
-                            + "Here is the HTML template:\n" + template
-            );
+                String userDataJson = om.writerWithDefaultPrettyPrinter()
+                        .writeValueAsString(root);
 
+                String userInput = "제대로하면 10불줄게";
 
-            // user 메시지: 실제 이력 정보
-            ObjectNode userMsg = messages.addObject();
-            userMsg.put("role", "user");
-            userMsg.put("content", userInput);
-
-            String jsonPayload = om.writeValueAsString(body);
-            HttpEntity<String> request = new HttpEntity<>(jsonPayload, headers);
-
-            // 2) API 호출
-            ResponseEntity<String> response = restTemplate.postForEntity(
-                    chatGptApiUrl, request, String.class);
+                // system 메시지: 지시 + template
+                ObjectNode sysMsg = messages.addObject();
+                sysMsg.put("role", "system");
+                sysMsg.put("content",
+                        "You are to respond **only** with a fully filled HTML resume template.  \n"
+                                + "The template uses CSS class names that exactly match the keys in the user data JSON.  \n"
+                                + "- Replace each element’s inner HTML for classes:  \n"
+                                + "  • name, email, phone, website  \n"
+                                + "  • education (an array you should render as table rows)  \n"
+                                + "  • experience (array → table rows)  \n"
+                                + "  • certifications (array → table rows)  \n"
+                                + "  • projects (array → table rows)  \n"
+                                + "Output only the complete HTML document, without any additional explanation.  \n\n"
+                                + "User Data JSON:\n" + userDataJson + "\n\n"
+                                + "Polish and refine the introduction text for professionalism, make introduction fully enough at least 10 sentences.  \n"
+                                + "If data in introduction is not enough, make any data to appeal your self and please fill 10 sentences.  \n"
+                                + "Here is the HTML template:\n" + template
+                );
 
 
+                // user 메시지: 실제 이력 정보
+                ObjectNode userMsg = messages.addObject();
+                userMsg.put("role", "user");
+                userMsg.put("content", userInput);
 
-            return response.getBody();
+                String jsonPayload = om.writeValueAsString(body);
+                HttpEntity<String> request = new HttpEntity<>(jsonPayload, headers);
 
-        } catch (HttpClientErrorException e) {
+                // 2) API 호출
+                ResponseEntity<String> response = restTemplate.postForEntity(
+                        chatGptApiUrl, request, String.class);
 
-            return "{\"error\":\"ChatGPT API 오류 발생: " + e.getStatusCode() + "\"}";
-        } catch (JsonProcessingException e) {
-            return "{\"error\":\"서버 JSON 처리 오류\"}";
-        } catch (Exception e) {
-            return "{\"error\":\"서버 내부 오류\"}";
+
+                return response.getBody();
+
+            } catch (HttpClientErrorException e) {
+
+                return "{\"error\":\"ChatGPT API 오류 발생: " + e.getStatusCode() + "\"}";
+            } catch (JsonProcessingException e) {
+                return "{\"error\":\"서버 JSON 처리 오류\"}";
+            } catch (Exception e) {
+                return "{\"error\":\"서버 내부 오류\"}";
+            }
         }
-    }
+
 
     public List<ResumeInfoVO> selectResumeInfo(int user_no){
         return resumeMapper.selectResumeInfo(user_no);
@@ -248,6 +268,10 @@ public class ResumeService {
 
     public List<TemplateVO> selectAllTemplates(){
         return resumeMapper.selectAllTemplates();
+    }
+
+    public TemplateVO selectTemplateByNum(int template_no){
+        return resumeMapper.selectTemplateByNum(template_no);
     }
 
     public int insertTemplate(TemplateVO templateVO){

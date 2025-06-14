@@ -135,7 +135,7 @@ const InfoManagement = () => {
         boardType = "I"     // board_type으로 해야하나?? 몰라 
         onSaved={() => {
           axios.get('/api/board/list', {
-            params: { board_type: "I"}
+            params: { board_type: "I"}  
           })
           .then((res) => setData(res.data))
           .catch((err) => console.error(err));
@@ -184,8 +184,8 @@ const InfoManagement = () => {
                     }}
                     onBlur = {() => handlePriorityUpdate(item)}
                     />
-                  
                 </td>
+                
                 <td>{item.writer}</td>
               </tr>
             ))}

@@ -34,7 +34,9 @@ public class BoardInfoService {
 	public void insertBoardInfo(BoardInfoVo vo) {
 		int nexBoardNo = boardInfoRepository.getNextBoardNo(vo.getBoard_type());
 		vo.setId(nexBoardNo);
+		
 		vo.setPriority(boardInfoRepository.getNextPriority(vo.getBoard_type()));
+		
 		boardInfoRepository.insertBoardInfo(vo);
 	}
 	

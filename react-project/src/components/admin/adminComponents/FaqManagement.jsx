@@ -1,28 +1,89 @@
 // FaqManagement.jsx
+import axios from 'axios';
 import '../../../css/admin/adminComponents/FaqManagement.css';
 import FaqManagementDetail from './FaqManagement_detail';
 import AdminSideBar from '../AdminSideBar';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import Pagination from '../../common/Pagination.jsx';
 
-const mockData = Array.from({ length: 14 }, (_, i) => ({
-  id: 14 - i,
-  question: `FAQ 항목 예시 ${14 - i}`,
-  answer: `
-자주 묻는 질문에 대한 답변을 제공합니다. 각 항목은 사용자의 이해를 돕기 위해 작성되었습니다.
-
-FAQ 항목 ${14 - i}의 예시 내용입니다.`,
-  createdAt: `2024-06-${(14 - i).toString().padStart(2, '0')}`,
-  writer: '운영자',
-  priority: i
-}));
 
 const FaqManagement = () => {
-  const [data, setData] = useState(mockData);
+  const [data, setData] = useState([]);
   const [selected, setSelected] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [detailItem, setDetailItem] = useState(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [modalMode, setModalMode] = useState('edit');
+  const [priorityMap, setPriorityMap] = useState({});
+
+    useEffect(() => {
+      axios.get('api/board/list', {
+        params : {board_type : "F"}
+      })
+        .then((res) => {
+          if(Array.isArray(res.data)){
+            setData(res.data);
+          }else {
+            console.error('faq list 예상치 못한 응답 데이터:', res.data);
+          }
+        })
+        .catch((err) => {
+          console.error('FaQ 불러오기 실패:', err);
+        });
+    }, []);
+
+    const handleDeleteSelected = () => {
+      if(selected.length === 0) {
+        alert("삭제할 항목을 선택해 주세요");
+        return;
+      }
+      if (!window.confirm("삭제하시겠습니까? 이 작업은 되돌릴 수 없습ㄴ디ㅏ."))
+        return;
+
+      axios.post('/api/board/delete', selected)
+        .then(() => axios.get('/api/board/list', {
+          params : { board_type: "F"}
+        }))
+        .then((res) => {
+          setData(res.data);
+          setSelected([]);
+        })
+        .catch((err) => {
+          console.error("삭제 실패 : ", err);
+          alert("삭제 중 오류 발생");
+        });
+    };
+
+    const handlePriorityUpdate = (item) => {
+      const newPriority = priorityMap[item.id];
+
+      if (newPriority === undefined || newPriority === item.priority){
+        return;
+      }
+
+      axios.post('/api/board/updatePriority', {
+        id : item.id,
+        board_type : item.board_type || "F",
+        newPriority : newPriority
+      })
+      .then(() => {
+        return axios.get('/api/board/list', {
+          params : {board_type : item.board_type || "F"}
+        });
+      })
+      .then((res) => {
+        setData(res.data);
+        setPriorityMap({});
+      })
+      .catch((err) => {
+        console.error('우선순위 업데이트 실패 :', err);
+        alert('우선순위 저장 실패');
+      });
+    };
+
+
+
+
 
   const itemsPerPage = 10;
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -56,11 +117,13 @@ const FaqManagement = () => {
         <div className='faq-section-title-box'>
           <h2>커뮤니티 관리</h2>
         </div>
+
+        <div className = 'faq-section-content-box'>
         <div className='faq-header'>
           <h3>FAQ</h3>
           <p className='faq-warning'>삭제할 경우 복구가 어려우며, 하이잡 이용자에게 해당 항목이 즉시 비노출됩니다. 삭제 시 신중히 선택 바랍니다.</p>
           <div className='faq-controls'>
-            <button>선택 삭제</button>
+            <button onClick={handleDeleteSelected}>선택 삭제</button>
             <button onClick={openNewPostModal}>FAQ 등록</button>
           </div>
         </div>
@@ -70,6 +133,14 @@ const FaqManagement = () => {
             item={detailItem}
             onClose={() => setIsDetailOpen(false)}
             mode={modalMode}
+            boardType = "F"
+            onSaved={() => {
+              axios.get('/api/board/list', {
+                params : {board_type : "F"}
+              })
+              .then((res) => setData(res.data))
+              .catch((err) => console.error(err))
+            }}
           />
         )}
 
@@ -85,7 +156,7 @@ const FaqManagement = () => {
             </tr>
           </thead>
           <tbody>
-            {currentItems.map((item) => (
+            {currentItems.map((item, i) => (
               <tr key={item.id}>
                 <td>
                   <input
@@ -94,7 +165,7 @@ const FaqManagement = () => {
                     onChange={() => toggleCheckbox(item.id)}
                   />
                 </td>
-                <td>{item.id}</td>
+                <td>{i++}</td>
                 <td
                   className='faq-title'
                   onClick={() => openDetail(item)}
@@ -102,30 +173,34 @@ const FaqManagement = () => {
                   {item.question}
                 </td>
                 <td>{item.createdAt}</td>
-                <td><input className='input-priority' value={item.priority} readOnly /></td>
+                <td>
+                  <input 
+                    className='input-priority' 
+                    type = 'number'
+                    value={priorityMap[item.id] ?? item.priority} 
+                    onChange={(e) => {
+                      const newVal = parseInt(e.target.value, 10);
+                      setPriorityMap((prev) => ({...prev, [item.id]: newVal}))
+                    }} 
+                    onBlur = {() => handlePriorityUpdate(item)}
+                    />
+                </td>
+
                 <td>{item.writer}</td>
               </tr>
             ))}
           </tbody>
         </table>
 
-        <div className='pagination'>
-          <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1}>{'<<'}</button>
-          <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1}>{'<'}</button>
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map((num) => (
-            <button
-              key={num}
-              className={num === currentPage ? 'active' : ''}
-              onClick={() => setCurrentPage(num)}
-            >
-              {num}
-            </button>
-          ))}
-          <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages}>{'>'}</button>
-          <button onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages}>{'>>'}</button>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          setCurrentPage={setCurrentPage}
+        />  
+
+        </div>
         </div>
       </div>
-    </div>
   );
 };
 

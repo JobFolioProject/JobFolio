@@ -10,6 +10,7 @@ import com.happyjob.jobfolio.service.resume.ResumeService;
 import com.happyjob.jobfolio.vo.join.UserVO;
 import com.happyjob.jobfolio.vo.mypage.CertificateVO;
 import com.happyjob.jobfolio.vo.resume.ResumeInfoVO;
+import com.happyjob.jobfolio.vo.resume.TemplateVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +22,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -130,7 +133,10 @@ public class ResumeController {
                     .toString();
             root.put("introduction", intro);
 
-            String apiJson= resumeService.getChatResponse(root);
+            TemplateVO templateVO = resumeService.selectTemplateByNum(Integer.parseInt(paramMap.get("template_no").toString()));
+            String file = templateVO.getFile_pypath();
+
+            String apiJson= resumeService.getChatResponse(root,file);
 
             JsonNode rootNode = mapper.readTree(apiJson);
             String htmlContent = rootNode
@@ -142,9 +148,14 @@ public class ResumeController {
 
             // ❶ 저장할 경로 생성
             String outputDir = "X:/resume_output";
-            String fileName  = "resume_" + user_no + ".html";
-            Path   dirPath   = Paths.get(outputDir);
-            Path   filePath  = dirPath.resolve(fileName);
+            // ❶ 타임스탬프 포맷터
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
+            // ❷ 현재 날짜·시간 문자열
+            String timestamp = LocalDateTime.now().format(formatter);
+            // ❸ 파일명에 user_no와 timestamp 결합
+            String fileName = "resume_" + user_no + "_" + timestamp + ".html";
+            Path dirPath = Paths.get(outputDir);
+            Path filePath = dirPath.resolve(fileName);
 
             if (Files.notExists(dirPath)) {
                 Files.createDirectories(dirPath);
@@ -155,10 +166,18 @@ public class ResumeController {
 
             resultMap.put("html", apiJson);
 
+            resumeInfoVO.setUser_no(Integer.parseInt(user_no.toString()));
             resumeInfoVO.setTitle(paramMap.get("title").toString());
             resumeInfoVO.setDesired_position(paramMap.get("desired_position").toString());
+            // 파일명
+            resumeInfoVO.setResume_file_name(fileName);
+            // 물리경로 (Physical Path)
+            resumeInfoVO.setResume_file_pypath(filePath.toString());
+            // 논리경로 (Logical Path) – 웹에서 접근 가능한 URL 패턴에 맞춰 설정
+            String logicalBase = "/resume_output/";
+            resumeInfoVO.setResume_file_lopath(logicalBase + fileName);
 
-            //int result = resumeService.insertResumeInfo(resumeInfoVO);
+            int result = resumeService.insertResumeInfo(resumeInfoVO);
 
             //resultMap.put("result", result);
 
@@ -182,13 +201,17 @@ public class ResumeController {
 
         int result = resumeService.insertResumeInfo(resumeInfoVO);
 
-
-
-
-
-
         resultMap.put("result", result);
 
+        return resultMap;
+
+    }
+
+    @RequestMapping("/saveModifiedResume")
+    public Map<String,Object> saveModifiedResume(@RequestBody Map<String,Object> paramMap){
+        Map<String,Object> resultMap = new HashMap<>();
+
+        String htmlContent = paramMap.get("html").toString();
 
 
         return resultMap;
