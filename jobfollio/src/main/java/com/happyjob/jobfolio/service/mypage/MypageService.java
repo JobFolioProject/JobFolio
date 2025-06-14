@@ -103,7 +103,7 @@ public class MypageService {
 
 
     // 경력 정보 추가
-    public CareerHistoryVO addCareerhistory(CareerHistoryVO careerHistoryVO) {
+    public Integer addCareerhistory(CareerHistoryVO careerHistoryVO) {
         return mypageMapper.insertCareerHistory(careerHistoryVO);
     }
     public void updateCareerhistory(CareerHistoryVO careerHistoryVO) {
@@ -114,8 +114,8 @@ public class MypageService {
     }
 
     // 학력 정보
-    public Integer addEducation(EduInfoVO eduInfoVO) {
-        return mypageMapper.insertEducation(eduInfoVO);
+    public void addEducation(EduInfoVO eduInfoVO) {
+        mypageMapper.insertEducation(eduInfoVO);
     }
     public void deleteByUserNoAndEduNo(Long userNo, Integer eduNo) {
         mypageMapper.deleteEducation(userNo,eduNo);

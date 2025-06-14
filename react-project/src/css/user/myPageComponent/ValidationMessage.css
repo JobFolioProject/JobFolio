@@ -1,0 +1,69 @@
+.validationMessage {
+  /* 팝업처럼 화면에 고정 */
+  position: fixed;
+  bottom: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10000;
+
+  background-color: #f8d7da; /* 배경색 (경고 느낌) */
+
+  border: 1px solid #dc3545; /* 테두리 */
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  padding: 10px 25px;
+  text-align: center;
+  font-size: 0.95em;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  /* 핵심: 나타날 때 애니메이션 (fadeIn)과 사라질 때 애니메이션 (transition) 동시 적용 */
+  transition: opacity 0.5s ease-out, transform 0.5s ease-out !important;
+  opacity: 0;
+
+  max-width: 600px;
+  min-width: 280px;
+  box-sizing: border-box;
+}
+
+.validationMessage.is-visible {
+  opacity: 1; /* 완전히 보이게 */
+  transform: translate(-50%, 0); /* 초기 위치로 올라옴 */
+}
+
+/* 메시지가 사라질 때 적용될 스타일 */
+.validationMessage.fade-out {
+  opacity: 0;
+  transform: translate(-50%, 10px); /* 사라질 때 살짝 아래로 내려가면서 페이드아웃 */
+  pointer-events: none; /* 사라지는 동안 클릭 이벤트 방지 */
+}
+
+/* 아이콘 스타일 (WarningAmberIcon에 적용되는 className="warning-icon"에 매칭) */
+.validationMessage .warning-icon {
+  font-size: 1.3em; /* 아이콘 크기 */
+  color: #dc3545; /* 아이콘 색상 */
+  flex-shrink: 0; /* 아이콘이 줄어들지 않도록 */
+}
+
+/* 메시지 텍스트 단락 */
+.validationMessage p {
+  margin: 0; /* 기본 마진 제거 */
+  padding: 0; /* 기본 패딩 제거 */
+  line-height: 1.5; /* 줄 간격 */
+  color: #dc3545; /* 글자색 */
+  white-space: nowrap;
+  width: auto;
+}
+
+/* --- 필수 입력 필드에 에러 시 빨간 테두리 스타일 --- */
+/* EducationSection.jsx에서 `errors.fieldName ? 'error-field' : ''` 로 적용되는 클래스 */
+.educationFormBox input.error-field,
+.educationFormBox select.error-field,
+.educationFormBox textarea.error-field,
+.educationFormBox .custom-datepicker-input.error-field {
+  border-color: #dc3545; /* 빨간색 테두리 */
+  box-shadow: 0 0 0 0.15rem rgba(220, 53, 69, 0.25); /* 빨간색 그림자 효과 */
+}

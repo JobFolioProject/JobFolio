@@ -96,14 +96,14 @@ public class MypageController {
         return new ResponseEntity<>("기술 사항이 정상적으로 추가되었습니다.", HttpStatus.CREATED);
     }
 
-    //학력 저장
+    //학력 저장 - 리액트에서 받는걸 생각해야함.
     @PostMapping("/{user_no}/educations")
-    public ResponseEntity<String> addEducation(@PathVariable(name = "user_no") Long userNo, @RequestBody EduInfoVO eduInfoVO) {
+    public ResponseEntity<EduInfoVO> addEducation(@PathVariable(name = "user_no") Long userNo, @RequestBody EduInfoVO eduInfoVO) {
         // URL에서 받은 user_no를 eduInfoVO에 설정
         eduInfoVO.setUser_no(userNo);
         // 서비스 호출
         mypageService.addEducation(eduInfoVO);
-        return new ResponseEntity<>("학력 사항이 정상적으로 추가되었습니다.", HttpStatus.CREATED);
+        return new ResponseEntity<>(eduInfoVO, HttpStatus.CREATED);
     }
     // 학력 수정
     @PutMapping("/{user_no}/educations/{edu_no}")
