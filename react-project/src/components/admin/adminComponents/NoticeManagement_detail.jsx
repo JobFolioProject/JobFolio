@@ -1,202 +1,204 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, startTransition } from 'react';
 import PropTypes from 'prop-types';
 import { useQuill } from 'react-quilljs';
 import 'quill/dist/quill.snow.css';
 import DOMPurify from 'dompurify';
 import axios from 'axios';
-import '../../../css/admin/adminComponents/NoticeManagementModal.css';
+import '../../../css/admin/adminComponents/NoticeManagement_detail.css';
 
-const NoticeManagementDetail = ({
-  open,
-  mode, // 'create' | 'view' | 'edit'
-  onClose,
-  onSaved,
-  noticeData, // edit/view 시 { boardNo, title, body }
-}) => {
+// open 여부에 따라 모달 언마운트
+const NoticeManagementDetail = ({ open, mode, onClose, onSaved, onEdit, noticeData }) => {
+  if (!open) return null;
+  return (
+    <NoticeModalContent
+      open={open}
+      mode={mode}
+      onClose={onClose}
+      onSaved={onSaved}
+      onEdit={onEdit}
+      noticeData={noticeData}
+    />
+  );
+};
+
+const NoticeModalContent = ({ open, mode, onClose, onSaved, onEdit, noticeData }) => {
   const isView = mode === 'view';
   const isEdit = mode === 'edit';
-
   const [title, setTitle] = useState('');
-  const [body, setBody] = useState('');
+  const [content, setContent] = useState('');
+  const [loading, setLoading] = useState(false);
   const firstInputRef = useRef(null);
 
   // Quill 초기화
   const { quill, quillRef } = useQuill({
     theme: 'snow',
     modules: {
-      toolbar: {
-        container: [
-          [{ header: [1, 2, false] }],
-          ['bold', 'italic', 'underline'],
-          [{ list: 'ordered' }, { list: 'bullet' }],
-          ['link', 'image'],
-          ['clean']
-        ],
-        handlers: {
-          image: () => handleImageUpload()
-        }
-      }
+      toolbar: isView
+        ? false
+        : {
+            container: [
+              [{ header: [1, 2, false] }],
+              ['bold', 'italic', 'underline'],
+              [{ list: 'ordered' }, { list: 'bullet' }],
+              ['link', 'image'],
+              ['clean'],
+            ],
+            handlers: { image: () => handleImageUpload() },
+          },
     },
-    formats: [
-      'header', 'bold', 'italic', 'underline',
-      'list', 'bullet', 'link', 'image'
-    ],
+    formats: ['header', 'bold', 'italic', 'underline', 'list', 'link', 'image'],
     readOnly: isView,
-    placeholder: isView ? '' : '내용을 입력하세요...'
+    placeholder: isView ? '' : '내용을 입력하세요...',
   });
 
-  // 모달 열림 시 초기화
+  // 모달 열림 및 mode 변경 시 초기화
   useEffect(() => {
-    if (!open) return;
-
-    setTitle((isEdit || isView) ? noticeData?.title || '' : '');
-    if (quill) {
-      quill.clipboard.dangerouslyPasteHTML(
-        (isEdit || isView) ? noticeData?.body || '' : ''
-      );
-      quill.enable(!isView);
+    if (open) {
+      setTitle((isEdit || isView) ? noticeData?.title || '' : '');
+      setContent((isEdit || isView) ? noticeData?.content || '' : '');
+      quill?.clipboard.dangerouslyPasteHTML((isEdit || isView) ? noticeData?.content || '' : '');
+      quill?.enable(!isView);
+      startTransition(() => {
+        firstInputRef.current?.focus();
+      });
     }
+  }, [open, mode, quill, noticeData, isView, isEdit]);
 
-    if (firstInputRef.current) firstInputRef.current.focus();
-  }, [open, mode, quill, noticeData, isEdit, isView]);
+  // open이 false일 때 상태 초기화
+  useEffect(() => {
+    if (!open) {
+      setTitle('');
+      setContent('');
+    }
+  }, [open]);
 
-  // Quill 텍스트 변경 시 body 업데이트
+  // Quill 변경 이벤트로 content 업데이트
   useEffect(() => {
     if (!quill || isView) return;
-    const handler = () => setBody(quill.root.innerHTML);
+    const handler = () => setContent(quill.root.innerHTML);
     quill.on('text-change', handler);
     return () => quill.off('text-change', handler);
   }, [quill, isView]);
 
-  // 이미지 업로드 핸들러
-  const handleImageUpload = () => {
-    const input = document.createElement('input');
-    input.setAttribute('type', 'file');
-    input.setAttribute('accept', 'image/*');
-    input.click();
-
-    input.onchange = async () => {
-      const file = input.files[0];
-      if (!file) return;
-
-      const formData = new FormData();
-      formData.append('image', file);
-
-      try {
-        const res = await axios.post('/upload/image', formData, {
-          headers: { 'Content-Type': 'multipart/form-data' }
-        });
-
-        const imageUrl = res.data.url;
-        const range = quill.getSelection();
-        quill.insertEmbed(range.index, 'image', imageUrl);
-      } catch (err) {
-        console.error('이미지 업로드 실패:', err);
-        alert('이미지 업로드에 실패했습니다.');
-      }
-    };
+  // 모달 닫기
+  const handleClose = () => {
+    quill?.blur();
+    onClose();
   };
 
   // 저장/등록 처리
   const handleSave = async () => {
+    setLoading(true);
     try {
-      const cleanBody = DOMPurify.sanitize(body, {
-        ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'a', 'ul', 'ol', 'li', 'img', 'h1', 'h2'],
-        ALLOWED_ATTR: ['href', 'src', 'alt', 'title']
+      const clean = DOMPurify.sanitize(content, {
+        ALLOWED_TAGS: ['p','br','strong','em','a','ul','ol','li','img','h1','h2'],
+        ALLOWED_ATTR: ['href','src','alt','title'],
       });
-
       if (isEdit) {
-        await axios.put('/community/update', {
+        await axios.put('/api/admin/community/update', {
           boardNo: noticeData.boardNo,
           title: title.trim(),
-          body: cleanBody
+          content: clean,
         });
       } else {
-        await axios.post('/community/create', {
+        await axios.post('/api/admin/community/create', {
           title: title.trim(),
-          body: cleanBody,
-          boardType: 'N'
+          content: clean,
+          boardType: 'N',
         });
       }
       onSaved();
-      onClose();
+      handleClose();
     } catch (err) {
       console.error(err);
       alert(`${mode === 'edit' ? '수정' : '등록'} 중 오류가 발생했습니다.`);
+    } finally {
+      setLoading(false);
     }
   };
 
   // 삭제 처리
   const handleDelete = async () => {
-    if (!noticeData?.boardNo) return;
     if (!window.confirm('정말 삭제하시겠습니까?')) return;
-
+    setLoading(true);
     try {
-      await axios.delete('/community/delete', {
+      await axios.delete('/api/admin/community/delete', {
         params: { boardNo: noticeData.boardNo }
       });
       onSaved();
-      onClose();
+      handleClose();
     } catch (err) {
-      console.error('삭제 실패:', err);
+      console.error(err);
       alert('삭제 중 오류가 발생했습니다.');
+    } finally {
+      setLoading(false);
     }
   };
 
-  const editorLength = quill ? quill.getLength() : 0;
-  const canSubmit = title.trim() !== '' && editorLength > 1;
+  // 이미지 업로드 핸들러
+  const handleImageUpload = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.click();
+    input.onchange = async () => {
+      const file = input.files[0]; if (!file) return;
+      const formData = new FormData(); formData.append('image', file);
+      try {
+        const res = await axios.post('/upload/image', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
+        const range = quill.getSelection();
+        quill.insertEmbed(range.index, 'image', res.data.url);
+      } catch (err) {
+        console.error(err);
+        alert('이미지 업로드에 실패했습니다.');
+      }
+    };
+  };
 
-  if (!open) return null;
+  const canSubmit = title.trim() !== '' && quill?.getLength() > 1;
 
   return (
     <div className="noticeManagementDetail modal-show">
-      <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-overlay" onClick={handleClose}>
         <div
           className="modal-content"
           role="dialog"
           aria-labelledby="modal-title"
-          onClick={(e) => e.stopPropagation()}
+          aria-modal="true"
+          onClick={e => e.stopPropagation()}
         >
-          <button className="modal-close" onClick={onClose}>×</button>
+          <button className="modal-close" onClick={handleClose}>×</button>
           <h2 id="modal-title">
-            {mode === 'create' && '새 공지 등록'}
-            {mode === 'view' && '공지 내용 보기'}
-            {mode === 'edit' && '공지 수정'}
+            {isEdit ? '공지 수정' : mode === 'view' ? '공지 내용 보기' : '새 공지 등록'}
           </h2>
-
           <input
             ref={firstInputRef}
             type="text"
             placeholder="제목을 입력하세요"
             value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={e => setTitle(e.target.value)}
             disabled={isView}
             className={isView ? 'input-readonly' : ''}
-            style={{ width: '100%', margin: '12px 0', padding: '8px' }}
           />
-
-          <div
-            ref={quillRef}
-            className={isView ? 'ql-readonly' : ''}
-            style={{ height: '300px' }}
-          />
-
+          {isView ? (
+            <div className="notice-view-content" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content) }} />
+          ) : (
+            <div ref={quillRef} className="ql-container" />
+          )}
           <div className="modal-actions">
-            <button className="btn-cancel" onClick={onClose}>
+            <button className="btn-cancel" onClick={handleClose} disabled={loading}>
               {isView ? '닫기' : '취소'}
             </button>
-
             {isView ? (
-              <button className="btn-delete" onClick={handleDelete}>
-                삭제
-              </button>
+              <>
+                <button className="btn-edit" onClick={onEdit} disabled={loading}>수정</button>
+                <button className="btn-delete" onClick={handleDelete} disabled={loading}>삭제</button>
+              </>
             ) : (
-              <button
-                className="btn-save"
-                onClick={handleSave}
-                disabled={!canSubmit}
-              >
-                {mode === 'create' ? '등록' : '수정완료'}
+              <button className="btn-save" onClick={handleSave} disabled={!canSubmit || loading}>
+                {loading ? '저장 중...' : (isEdit ? '수정완료' : '등록')}
               </button>
             )}
           </div>
@@ -208,17 +210,14 @@ const NoticeManagementDetail = ({
 
 NoticeManagementDetail.propTypes = {
   open: PropTypes.bool.isRequired,
-  mode: PropTypes.oneOf(['create', 'view', 'edit']).isRequired,
+  mode: PropTypes.oneOf(['create','view','edit']).isRequired,
   onClose: PropTypes.func.isRequired,
   onSaved: PropTypes.func.isRequired,
-  noticeData: PropTypes.shape({
-    boardNo: PropTypes.number,
-    title: PropTypes.string,
-    body: PropTypes.string
-  })
+  onEdit: PropTypes.func.isRequired,
+  noticeData: PropTypes.shape({ boardNo: PropTypes.number, title: PropTypes.string, content: PropTypes.string }),
 };
-
 NoticeManagementDetail.defaultProps = {
+  onEdit: () => {},
   noticeData: null
 };
 

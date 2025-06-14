@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import AdminSideBar from '../AdminSideBar';
 import Pagination from '../../common/Pagination.jsx';
 import SearchIcon from '@mui/icons-material/Search';
-import '../../../css/admin/adminComponents/NoticeManagementModal.css';
+import '../../../css/admin/adminComponents/NoticeManagement_detail.css';
 import NoticeManagementDetail from './NoticeManagement_detail';
 import axios from 'axios';
 import '../../../css/admin/adminComponents/NoticeManagement.css';
@@ -24,7 +24,7 @@ const NoticeManagement = () => {
 
   const fetchNotices = () => {
     axios
-      .get('/community/list', {
+      .get('/api/community/list', {
         params: {
           boardType: 'N',
           page: currentPage,
@@ -192,6 +192,7 @@ const NoticeManagement = () => {
           fetchNotices();
           setDetailOpen(false);
         }}
+        onEdit={() => setDetailMode('edit')}
       />
     </div>
   );
