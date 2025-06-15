@@ -40,7 +40,6 @@ function App() {
   return (
     <AuthProvider>
       {" "}
-      {/* ← AuthProvider를 최상위로 이동! */}
       <BrowserRouter>
         <AppContent />
       </BrowserRouter>
@@ -54,7 +53,7 @@ function AppContent() {
 
   return (
     <>
-      {!isAdminPath && <MenuBar />} {/* ← 이제 useAuth() 사용 가능! */}
+      {!isAdminPath && <MenuBar />}
       <main>
         <Routes>
           {/* ========== 모든 사용자 접근 가능 ========== */}

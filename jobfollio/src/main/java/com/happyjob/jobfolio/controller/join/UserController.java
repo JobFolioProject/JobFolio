@@ -349,9 +349,11 @@ public class UserController {
             String refreshToken = cookieUtil.getRefreshTokenFromCookie(request);
 
             if (refreshToken == null) {
+                // 400 대신 200 OK로 응답 (현업 방식)
                 resultMap.put("result", "N");
-                resultMap.put("message", "리프레시 토큰이 없습니다.");
-                return ResponseEntity.badRequest().body(resultMap);
+                resultMap.put("message", "로그아웃 상태입니다.");
+                logger.info("Refresh token이 없음 - 로그아웃 상태");
+                return ResponseEntity.ok(resultMap); // ← 200 OK
             }
 
             Map<String, Object> refreshResult = userService.refreshToken(refreshToken);
@@ -364,21 +366,26 @@ public class UserController {
                 resultMap.put("message", "토큰이 갱신되었습니다.");
                 resultMap.put("accessToken", newAccessToken); // 응답에 새 토큰 포함
 
+                logger.info("토큰 갱신 성공");
                 return ResponseEntity.ok(resultMap);
             } else {
                 // 리프레시 토큰도 만료된 경우 모든 쿠키 삭제
                 cookieUtil.deleteAllAuthCookies(response);
 
+                // 400 대신 200 OK로 응답 (현업 방식)
                 resultMap.put("result", "N");
-                resultMap.put("message", (String) refreshResult.get("message"));
-                return ResponseEntity.badRequest().body(resultMap);
+                resultMap.put("message", "세션이 만료되었습니다.");
+                logger.info("Refresh token 만료 - 로그아웃 처리");
+                return ResponseEntity.ok(resultMap); // ← 200 OK
             }
 
         } catch (Exception e) {
             logger.error("Error in refreshToken: ", e);
+
+            // 에러도 200 OK로 응답 (현업 방식)
             resultMap.put("result", "N");
-            resultMap.put("message", "토큰 갱신 중 오류가 발생했습니다.");
-            return ResponseEntity.internalServerError().body(resultMap);
+            resultMap.put("message", "인증 오류가 발생했습니다.");
+            return ResponseEntity.ok(resultMap); // ← 200 OK
         }
     }
 

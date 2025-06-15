@@ -1,13 +1,12 @@
 import "../../../css/user/join/LoginForm.css";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import axios from "../../../utils/axiosConfig";
 import FindAccountForm from "./FindAccountForm";
-import { useAuth } from "../../../context/AuthContext"; // ← 추가!
+import { useAuth } from "../../../context/AuthContext";
 
 const LoginForm = ({ onClose }) => {
   const navigate = useNavigate();
-  const { login } = useAuth(); // ← 추가!
+  const { login } = useAuth(); // AuthContext의 login 함수 사용
   const [loginId, setLoginId] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -28,30 +27,18 @@ const LoginForm = ({ onClose }) => {
     }
 
     try {
-      const response = await axios.post("/api/join/login", {
+      // AuthContext의 login 함수 사용 (Memory 방식)
+      const result = await login({
         login_id: loginId,
         password: password,
       });
 
-      // console.log("로그인 응답:", response);
-
-      if (response && response.result === "Y") {
+      if (result.success) {
         // 로그인 성공
-        // console.log("로그인 성공:", response.user);
-
-        // AuthContext에 사용자 정보 저장 (sessionStorage 대신!)
-        const userData = {
-          userNo: response.user.user_no,
-          loginId: response.user.login_id,
-          userName: response.user.user_name,
-          userType: response.user.user_type,
-        };
-
-        // sessionStorage.setItem("user", JSON.stringify(userInfo)); ← 삭제!
-        login(userData); // ← AuthContext 사용!
+        console.log("Memory 로그인 성공:", result.data.user);
 
         // 로그인 성공 알림
-        alert(response.message || "로그인이 완료되었습니다.");
+        alert(result.data.message || "로그인이 완료되었습니다.");
 
         // 모달 닫기
         onClose();
@@ -59,10 +46,10 @@ const LoginForm = ({ onClose }) => {
         // 메인 페이지로 이동
         navigate("/");
 
-        // window.location.reload(); ← 삭제! (AuthContext가 자동 업데이트)
+        // AuthContext가 자동으로 상태 관리하므로 추가 작업 불필요
       } else {
         // 로그인 실패
-        setError(response?.message || "로그인에 실패했습니다.");
+        setError(result.message || "로그인에 실패했습니다.");
       }
     } catch (error) {
       console.error("Login error:", error);
