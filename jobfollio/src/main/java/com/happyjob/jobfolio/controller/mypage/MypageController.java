@@ -91,47 +91,98 @@ public class MypageController {
     @PostMapping("/{user_no}/skills")
     public ResponseEntity<String> addSkill(@PathVariable(name = "user_no") Long userNo, @RequestBody SkillVO skillVO) {
 
+
         mypageService.addSkill(skillVO);
         return new ResponseEntity<>("기술 사항이 정상적으로 추가되었습니다.", HttpStatus.CREATED);
     }
 
-    //학력
+    //학력 저장 - 리액트에서 받는걸 생각해야함.
     @PostMapping("/{user_no}/educations")
-    public ResponseEntity<String> addeducation(@PathVariable(name = "user_no") Long userNo, @RequestBody EduInfoVO eduInfoVO) {
-
-        mypageService.addeducation(eduInfoVO);
-        return new ResponseEntity<>("학력 사항이 정상적으로 추가되었습니다.", HttpStatus.CREATED);
+    public ResponseEntity<EduInfoVO> addEducation(@PathVariable(name = "user_no") Long userNo, @RequestBody EduInfoVO eduInfoVO) {
+        // URL에서 받은 user_no를 eduInfoVO에 설정
+        eduInfoVO.setUser_no(userNo);
+        // 서비스 호출
+        mypageService.addEducation(eduInfoVO);
+        return new ResponseEntity<>(eduInfoVO, HttpStatus.CREATED);
     }
-
-    // 언어
-    @PostMapping("/{user_no}/languages")
-    public ResponseEntity<String> addLanguage(@PathVariable(name = "user_no") Long userNo, @RequestBody LanguageSkillVO languageSkillVO) {
-        mypageService.addlanguage(languageSkillVO);
-        return new ResponseEntity<>("언어 능력이 정상적으로 추가되었습니다.", HttpStatus.CREATED);
+    // 학력 수정
+    @PutMapping("/{user_no}/educations/{edu_no}")
+    public ResponseEntity<String> updateEducation(@PathVariable(name = "user_no") Long userNo, @PathVariable(name = "edu_no") Integer eduNo,  @RequestBody EduInfoVO eduInfoVO){
+        eduInfoVO.setUser_no(userNo);
+        eduInfoVO.setEdu_no(eduNo);
+        mypageService.updateByUserNoAndEduNo(eduInfoVO);
+        return new ResponseEntity<>("학력 사항이 정상적으로 수정되었습니다.", HttpStatus.CREATED);
+    }
+    // 학력 삭제
+    @DeleteMapping("/{user_no}/educations/{edu_no}")
+    public ResponseEntity<String> deleteEducation(@PathVariable(name = "user_no") Long userNo, @PathVariable(name = "edu_no") Integer eduNo) {
+        // 서비스 호출
+        mypageService.deleteByUserNoAndEduNo(userNo,eduNo);
+        return new ResponseEntity<>("학력 사항이 정상적으로 삭제되었습니다", HttpStatus.CREATED);
     }
 
     // 자격증
     @PostMapping("/{user_no}/certificates")
-    public ResponseEntity<String> addCertificate(@PathVariable(name = "user_no") Long userNo, @RequestBody CertificateVO certificateVO) {
-
-        mypageService.addcertificate(certificateVO);
-        return new ResponseEntity<>("자격 사항이 정상적으로 추가되었습니다.", HttpStatus.CREATED);
+    public ResponseEntity<CertificateVO> addCertificate(@PathVariable(name = "user_no") Long userNo, @RequestBody CertificateVO certificateVO) {
+        // URL에서 받은 user_no를 certificateVO 설정
+        certificateVO.setUser_no(userNo);
+        // 서비스 호출
+        mypageService.addCertification(certificateVO);
+        return new ResponseEntity<>(certificateVO, HttpStatus.CREATED);
     }
+    @PutMapping("/{user_no}/certificates/{certification_no}")
+    public ResponseEntity<String> updateCertificateion(@PathVariable(name = "user_no") Long userNo, @PathVariable(name = "certification_no") Integer certNo, @RequestBody CertificateVO certificateVO) {
+        certificateVO.setUser_no(userNo);
+        certificateVO.setCertification_no(certNo);
+        mypageService.updateByUserNoAndCertNo(certificateVO);
+        return new ResponseEntity<>("자격 정보가 정상적으로 수정되었습니다.", HttpStatus.CREATED);
+    }
+    @DeleteMapping("/{user_no}/certificates/{certification_no}")
+    public ResponseEntity<String> deleteCertificate(@PathVariable(name = "user_no") Long userNo, @PathVariable(name = "certification_no") Integer certNo) {
+
+        mypageService.deleteByUserNoAndCertNo(userNo,certNo);
+        return new ResponseEntity<>("자격 정보가 정상적으로 삭제되었습니다", HttpStatus.CREATED);
+    }
+
+    // 언어
+    @PostMapping("/{user_no}/languages")
+    public ResponseEntity<LanguageSkillVO> addLanguageSkill(@PathVariable(name = "user_no") Long userNo, @RequestBody LanguageSkillVO languageSkillVO) {
+        // URL에서 받은 user_no를 languageSkillVO 설정
+        languageSkillVO.setUser_no(userNo);
+        mypageService.addLanguageSkill(languageSkillVO);
+        return new ResponseEntity<>(languageSkillVO, HttpStatus.CREATED);
+    }
+    @PutMapping("/{user_no}/languages/{laguages}")
+    public ResponseEntity<String> updateLaguageSkill(@PathVariable(name = "user_no") Long userNo, @PathVariable String laguages, @RequestBody LanguageSkillVO languageSkillVO) {
+        languageSkillVO.setUser_no(userNo);
+        languageSkillVO.setLanguage(laguages);
+        mypageService.updateByUserNoAndLanguage(languageSkillVO);
+        return new ResponseEntity<>("언어 정보가 정상적으로 수정되었습니다.", HttpStatus.CREATED);
+    }
+    @DeleteMapping("/{user_no}/languages/{languages}")
+    public ResponseEntity<String> deleteLanguageSkill(@PathVariable(name = "user_no") Long userNo, @PathVariable String languages) {
+        mypageService.deleteByUserNoAndLanguage(userNo,languages);
+        return new ResponseEntity<>("언어 정보가 정상적으로 삭제되었습니다.", HttpStatus.CREATED);
+    }
+
+
+
 
     // 경력
     @PostMapping("/{user_no}/careerhistories")
     public ResponseEntity<String> addCareerHistory(@PathVariable(name = "user_no") Long userNo, @RequestBody CareerHistoryVO careerHistoryVO) {
-        mypageService.addcareerhistory(careerHistoryVO);
+        mypageService.addCareerhistory(careerHistoryVO);
         return new ResponseEntity<>("경력 사항이 정상적으로 추가되었습니다.", HttpStatus.CREATED);
     }
 
-    // 마이페이지 - 내 커리어 수정
     @PutMapping("/myCareer/{user_no}/update")
-    public Map<String, Object> modifyMyCareer(@PathVariable(name = "user_no") Long userNo, @RequestParam String name) {
-
-
-        Map<String, Object> resultMap = new HashMap<>();
-        return resultMap;
+    public ResponseEntity<String> modifyMyCareer(@PathVariable(name = "user_no") Long userNo, @RequestBody CareerHistoryVO careerHistoryVO) {
+        return new ResponseEntity<>("",HttpStatus.CREATED);
+    }
+    @DeleteMapping("/{user_no}/careerhistories/{carrer_no}")
+    public ResponseEntity<String> deleteCareerHisory(@PathVariable(name = "user_no") Long userNo, @PathVariable(name = "carrer_no") Integer carrerNo) {
+        mypageService.deleteCareerhistory(userNo,carrerNo);
+        return new ResponseEntity<>("", HttpStatus.CREATED);
     }
 
 

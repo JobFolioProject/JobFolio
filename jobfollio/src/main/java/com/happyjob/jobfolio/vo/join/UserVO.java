@@ -1,17 +1,12 @@
 package com.happyjob.jobfolio.vo.join;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import java.util.Date;
 
 public class UserVO {
     private String login_id;        // 사용자ID(이메일)
     private String user_type;       // 사용자구분 (예: 'C' - 일반사용자, 'B' - 하위 관리자 'A' - 최상 관리자)
     private String user_name;       // 이름
-
-    @JsonIgnore
     private String password;       // 비밀번호
-
     private String birthday;       // 생년월일
     private String sex;           // 성별
     private String hp;            // 연락처
