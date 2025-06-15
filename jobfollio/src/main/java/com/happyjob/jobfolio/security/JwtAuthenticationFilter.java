@@ -36,8 +36,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
 
         try {
-            // 쿠키에서 Access Token 추출
-            String accessToken = cookieUtil.getAccessTokenFromCookie(request);
+            // Authorization Header에서 Bearer Token 추출 (새로운 방식)
+            String accessToken = extractTokenFromRequest(request);
 
             if (StringUtils.hasText(accessToken) && jwtTokenProvider.validateAccessToken(accessToken)) {
                 // 토큰에서 사용자 정보 추출 (DB 컬럼명과 통일)
@@ -68,7 +68,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     logger.debug("JWT authentication successful for user: " + login_id + ", authority: " + authority);
                 }
             } else {
-                logger.debug("No valid access token found in cookies");
+                logger.debug("No valid access token found in Authorization header");
             }
         } catch (Exception e) {
             logger.error("Cannot set user authentication", e);
@@ -76,6 +76,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    /**
+     * Authorization Header에서 Bearer Token 추출 (Bearer Token 방식)
+     */
+    private String extractTokenFromRequest(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7); // "Bearer " 제거하고 토큰만 반환
+        }
+
+        return null;
     }
 
     /**

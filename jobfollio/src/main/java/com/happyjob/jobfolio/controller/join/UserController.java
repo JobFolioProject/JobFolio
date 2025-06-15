@@ -268,19 +268,19 @@ public class UserController {
             Map<String, Object> authResult = userService.authenticateUser(authRequest);
 
             if ((Boolean) authResult.get("success")) {
-                // JWT 토큰을 쿠키에 저장
+                // Access Token은 응답 JSON에 포함 (Bearer Token 방식)
                 String accessToken = (String) authResult.get("accessToken");
                 String refreshToken = (String) authResult.get("refreshToken");
 
-                cookieUtil.createAccessTokenCookie(response, accessToken);
+                // Refresh Token만 쿠키에 저장 (기존 방식 유지)
                 cookieUtil.createRefreshTokenCookie(response, refreshToken);
-
-                // 응답에서 토큰 정보 제거 (보안)
-                authResult.remove("accessToken");
-                authResult.remove("refreshToken");
 
                 resultMap.put("result", "Y");
                 resultMap.put("message", "로그인이 완료되었습니다.");
+
+                // Access Token을 응답에 포함 (새로운 방식)
+                resultMap.put("accessToken", accessToken);
+
                 UserVO userVO = (UserVO) authResult.get("user");
                 Map<String, Object> safeUser = new HashMap<>();
                 safeUser.put("user_no", userVO.getUser_no());
@@ -290,7 +290,7 @@ public class UserController {
 
                 resultMap.put("user", safeUser);
 
-                logger.info("JWT 로그인 성공: " + login_id);
+                logger.info("JWT 로그인 성공 (Bearer Token 방식): " + login_id);
                 return ResponseEntity.ok(resultMap);
             } else {
                 resultMap.put("result", "N");
@@ -357,12 +357,13 @@ public class UserController {
             Map<String, Object> refreshResult = userService.refreshToken(refreshToken);
 
             if ((Boolean) refreshResult.get("success")) {
-                // 새로운 access token을 쿠키에 저장
+                // 새로운 access token을 응답에 포함 (Bearer Token 방식)
                 String newAccessToken = (String) refreshResult.get("accessToken");
-                cookieUtil.createAccessTokenCookie(response, newAccessToken);
 
                 resultMap.put("result", "Y");
                 resultMap.put("message", "토큰이 갱신되었습니다.");
+                resultMap.put("accessToken", newAccessToken); // 응답에 새 토큰 포함
+
                 return ResponseEntity.ok(resultMap);
             } else {
                 // 리프레시 토큰도 만료된 경우 모든 쿠키 삭제

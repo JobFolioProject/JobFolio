@@ -13,7 +13,7 @@ axiosInstance.interceptors.request.use(
     // 기본 헤더 설정
     config.headers["Content-Type"] = "application/json";
 
-    console.log("API 요청:", config.method?.toUpperCase(), config.url);
+    // console.log("API 요청:", config.method?.toUpperCase(), config.url);
     return config;
   },
   (error) => {
@@ -25,7 +25,7 @@ axiosInstance.interceptors.request.use(
 // 응답 인터셉터 - response.data.data 구조 처리
 axiosInstance.interceptors.response.use(
   (response) => {
-    console.log("API 응답:", response.config.url, response.status);
+    // console.log("API 응답:", response.config.url, response.status);
 
     // 백엔드 응답 구조: { result: "Y", data: [...], message: "성공" }
     // 또는: { success: true, data: [...], message: "성공" }

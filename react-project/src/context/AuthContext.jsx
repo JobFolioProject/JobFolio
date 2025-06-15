@@ -19,8 +19,8 @@ export const AuthProvider = ({ children }) => {
       const response = await axios.post("/api/join/check-login-status");
 
       // 디버깅용 로그 추가
-      console.log("=== checkLoginStatus 응답 ===");
-      console.log("response:", response);
+      // console.log("=== checkLoginStatus 응답 ===");
+      // console.log("response:", response);
 
       if (response.result === "Y") {
         // 백엔드 응답 구조에 맞게 수정!
@@ -32,14 +32,14 @@ export const AuthProvider = ({ children }) => {
         });
         setIsAuthenticated(true);
 
-        console.log("로그인 상태 확인 성공:", {
-          userNo: response.user_no,
-          loginId: response.login_id,
-          userName: response.user_name,
-          userType: response.user_type,
-        });
+        // console.log("로그인 상태 확인 성공:", {
+        //   userNo: response.user_no,
+        //   loginId: response.login_id,
+        //   userName: response.user_name,
+        //   userType: response.user_type,
+        // });
       } else {
-        console.log("로그인되지 않은 상태");
+        // console.log("로그인되지 않은 상태");
       }
     } catch (error) {
       console.log("로그인 상태 확인 실패:", error);

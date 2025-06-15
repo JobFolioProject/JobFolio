@@ -33,11 +33,11 @@ const LoginForm = ({ onClose }) => {
         password: password,
       });
 
-      console.log("로그인 응답:", response);
+      // console.log("로그인 응답:", response);
 
       if (response && response.result === "Y") {
         // 로그인 성공
-        console.log("로그인 성공:", response.user);
+        // console.log("로그인 성공:", response.user);
 
         // AuthContext에 사용자 정보 저장 (sessionStorage 대신!)
         const userData = {
