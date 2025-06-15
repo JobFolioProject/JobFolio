@@ -34,7 +34,56 @@
 				 ,		DATE_FORMAT(created_date, '%Y-%m-%d') AS created_date
 				 ,   	use_yn
 			FROM      	tb_product_info
-			ORDER BY 	created_date DESC
+			ORDER BY 	product_no DESC
 			LIMIT 		#{pageIndex}, #{pageSize}
 	</select>
+
+	<!-- 관리자 페이지 이용권 등록 -->
+	<insert id="insertProduct" parameterType="map">
+		<selectKey keyProperty="product_no" resultType="int" order="BEFORE">
+			SELECT IFNULL(MAX(product_no), 0) + 1 FROM tb_product_info
+		</selectKey>
+
+		INSERT INTO 	tb_product_info
+		    (
+						product_no
+				,		product_name
+				,		product_detail
+				,		price
+				,		sub_period
+				,		created_date
+				,		use_yn
+		) VALUES (
+						#{product_no}
+		    	,		#{product_name}
+		    	,		#{product_detail}
+		    	,		#{price}
+		    	,		#{sub_period}
+		    	,		NOW()
+		    	,		#{use_yn}
+		)
+	</insert>
+
+	<!-- 관리자 페이지 이용권 수정 -->
+	<update id="updateProduct" parameterType="com.happyjob.jobfolio.vo.product.ProductModel">
+		UPDATE 		tb_product_info
+		SET 		product_name	 = 	#{product_name}
+		    	,	product_detail 	 = 	#{product_detail}
+		  		,	price 			 = 	#{price}
+		  		,	sub_period 		 = 	#{sub_period}
+		  		,	use_yn 			 = 	#{use_yn}
+		  		,  	created_date 	 =  NOW()
+		WHERE 		product_no = #{product_no}
+	</update>
+
+	<!-- 관리자 페이지 이용권 삭제 -->
+	<delete id="deleteProduct"  parameterType="java.util.List">
+		DELETE
+		FROM 	tb_product_info
+		WHERE 	product_no
+		IN
+				<foreach item="no" collection="productNos" open="(" separator="," close=")">
+				#{no}
+				</foreach>
+	</delete>
 </mapper>

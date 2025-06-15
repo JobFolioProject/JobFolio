@@ -32,14 +32,25 @@ const SubscriptManagementDetail = ({ item, onClose, mode, onSaved }) => {
     formData.append('sub_period', subPeriod);
     formData.append('use_yn', useYn);
 
+    if (isEdit && item?.product_no) {
+      formData.append('product_no', item.product_no); // 수정 시 필요
+    }
+
     try {
-      await axios.post('/product/insertProduct', formData);
-      
-      onSaved();
-      onClose();
+      if (isEdit) {
+        await axios.post('/product/updateProduct', formData);
+        alert('수정되었습니다.');
+      } else {
+        await axios.post('/product/insertProduct', formData);
+        alert('등록되었습니다.');
+      }
+
+      onSaved();  // 목록 새로고침
+      onClose();  // 모달 닫기
+
     } catch (err) {
-      console.error('저장 실패:', err);
-      alert('저장에 실패했습니다.');
+      console.error(`${isEdit ? '수정' : '등록'} 실패:`, err);
+      alert(`${isEdit ? '수정' : '등록'}에 실패했습니다.`);
     }
   };
 
@@ -50,86 +61,86 @@ const SubscriptManagementDetail = ({ item, onClose, mode, onSaved }) => {
       <div className="detail-modal" onClick={e => e.stopPropagation()}>
         <button className="detail-close" onClick={onClose}>×</button>
         <div className="detail-header_product"></div>
-        
+
         <div className="detail-Wrapper">
-        {/* 상품명 */}
-        <div className="detail-body">
-          <h3 className="detail-text">상품명</h3>
-          {isEditing ? (
-            <input
-              className="detail-input-question"
-              value={productName}
-              onChange={e => setProductName(e.target.value)}
-            />
-          ) : (
-            <p className="detail-text">{productName}</p>
-          )}
+          {/* 상품명 */}
+          <div className="detail-body">
+            <h3 className="detail-text">상품명</h3>
+            {isEditing ? (
+              <input
+                className="detail-input-question"
+                value={productName}
+                onChange={e => setProductName(e.target.value)}
+              />
+            ) : (
+              <p className="detail-text">{productName}</p>
+            )}
+          </div>
+
+          {/* 상품 설명 */}
+          <div className="detail-body">
+            <h3 className="detail-text">상품 설명</h3>
+            {isEditing ? (
+              <textarea
+                className="detail-textarea-answer_product"
+                value={productDetail}
+                onChange={e => setProductDetail(e.target.value)}
+              />
+            ) : (
+              productDetail.split('\n\n').map((para, idx) => (
+                <p key={idx} className="detail-text">{para}</p>
+              ))
+            )}
+          </div>
+
+          {/* 가격 */}
+          <div className="detail-body">
+            <h3 className="detail-text">상품 금액</h3>
+            {isEditing ? (
+              <input
+                type="number"
+                className="detail-input-question"
+                value={price}
+                onChange={e => setPrice(e.target.value)}
+              />
+            ) : (
+              <p className="detail-text">{Number(price).toLocaleString()}원</p>
+            )}
+          </div>
+
+          {/* 구독 기간 */}
+          <div className="detail-body">
+            <h3 className="detail-text">구독 기간 (개월 기준)</h3>
+            {isEditing ? (
+              <input
+                type="number"
+                className="detail-input-question"
+                value={subPeriod}
+                onChange={e => setSubPeriod(e.target.value)}
+              />
+            ) : (
+              <p className="detail-text">{subPeriod}개월</p>
+            )}
+          </div>
+
+          {/* 사용 유무 */}
+          <div className="detail-body">
+            <h3 className="detail-text">사용 유무</h3>
+            {isEditing ? (
+              <select
+                className="detail-input-question"
+                value={useYn}
+                onChange={e => setUseYn(e.target.value)}
+              >
+                <option value="Y">사용</option>
+                <option value="N">미사용</option>
+              </select>
+            ) : (
+              <p className="detail-text">{useYn === 'Y' ? '사용' : '미사용'}</p>
+            )}
+          </div>
         </div>
 
-        {/* 상품 설명 */}
-        <div className="detail-body">
-          <h3 className="detail-text">상품 설명</h3>
-          {isEditing ? (
-            <textarea
-              className="detail-textarea-answer_product"
-              value={productDetail}
-              onChange={e => setProductDetail(e.target.value)}
-            />
-          ) : (
-            productDetail.split('\n\n').map((para, idx) => (
-              <p key={idx} className="detail-text">{para}</p>
-            ))
-          )}
-        </div>
-
-        {/* 가격 */}
-        <div className="detail-body">
-          <h3 className="detail-text">상품 금액</h3>
-          {isEditing ? (
-            <input
-              type="number"
-              className="detail-input-question"
-              value={price}
-              onChange={e => setPrice(e.target.value)}
-            />
-          ) : (
-            <p className="detail-text">{Number(price).toLocaleString()}원</p>
-          )}
-        </div>
-
-        {/* 구독 기간 */}
-        <div className="detail-body">
-          <h3 className="detail-text">구독 기간 (개월 기준)</h3>
-          {isEditing ? (
-            <input
-              type="number"
-              className="detail-input-question"
-              value={subPeriod}
-              onChange={e => setSubPeriod(e.target.value)}
-            />
-          ) : (
-            <p className="detail-text">{subPeriod}개월</p>
-          )}
-        </div>
-
-        {/* 사용 유무 */}
-        <div className="detail-body">
-          <h3 className="detail-text">사용 유무</h3>
-          {isEditing ? (
-            <select
-              className="detail-input-question"
-              value={useYn}
-              onChange={e => setUseYn(e.target.value)}
-            >
-              <option value="Y">사용</option>
-              <option value="N">미사용</option>
-            </select>
-          ) : (
-            <p className="detail-text">{useYn === 'Y' ? '사용' : '미사용'}</p>
-          )}
-        </div>
-        </div>
-          
         {/* 버튼 */}
         <div className="detail-footer">
           <button

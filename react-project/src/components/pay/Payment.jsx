@@ -63,14 +63,12 @@ const customerKey = "9uuGi150o9RzU9bucGwhs";
       // 결제 과정에서 악의적으로 결제 금액이 바뀌는 것을 확인하는 용도입니다.
       await payment.requestPayment({
         method: "CARD", // 카드 및 간편결제
-        amount: amount,
-        orderId: "u1uNaXyxcBWrjW32eOhcc", // 고유 주문번호
-        orderName: "토스 티셔츠 외 2건",
+        amount: amount,                                                       //amount (필수) · number    실제 결제되는 금액입니다.
+        // orderId: orderId,                                                //orderId (필수) · string   가맹점에서 사용하는 해당 주문에 대한 ID입니다. 각 주문마다 유니크해야 합니다.
+        // orderName: orderName,                                            //orderName (필수) · string 결제에 대한 주문명입니다. 예를 들면 '생수 외 1건' 같은 형식입니다.                                   //customerName · string 결제하는 고객의 실명입니다. 결제 완료 시 보내주는 이메일 등에 사용됩니다.
         successUrl: window.location.origin + "/success", // 결제 요청이 성공하면 리다이렉트되는 URL
-        failUrl: window.location.origin + "/fail", // 결제 요청이 실패하면 리다이렉트되는 URL
-        customerEmail: "customer123@gmail.com",
-        customerName: "김토스",
-        customerMobilePhone: "01012341234",
+        failUrl: window.location.origin + "/fail", // 결제 요청이 실패하면 리다이렉트되는 URL 
+
         // 카드 결제에 필요한 정보
         card: {
           useEscrow: false,

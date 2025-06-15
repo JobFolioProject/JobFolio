@@ -46,6 +46,7 @@ public class ProductService {
 	}
 
 	public void deleteProduct(Map<String, Object> paramMap) throws Exception {
-		productMapper.deleteProduct(paramMap);
+		List<Integer> productNos = (List<Integer>) paramMap.get("product_no");
+		productMapper.deleteProduct(productNos);
 	}
 }

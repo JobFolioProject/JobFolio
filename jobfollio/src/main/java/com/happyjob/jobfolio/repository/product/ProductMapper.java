@@ -2,6 +2,7 @@ package com.happyjob.jobfolio.repository.product;
 
 import com.happyjob.jobfolio.vo.product.ProductModel;
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,6 @@ public interface ProductMapper {
 	public void updateProduct(Map<String, Object> paramMap) throws Exception;
 
 	// 이용권 삭제
-	public void deleteProduct(Map<String, Object> paramMap) throws Exception;
+	public void deleteProduct(@Param("productNos") List<Integer> productNos) throws Exception;
 
 }
