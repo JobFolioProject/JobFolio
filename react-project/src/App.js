@@ -31,43 +31,83 @@ import TemplateManagement from "./components/admin/adminComponents/TemplateManag
 import Configuration from "./components/admin/adminComponents/Configuration";
 import ResumeModify from "./components/resume/ResumeModify";
 import Join from "./components/user/join/JoinForm";
+import { AuthProvider } from "./context/AuthContext";
+import PrivateRoute from "./components/common/PrivateRoute";
+import Unauthorized from "./components/common/Unauthorized";
+import NotFound from "./components/common/NotFound";
 
 function App() {
   return (
-    <BrowserRouter>
-      <AppContent />
-    </BrowserRouter>
+    <AuthProvider>
+      {" "}
+      {/* ← AuthProvider를 최상위로 이동! */}
+      <BrowserRouter>
+        <AppContent />
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
 
 function AppContent() {
   const location = useLocation();
-  const isAdminPath = location.pathname.includes("admin"); // 'admin'이 경로에 포함되었는지 확인
+  const isAdminPath = location.pathname.includes("admin");
 
   return (
     <>
-      {!isAdminPath && <MenuBar />}
+      {!isAdminPath && <MenuBar />} {/* ← 이제 useAuth() 사용 가능! */}
       <main>
         <Routes>
+          {/* ========== 모든 사용자 접근 가능 ========== */}
           <Route path="/" element={<Main />} />
           <Route path="/login" element={<Login />} />
           <Route path="/join" element={<Join />} />
-
-          <Route path="/resume/write" element={<Resume />} />
-
-          <Route path="/resume/edit" element={<ResumeModify />} />
-
-          <Route path="/interview" element={<Interview />} />
-          <Route path="/pay" element={<Payment />} />
-
-          {/* 커뮤니티 메뉴 하위항목 */}
+          {/* 커뮤니티 - 모든 사용자 접근 가능 */}
           <Route path="/community/notice" element={<CommuNotice />} />
           <Route path="/community/resume" element={<CommuResume />} />
           <Route path="/community/info" element={<CommuInfo />} />
           <Route path="/community/faq" element={<CommuFaq />} />
-
-          {/* 마이페이지 메뉴 하위항목 */}
-          <Route path="/myPage" element={<MyPage />}>
+          {/* ========== 로그인 필수 페이지 ========== */}
+          <Route
+            path="/resume/write"
+            element={
+              <PrivateRoute loginRequired={true}>
+                <Resume />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/resume/edit"
+            element={
+              <PrivateRoute loginRequired={true}>
+                <ResumeModify />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/interview"
+            element={
+              <PrivateRoute loginRequired={true}>
+                <Interview />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/pay"
+            element={
+              <PrivateRoute loginRequired={true}>
+                <Payment />
+              </PrivateRoute>
+            }
+          />
+          {/* 마이페이지 - 로그인 필수 */}
+          <Route
+            path="/myPage"
+            element={
+              <PrivateRoute loginRequired={true}>
+                <MyPage />
+              </PrivateRoute>
+            }
+          >
             <Route index element={<UserInfo />} />
             <Route path="userInfo" element={<UserInfo />} />
             <Route path="resumeDetail" element={<ResumeDetail />} />
@@ -75,43 +115,99 @@ function AppContent() {
             <Route path="payHistory" element={<PayHistory />} />
             <Route path="postLike" element={<PostLike />} />
           </Route>
-
-          {/* 관리자페이지 메뉴 하위항목 */}
-          <Route path="/adminPage" element={<AdminPage />} />
+          {/* ========== 관리자 전용 (A, B) ========== */}
           <Route
-            path="/adminPage/userManagement"
-            element={<UserManagement />}
+            path="/adminPage"
+            element={
+              <PrivateRoute requiredRoles={["A", "B"]}>
+                <AdminPage />
+              </PrivateRoute>
+            }
           />
           <Route
-            path="/adminPage/adminManagement"
-            element={<AdminManagement />}
+            path="/adminPage/userManagement"
+            element={
+              <PrivateRoute requiredRoles={["A", "B"]}>
+                <UserManagement />
+              </PrivateRoute>
+            }
           />
           <Route
             path="/adminPage/subscriptStatus"
-            element={<SubscriptStatus />}
+            element={
+              <PrivateRoute requiredRoles={["A", "B"]}>
+                <SubscriptStatus />
+              </PrivateRoute>
+            }
           />
           <Route
             path="/adminPage/noticeManagement"
-            element={<NoticeManagement />}
+            element={
+              <PrivateRoute requiredRoles={["A", "B"]}>
+                <NoticeManagement />
+              </PrivateRoute>
+            }
           />
           <Route
             path="/adminPage/resumeManagement"
-            element={<ResumeManagement />}
+            element={
+              <PrivateRoute requiredRoles={["A", "B"]}>
+                <ResumeManagement />
+              </PrivateRoute>
+            }
           />
           <Route
             path="/adminPage/infoManagement"
-            element={<InfoManagement />}
+            element={
+              <PrivateRoute requiredRoles={["A", "B"]}>
+                <InfoManagement />
+              </PrivateRoute>
+            }
           />
-          <Route path="/adminPage/faqManagement" element={<FaqManagement />} />
+          <Route
+            path="/adminPage/faqManagement"
+            element={
+              <PrivateRoute requiredRoles={["A", "B"]}>
+                <FaqManagement />
+              </PrivateRoute>
+            }
+          />
           <Route
             path="/adminPage/subscriptManagement"
-            element={<SubscriptManagement />}
+            element={
+              <PrivateRoute requiredRoles={["A", "B"]}>
+                <SubscriptManagement />
+              </PrivateRoute>
+            }
           />
           <Route
             path="/adminPage/templateManagement"
-            element={<TemplateManagement />}
+            element={
+              <PrivateRoute requiredRoles={["A", "B"]}>
+                <TemplateManagement />
+              </PrivateRoute>
+            }
           />
-          <Route path="/adminPage/configuration" element={<Configuration />} />
+          {/* ========== 최고관리자 전용 (A) ========== */}
+          <Route
+            path="/adminPage/adminManagement"
+            element={
+              <PrivateRoute requiredRoles={["A"]}>
+                <AdminManagement />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/adminPage/configuration"
+            element={
+              <PrivateRoute requiredRoles={["A"]}>
+                <Configuration />
+              </PrivateRoute>
+            }
+          />
+          {/* 권한 없음 페이지 */}
+          <Route path="/unauthorized" element={<Unauthorized />} />
+          <Route path="*" element={<NotFound />} /> {/* 404 페이지 */}
         </Routes>
       </main>
       {!isAdminPath && <Footer />}

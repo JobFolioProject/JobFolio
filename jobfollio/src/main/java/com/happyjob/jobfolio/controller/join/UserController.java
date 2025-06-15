@@ -281,7 +281,14 @@ public class UserController {
 
                 resultMap.put("result", "Y");
                 resultMap.put("message", "로그인이 완료되었습니다.");
-                resultMap.put("user", authResult.get("user"));
+                UserVO userVO = (UserVO) authResult.get("user");
+                Map<String, Object> safeUser = new HashMap<>();
+                safeUser.put("user_no", userVO.getUser_no());
+                safeUser.put("login_id", userVO.getLogin_id());
+                safeUser.put("user_name", userVO.getUser_name());
+                safeUser.put("user_type", userVO.getUser_type());
+
+                resultMap.put("user", safeUser);
 
                 logger.info("JWT 로그인 성공: " + login_id);
                 return ResponseEntity.ok(resultMap);
