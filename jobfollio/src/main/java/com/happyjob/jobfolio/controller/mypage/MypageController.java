@@ -1,8 +1,10 @@
 package com.happyjob.jobfolio.controller.mypage;
 
 import com.happyjob.jobfolio.service.mypage.MypageService;
+import com.happyjob.jobfolio.service.resume.ResumeService;
 import com.happyjob.jobfolio.vo.join.UserVO;
 import com.happyjob.jobfolio.vo.mypage.*;
+import com.happyjob.jobfolio.vo.resume.ResumeInfoVO;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -27,6 +30,9 @@ public class MypageController {
     // 마이페이지 - 서비스 연결
     @Autowired
     private MypageService mypageService;
+
+    @Autowired
+    private ResumeService resumeService;
 
     // ======================================== 회원 정보 =============================================
     // 마이페이지 - 회원정보 조회
@@ -72,15 +78,14 @@ public class MypageController {
 
     // ======================================== 이력서 내역 =============================================
     // 마이페이지 - 이력서 내역 조회
-    @GetMapping("/resumeDetail/{userNo}")
-    public Map<String, Object> resumeDetailList(@PathVariable(name = "user_no") Long userNo) {
+    @PostMapping("/resumeDetail")
+    public ResponseEntity<Map<String,Object>> resumeDetailList(@RequestBody Map<String,Integer> requestMap) {
+        int userNo = requestMap.get("userNo");
+        List<ResumeInfoVO> resumeList = resumeService.selectResumeInfo(userNo);
 
-        // 해당 유저의 이력서 리스트를 찾아 불러오기
-//        List<ResumeInfoVO> resumeList = mypageService.resumeDetailList(userNo);
-
-        Map<String, Object> resultMap = new HashMap<String, Object>();
-
-        return resultMap;
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("resumeList", resumeList);
+        return ResponseEntity.ok(resultMap);
     }
 
     // ======================================== 내 커리어 =============================================
