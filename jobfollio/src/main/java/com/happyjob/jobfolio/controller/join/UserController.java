@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.happyjob.jobfolio.service.join.UserService;
 import com.happyjob.jobfolio.vo.join.UserVO;
@@ -525,6 +526,7 @@ public class UserController {
         }
     }
 
+    // 회원탈퇴기능 비밀번호 인증
     @PostMapping("/userInfoCheck")
     public ResponseEntity<Map<String, Object>> userInfoCheck(
             @RequestBody Map<String, Object> paramMap,
@@ -535,8 +537,6 @@ public class UserController {
         logger.info("   - ParamMap : " + paramMap);
 
         Map<String, Object> resultMap = new HashMap<>();
-
-        System.out.println((String) paramMap.get("login_id")+"----------------------------------");
 
         try {
             String loginId = (String) paramMap.get("login_id");
@@ -550,13 +550,13 @@ public class UserController {
 
             // UserService에 전달할 paramMap 준비
             Map<String, Object> serviceMap = new HashMap<>();
-            serviceMap.put("loginId", loginId);  // 서비스에서는 loginId로 사용
-            serviceMap.put("password", password);
+            serviceMap.put("loginId", loginId);
 
-            UserVO user = userService.loginUser(serviceMap);
+            UserVO user = userService.loginUser(serviceMap); // DB에서 login_id로 사용자 정보 조회
 
-            if (user != null && user.getPassword().equals(password)) {
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
+            if (user != null && passwordEncoder.matches(password, user.getPassword())) {
                 resultMap.put("result", "Y");
                 resultMap.put("userInfo", user);
                 return ResponseEntity.ok(resultMap);
