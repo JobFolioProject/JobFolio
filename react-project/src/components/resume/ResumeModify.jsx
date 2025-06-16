@@ -22,6 +22,10 @@ const ResumeModify = () => {
     return () => iframe.removeEventListener("load", onLoad);
   }, []);
 
+  const getAiComment = () => {
+    alert("AI COMMENT");
+  };
+
   const handleOpenModal = () => setIsEditModalOpen(true);
   const handleCloseModal = () => setIsEditModalOpen(false);
 
@@ -53,7 +57,9 @@ const ResumeModify = () => {
             />
           </div>
           <div className="buttonRow">
-            <button className="secondaryBtn">AI comment</button>
+            <button className="secondaryBtn" onClick={getAiComment}>
+              AI comment
+            </button>
             <button className="primaryBtn">저장</button>
           </div>
         </div>
