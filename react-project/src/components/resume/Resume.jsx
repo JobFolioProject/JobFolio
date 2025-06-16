@@ -8,6 +8,9 @@ import PrettyBtn from './PrettyBtn'; // PrettyBtn 컴포넌트 임포트
 import Calendar from '../common/Calendar';
 import axios from 'axios';
 import TemplateSelection from './TemplateSelection';
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+
 
 const Resume = () => {
     // 이력서 작성 페이지 컴포넌트
@@ -68,23 +71,23 @@ const Resume = () => {
 
 
 
-    //템플렛 정보 요청하고 받아오기. >>> 
+    //템플렛 정보 요청하고 받아오기. >>>
     //백쪽은 그럼 select * from tb_template;.
     //그리고 이거는 뭐... json 형태로 res에 들어오겠나?
-    //그럼 
-    
+    //그럼
+   
     // const [tempInfos, setTempInfos] = useState({  //템플렛이 가져올때마 변하는 값도 아닌데... 이렇게 변화를 감지하는 게 맞나??? 일단은 템플렛 정보들만 가져와서 변수 안에 저장해서 사용하면 되는데...
     //     template_no:null,
     //     template_name:'',
     //     file_pypath:'',
     //     file_lopath:'',
     // });
-    
+   
 
     // const templateInfo = async() => {
     //     await axios.get("/resume/templateInfo")
     //     .then((res)=>{
-    //         setTempInfos((prev)=>({ 
+    //         setTempInfos((prev)=>({
     //             ...prev,
 
     //         }));
@@ -380,12 +383,17 @@ const Resume = () => {
                                 placeholder="자기소개서를 입력하세요"
                                 />
                             </div>
+
                         </label>
                         <br />
-                        <div style={{ display: 'flex', justifyContent: 'center' }}>
-                            <PrettyBtn type="submit" onClick={handleSubmit} >이력서 제출</PrettyBtn>
-                        </div>
+                        <ResumeAiCoverLetter
+                            formData={formData}
+                            myCoverLetter={formData.coverLetter}
+                            setMyCoverLetter={(value) => setFormData({ ...formData, coverLetter: value })}
+                            setFormData={setFormData} // formData 상태를 자식 컴포넌트에 전달
+                        />
                         <br/>
+                       
                         <label>
                             <div><span>Template</span></div>
                         </label>
@@ -394,13 +402,11 @@ const Resume = () => {
                             </div>
                         <br/>
                     </form>
-                    <ResumeAiCoverLetter
-                        formData={formData}
-                        myCoverLetter={formData.coverLetter}
-                        setMyCoverLetter={(value) => setFormData({ ...formData, coverLetter: value })}
-                        setFormData={setFormData} // formData 상태를 자식 컴포넌트에 전달
-                     />
-                     <br/>
+                    <br/>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                            <PrettyBtn type="submit" onClick={handleSubmit} >이력서 제출</PrettyBtn>
+                        </div>
+                        <br/>
                      
                 </div>
                 </div>
