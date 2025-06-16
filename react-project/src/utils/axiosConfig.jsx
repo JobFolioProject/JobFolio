@@ -21,7 +21,7 @@ const axiosInstance = axios.create({
 
 // 관리자용 axios 인스턴스 생성
 const instanceAdmin = axios.create({
-  headers: { "Content-Type": "application/json"},
+  headers: { "Content-Type": "application/json" },
   timeout: 5000,
   withCredentials: true,
 });
@@ -37,7 +37,7 @@ const createRequestInterceptor = (isAdmin = false) => {
       config.headers.Authorization = `Bearer ${authContextRef.accessToken}`;
       // 중요한 API 요청에만 로그 출력
       if (config.url.includes("check-login-status")) {
-        // console.log("🔑 Bearer Token으로 인증 요청:", config.url);
+        // console.log(" Bearer Token으로 인증 요청:", config.url);
       }
     }
 
@@ -97,7 +97,9 @@ const createResponseInterceptor = () => {
               console.log(" 토큰 갱신 후 재요청 성공");
 
               // 원래 요청 재시도 (어떤 인스턴스에서 호출되었는지에 따라 결정)
-              const instance = originalRequest._isAdmin ? instanceAdmin : axiosInstance;
+              const instance = originalRequest._isAdmin
+                ? instanceAdmin
+                : axiosInstance;
               return instance(originalRequest);
             }
           } else {
@@ -122,7 +124,7 @@ const createResponseInterceptor = () => {
       const errorMessage =
         error.response?.data?.message || "네트워크 오류가 발생했습니다.";
       return Promise.reject({ ...error, message: errorMessage });
-    }
+    },
   };
 };
 

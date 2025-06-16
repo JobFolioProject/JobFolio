@@ -20,11 +20,9 @@ export const AuthProvider = ({ children }) => {
       const response = await axios.post("/api/join/refresh-token");
       return { success: true, data: response };
     } catch (error) {
-      // 400 에러는 정상적인 로그아웃 상태로 처리
       if (error.response?.status === 400) {
         return { success: false, reason: "NO_REFRESH_TOKEN" };
       }
-      // 다른 에러는 실제 에러로 처리
       return { success: false, reason: "ERROR", error };
     }
   };
@@ -33,7 +31,7 @@ export const AuthProvider = ({ children }) => {
     try {
       setIsLoading(true);
 
-      // console.log("🔍 자동 로그인 확인 중...");
+      // console.log(" 자동 로그인 확인 중...");
 
       // 우아한 refresh token 요청
       const result = await gracefulRefreshToken();
@@ -65,14 +63,14 @@ export const AuthProvider = ({ children }) => {
           };
           setUser(userData);
           setIsAuthenticated(true);
-          // console.log("✅ 자동 로그인 성공:", userData.loginId);
+          // console.log("자동 로그인 성공:", userData.loginId);
         }
       } else {
         // 실패 이유에 따른 다른 메시지
         if (result.reason === "NO_REFRESH_TOKEN") {
-          console.log("ℹ️ 로그아웃 상태입니다.");
+          console.log(" 로그아웃 상태입니다.");
         } else if (result.reason === "ERROR") {
-          console.log("⚠️ 자동 로그인 확인 실패:", result.error.message);
+          console.log(" 자동 로그인 확인 실패:", result.error.message);
         }
 
         setAccessToken(null);
@@ -80,7 +78,7 @@ export const AuthProvider = ({ children }) => {
         setIsAuthenticated(false);
       }
     } catch (error) {
-      console.log("⚠️ 예상치 못한 오류:", error.message);
+      console.log(" 예상치 못한 오류:", error.message);
       setAccessToken(null);
       setUser(null);
       setIsAuthenticated(false);
@@ -106,13 +104,13 @@ export const AuthProvider = ({ children }) => {
         setUser(userData);
         setIsAuthenticated(true);
 
-        // console.log("✅ 로그인 성공:", userData.loginId);
+        // console.log(" 로그인 성공:", userData.loginId);
         return { success: true, data: response };
       } else {
         return { success: false, message: response.message };
       }
     } catch (error) {
-      console.error("❌ 로그인 에러:", error);
+      console.error(" 로그인 에러:", error);
       return {
         success: false,
         message: error.message || "로그인 중 오류가 발생했습니다.",
@@ -127,13 +125,13 @@ export const AuthProvider = ({ children }) => {
       if (response.result === "Y") {
         const newAccessToken = response.accessToken;
         setAccessToken(newAccessToken);
-        console.log("✅ 토큰 갱신 완료");
+        console.log(" 토큰 갱신 완료");
         return newAccessToken;
       } else {
         throw new Error("토큰 갱신 실패");
       }
     } catch (error) {
-      console.error("❌ 토큰 갱신 실패:", error);
+      console.error(" 토큰 갱신 실패:", error);
       await logout();
       throw error;
     }
@@ -148,7 +146,7 @@ export const AuthProvider = ({ children }) => {
       setAccessToken(null);
       setUser(null);
       setIsAuthenticated(false);
-      console.log("✅ 로그아웃 완료");
+      console.log(" 로그아웃 완료");
       window.location.href = "/";
     }
   };

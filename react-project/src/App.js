@@ -36,37 +36,43 @@ import PrivateRoute from "./components/common/PrivateRoute";
 import Unauthorized from "./components/common/Unauthorized";
 import NotFound from "./components/common/NotFound";
 
+// 🎯 최상위 App 컴포넌트 - 전체 앱을 감싸는 Provider들 설정
 function App() {
   return (
     <AuthProvider>
+      {" "}
+      {/* 🔐 JWT 인증 상태 관리 (토큰, 사용자 정보) */}
       <BrowserRouter>
-        <AppContent />
+        {" "}
+        {/* 🛣️ React Router - URL 라우팅 기능 */}
+        <AppContent /> {/* 📄 실제 앱 콘텐츠 */}
       </BrowserRouter>
     </AuthProvider>
   );
 }
 
+// 📄 실제 앱 콘텐츠 - 라우팅과 레이아웃 관리
 function AppContent() {
   const location = useLocation();
-  const isAdminPath = location.pathname.includes("admin"); // 'admin'이 경로에 포함되었는지 확인
+  const isAdminPath = location.pathname.includes("admin");
 
   return (
     <>
+      {/* 🎨 조건부 레이아웃: 관리자 페이지가 아닐 때만 메뉴바 표시 */}
       {!isAdminPath && <MenuBar />}
+
       <main>
         <Routes>
-          {/* ========== 모든 사용자 접근 가능 ========== */}
+          {/* ========== 🌍 모든 사용자 접근 가능 (로그인 불필요) ========== */}
           <Route path="/" element={<Main />} />
           <Route path="/login" element={<Login />} />
           <Route path="/join" element={<Join />} />
-          
-          {/* 커뮤니티 - 모든 사용자 접근 가능 */}
           <Route path="/community/notice" element={<CommuNotice />} />
           <Route path="/community/resume" element={<CommuResume />} />
           <Route path="/community/info" element={<CommuInfo />} />
           <Route path="/community/faq" element={<CommuFaq />} />
-
-          {/* ========== 로그인 필수 페이지 ========== */}
+          {/* ========== 🌍 모든 사용자 접근 가능 끝 ========== */}
+          {/* ========== 🔐 로그인 필수 페이지 (C, B, A 타입 모두) ========== */}
           <Route
             path="/resume/write"
             element={
@@ -99,8 +105,7 @@ function AppContent() {
               </PrivateRoute>
             }
           />
-
-          {/* 마이페이지 - 로그인 필수 */}
+          {/*  마이페이지*/}
           <Route
             path="/myPage"
             element={
@@ -109,20 +114,26 @@ function AppContent() {
               </PrivateRoute>
             }
           >
+            {/* 마이페이지 하위 페이지들*/}
             <Route index element={<UserInfo />} />
             <Route path="userInfo" element={<UserInfo />} />
+            {/* /myPage/userInfo - 사용자 정보 탭 */}
             <Route path="resumeDetail" element={<ResumeDetail />} />
+            {/* /myPage/resumeDetail - 이력서 상세 탭 */}
             <Route path="myCareer" element={<MyCareer />} />
+            {/* /myPage/myCareer - 내 경력 탭 */}
             <Route path="payHistory" element={<PayHistory />} />
+            {/* /myPage/payHistory - 결제 내역 탭 */}
             <Route path="postLike" element={<PostLike />} />
+            {/* /myPage/postLike - 좋아요한 글 탭 */}
           </Route>
-
-          {/* ========== 관리자 전용 (A, B) ========== */}
+          {/* ========== 로그인 필수 페이지 끝 ========== */}
+          {/* ========== 관리자 전용 (A, B 권한)========== */}
           <Route
             path="/adminPage"
             element={
               <PrivateRoute requiredRoles={["A", "B"]}>
-                <AdminPage />
+                <AdminPage /> {/* 관리자 메인 페이지 */}
               </PrivateRoute>
             }
           />
@@ -130,6 +141,7 @@ function AppContent() {
             path="/adminPage/userManagement"
             element={
               <PrivateRoute requiredRoles={["A", "B"]}>
+                {/* A 또는 B 권한 체크 */}
                 <UserManagement />
               </PrivateRoute>
             }
@@ -190,8 +202,8 @@ function AppContent() {
               </PrivateRoute>
             }
           />
-
-          {/* ========== 최고관리자 전용 (A) ========== */}
+          {/* ========== 관리자 전용 (A, B 권한) 끝 ========== */}
+          {/* ========== 최고관리자 전용 (A 권한만) ========== */}
           <Route
             path="/adminPage/adminManagement"
             element={
@@ -208,12 +220,16 @@ function AppContent() {
               </PrivateRoute>
             }
           />
-
+          {/* ========== 최고관리자 전용 (A 권한만) 끝 ========== */}
+          {/* ========== 에러 페이지 ========== */}
+          <Route path="/unauthorized" element={<Unauthorized />} />{" "}
           {/* 권한 없음 페이지 */}
-          <Route path="/unauthorized" element={<Unauthorized />} />
-          <Route path="*" element={<NotFound />} /> {/* 404 페이지 */}
+          <Route path="*" element={<NotFound />} />{" "}
+          {/* 404 페이지 (존재하지 않는 경로) */}
+          {/* ========== 에러 페이지 끝 ========== */}
         </Routes>
       </main>
+
       {!isAdminPath && <Footer />}
     </>
   );
