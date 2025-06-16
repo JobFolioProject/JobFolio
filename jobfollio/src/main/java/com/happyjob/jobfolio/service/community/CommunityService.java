@@ -18,11 +18,19 @@ public class CommunityService {
         this.communityMapper = communityMapper;
     }
 
-    public List<CommunityBoardVo> getCommunityBoardPaged(Map<String, Object> paramMap) {
-        return communityMapper.selectBoardListPaged(paramMap);
+    public List<CommunityBoardVo> getPriorityBoardList(Map<String, Object> paramMap) {
+        return communityMapper.selectPriorityBoardList(paramMap);
     }
 
-    public int getBoardTotalCount(Map<String, Object> paramMap) {
-        return communityMapper.countBoardList(paramMap);
+    public List<CommunityBoardVo> getPagedNormalBoardList(Map<String, Object> paramMap) {
+        return communityMapper.selectNormalBoardPaged(paramMap);
+    }
+
+    public int getNormalBoardTotalCount(Map<String, Object> paramMap) {
+        return communityMapper.countNormalBoardList(paramMap);
+    }
+
+    public CommunityBoardVo getBoardDetail(int boardNo) {
+        return communityMapper.selectBoardDetail(boardNo);
     }
 }

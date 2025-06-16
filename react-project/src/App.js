@@ -15,6 +15,7 @@ import PostLike from "./components/user/myPageComponent/PostLike";
 import ResumeDetail from "./components/user/myPageComponent/ResumeDetail";
 import Interview from "./components/interview/Interview";
 import CommuNotice from "./components/community/CommuNotice";
+import CommuNoticeDetail from "./components/community/CommuNotice_detail";
 import CommuResume from "./components/community/CommuResume";
 import CommuInfo from "./components/community/CommuInfo";
 import CommuFaq from "./components/community/CommuFaq";
@@ -62,6 +63,7 @@ function AppContent() {
 
           {/* 커뮤니티 메뉴 하위항목 */}
           <Route path="/community/notice" element={<CommuNotice />} />
+          <Route path="/community/detail/:boardNo" element={<CommuNoticeDetail />} />
           <Route path="/community/resume" element={<CommuResume />} />
           <Route path="/community/info" element={<CommuInfo />} />
           <Route path="/community/faq" element={<CommuFaq />} />

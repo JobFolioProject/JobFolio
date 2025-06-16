@@ -196,3 +196,8 @@
 .community-notice-pagination {
   border-top: 2px solid black;
 }
+
+/* 중요 공지 배경 스타일 */
+.notice-priority {
+  background-color: #0000003b; 
+}
