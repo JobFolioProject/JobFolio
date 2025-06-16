@@ -76,17 +76,6 @@ public class MypageController {
         }
     }
 
-    // ======================================== 이력서 내역 =============================================
-    // 마이페이지 - 이력서 내역 조회
-    @PostMapping("/resumeDetail")
-    public ResponseEntity<Map<String,Object>> resumeDetailList(@RequestBody Map<String,Integer> requestMap) {
-        int userNo = requestMap.get("userNo");
-        List<ResumeInfoVO> resumeList = resumeService.selectResumeInfo(userNo);
-
-        Map<String, Object> resultMap = new HashMap<>();
-        resultMap.put("resumeList", resumeList);
-        return ResponseEntity.ok(resultMap);
-    }
 
     // ======================================== 내 커리어 =============================================
 

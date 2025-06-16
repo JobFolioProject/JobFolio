@@ -27,14 +27,14 @@ const ResumeDetail = () => {
             if (!userNo) return;
 
             // JSON 바디에 userNo 담아 POST
-            const response = await axios.post('/api/myPage/resumeDetail', {
+            const response = await axios.post('/api/resume/resumeDetail', {
             userNo: userNo
             });
             console.log(response.data);
 
             const { resumeList } = response.data;
 
-            if (Array.isArray(resumeList) && resumeList.length > 0) {
+            if (Array.isArray(resumeList) && resumeList.length >= 0) {
                 // 첫 번째 이력서를 resumeInfo에 세팅
                 setResumeList(resumeList);
             }
