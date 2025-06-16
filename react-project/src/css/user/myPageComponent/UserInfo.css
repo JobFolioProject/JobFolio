@@ -88,11 +88,10 @@ input.userInfoInput {
   height: 45px;
   border-radius: 10px;
   border: 0px;
-  background-color: #f5f5f5;
 }
 
 .userInfoInput--editable {
-  background-color: #fff;
+  background-color: #f5f5f5;
 }
 
 .careerInfoRow {

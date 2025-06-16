@@ -149,6 +149,16 @@
           AND status_yn = 'N'
           AND withdrawal_date IS NULL
     </select>
+    <!-- 회원정보 수정 -->
+    <update id="updateByUserId" parameterType="map">
+        UPDATE tb_userinfo
+        SET
+        user_name = #{user_name},
+        login_id = #{login_id},
+        hp = #{hp}
+        <if test="#{address} != null">, address = #{address}</if>
+        WHERE user_no = #{user_no}
+    </update>
 
     <!--  학력 사항  -->
     <insert id="insertEducation" parameterType="com.happyjob.jobfolio.vo.mypage.EduInfoVO" keyProperty="edu_no" useGeneratedKeys="true">
@@ -275,4 +285,6 @@
         DELETE FROM tb_career_history
         WHERE career_no = #{career_no} AND user_no = #{user_no}
     </delete>
+
+
 </mapper>

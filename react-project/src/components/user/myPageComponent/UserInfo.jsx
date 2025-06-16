@@ -1,47 +1,82 @@
 import { useEffect, useState } from 'react'; // Import useState hook
 import '../../../css/user/myPageComponent/UserInfo.css';
+import axios from "axios";
+
 
 const UserInfo = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [userInfo, setUserInfo] = useState({
+        user_no: '',
         user_name: '',
         hp: '',
-        email: '',
-        addr: '',
+        login_id: '',
+        address: '',
         expire_days: '',
     });
 
     const fetchUserInfo = async () => {
-        try {
-            const raw = sessionStorage.getItem('user');
-            if (!raw) return;
-            const { userNo } = JSON.parse(raw);
-            if (!userNo) return;
+    try {
+        const raw = sessionStorage.getItem("user");
+        if (!raw) return;
+        const { userNo } = JSON.parse(raw);
+        if (!userNo) return;
 
-            const response = await fetch(`/api/myPage/userInfo/${userNo}`);
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}`);
-            }
-            const data = await response.json();
-            setUserInfo({
-                user_name: data.user_name,
-                hp: data.hp,
-                email: data.login_id,
-                addr: data.address,
-                expire_days: data.expire_days ?? '미구독',
-            });
-            console.log(data);
-        } catch (err) {
-            console.error('Failed to fetch userInfo:', err);
-        }
+        const response = await axios.get(`/api/myPage/userInfo/${userNo}`);
+
+        const data = response.data;
+
+        setUserInfo({
+        user_no: data.user_no,
+        user_name: data.user_name,
+        hp: data.hp,
+        login_id: data.login_id,
+        address: data.address ?? "",
+        expire_days: data.expire_days ?? "미구독",
+        });
+
+        console.log("받은 데이터:", data);
+    } catch (err) {
+        console.error("Failed to fetch userInfo:", err);
+    }
     };
 
     useEffect(() => {
         fetchUserInfo();
     }, []);
 
-    const handleEditClick = () => {
-        setIsEditing(true);
+   const handleEditClick = async () => {
+        if (!isEditing) {
+            setIsEditing(true);
+        } else {
+            try {
+            const raw = sessionStorage.getItem("user");
+            if (!raw) return;
+
+            const { userNo } = JSON.parse(raw);
+            if (!userNo) return;
+
+            if (window.confirm("수정하시겠습니까?")) {
+                const cleanedUserInfo = {
+                ...userInfo,
+                user_no: userNo,
+                address: userInfo.address === "" ? null : userInfo.address,
+                expire_days: userInfo.expire_days === "미구독" ? null : userInfo.expire_days,
+                };
+
+                const response = await axios.post(`/api/myPage/editUserInfo`, cleanedUserInfo);
+
+                if (response.status === 200) {
+                alert("수정이 완료되었습니다.");
+                setIsEditing(false);
+                } else {
+                alert("수정 실패: " + response.statusText);
+                }
+            }
+            } catch (err) {
+            console.error("Failed to update userInfo:", err);
+            alert("수정 중 오류 발생");
+            }
+        }
     };
 
     const handleCancelClick = () => {
@@ -93,9 +128,8 @@ const UserInfo = () => {
                     <input
                         type="text"
                         className={`userInfoInput ${isEditing ? 'userInfoInput--editable' : ''}`}
-                        value={userInfo.email}
-                        onChange={(e) => setUserInfo({ ...userInfo, hp: e.target.value })}
-                        readOnly={!isEditing}
+                        value={userInfo.login_id}
+                        readOnly
                     />
                     {/* <button className="userInfoBackButton">설정하기</button> */}
                 </div>
@@ -106,8 +140,8 @@ const UserInfo = () => {
                     <input
                         type="text"
                         className={`userInfoInput ${isEditing ? 'userInfoInput--editable' : ''}`}
-                        value={userInfo.addr}
-                        onChange={(e) => setUserInfo({ ...userInfo, addr: e.target.value })}
+                        value={userInfo.address}
+                        onChange={(e) => setUserInfo({ ...userInfo, address: e.target.value })}
                         readOnly={!isEditing}
                     />
                 </div>
@@ -120,7 +154,7 @@ const UserInfo = () => {
                         className={`userInfoInput ${isEditing ? 'userInfoInput--editable' : ''}`}
                         value={userInfo.expire_days}
                         onChange={(e) => setUserInfo({ ...userInfo, expire_days: e.target.value })}
-                        readOnly={!isEditing}
+                        readOnly
                     />
                 </div>
                 <hr />

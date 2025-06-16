@@ -7,6 +7,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.happyjob.jobfolio.vo.join.UserVO;
 
 import java.util.List;
 
@@ -31,9 +32,10 @@ public class MypageService {
         logger.info("Calling deleteByUserId for user ID: " + userNo);
     }
 
-    public void updateByUserId(Long userNo) {
-        logger.info("Calling updateByUserId for user ID: " + userNo);
-        // 예: MyCareerInfoRequestDto를 받아 여러 테이블을 업데이트하는 로직
+    public int updateByUserId(UserVO userInfo) {
+        System.out.println(userInfo);
+        System.out.println("-----------------------service-------------------------------------");
+        return mypageMapper.updateByUserId(userInfo);
     }
 
     // 커리어 조회

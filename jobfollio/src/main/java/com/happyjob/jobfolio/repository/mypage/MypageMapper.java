@@ -46,7 +46,8 @@ public interface MypageMapper {
     public void deleteSkill(@Param("user_no")Long userNo);
     public void updateSkill(SkillVO skillVO);
 
-
+    // 유저 정보 수정
+    int updateByUserId(UserVO user);
 
 
 
