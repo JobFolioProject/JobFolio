@@ -209,7 +209,7 @@ const UserInfo = () => {
                                 return;
                                 }
 
-                                const finalAddress = `${tempBaseAddress} ${detailAddress}`;
+                                const finalAddress = `${tempBaseAddress} ${detailAddress.trim()}`;
                                 setUserInfo(prev => ({ ...prev, address: finalAddress }));
                                 setIsDetailModalOpen(false);
                                 setDetailAddress("");
