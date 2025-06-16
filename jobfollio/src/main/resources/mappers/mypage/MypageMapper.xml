@@ -275,4 +275,15 @@
         DELETE FROM tb_career_history
         WHERE career_no = #{career_no} AND user_no = #{user_no}
     </delete>
+    <update id="updateCareerHistory" parameterType="com.happyjob.jobfolio.vo.mypage.CareerHistoryVO">
+        UPDATE tb_career_history
+        SET  user_no = #{user_no},
+            career_no = #{career_no},
+            company_name  #{company_name},
+            start_date #{start_date},
+            end_date #{end_date},
+            position #{position},
+            notes = #{notes}
+        WHERE career_no = #{career_no} AND user_no = #{user_no}
+    </update>
 </mapper>
