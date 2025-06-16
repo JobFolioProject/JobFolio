@@ -12,11 +12,9 @@ import com.happyjob.jobfolio.vo.mypage.CertificateVO;
 import com.happyjob.jobfolio.vo.resume.ResumeInfoVO;
 import com.happyjob.jobfolio.vo.resume.TemplateVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -29,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/resume")
+@RequestMapping("/api/resume")
 public class ResumeController {
 
     @Autowired
@@ -217,6 +215,29 @@ public class ResumeController {
 
         return resultMap;
 
+    }
+
+
+    // ======================================== 이력서 내역 =============================================
+    // 마이페이지 - 이력서 내역 조회
+    @PostMapping("/resumeDetail")
+    public ResponseEntity<Map<String,Object>> resumeDetailList(@RequestBody Map<String,Integer> requestMap) {
+        int userNo = requestMap.get("userNo");
+        List<ResumeInfoVO> resumeList = resumeService.selectResumeInfo(userNo);
+
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("resumeList", resumeList);
+        return ResponseEntity.ok(resultMap);
+    }
+
+    @PostMapping("/resume/liked")
+    public ResponseEntity<Map<String,Object>> resumeLikedList(@RequestBody Map<String,Integer> requestMap) {
+        int userNo = requestMap.get("userNo");
+        List<ResumeInfoVO> resumeList = resumeService.resumeLikedList(userNo);
+
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("resumeList", resumeList);
+        return ResponseEntity.ok(resultMap);
     }
 
 
