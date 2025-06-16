@@ -15,7 +15,7 @@
 }
 
 /* FAQ 전체 리스트 영역 */
-.faq-list {
+.info-list {
   max-width: 1000px;
   margin: 50px auto;
   padding: 0 20px;
@@ -23,45 +23,66 @@
 }
 
 /* 각 항목 */
-.faq-item {
+.info-item {
   border-bottom: 1px solid #ddd;
   padding: 20px 0;
 }
 
 /* 질문 항목 */
-.faq-item .question {
+.info-item .question {
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   transition: color 0.2s;
   display: flex;              /* 💡 수평 정렬 + 세로 정렬 둘 다 */
   align-items: center;        /* 💡 세로 가운데 정렬 */
+  justify-content: space-between;
 }
 
-.faq-item .question:hover {
+.question-left{
+  display: flex;
+  align-items: center;
+  gap: 4px; /* Q. 와 질문 사이 여백 */
+}
+
+.info-Q {
+  font-weight: bold;
+  color: black;
+}
+
+.info-item .question:hover {
   color: #0b0ea8;
 }
 
 /* 펼쳐진 상태일 때 색상 유지 */
-.faq-item.open .question {
+.info-item.open .question {
   color: #0b0ea8;
 }
 
 /* 아이콘 공통 스타일 */
-.icon {
+.iconA-wrapper {
+  width: 28px;
+  height: 28px;
+  border: 2px solid black;
+  border-radius: 50%;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.iconA {
   font-size: 20px;
-  margin-right: 8px;
-  transition: transform 0.3s ease;
-  color: inherit; /* 텍스트 색상 따라감 */
+  color: black;
 }
 
 /* 아이콘 회전도 유지하고 싶다면 추가 */
-.faq-item.open .icon {
-  transform: rotate(90deg);
+.info-item.open .iconA {
+  transform: rotate(180deg);
 }
 
 /* 답변 영역 */
-.faq-item .answer {
+.info-item .answer {
   margin-top: 10px;
   font-size: 0.95rem;
   color: #444;

@@ -14,6 +14,12 @@ public interface ResumeMapper {
 
     List<ResumeInfoVO> selectResumeInfo(int user_no);
 
+    List<ResumeInfoVO> resumeLikedList(int user_no);
+
+    int unlikeResume(int user_no, int resume_no);
+
+    int deleteResume(int resume_no);
+
     int insertResumeInfo(ResumeInfoVO resumeInfoVO);
 
     List<LinkInfoVO> selectLinkInfoByResume(int resume_no);

@@ -42,6 +42,10 @@
     margin: 0;
 }
 
+.resumeItemCon h3:hover {
+    cursor:pointer;
+}
+
 .resumeItemDetail {
     position: relative;
     width: 100%;
@@ -53,6 +57,10 @@
 
 .likeIcon {
     color: #818191;
+}
+
+.resumeDetail .likeIcon:hover {
+    cursor:pointer;
 }
 
 .resumeItemDetail p {

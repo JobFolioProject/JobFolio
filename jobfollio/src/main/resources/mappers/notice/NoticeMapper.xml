@@ -4,20 +4,21 @@
 	
    	<!-- 이용안내 목록 조회 -->
 	<select id = "selectByBoardType" parameterType="String" resultType = "com.happyjob.jobfolio.vo.notice.BoardInfoVo">
-        
+
 		SELECT
-			board_no AS id,
-			title AS question,
-			content AS answer,
-			write_date AS createdAt,
-			author AS writer,
-			priority
-		FROM tb_board
-		WHERE board_type = #{board_type}
-		ORDER BY priority DESC
+			b.board_no AS id,
+			b.title AS question,
+			b.content AS answer,
+			b.write_date AS createdAt,
+			u.user_name AS writer,
+			b.priority
+		FROM tb_board b
+				 LEFT JOIN tb_userinfo u ON b.author = u.user_no
+		WHERE b.board_type = #{board_type}
+		ORDER BY b.priority DESC;
 	</select>
 	
-	<select id="selectOne" parameterType="int" resultType="com.happyjob.jobfolio.vo.notice.BoardInfoVo"> 
+	<select id="selectOne" parameterType="int" resultType="com.happyjob.jobfolio.vo.notice.BoardInfoVo">
 		SELECT
 			board_no AS id,
 			board_type,
@@ -32,11 +33,7 @@
 	
 	<!-- 이용안내 등록 -->
 	<insert id="insertBoardInfo" parameterType="com.happyjob.jobfolio.vo.notice.BoardInfoVo">
-		
-		<selectKey keyProperty="id" resultType="int" order="BEFORE">
-			SELECT IFNULL(MAX(board_no), 0) + 1 FROM tb_board
-		</selectKey>
-		
+
 		INSERT INTO tb_board (
 			board_no,
 			board_type,
@@ -52,14 +49,32 @@
 			#{question},
 			#{answer},
 			now(),
-			1,
+			#{author},
 			#{priority}
 		)
 	</insert>
 	
-	<!-- Java에서 호출해서 priority값을 구하는 쿼리 -->
+	<!-- 우 선 순 위 -->
+	<update id="shiftPrioritiesDown" parameterType="map">
+		UPDATE tb_board
+		SET priority = priority - 1
+		WHERE board_type = #{board_type}
+		  AND board_no != #{id}
+		  AND priority &gt; #{currentPriority}
+		  AND priority &lt;= #{newPriority}
+	</update>
+
+	<update id="shiftPrioritiesUp" parameterType="map">
+		UPDATE tb_board
+		SET priority = priority + 1
+		WHERE board_type = #{board_type}
+		  AND board_no != #{id}
+		AND priority &lt; #{currentPriority}
+		AND priority &gt;= #{newPriority}
+	</update>
+
 	<select id="getNextPriority" resultType="int">
-		SELECT IFNULL(MAX(priority), 0) + 1 
+		SELECT count(*) + 1
 		FROM tb_board
 		WHERE board_type = #{board_type}
 	</select>
@@ -74,8 +89,19 @@
 		UPDATE tb_board
 		SET priority = priority -1
 		WHERE board_type = #{board_type}
-			AND priority > #{priority}
+			AND priority &gt; #{priority}
+			AND priority &lt;= #{totalCount}
 	</update>
+
+	<update id="updateOwnPriority" parameterType="map">
+		UPDATE tb_board
+		SET priority = #{priority}
+		WHERE board_no = #{id}
+	</update>
+
+	<select id="countByType" resultType="int">
+		SELECT count(*) FROM tb_board WHERE board_type = #{board_type}
+	</select>
 	
 	<!-- 선택사항 삭제 -->
 	<delete id="deleteBoardInfo" parameterType="java.util.List">
@@ -98,19 +124,10 @@
 		 	write_date = NOW()
 	 	WHERE board_no = #{id}
 	</update>
+
+
+
 	
-	<update id="shiftPriorities" parameterType="map">
-		UPDATE tb_board
-		SET priority = priority + 1
-		WHERE board_type = #{board_type}
-			AND board_no != #{id}
-			AND priority >= #{newpriority}
-	</update>
-	
-	<update id="updateOwnPriority" parameterType="map"> 
-		UPDATE tb_board
-		SET priority = #{priority}
-		WHERE board_no = #{id}
-	</update>
+
 	
 </mapper>

@@ -1,6 +1,7 @@
 package com.happyjob.jobfolio.repository.notice;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -17,6 +18,9 @@ public interface BoardInfoRepository {
 	int newPriority();
 	
 	int getNextBoardNo(String board_type);
+
+	// totalcount max 까지
+	int countByType(String board_type);
 	
 	void insertBoardInfo(BoardInfoVo vo);
 	
@@ -24,7 +28,7 @@ public interface BoardInfoRepository {
 	
 	void updateBoardInfo(BoardInfoVo vo);
 	
-	void shiftPriorityAfterDelete(@Param("board_type") String boardType, @Param("priority") int priority);
+	void shiftPriorityAfterDelete(@Param("board_type") String boardType, @Param("priority") int priority,  @Param("totalCount") int totalCount);
 	
 	void deleteBoardInfoById(@Param("id") int id);
 	
@@ -32,6 +36,8 @@ public interface BoardInfoRepository {
 	
 	BoardInfoVo selectOne(@Param("id") int id);
 	
-	void shiftPriorities(@Param("id") int id, @Param("board_type") String boardType, @Param("newpriority") int newpriority);
+	void shiftPrioritiesDown(Map<String, Object> paramMap);
+
+	void shiftPrioritiesUp(Map<String, Object> paramMap);
 
 }

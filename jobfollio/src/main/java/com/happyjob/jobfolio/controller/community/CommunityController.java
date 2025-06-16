@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -50,15 +51,24 @@ public class CommunityController {
         paramMap.put("offset", offset);
         paramMap.put("limit", pageSize);
 
-        List<CommunityBoardVo> boardList = communityService.getCommunityBoardPaged(paramMap);
-        int totalCount = communityService.getBoardTotalCount(paramMap);
+        List<CommunityBoardVo> priorityList = communityService.getPriorityBoardList(paramMap);
+        List<CommunityBoardVo> boardList = communityService.getPagedNormalBoardList(paramMap);
+        int totalCount = communityService.getNormalBoardTotalCount(paramMap);
 
         Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("priorityList", priorityList);
         resultMap.put("boardList", boardList);
         resultMap.put("totalCount", totalCount);
+
         logger.info("+ End " + className);
 
         return resultMap;
+    }
+
+    @RequestMapping("/detail/{boardNo}")
+    @ResponseBody
+    public CommunityBoardVo communityBoardDetail(@PathVariable("boardNo") int boardNo) throws Exception {
+        return communityService.getBoardDetail(boardNo);
     }
 
 }
