@@ -3,27 +3,30 @@
         PUBLIC '-//mybatis.org//DTD Mapper 3.0//EN'
         'http://mybatis.org/dtd/mybatis-3-mapper.dtd'>
 <mapper namespace='com.happyjob.jobfolio.repository.community.CommunityMapper'>
-
+    <!-- 페이징된 공지사항 목록 조회: 우선순위 내림차순, 작성일 내림차순 -->
     <select id="selectBoardListPaged" parameterType="map" resultType="com.happyjob.jobfolio.vo.community.CommunityBoardVo">
         SELECT
-            b.board_no AS boardNo,
-            b.board_type AS boardType,
-            b.title,
-            b.content,
-            b.write_date AS writeDate,
-            b.author,
-            u.user_name AS authorName,
-            b.priority
+        b.board_no      AS boardNo,
+        b.board_type    AS boardType,
+        b.title,
+        b.content,
+        b.write_date    AS writeDate,
+        b.author,
+        u.user_name     AS authorName,
+        b.priority
         FROM tb_board b
-                 JOIN tb_userinfo u ON b.author = u.user_no
+        JOIN tb_userinfo u ON b.author = u.user_no
         WHERE b.board_type = #{boardType}
-            <if test="search != null and search != ''">
-                AND b.title LIKE CONCAT('%', #{search}, '%')
-            </if>
+        <if test="search != null and search != ''">
+            AND b.title LIKE CONCAT('%', #{search}, '%')
+        </if>
+        <!-- 정렬: priority 내림차순, 최신 작성일 내림차순 -->
         ORDER BY b.priority DESC, b.write_date DESC
-            LIMIT #{limit} OFFSET #{offset}
+        <!-- MySQL 페이징: offset, pageSize 순서 -->
+        LIMIT #{offset}, #{pageSize}
     </select>
 
+    <!-- 전체 건수 조회 -->
     <select id="countBoardList" parameterType="map" resultType="int">
         SELECT COUNT(*)
         FROM tb_board

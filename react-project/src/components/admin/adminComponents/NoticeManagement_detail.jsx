@@ -6,7 +6,6 @@ import DOMPurify from 'dompurify';
 import axios from 'axios';
 import '../../../css/admin/adminComponents/NoticeManagement_detail.css';
 
-// open 여부에 따라 모달 언마운트
 const NoticeManagementDetail = ({ open, mode, onClose, onSaved, onEdit, noticeData }) => {
   if (!open) return null;
   return (
@@ -29,7 +28,7 @@ const NoticeModalContent = ({ open, mode, onClose, onSaved, onEdit, noticeData }
   const [loading, setLoading] = useState(false);
   const firstInputRef = useRef(null);
 
-  // Quill 초기화
+  // Quill 초기화 (handlers 비우기)
   const { quill, quillRef } = useQuill({
     theme: 'snow',
     modules: {
@@ -43,13 +42,20 @@ const NoticeModalContent = ({ open, mode, onClose, onSaved, onEdit, noticeData }
               ['link', 'image'],
               ['clean'],
             ],
-            handlers: { image: () => handleImageUpload() },
+            handlers: {},
           },
     },
     formats: ['header', 'bold', 'italic', 'underline', 'list', 'link', 'image'],
     readOnly: isView,
     placeholder: isView ? '' : '내용을 입력하세요...',
   });
+
+  // 이미지 핸들러 등록
+  useEffect(() => {
+    if (!quill) return;
+    const toolbar = quill.getModule('toolbar');
+    toolbar.addHandler('image', handleImageUpload);
+  }, [quill]);
 
   // 모달 열림 및 mode 변경 시 초기화
   useEffect(() => {
@@ -58,9 +64,7 @@ const NoticeModalContent = ({ open, mode, onClose, onSaved, onEdit, noticeData }
       setContent((isEdit || isView) ? noticeData?.content || '' : '');
       quill?.clipboard.dangerouslyPasteHTML((isEdit || isView) ? noticeData?.content || '' : '');
       quill?.enable(!isView);
-      startTransition(() => {
-        firstInputRef.current?.focus();
-      });
+      startTransition(() => firstInputRef.current?.focus());
     }
   }, [open, mode, quill, noticeData, isView, isEdit]);
 
@@ -86,7 +90,7 @@ const NoticeModalContent = ({ open, mode, onClose, onSaved, onEdit, noticeData }
     onClose();
   };
 
-  // 저장/등록 처리
+  // 저장/등록
   const handleSave = async () => {
     setLoading(true);
     try {
@@ -95,36 +99,26 @@ const NoticeModalContent = ({ open, mode, onClose, onSaved, onEdit, noticeData }
         ALLOWED_ATTR: ['href','src','alt','title'],
       });
       if (isEdit) {
-        await axios.put('/api/admin/community/update', {
-          boardNo: noticeData.boardNo,
-          title: title.trim(),
-          content: clean,
-        });
+        await axios.put('/api/admin/community/update', { boardNo: noticeData.boardNo, title: title.trim(), content: clean });
       } else {
-        await axios.post('/api/admin/community/create', {
-          title: title.trim(),
-          content: clean,
-          boardType: 'N',
-        });
+        await axios.post('/api/admin/community/create', { title: title.trim(), content: clean, boardType: 'N' });
       }
       onSaved();
       handleClose();
     } catch (err) {
       console.error(err);
-      alert(`${mode === 'edit' ? '수정' : '등록'} 중 오류가 발생했습니다.`);
+      alert(`${isEdit ? '수정' : '등록'} 중 오류가 발생했습니다.`);
     } finally {
       setLoading(false);
     }
   };
 
-  // 삭제 처리
+  // 삭제
   const handleDelete = async () => {
     if (!window.confirm('정말 삭제하시겠습니까?')) return;
     setLoading(true);
     try {
-      await axios.delete('/api/admin/community/delete', {
-        params: { boardNo: noticeData.boardNo }
-      });
+      await axios.delete('/api/admin/community/delete', { params: { boardNo: noticeData.boardNo } });
       onSaved();
       handleClose();
     } catch (err) {
@@ -137,6 +131,7 @@ const NoticeModalContent = ({ open, mode, onClose, onSaved, onEdit, noticeData }
 
   // 이미지 업로드 핸들러
   const handleImageUpload = () => {
+    if (!quill) return;
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'image/*';
@@ -145,13 +140,13 @@ const NoticeModalContent = ({ open, mode, onClose, onSaved, onEdit, noticeData }
       const file = input.files[0]; if (!file) return;
       const formData = new FormData(); formData.append('image', file);
       try {
-        const res = await axios.post('/upload/image', formData, {
-          headers: { 'Content-Type': 'multipart/form-data' }
-        });
+        const res = await axios.post('/api/admin/community/upload/image', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
         const range = quill.getSelection();
-        quill.insertEmbed(range.index, 'image', res.data.url);
+        const index = range?.index ?? quill.getLength();
+        quill.insertEmbed(index, 'image', res.data.url);
+        quill.setSelection(index + 1);
       } catch (err) {
-        console.error(err);
+        console.error('이미지 업로드 실패', err);
         alert('이미지 업로드에 실패했습니다.');
       }
     };

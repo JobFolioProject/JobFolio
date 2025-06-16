@@ -150,9 +150,7 @@ const NoticeManagement = () => {
                       <td className="col-checkbox">
                         <input type="checkbox" disabled />
                       </td>
-                      <td className="col-number">
-                        {(currentPage - 1) * pageSize + idx + 1}
-                      </td>
+                      <td className="col-number">{totalCount - ((currentPage - 1) * pageSize + idx)}</td>
                       <td
                         className="col-title notice-title"
                         style={{ cursor: 'pointer' }}
