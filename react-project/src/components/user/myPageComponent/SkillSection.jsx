@@ -272,5 +272,5 @@ const SkillSection = React.memo(({ userNo, skillList, onListChange }) => {
         </div>
     );
 });
-//tt
+
 export default SkillSection;
