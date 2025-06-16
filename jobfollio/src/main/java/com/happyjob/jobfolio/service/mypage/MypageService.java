@@ -35,6 +35,7 @@ public class MypageService {
         logger.info("Calling updateByUserId for user ID: " + userNo);
         // 예: MyCareerInfoRequestDto를 받아 여러 테이블을 업데이트하는 로직
     }
+
     // 커리어 조회
     public CareerAllDto getMyCareerInfo(Long userNo) {
         logger.info("getMyCareerInfo() 호출 userNo: " + userNo);
@@ -43,45 +44,84 @@ public class MypageService {
         // 각 리스트 필드(educationList, languageSkillList, skillList, certificateList, careerHistory)에 맞게 매핑
         CareerAllDto careerAllDto = mypageMapper.getMyCareerInfo(userNo);
 
-        // 만약 조회된 결과가 없다면
+        // 만약 비어있지 않다면
         if(careerAllDto != null){
+
+            // 학력 목록
             List<EduInfoVO> educationList = mypageMapper.getEducationListByUserNo(userNo);
             careerAllDto.setEducationList(educationList);
-
-            List<LanguageSkillVO> languageSkillList = mypageMapper.getLanguageSkillListByUserNo(userNo);
+            // 언어 목록
+            List<LanguageSkillVO> languageSkillList = mypageMapper.getLanguageListByUserNo(userNo);
             careerAllDto.setLanguageSkillList(languageSkillList);
-
+            // 스킬 목록
             List<SkillVO> skillList = mypageMapper.getSkillListByUserNo(userNo);
             careerAllDto.setSkillList(skillList);
-
+            // 자격 목록
             List<CertificateVO> certificateList = mypageMapper.getCertificateListByUserNo(userNo);
             careerAllDto.setCertificateList(certificateList);
-
-            // 3. Career History 추가
+            // 경력 목록
             List<CareerHistoryVO> careerHistoryList = mypageMapper.getCareerHistoryListByUserNo(userNo);
             careerAllDto.setCreerHistoryList(careerHistoryList);
         }
         return careerAllDto;
     }
-    // 기술 추가
-    public SkillVO addSkill(SkillVO skillVO) {
-        return mypageMapper.insertSkill(skillVO);
-    }
-    // 학력 추가
-    public EduInfoVO addeducation(EduInfoVO eduInfoVO) {
-        return mypageMapper.insertEducation(eduInfoVO);
-    }
-    // 언어 추가
-    public LanguageSkillVO addlanguage(LanguageSkillVO languageSkillVO) {
-        return mypageMapper.insertLanguage(languageSkillVO);
-    }
-    // 자격증 추가
-    public CertificateVO addcertificate(CertificateVO certificateVO) {
-        return mypageMapper.insertCertificate(certificateVO);
-    }
-    // 경력 추가
 
-    public CareerHistoryVO addcareerhistory(CareerHistoryVO careerHistoryVO) {
-        return mypageMapper.insertCareerHistory(careerHistoryVO);
+    // 학력 정보
+    public void addEducation(EduInfoVO eduInfoVO) {
+        mypageMapper.insertEducation(eduInfoVO);
     }
+    public void deleteByUserNoAndEduNo(Long userNo, Integer eduNo) {
+        mypageMapper.deleteEducation(userNo,eduNo);
+    }
+    public void updateByUserNoAndEduNo(EduInfoVO eduInfoVO) {
+        mypageMapper.updateEducation(eduInfoVO);
+    }
+
+    // 자격증 정보 추가
+    public void addCertification(CertificateVO certificateVO) {
+        mypageMapper.insertCertification(certificateVO);
+    }
+    public void deleteByUserNoAndCertNo(Long userNo, Integer certNo) {
+        mypageMapper.deleteCertification(userNo,certNo);
+    }
+    public void updateByUserNoAndCertNo(CertificateVO certificateVO) {
+        mypageMapper.updateCertification(certificateVO);
+    }
+
+    // 언어 정보 추가
+    public void addLanguageSkill(LanguageSkillVO languageSkillVO) {
+        mypageMapper.insertLanguageSkill(languageSkillVO);
+    }
+    public void deleteByUserNoAndLanguage(Long userNo, String language) {
+        mypageMapper.deleteLanguageSkill(userNo,language);
+    }
+    public void updateByUserNoAndLanguage(LanguageSkillVO languageSkillVO) {
+        mypageMapper.updateLanguageSkill(languageSkillVO);
+    }
+
+    // 기술 정보 추가
+    public void addSkill(SkillVO skillVO) {
+        mypageMapper.insertSkill(skillVO);
+    }
+    public void updateSkill(SkillVO skillVO) {
+        mypageMapper.updateSkill(skillVO);
+    }
+    public void deleteSkill(Long userNo) {
+        mypageMapper.deleteSkill(userNo);
+    }
+
+
+
+    // 경력 정보 추가
+    public void addCareerhistory(CareerHistoryVO careerHistoryVO) {
+        mypageMapper.insertCareerHistory(careerHistoryVO);
+    }
+    public void updateCareerhistory(CareerHistoryVO careerHistoryVO) {
+        mypageMapper.updateCareerHistory(careerHistoryVO);
+    }
+    public void deleteCareerhistory(Long userNo, Integer carrerNo) {
+        mypageMapper.deleteCareerHistory(userNo,carrerNo);
+    }
+
+
 }
