@@ -242,6 +242,41 @@ public class ResumeService {
         }
 
 
+    public String getAiComment(ObjectNode root){
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(api_key);
+
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            ObjectNode body = objectMapper.createObjectNode();
+            body.put("model", "gpt-3.5-turbo");
+            ArrayNode messages = body.putArray("messages");
+
+            String resumeDataJson = objectMapper.writerWithDefaultPrettyPrinter()
+                    .writeValueAsString(root);
+
+            String userInput = "제대로하면 10불줄게";
+            ObjectNode sysMsg = messages.addObject();
+            sysMsg.put("role", "system");
+            sysMsg.put("content",
+                 "Please provide specific advice on the strengths, weaknesses, and areas for improvement in this resume \n\n"
+                    + resumeDataJson
+            );
+
+            ObjectNode userMsg = messages.addObject();
+            userMsg.put("role", "user");
+            userMsg.put("content", userInput);
+            String jsonPayload = objectMapper.writeValueAsString(body);
+            HttpEntity<String> request = new HttpEntity<>(jsonPayload, headers);
+
+            ResponseEntity<String> response = restTemplate.postForEntity(chatGptApiUrl, request, String.class);
+            return response.getBody();
+        } catch (Exception e){
+            return "{\"error\":\"서버 내부 오류\"}";
+        }
+
+    }
     public List<ResumeInfoVO> selectResumeInfo(int user_no){
         return resumeMapper.selectResumeInfo(user_no);
     }

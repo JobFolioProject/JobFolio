@@ -1,4 +1,16 @@
+import Calendar from "../common/Calendar";
+
 const CareerSectionModify = ({ resumeInfo, setResumeInfo }) => {
+  const handleCareerDateChange = (index, field, date) => {
+    setResumeInfo({
+      ...resumeInfo,
+      career: resumeInfo.career.map((item, idx) =>
+        idx === index
+          ? { ...item, [field]: date.toISOString().slice(0, 10) }
+          : item
+      ),
+    });
+  };
   return (
     <>
       <button
@@ -43,37 +55,25 @@ const CareerSectionModify = ({ resumeInfo, setResumeInfo }) => {
           </label>
 
           <label>
-            <div>입사일</div>
-            <input
-              type="text"
-              value={career.start_date}
-              onChange={(e) => {
-                setResumeInfo({
-                  ...resumeInfo,
-                  career: resumeInfo.career.map((item, idx) =>
-                    idx === index
-                      ? { ...item, start_date: e.target.value }
-                      : item
-                  ),
-                });
-              }}
-            />
+            <div>입사/퇴사 날짜</div>
+            <Calendar
+              selectedStartDate={
+                career.start_date ? new Date(career.start_date) : null
+              }
+              startplaceholder={"입사일"}
+              onChangeStartDate={(date) =>
+                handleCareerDateChange(index, "start_date", date)
+              }
+              selectedEndDate={
+                career.end_date ? new Date(career.end_date) : null
+              }
+              endplaceholder={"퇴사일"}
+              onChangeEndDate={(date) =>
+                handleCareerDateChange(index, "end_date", date)
+              }
+            ></Calendar>
           </label>
-          <label>
-            <div>퇴사일</div>
-            <input
-              type="text"
-              value={career.end_date}
-              onChange={(e) => {
-                setResumeInfo({
-                  ...resumeInfo,
-                  career: resumeInfo.career.map((item, idx) =>
-                    idx === index ? { ...item, end_date: e.target.value } : item
-                  ),
-                });
-              }}
-            />
-          </label>
+
           <label>
             <div>직무</div>
             <input

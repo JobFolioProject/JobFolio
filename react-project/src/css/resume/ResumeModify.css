@@ -66,29 +66,3 @@
 .resumeContent .secondaryBtn:hover {
   background: #bbdefb;
 }
-
-.resumeContent .aiSection {
-  background: #f4f6fb;
-  border-radius: 12px;
-  padding: 24px 20px;
-  margin-top: 10px;
-}
-
-.resumeContent .aiTitle {
-  font-size: 1.2rem;
-  color: #1976d2;
-  margin-bottom: 10px;
-}
-
-.resumeContent .aiInput {
-  width: 100%;
-  min-height: 80px;
-  border: 1.2px solid #e0e5ee;
-  border-radius: 8px;
-  font-size: 1rem;
-  padding: 10px 14px;
-  margin-bottom: 18px;
-  resize: vertical;
-  box-sizing: border-box;
-  background: #fff;
-}

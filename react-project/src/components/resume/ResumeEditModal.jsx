@@ -8,11 +8,14 @@ import SkillSectionModify from "./SkillSectionModify";
 import LanguageSectionModify from "./LanguageSectionModify";
 import CertSectionModify from "./CertSectionModify";
 import axios from "axios";
+import Loading from "../common/Loading";
 
 const ResumeEditModal = ({ open, onClose, props }) => {
   const [initHtmlcontent, setInitHtmlContent] = useState("");
   const [htmlContent, setHtmlContent] = useState("");
   const [initalResumeInfo, setInitialResumeInfo] = useState(null);
+  const [aiComment, setAiComment] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [resumeInfo, setResumeInfo] = useState({
     name: "",
     address: "",
@@ -508,7 +511,25 @@ const ResumeEditModal = ({ open, onClose, props }) => {
       setResumeInfo(initalResumeInfo);
     }
     setSelectedRadio("");
+    setAiComment("");
     onClose();
+  };
+
+  const getAiComment = async () => {
+    console.log(resumeInfo);
+    setLoading(true);
+    await axios
+      .post("/resume/getAiComment", { resumeInfo: resumeInfo })
+      .then((res) => {
+        const parsedAnswer = JSON.parse(res.data.response);
+        setAiComment(parsedAnswer.choices[0].message.content);
+      })
+      .catch((err) => {
+        console.error(err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   if (!open) return null;
@@ -595,6 +616,23 @@ const ResumeEditModal = ({ open, onClose, props }) => {
             />
           </div>
         )}
+
+        <div className="aiSection">
+          <h2 className="aiTitle">AI Comment</h2>
+          <textarea
+            className="aiInput"
+            rows={4}
+            readOnly
+            placeholder="AI 코멘트를 확인하세요"
+            value={aiComment ? aiComment : ""}
+          />
+        </div>
+        <div className="buttonRow">
+          <button className="secondaryBtn" onClick={getAiComment}>
+            AI comment
+          </button>
+        </div>
+        <Loading loading={loading}></Loading>
 
         <div className="buttonRow">
           <button className="secondaryBtn" onClick={changeSelectedTemplate}>

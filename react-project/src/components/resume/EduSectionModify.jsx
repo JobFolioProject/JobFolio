@@ -1,4 +1,17 @@
+import Calendar from "../common/Calendar";
+
 const EduSectionModify = ({ resumeInfo, setResumeInfo }) => {
+  const handleEducationDateChange = (index, field, date) => {
+    setResumeInfo({
+      ...resumeInfo,
+      education: resumeInfo.education.map((item, idx) =>
+        idx === index
+          ? { ...item, [field]: date.toISOString().slice(0, 10) }
+          : item
+      ),
+    });
+  };
+
   return (
     <>
       <button
@@ -46,38 +59,21 @@ const EduSectionModify = ({ resumeInfo, setResumeInfo }) => {
           </label>
 
           <label>
-            <div>입학날짜</div>
-            <input
-              type="text"
-              value={edu.enroll_date}
-              onChange={(e) => {
-                setResumeInfo({
-                  ...resumeInfo,
-                  education: resumeInfo.education.map((item, idx) =>
-                    idx === index
-                      ? { ...item, enroll_date: e.target.value }
-                      : item
-                  ),
-                });
-              }}
-            />
-          </label>
-          <label>
-            <div>졸업날짜</div>
-            <input
-              type="text"
-              value={edu.grad_date}
-              onChange={(e) => {
-                setResumeInfo({
-                  ...resumeInfo,
-                  education: resumeInfo.education.map((item, idx) =>
-                    idx === index
-                      ? { ...item, grad_date: e.target.value }
-                      : item
-                  ),
-                });
-              }}
-            />
+            <div>입학/졸업 날짜</div>
+            <Calendar
+              selectedStartDate={
+                edu.enroll_date ? new Date(edu.enroll_date) : null
+              }
+              startplaceholder={"입학일"}
+              onChangeStartDate={(date) =>
+                handleEducationDateChange(index, "enroll_date", date)
+              }
+              selectedEndDate={edu.grad_date ? new Date(edu.grad_date) : null}
+              endplaceholder={"졸업일"}
+              onChangeEndDate={(date) =>
+                handleEducationDateChange(index, "grad_date", date)
+              }
+            ></Calendar>
           </label>
           <label>
             <div>학력상태</div>
