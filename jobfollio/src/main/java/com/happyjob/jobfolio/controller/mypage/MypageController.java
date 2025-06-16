@@ -184,17 +184,18 @@ public class MypageController {
 
 
     // 경력
-    @PostMapping("/{user_no}/careerhistories")
-    public ResponseEntity<String> addCareerHistory(@PathVariable(name = "user_no") Long userNo, @RequestBody CareerHistoryVO careerHistoryVO) {
+    @PostMapping("/{user_no}/careerhistory")
+    public ResponseEntity<CareerHistoryVO> addCareerHistory(@PathVariable(name = "user_no") Long userNo, @RequestBody CareerHistoryVO careerHistoryVO) {
+        careerHistoryVO.setUser_no(userNo);
         mypageService.addCareerhistory(careerHistoryVO);
-        return new ResponseEntity<>("경력 사항이 정상적으로 추가되었습니다.", HttpStatus.CREATED);
+        return new ResponseEntity<>(careerHistoryVO, HttpStatus.CREATED);
     }
 
-    @PutMapping("/myCareer/{user_no}/update")
+    @PutMapping("/{user_no}/careerhistory")
     public ResponseEntity<String> modifyMyCareer(@PathVariable(name = "user_no") Long userNo, @RequestBody CareerHistoryVO careerHistoryVO) {
         return new ResponseEntity<>("",HttpStatus.CREATED);
     }
-    @DeleteMapping("/{user_no}/careerhistories/{carrer_no}")
+    @DeleteMapping("/{user_no}/careerhistory/{carrer_no}")
     public ResponseEntity<String> deleteCareerHisory(@PathVariable(name = "user_no") Long userNo, @PathVariable(name = "carrer_no") Integer carrerNo) {
         mypageService.deleteCareerhistory(userNo,carrerNo);
         return new ResponseEntity<>("", HttpStatus.CREATED);
