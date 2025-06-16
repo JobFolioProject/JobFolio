@@ -123,6 +123,9 @@ public class MypageService {
         mypageMapper.deleteSkill(userNo,skillCode,groupCode);
     }
 
+    public void searchByDetailCoad(Long userNo, String skillCode,String groupCode) {
+        mypageMapper.searchByDetailCoad(userNo,skillCode,groupCode);
+    }
 
 
 

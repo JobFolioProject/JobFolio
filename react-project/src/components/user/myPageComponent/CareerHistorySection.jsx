@@ -80,6 +80,7 @@ const CareerHistorySection = React.memo(({ userNo, careerHistoryList, onListChan
         setErrors({}); // 에러 상태 초기화
         setStartDate(null); // DatePicker 초기화
         setEndDate(null); // DatePicker 초기화
+        console.log('careerHistoryList', careerHistoryList);
     };
 
     // 폼 입력 값 변경 핸들러
@@ -156,7 +157,7 @@ const CareerHistorySection = React.memo(({ userNo, careerHistoryList, onListChan
     };
 
     // 데이터 저장 및 수정 핸들러
-    const saveAndUpdateForm = async () => {
+    const saveAndUpdateForm = async (currentFormCareer) => {
         setErrorMessage('');
         const messageToSet = '저장에 필요한 필수 정보를 입력해주세요.';
 
@@ -346,44 +347,46 @@ const CareerHistorySection = React.memo(({ userNo, careerHistoryList, onListChan
             {/* 경력 목록 표시 */}
             {!showAddForm && editingCareerNo === null ? (
                 careerHistoryList && careerHistoryList.length > 0 ? (
-                    careerHistoryList.map((career) => (
-                        <div key={career.career_no} className="careerItemDisplay">
-                            {/* 회사이름, 기간, 포지션 */}
-                            <div className="career-display-header career-line-item">
-                                <p className="career-company-name">{career.company_name}</p>
-                                <span className="career-period">
-                                    | {career.start_date} ~ {displayEndDate(career)}
-                                </span>
-                            </div>
+                    careerHistoryList.map((career) => {
+                        return (
+                            <div key={career.career_no} className="careerItemDisplay">
+                                {/* 회사이름, 기간, 포지션 */}
+                                <div className="career-display-header career-line-item">
+                                    <p className="career-company-name">{career.company_name}</p>
+                                    <span className="career-period">
+                                        | {career.start_date} ~ {displayEndDate(career)}
+                                    </span>
+                                </div>
 
-                            <div className="career-details-row">
-                                <div className="career-detail-item">
-                                    <span className="detail-label">직무</span>
-                                    <span className="detail-value">{career.position}</span>
+                                <div className="career-details-row">
+                                    <div className="career-detail-item">
+                                        <span className="detail-label">직무</span>
+                                        <span className="detail-value">{career.position}</span>
+                                    </div>
+                                </div>
+
+                                {career.notes && (
+                                    <div className="career-notes-row">
+                                        <span className="detail-label">활동 설명</span>
+                                        <span className="detail-value">{career.notes}</span>
+                                    </div>
+                                )}
+
+                                <div className="itemActions">
+                                    <EditIcon
+                                        className="editIcon"
+                                        style={{ cursor: 'pointer', fontSize: 'large' }}
+                                        onClick={() => modifiedItemClick(career.career_no)}
+                                    />
+                                    <DeleteIcon
+                                        className="deleteIcon"
+                                        style={{ cursor: 'pointer', fontSize: 'large' }}
+                                        onClick={() => deleteItemClick(career.career_no)}
+                                    />
                                 </div>
                             </div>
-
-                            {career.notes && (
-                                <div className="career-notes-row">
-                                    <span className="detail-label">활동 설명</span>
-                                    <span className="detail-value">{career.notes}</span>
-                                </div>
-                            )}
-
-                            <div className="itemActions">
-                                <EditIcon
-                                    className="editIcon"
-                                    style={{ cursor: 'pointer', fontSize: 'large' }}
-                                    onClick={() => modifiedItemClick(career.career_no)}
-                                />
-                                <DeleteIcon
-                                    className="deleteIcon"
-                                    style={{ cursor: 'pointer', fontSize: 'large' }}
-                                    onClick={() => deleteItemClick(career.career_no)}
-                                />
-                            </div>
-                        </div>
-                    ))
+                        );
+                    })
                 ) : (
                     <p className="emptyMessage">경력을 추가해 주세요</p>
                 )

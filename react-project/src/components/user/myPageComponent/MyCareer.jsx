@@ -23,7 +23,6 @@ const careerDataState = {
 const MyCareer = () => {
     // 백엔드에서 불러온 모든 커리어 데이터를 저장하는 상태 (CareerDto)
     const [careerData, setCareerData] = useState(careerDataState);
-
     // 로딩상태
     const [loading, setLoading] = useState(true);
     // 에러상태
@@ -160,7 +159,7 @@ const MyCareer = () => {
     자격증: 한국산업인력공단 API 자격목록 가져와서 팝업창으로 검색해서 바로 넣을 수 있게.
     언어: 같은 언어, 유저면 바인딩 에러 select로 하드코딩하거나. 언어 목록들 공통코드로 관리? 현재는 입력 받는걸로.. 
     경력: 
-    스킬: 스킬 폼이 열리면 검색 기능과 체크형식으로 선택하고 선택된 애들은 태그형식으로 
+    스킬:
    */
     return (
         <div className="userInfoWrap">
