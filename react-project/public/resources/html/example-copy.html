@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>이력서 - 새로운 디자인</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@700&family=Montserrat:wght@400;700&display=swap");
+      body {
+        background: linear-gradient(135deg, #1a2238 0%, #283e51 100%);
+        font-family: "Nanum Myeongjo", "Montserrat", serif;
+        margin: 0;
+        padding: 0;
+      }
+      .resume-container {
+        max-width: 840px;
+        background: rgba(34, 40, 49, 0.98);
+        margin: 48px auto 48px auto;
+        border-radius: 32px;
+        box-shadow: 0 12px 48px rgba(16, 18, 27, 0.35), 0 1.5px 0 #eebb4d inset;
+        padding: 56px 70px 70px 70px;
+      }
+      .header {
+        display: flex;
+        align-items: center;
+        border-bottom: 2.5px solid #eebb4d;
+        padding-bottom: 32px;
+        margin-bottom: 40px;
+      }
+      .profile-img {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 5px solid #eebb4d;
+        margin-right: 38px;
+        box-shadow: 0 2px 12px #eebb4d44;
+      }
+      .name-title {
+        flex: 1;
+      }
+      .name-title h1 {
+        margin: 0;
+        font-size: 2.5rem;
+        font-family: "Nanum Myeongjo", serif;
+        font-weight: 700;
+        color: #eebb4d;
+        letter-spacing: 2px;
+        text-shadow: 0 1.5px 0 #222831;
+      }
+      .name-title h2 {
+        margin: 8px 0 0 0;
+        font-size: 1.25rem;
+        color: #f6c453;
+        font-weight: 400;
+        font-family: "Montserrat", sans-serif;
+        letter-spacing: 1.5px;
+      }
+      .contact {
+        margin-top: 18px;
+        color: #b8b8b8;
+        font-size: 1.08rem;
+        font-family: "Montserrat", sans-serif;
+      }
+      .contact p {
+        margin: 0 0 3px 0;
+      }
+      .section {
+        margin-bottom: 44px;
+      }
+      .section-title {
+        font-size: 1.22rem;
+        color: #eebb4d;
+        font-weight: 700;
+        margin-bottom: 14px;
+        letter-spacing: 2.5px;
+        border-left: 7px solid #eebb4d;
+        padding-left: 18px;
+        background: linear-gradient(90deg, #232946 80%, #eebb4d22 100%);
+        border-radius: 0 10px 10px 0;
+        box-shadow: 1.5px 1.5px 8px #eebb4d22;
+      }
+      .section-content {
+        color: #f6f6f6;
+        font-size: 1.08rem;
+        background: #232946;
+        border-radius: 12px;
+        padding: 22px 24px;
+        margin-bottom: 8px;
+        box-shadow: 0 2px 8px #eebb4d11;
+      }
+      ul {
+        padding-left: 26px;
+        margin: 0;
+      }
+      li {
+        margin-bottom: 13px;
+      }
+      .skills-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        margin-top: 14px;
+      }
+      .skill-chip {
+        background: linear-gradient(90deg, #eebb4d 60%, #f6c453 100%);
+        color: #222831;
+        border-radius: 20px;
+        padding: 7px 22px;
+        font-size: 1.02rem;
+        font-weight: 700;
+        font-family: "Montserrat", sans-serif;
+        margin-bottom: 8px;
+        display: inline-block;
+        box-shadow: 0 1.5px 5px #eebb4d33;
+        letter-spacing: 1px;
+      }
+      @media (max-width: 700px) {
+        .resume-container {
+          padding: 18px 2vw;
+        }
+        .header {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        .profile-img {
+          margin-bottom: 18px;
+          margin-right: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="resume-container">
+      <div class="header">
+        <img
+          src="https://randomuser.me/api/portraits/men/32.jpg"
+          alt="프로필 사진"
+          class="profile-img"
+        />
+        <div class="name-title">
+          <h1 class="userName"></h1>
+          <h2 class="desired_position"></h2>
+          <div class="contact">
+            <p>📞 <span class="hp"></span></p>
+            <p>✉️ <span class="email"></span></p>
+            <p>📍 <span class="address"></span></p>
+            <p><span class="link"></span></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">프로필</div>
+        <div class="section-content">
+          <span class="coverLetter"
+            >사용자 경험을 최우선으로 생각하는 3년차 웹 프론트엔드 개발자입니다.
+            React, Vue 등 최신 프레임워크에 능숙하며, 협업과 커뮤니케이션에
+            자신이 있습니다.
+          </span>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">경력</div>
+        <div class="section-content career">
+          <ul>
+            <li>
+              <strong
+                ><span class="company_name">ABC테크</span> (<span
+                  class="career_start_date"
+                  >2022.01</span
+                >
+                ~ <span class="career_end_date">현재</span>)</strong
+              ><br />
+              - <span class="position">프론트 개발자</span><br />
+              <span class="career_notes"
+                >- 사내 ERP 시스템 프론트엔드 개발 및 유지보수<br />
+                - React, TypeScript 기반 SPA 개발</span
+              >
+            </li>
+            <li>
+              <strong
+                ><span class="company_name">XYZ스타트업</span> (<span
+                  class="career_start_date"
+                  >2020.03</span
+                >
+                ~ <span class="career_end_date">2021.12</span>)</strong
+              ><br />
+              - <span class="position">프로젝트 매니저</span><br />
+              -
+              <span class="career_notes">
+                쇼핑몰 프론트엔드 리뉴얼 프로젝트 참여 Vue.js, SCSS 활용 UI/UX
+                개선</span
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">학력</div>
+        <div class="section-content education">
+          <ul>
+            <li>
+              <strong
+                ><span class="school_name">서울대학교</span>
+                <span class="major">컴퓨터공학과</span></strong
+              ><br />
+              <span class="edu_status">학사</span> (<span class="enroll_date"
+                >2016.03</span
+              >
+              ~ <span class="grad_date">2020.02</span>)<br />
+              <span class="sub_major"></span><br />
+              <span class="gpa"></span><br />
+              <span class="notes"></span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">기술 스택</div>
+        <div class="skills-list">
+          <div class="skill-chip">
+            <span class="group_code"></span>
+            <span class="skill_code">HTML5</span><span class="exp_level"></span
+            ><span class="skill_tool"></span>
+          </div>
+          <div class="skill-chip">
+            <span class="group_code"></span>
+            <span class="skill_code">CSS3</span><span class="exp_level"></span
+            ><span class="skill_tool"></span>
+          </div>
+          <div class="skill-chip">
+            <span class="group_code"></span>
+            <span class="skill_code">JavaScript</span
+            ><span class="exp_level"></span><span class="skill_tool"></span>
+          </div>
+          <div class="skill-chip">
+            <span class="group_code"></span>
+            <span class="skill_code">React</span><span class="exp_level"></span
+            ><span class="skill_tool"></span>
+          </div>
+          <div class="skill-chip">
+            <span class="group_code"></span>
+            <span class="skill_code">Vue.js</span><span class="exp_level"></span
+            ><span class="skill_tool"></span>
+          </div>
+          <div class="skill-chip">
+            <span class="group_code"></span>
+            <span class="skill_code">TypeScript</span
+            ><span class="exp_level"></span><span class="skill_tool"></span>
+          </div>
+          <div class="skill-chip">
+            <span class="group_code"></span>
+            <span class="skill_code">Git</span><span class="exp_level"></span
+            ><span class="skill_tool"></span>
+          </div>
+          <div class="skill-chip">
+            <span class="group_code"></span>
+            <span class="skill_code">Figma</span><span class="exp_level"></span
+            ><span class="skill_tool"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">자격증</div>
+        <div class="section-content certification">
+          -<span class="certificate_name">정보처리기사</span> (<span
+            class="acquired_date"
+            >2020</span
+          >)
+          <span class="certificate_no"></span>
+          <span class="issuing_org"></span>
+          <span class="cert_notes"></span>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">언어 능력</div>
+        <div class="section-content lang">
+          - <span class="language">영어</span> <span class="level"></span>
+          <br />
+          - <span class="language">중국어</span><span class="level"></span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
