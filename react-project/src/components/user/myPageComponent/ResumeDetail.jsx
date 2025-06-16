@@ -1,6 +1,6 @@
 import '../../../css/user/myPageComponent/ResumeDetail.css';
 import FavoriteIcon from '@mui/icons-material/FavoriteBorder';
-import axios from 'axios';
+import axios from '../../../utils/axiosConfig';
 import { useEffect, useState } from 'react';
 
 const ResumeDetail = () => {
