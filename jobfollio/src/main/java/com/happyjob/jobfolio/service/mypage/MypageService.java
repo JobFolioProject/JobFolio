@@ -28,8 +28,8 @@ public class MypageService {
         return mypageMapper.selectUserInfo(userNo);
     }
 
-    public void deleteByUserId(Long userNo) {
-        logger.info("Calling deleteByUserId for user ID: " + userNo);
+    public int deleteByUserId(Long userNo) {
+        return mypageMapper.deleteByUserId(userNo);
     }
 
     public int updateByUserId(UserVO userInfo) {

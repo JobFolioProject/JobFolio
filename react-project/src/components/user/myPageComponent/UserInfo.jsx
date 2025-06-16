@@ -14,6 +14,7 @@ const UserInfo = () => {
         expire_days: '',
     });
 
+    // 유저정보 불러오기
     const fetchUserInfo = async () => {
     try {
         const raw = sessionStorage.getItem("user");
@@ -33,8 +34,6 @@ const UserInfo = () => {
         address: data.address ?? "",
         expire_days: data.expire_days ?? "미구독",
         });
-
-        console.log("받은 데이터:", data);
     } catch (err) {
         console.error("Failed to fetch userInfo:", err);
     }
@@ -44,6 +43,7 @@ const UserInfo = () => {
         fetchUserInfo();
     }, []);
 
+    //유저정보 수정
    const handleEditClick = async () => {
         if (!isEditing) {
             setIsEditing(true);
@@ -78,6 +78,58 @@ const UserInfo = () => {
             }
         }
     };
+
+    //유저 정보 삭제
+    const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+    const [password, setPassword] = useState();
+    const handleDelete = async () => {
+        const raw = sessionStorage.getItem("user");
+        if (!raw) return;
+
+        const { userNo } = JSON.parse(raw);
+        if (!userNo) return;
+
+        if (window.confirm("정말 탈퇴하시겠습니까?")) {
+
+            setIsPasswordModalOpen(true);
+            
+        }
+    };
+
+    const userInfoCheck = async() => {
+        try {
+            const response = await axios.post(`/api/join/userInfoCheck`, {
+                login_id: userInfo.login_id,
+                password: password
+            });
+            if (response.status === 200 && response.data.result ==='Y') {
+                const raw = sessionStorage.getItem("user");
+                if (!raw) return;
+                const { userNo } = JSON.parse(raw);
+                if (!userNo) return;
+                try {
+                const response = await axios.get(`/api/myPage/userInfo/${userNo}/delete`);
+                if (response.status === 200) {
+                    alert("탈퇴가 완료되었습니다.");
+                    sessionStorage.removeItem("user"); // 세션 정리
+                    window.location.href = "/"; // 홈 또는 로그인 페이지로 리디렉션
+                } else {
+                    alert("탈퇴 요청에 실패했습니다.");
+                }
+                } catch (error) {
+                console.error("탈퇴 요청 실패:", error);
+                alert("탈퇴 중 오류가 발생했습니다.");
+                }
+                sessionStorage.removeItem("user"); // 세션 정리
+                window.location.href = "/"; // 홈 또는 로그인 페이지로 리디렉션
+            } else {
+                alert(response.data.message);
+            }
+        } catch (error) {
+            console.error("탈퇴 요청 실패:", error);
+            alert("탈퇴 중 오류가 발생했습니다.");
+        }
+    }
 
     // 주소 검색함수
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
@@ -185,7 +237,9 @@ const UserInfo = () => {
                 {/* The "서비스 탈퇴" section remains visible, as requested implicitly */}
                 <div className="userInfobuttonWrap_button">
                     <p>서비스 탈퇴</p>
-                    <button className="userInfoBackButton2">탈퇴하기</button>
+                    <button className="userInfoBackButton2" onClick={handleDelete}>
+                        탈퇴하기
+                    </button>
                 </div>
             </div>
             {isDetailModalOpen && (
@@ -222,6 +276,43 @@ const UserInfo = () => {
                         onClick={() => {
                             setIsDetailModalOpen(false);
                             setDetailAddress("");
+                        }}
+                        >
+                        취소
+                        </button>
+                    </div>
+                    </div>
+                </div>
+            )}
+            {isPasswordModalOpen && (
+                <div className="modal-overlay">
+                    <div className="modal">
+                    <h3>비밀번호 입력</h3>
+                    <input
+                        type="password"
+                        placeholder="비밀번호를 입력하세요"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="userInfoInput"
+                    />
+                    <div style={{ marginTop: "10px" }}>
+                        <button
+                            className="userInfoBackButton"
+                            onClick={() => {
+                                if (!password) {
+                                alert("비밀번호를 입력해주세요.");
+                                return;
+                                }
+                                userInfoCheck();
+                                setIsPasswordModalOpen(false);
+                            }}
+                        >
+                        확인
+                        </button>
+                        <button
+                        className="userInfoBackButton3"
+                        onClick={() => {
+                            setIsPasswordModalOpen(false);
                         }}
                         >
                         취소

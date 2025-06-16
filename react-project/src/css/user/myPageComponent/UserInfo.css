@@ -66,8 +66,16 @@ button.userInfoBackButton2 {
   border: 1px solid;
   height: 45px;
   width: 100px;
-  color: #a0a0a0;
+  background-color: red;
+  color: #fff;
   margin-top: 5px;
+}
+
+button.userInfoBackButton2:hover {
+  background-color: #fff;
+  color: red;
+  height: 45px;
+  width: 100px;
 }
 
 button.userInfoBackButton3 {

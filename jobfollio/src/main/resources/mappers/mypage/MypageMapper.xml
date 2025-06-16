@@ -149,6 +149,7 @@
           AND status_yn = 'N'
           AND withdrawal_date IS NULL
     </select>
+
     <!-- 회원정보 수정 -->
     <update id="updateByUserId" parameterType="map">
         UPDATE tb_userinfo
@@ -157,6 +158,14 @@
         login_id = #{login_id},
         hp = #{hp}
         <if test="#{address} != null">, address = #{address}</if>
+        WHERE user_no = #{user_no}
+    </update>
+
+    <!-- 회원 탈퇴 -->
+    <update id="deleteByUserId" parameterType="map">
+        UPDATE tb_userinfo
+        SET
+        status_yn = 'Y'
         WHERE user_no = #{user_no}
     </update>
 

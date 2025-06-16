@@ -48,6 +48,8 @@ public interface MypageMapper {
 
     // 유저 정보 수정
     int updateByUserId(UserVO user);
+    // 유저 회원 탈퇴
+    int deleteByUserId(Long user_no);
 
 
 
