@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import '../../css/admin/AdminPage.css';
 import AdminSideBar from './AdminSideBar';
 import { Chart } from 'chart.js/auto';
-import instanceAdmin from './axiosAdmin.js';
+import { instanceAdmin } from '../../utils/axiosConfig';
 
 const AdminPage = () => {
  useEffect(() => {
