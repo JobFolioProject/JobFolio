@@ -58,8 +58,8 @@ public class PayController {
 			return returnmap;
 	}
 
-	// 결제
-	@PostMapping("/payToss")
+	// 결제 성공
+	@PostMapping("/cardSuccess")
 	public Map<String, Object> payToss(
 			HttpServletRequest request,
 			HttpServletResponse response,
@@ -67,17 +67,17 @@ public class PayController {
 
 		Map<String, Object> returnmap = new HashMap<>();
 
-		HttpRequest request = HttpRequest.newBuilder()
-				.uri(URI.create("https://api.tosspayments.com/v1/payments/confirm"))
-				.header("Authorization", "Basic dGVzdF9za196WExrS0V5cE5BcldtbzUwblgzbG1lYXhZRzVSOg==")
-				.header("Content-Type", "application/json")
-				.method("POST", HttpRequest.BodyPublishers.ofString("{\"paymentKey\":\"{PAYMENT_KEY}\",\"amount\"{AMOUNT}\",\"orderId\":\"{ORDER_ID}\"}"))
-				.build();
-		HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
-		System.out.println(response.body());
+//		HttpRequest request = HttpRequest.newBuilder()
+//				.uri(URI.create("https://api.tosspayments.com/v1/payments/confirm"))
+//				.header("Authorization", "Basic dGVzdF9za196WExrS0V5cE5BcldtbzUwblgzbG1lYXhZRzVSOg==")
+//				.header("Content-Type", "application/json")
+//				.method("POST", HttpRequest.BodyPublishers.ofString("{\"paymentKey\":\"{PAYMENT_KEY}\",\"amount\"{AMOUNT}\",\"orderId\":\"{ORDER_ID}\"}"))
+//				.build();
+//		HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+//		System.out.println(response.body());
 
 		try {
-			returnmap = payService.payToss(params);
+			returnmap = payService.cardSuccess(params);
 			returnmap.put("resultmsg", "결제 되었습니다.");
 
 		} catch (Exception e) {
@@ -87,36 +87,6 @@ public class PayController {
 		return returnmap;
 	}
 
-	// 결제 성공
-//	@GetMapping("/cardSuccess")
-//	public Map<String, Object> cardSuccess(
-//			HttpServletRequest request,
-//			HttpServletResponse response,
-//			@RequestParam(value = "paymentKey", required = true) String paymentKey,
-//			@RequestParam(value = "orderId", required = true) String orderId,
-//			@RequestParam(value = "amount", required = true) int amount
-//	) {
-//		Map<String, Object> returnmap = new HashMap<String,Object>();
-//		String message = "";
-//        try {
-//            Map<String, Object> params = new HashMap<>();
-//            params.put("paymentKey", paymentKey);
-//            params.put("orderId", orderId);
-//            params.put("amount", amount);
-//
-//            returnmap = payService.cardSuccess(params);
-//
-//
-//        } finally {
-//
-//        }
-//
-//		if (!message.equals("")) {
-//			return new RedirectView("/cashMain" + "?pgMessage=" + message);
-//		}
-//
-//		return new RedirectView("/cashMain");
-//	}
 
 	// 결제 실패 (종류에 상관없이 동일하게 처리)
 	@GetMapping("/cardFail")

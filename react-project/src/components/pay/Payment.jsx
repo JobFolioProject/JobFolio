@@ -70,8 +70,8 @@ const Payment = () => {
         amount: amount,
         orderId: orderId,
         order_name: order_name + "개월",
-        successUrl: window.location.origin + "/pay/success?orderId=" + orderId,
-        failUrl: window.location.origin + "/payment/fail?orderId=" + orderId,
+        successUrl: window.location.origin + "/pay/cardSuccess",
+        failUrl: window.location.origin + "/pay/cardFail",
         card: {
           useEscrow: false,
           flowMode: "DEFAULT",

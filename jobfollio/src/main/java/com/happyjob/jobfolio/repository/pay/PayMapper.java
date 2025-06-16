@@ -17,9 +17,6 @@ public interface PayMapper {
 	int deleteOrder(Map<String, Object> params);
 
 	// 카드 결제 성공시
-	public Map<String, Object> payToss(Map<String, Object> paramMap);
-
-	// 카드 결제 성공시
 	public Map<String, Object> cardSuccess(Map<String, Object> paramMap);
 	
 

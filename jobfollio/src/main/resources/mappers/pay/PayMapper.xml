@@ -30,7 +30,7 @@
 	</delete>
 
 	<!-- 결제 -->
-	<update id="payToss" parameterType="com.happyjob.jobfolio.vo.pay.PayModel">
+	<update id="cardSuccess" parameterType="com.happyjob.jobfolio.vo.pay.PayModel">
 		UPDATE 		tb_payment_his
 		SET 		payment_key	 	 = 	#{payment_key}
 			  ,  	paid_date 	 	 =  NOW()
