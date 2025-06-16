@@ -42,7 +42,7 @@ function App() {
 
 function AppContent() {
   const location = useLocation();
-  const isAdminPath = location.pathname.includes("admin"); // 'admin'이 경로에 포함되었는지 확인
+  const isAdminPath = location.pathname.includes("admin"); // 'admin'이 경로에 포함되었는지 확인 왜안돼애애
 
   return (
     <>
