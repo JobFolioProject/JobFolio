@@ -10,10 +10,10 @@ import java.util.Map;
 @Mapper
 public interface PayMapper {
 
-	// 카드 결제
-	public Map<String, Object> insertpayCard(Map<String, Object> paramMap);
+	// 결제 정보 생성
+	public Map<String, Object> insertOrder(Map<String, Object> paramMap);
 
-	// 카드 결제
+	// 카드 결제 성공시
 	public Map<String, Object> cardSuccess(Map<String, Object> paramMap);
 	
 

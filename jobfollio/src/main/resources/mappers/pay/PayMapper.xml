@@ -2,29 +2,23 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.happyjob.jobfolio.repository.pay.PayMapper">
 
-	<!-- 결제 -->
-	<insert id="insertProduct" parameterType="map">
-		<selectKey keyProperty="product_no" resultType="int" order="BEFORE">
-			SELECT IFNULL(MAX(product_no), 0) + 1 FROM tb_product_info
-		</selectKey>
-
-		INSERT INTO 	tb_product_info
+	<!-- 결제 정보 생성 -->
+	<insert id="insertOrder" parameterType="map">
+		INSERT INTO 	tb_payment_his
 		    (
 						product_no
-				,		product_name
-				,		product_detail
-				,		price
-				,		sub_period
-				,		created_date
-				,		use_yn
+				,		product_no
+				,		orderName
+				,		amount
+				,		user_no
+				,		paid_date
 		) VALUES (
 						#{product_no}
-		    	,		#{product_name}
-		    	,		#{product_detail}
-		    	,		#{price}
-		    	,		#{sub_period}
+		    	,		#{product_no}
+		    	,		#{orderName}
+		    	,		#{amount}
+		    	,		#{user_no}
 		    	,		NOW()
-		    	,		#{use_yn}
 		)
 	</insert>
 

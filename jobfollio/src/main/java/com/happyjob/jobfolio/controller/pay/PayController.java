@@ -26,22 +26,39 @@ public class PayController {
 	@Autowired
 	private PayService payService;
 
-	// 결제
-	@PostMapping("/insertpayCard")
-	public Map<String, Object> insertpayCard(
+	// 결제 정보 생성
+	@PostMapping("/insertOrder")
+	public Map<String, Object> insertOrder(
 			HttpServletRequest request,
 			HttpServletResponse response,
-			@RequestBody Map<String, Object> params) {
+			@RequestBody Map<String, Object> params) throws Exception {
 		Map<String, Object> returnmap = new HashMap<String,Object>();
 		try {
-			returnmap = payService.insertpayCard(params);
+			returnmap = payService.insertOrder(params);
+			returnmap.put("resultmsg","등록 되었습니다.");
 		} catch (Exception e) {
-//			returnmap.setSuccess(false);
-//			returnmap.setMessage("실패하였습니다." + e.getMessage());
+			returnmap.put("resultmsg", e.getMessage());
 		}
 
 		return returnmap;
 	}
+
+	// 결제
+//	@PostMapping("/insertpayCard")
+//	public Map<String, Object> insertpayCard(
+//			HttpServletRequest request,
+//			HttpServletResponse response,
+//			@RequestBody Map<String, Object> params) {
+//		Map<String, Object> returnmap = new HashMap<String,Object>();
+//		try {
+//			returnmap = payService.insertpayCard(params);
+//		} catch (Exception e) {
+//			returnmap.setSuccess(false);
+//			returnmap.setMessage("실패하였습니다." + e.getMessage());
+//		}
+//
+//		return returnmap;
+//	}
 
 	// 결제 성공
 //	@GetMapping("/cardSuccess")
@@ -85,6 +102,9 @@ public class PayController {
 
 		return new RedirectView("/cashMain" + "?pgMessage=" + message);
 	}
+
+
+
 
 
 }

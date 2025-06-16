@@ -29,7 +29,7 @@ public class ProductController {
 	@Autowired
 	private ProductService productService;
 
-	// 메인 페이지 - 이용권 리스트 출력
+	// 메인 페이지 - 이용권 리스트 조회
 	@RequestMapping("/mainProductList")
 	@ResponseBody
 	public Map<String, Object> mainProductList(Model model, @RequestParam Map<String, Object> paramMap,
@@ -37,7 +37,6 @@ public class ProductController {
 
 		logger.info("   - paramMap : " + paramMap);
 
-		// 이용권 목록 조회
 		List<ProductModel> mainProductList = productService.mainProductList(paramMap);
 
 		Map<String, Object> resultMap = new HashMap<String, Object>();
@@ -46,6 +45,7 @@ public class ProductController {
 		return resultMap;
 	}
 
+	// 관리자 페이지 - 이용권 리스트 조회
 	@RequestMapping("/productList")
 	@ResponseBody
 	public Map<String, Object> productList(@RequestParam Map<String, Object> paramMap) throws Exception {
@@ -65,7 +65,6 @@ public class ProductController {
 		resultMap.put("totalcnt", productCnt);
 		return resultMap;
 	}
-
 
 	@PostMapping("/insertProduct")
 	@ResponseBody

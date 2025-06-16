@@ -16,7 +16,7 @@ public interface ProductMapper {
 	// 관리자 페이지 - 이용권 리스트 조회
 	public List<ProductModel> productList(Map<String, Object> paramMap);
 
-	// 이용권 목록 카운트 조회
+	// 이용권 목록 카운트
 	public int productCnt(Map<String, Object> paramMap);
 
 	// 이용권 생성

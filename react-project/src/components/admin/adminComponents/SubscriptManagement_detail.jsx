@@ -36,7 +36,7 @@ const SubscriptManagementDetail = ({ item, onClose, mode, onSaved }) => {
       formData.append('product_no', item.product_no); // 수정 시 필요
     }
 
-    try {
+    try { 
       if (isEdit) {
         await axios.post('/product/updateProduct', formData);
         alert('수정되었습니다.');

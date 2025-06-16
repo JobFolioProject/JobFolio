@@ -142,7 +142,7 @@ const SubscriptManagement = () => {
                   .catch((err) => console.error(err));
               }}
             />
-          )}
+          )} 
 
 
           <table className='info-table'>

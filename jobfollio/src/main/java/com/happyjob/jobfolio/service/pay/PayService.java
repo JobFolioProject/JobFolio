@@ -22,9 +22,14 @@ public class PayService {
 	@Autowired
 	private PayMapper payMapper;
 
-	public Map<String, Object> insertpayCard(Map<String, Object> params) throws Exception {
-		return payMapper.insertpayCard(params);
+	// 결제 정보 생성
+	public Map<String, Object> insertOrder(Map<String, Object> params) throws Exception {
+		return payMapper.insertOrder(params);
 	}
+
+//	public Map<String, Object> insertpayCard(Map<String, Object> params) throws Exception {
+//		return payMapper.insertpayCard(params);
+//	}
 
 	public Map<String, Object> cardSuccess(Map<String, Object> params) throws Exception {
 		return payMapper.cardSuccess(params);
