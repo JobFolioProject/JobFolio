@@ -43,7 +43,7 @@ public interface MypageMapper {
     // 스킬 조회
     public List<SkillVO> getSkillListByUserNo(@Param("user_no")Long userNo);
     public void insertSkill(SkillVO skillVO);
-    public void deleteSkill(@Param("user_no")Long userNo);
+    public void deleteSkill(@Param("user_no")Long userNo,@Param("skill_code")String skillCode,@Param("group_code")String groupCode);
     public void updateSkill(SkillVO skillVO);
 
 
