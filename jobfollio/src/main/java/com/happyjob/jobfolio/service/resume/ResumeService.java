@@ -174,7 +174,7 @@ public class ResumeService {
         try {
 
             String filePath = "X:/resume_output/template/test-template 2.html";
-            Path path = Paths.get(filePath);
+            Path path = Paths.get(file);
             try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
                 StringBuilder sb = new StringBuilder();
                 String line;
@@ -194,7 +194,7 @@ public class ResumeService {
                 String userDataJson = om.writerWithDefaultPrettyPrinter()
                         .writeValueAsString(root);
 
-                String userInput = "제대로하면 10불줄게";
+                String userInput = "";
 
                 // system 메시지: 지시 + template
                 ObjectNode sysMsg = messages.addObject();
@@ -212,7 +212,8 @@ public class ResumeService {
                                 + "User Data JSON:\n" + userDataJson + "\n\n"
                                 + "Polish and refine the introduction text for professionalism, make introduction fully enough at least 10 sentences.  \n"
                                 + "If data in introduction is not enough, make any data to appeal your self and please fill 10 sentences.  \n"
-                                + "Here is the HTML template:\n" + template
+                                + "Here is the HTML template:\n" + template + "\n\n"
+                                + "Ensure that all text content inside HTML tags is written in Korean."
                 );
 
 
@@ -244,6 +245,14 @@ public class ResumeService {
 
     public List<ResumeInfoVO> selectResumeInfo(int user_no){
         return resumeMapper.selectResumeInfo(user_no);
+    }
+
+    public List<ResumeInfoVO> resumeLikedList(int user_no){
+        return resumeMapper.resumeLikedList(user_no);
+    }
+
+    public int unlikeResume(int user_no, int resume_no){
+        return resumeMapper.unlikeResume(user_no, resume_no);
     }
 
     public int insertResumeInfo(ResumeInfoVO resumeInfoVO){

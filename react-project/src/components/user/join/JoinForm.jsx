@@ -39,7 +39,7 @@ const JoinForm = () => {
     hp: false,
     birthday: false,
     address: false,
-    detailAddress: false, // 상세주소 포커스 추가
+    detailAddress: false, // 상세주소 포커스 추가 디
   });
 
   // 추가: 각 input에 ref 연결

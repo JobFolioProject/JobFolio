@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.happyjob.jobfolio.service.join.UserService;
 import com.happyjob.jobfolio.vo.join.UserVO;
@@ -521,6 +522,54 @@ public class UserController {
             logger.error("Error in checkLoginStatus: ", e);
             resultMap.put("result", "N");
             resultMap.put("message", "로그인 상태 확인 중 오류가 발생했습니다.");
+            return ResponseEntity.internalServerError().body(resultMap);
+        }
+    }
+
+    // 회원탈퇴기능 비밀번호 인증
+    @PostMapping("/userInfoCheck")
+    public ResponseEntity<Map<String, Object>> userInfoCheck(
+            @RequestBody Map<String, Object> paramMap,
+            HttpServletRequest request,
+            HttpSession session) {
+
+        logger.info("+ Start UserController.userInfoCheck");
+        logger.info("   - ParamMap : " + paramMap);
+
+        Map<String, Object> resultMap = new HashMap<>();
+
+        try {
+            String loginId = (String) paramMap.get("login_id");
+            String password = (String) paramMap.get("password");
+
+            if (loginId == null || password == null) {
+                resultMap.put("result", "N");
+                resultMap.put("message", "아이디와 비밀번호를 입력해주세요.");
+                return ResponseEntity.ok(resultMap);
+            }
+
+            // UserService에 전달할 paramMap 준비
+            Map<String, Object> serviceMap = new HashMap<>();
+            serviceMap.put("loginId", loginId);
+
+            UserVO user = userService.loginUser(serviceMap); // DB에서 login_id로 사용자 정보 조회
+
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+            if (user != null && passwordEncoder.matches(password, user.getPassword())) {
+                resultMap.put("result", "Y");
+                resultMap.put("userInfo", user);
+                return ResponseEntity.ok(resultMap);
+            } else {
+                resultMap.put("result", "N");
+                resultMap.put("message", "아이디 또는 비밀번호가 올바르지 않습니다.");
+                return ResponseEntity.ok(resultMap);
+            }
+
+        } catch (Exception e) {
+            logger.error("Error in loginUser: ", e);
+            resultMap.put("result", "N");
+            resultMap.put("message", "정보 확인 중 오류가 발생했습니다.");
             return ResponseEntity.internalServerError().body(resultMap);
         }
     }
