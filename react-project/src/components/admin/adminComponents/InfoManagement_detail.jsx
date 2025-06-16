@@ -12,13 +12,23 @@ const InfoManagementDetail = ({ item, onClose, mode, onSaved, boardType }) => {
   const [editAnswer, setEditAnswer] = useState(item?.answer || '');
 
   const paragraphs = editAnswer.split('\n\n'); 
+  
+  
+    
 
   const handleSave = async () => {
+    const raw = sessionStorage.getItem("user");
+    if (!raw) return;
+
+    const { userNo } = JSON.parse(raw);
+    if (!userNo) return;
+
     const payload = {
-      id : item?.id,    // 이거 있어야하나?? 
+      id : item?.id,   
       question: editQuestion,
       answer: editAnswer,
-      board_type : boardType 
+      board_type : boardType,
+      author: userNo
     };
 
     try {

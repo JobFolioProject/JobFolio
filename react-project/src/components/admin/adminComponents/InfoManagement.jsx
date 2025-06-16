@@ -23,13 +23,15 @@ const InfoManagement = () => {
         if (Array.isArray(res.data)) {
           setData(res.data);
         } else {
-          console.error('예상치 못한 응답 데이터:', res.data);
+          console.error('이용안내 예상치 못한 응답 데이터:', res.data);
         }
       })
       .catch((err) => {
         console.error('이용안내 불러오기 실패:', err);
       });
   }, []);
+
+  
 
   const handleDeleteSelected = () => {
     if (selected.length === 0) {
@@ -78,6 +80,7 @@ const InfoManagement = () => {
     .catch((err) => {
       console.error('우선순위 업데이트 실패 : ', err);
       alert('우선순위 저장 실패');
+      setPriorityMap({});
     });
   };
 
@@ -165,7 +168,7 @@ const InfoManagement = () => {
                     onChange={() => toggleCheckbox(item.id)}
                   />
                 </td>
-                <td>{i++}</td>
+                <td>{JSON.stringify(currentPage-1) === '0' ? (1+i++) : JSON.stringify(currentPage-1) + (1+i++)}</td>
                 <td
                     className = "info-title"
                     onClick={() => openDetail(item)}
