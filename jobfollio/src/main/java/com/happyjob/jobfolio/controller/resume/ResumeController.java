@@ -259,6 +259,16 @@ public class ResumeController {
 
     }
 
+    @PostMapping("/deleteResume")
+    public ResponseEntity<Map<String,Object>> deleteResume(@RequestBody Map<String,Integer> requestMap) {
+        int resume_no = requestMap.get("resume_no");
+        int result = resumeService.deleteResume(resume_no);
+
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("result", result);
+        return ResponseEntity.ok(resultMap);
+    }
+
 
 
 }

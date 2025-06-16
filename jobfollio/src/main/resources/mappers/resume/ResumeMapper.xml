@@ -56,6 +56,11 @@
 				 )
 	</insert>
 
+	<delete id="deleteResume"
+			parameterType="int">
+		DELETE FROM tb_resume_info WHERE resume_no = #{resume_no}
+	</delete>
+
 	<select id="selectLinkInfoByResume"
 			parameterType="int"
 			resultType="com.happyjob.jobfolio.vo.resume.LinkInfoVO">
