@@ -12,7 +12,7 @@ public class CareerHistoryVO {
 
     @Override
     public String toString() {
-        return "CareerHistoryVO{" +
+        return "CreerHistoryVO{" +
                 "userNo=" + user_no +
                 ", careerNo=" + career_no +
                 ", companyName='" + company_name + '\'' +
