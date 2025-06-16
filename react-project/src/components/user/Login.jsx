@@ -7,7 +7,7 @@ const Login = ({ onClose, onLoginClick }) => {
   const userLogin = () => {
     onLoginClick();
     sessionStorage.setItem('loginUser', "user");
-    sessionStorage.setItem('user', JSON.stringify({userNo: 4, loginId: "sadklasd@naver.com", userName: "크리미", userType: "C"}));
+    sessionStorage.setItem('user', JSON.stringify({userNo: 5, loginId: "sadklasd@naver.com", userName: "크리미", userType: "C"}));
     window.location.href = '/'; // 메인 페이지로 이동
     
     onClose();

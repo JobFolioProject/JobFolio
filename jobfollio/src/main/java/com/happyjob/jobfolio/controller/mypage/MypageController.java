@@ -1,9 +1,14 @@
 package com.happyjob.jobfolio.controller.mypage;
 
 import com.happyjob.jobfolio.service.mypage.MypageService;
+import com.happyjob.jobfolio.service.resume.ResumeService;
 import com.happyjob.jobfolio.vo.join.UserVO;
 import com.happyjob.jobfolio.vo.mypage.*;
+<<<<<<< HEAD
 import com.happyjob.jobfolio.vo.system.DetailcodeModel;
+=======
+import com.happyjob.jobfolio.vo.resume.ResumeInfoVO;
+>>>>>>> main
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -29,6 +35,9 @@ public class MypageController {
     @Autowired
     private MypageService mypageService;
 
+    @Autowired
+    private ResumeService resumeService;
+
     // ======================================== 회원 정보 =============================================
     // 마이페이지 - 회원정보 조회
     @GetMapping("/userInfo/{userNo}")
@@ -39,39 +48,48 @@ public class MypageController {
         return ResponseEntity.ok(userVO);
     }
 
-    // 마이페이지 - 회원 탈퇴
-    @DeleteMapping("/userInfo/{userNo}/delete")
-    public Map<String, Object> deleteByUserId(@PathVariable Long userNo, @RequestBody UserVO userVO) {
-
-
-        mypageService.deleteByUserId(userNo);
-        Map<String, Object> resultMap = new HashMap<String, Object>();
-
-        return resultMap;
+    // 마이페이지 - 회원정보 수정
+    @PostMapping("/editUserInfo")
+    public ResponseEntity<String> editUserInfo(@RequestBody UserVO userInfo) {
+        try {
+            int result = mypageService.updateByUserId(userInfo);
+            if (result > 0) {
+                return ResponseEntity.ok("수정 완료");
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 사용자를 찾을 수 없습니다.");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("수정 실패: " + e.getMessage());
+        }
     }
 
-    // 마이페이지 - 회원정보 수정
-    @PutMapping("/userInfo/{userNo}/update")
-    public Map<String, Object> updateByUserId(@RequestParam Long userNo) {
-
-        mypageService.updateByUserId(userNo);
-
-        Map<String, Object> resultMap = new HashMap<String, Object>();
-
-        return resultMap;
+    // 마이페이지 - 회원 탈퇴
+    @GetMapping("/userInfo/{userNo}/delete")
+    public ResponseEntity<String> deleteByUserId(@PathVariable("userNo") Long userNo) {
+        try {
+            int result = mypageService.deleteByUserId(userNo);
+            if (result > 0) {
+                return ResponseEntity.ok("탈퇴 완료");
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 사용자를 찾을 수 없습니다.");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("탈퇴 실패: " + e.getMessage());
+        }
     }
 
     // ======================================== 이력서 내역 =============================================
     // 마이페이지 - 이력서 내역 조회
-    @GetMapping("/resumeDetail/{userNo}")
-    public Map<String, Object> resumeDetailList(@PathVariable(name = "user_no") Long userNo) {
+    @PostMapping("/resumeDetail")
+    public ResponseEntity<Map<String,Object>> resumeDetailList(@RequestBody Map<String,Integer> requestMap) {
+        int userNo = requestMap.get("userNo");
+        List<ResumeInfoVO> resumeList = resumeService.selectResumeInfo(userNo);
 
-        // 해당 유저의 이력서 리스트를 찾아 불러오기
-//        List<ResumeInfoVO> resumeList = mypageService.resumeDetailList(userNo);
-
-        Map<String, Object> resultMap = new HashMap<String, Object>();
-
-        return resultMap;
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("resumeList", resumeList);
+        return ResponseEntity.ok(resultMap);
     }
 
     // ======================================== 내 커리어 =============================================

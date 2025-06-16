@@ -150,6 +150,25 @@
           AND withdrawal_date IS NULL
     </select>
 
+    <!-- 회원정보 수정 -->
+    <update id="updateByUserId" parameterType="map">
+        UPDATE tb_userinfo
+        SET
+        user_name = #{user_name},
+        login_id = #{login_id},
+        hp = #{hp}
+        <if test="#{address} != null">, address = #{address}</if>
+        WHERE user_no = #{user_no} and status_yn = 'N'
+    </update>
+
+    <!-- 회원 탈퇴 -->
+    <update id="deleteByUserId" parameterType="map">
+        UPDATE tb_userinfo
+        SET 
+        status_yn = 'Y'
+        WHERE user_no = #{user_no} and status_yn = 'N'
+    </update>
+
     <!--  학력 사항  -->
     <insert id="insertEducation" parameterType="com.happyjob.jobfolio.vo.mypage.EduInfoVO" keyProperty="edu_no" useGeneratedKeys="true">
         INSERT INTO
