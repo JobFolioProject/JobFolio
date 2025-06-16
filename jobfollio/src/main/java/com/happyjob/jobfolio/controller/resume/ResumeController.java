@@ -106,8 +106,8 @@ public class ResumeController {
                 node.put("company",  exp.get("company_name"));
                 node.put("dept",     exp.getOrDefault("department",""));     // 부서명이 paramMap에 있다면
                 node.put("position", exp.getOrDefault("position",""));       // 직위가 paramMap에 있다면
-                node.put("start_date", exp.getOrDefault("start_date",""));       // 직위가 paramMap에 있다면
-                node.put("end_date", exp.getOrDefault("end_date",""));       // 직위가 paramMap에 있다면
+                node.put("start_date", exp.getOrDefault("start_date",""));
+                node.put("end_date", exp.getOrDefault("end_date",""));
                 String period = exp.get("start_date") + " ~ " + exp.get("end_date");
                 node.put("period", period);
                 expArray.add(node);
@@ -147,7 +147,7 @@ public class ResumeController {
                     .asText();
 
             // ❶ 저장할 경로 생성
-            String outputDir = "X:/resume_output";
+            String outputDir = "X:/resume_output/resume_made";
             // ❶ 타임스탬프 포맷터
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
             // ❷ 현재 날짜·시간 문자열
@@ -169,17 +169,18 @@ public class ResumeController {
             resumeInfoVO.setUser_no(Integer.parseInt(user_no.toString()));
             resumeInfoVO.setTitle(paramMap.get("title").toString());
             resumeInfoVO.setDesired_position(paramMap.get("desired_position").toString());
+            resumeInfoVO.setTemplate_no(Integer.parseInt(paramMap.get("template_no").toString()));
             // 파일명
             resumeInfoVO.setResume_file_name(fileName);
             // 물리경로 (Physical Path)
             resumeInfoVO.setResume_file_pypath(filePath.toString());
             // 논리경로 (Logical Path) – 웹에서 접근 가능한 URL 패턴에 맞춰 설정
-            String logicalBase = "/resume_output/";
+            String logicalBase = "/resume_output/resume_made/";
             resumeInfoVO.setResume_file_lopath(logicalBase + fileName);
 
             int result = resumeService.insertResumeInfo(resumeInfoVO);
 
-            //resultMap.put("result", result);
+            resultMap.put("result", result);
 
 
         } catch (Exception e) {

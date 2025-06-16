@@ -208,6 +208,13 @@
 			<version>5.5.13.1</version>
 		</dependency>
 
+		<!-- BCrypt -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core</artifactId>
+			<version>5.8.6</version> <!-- Spring 5.x 이상이면 OK -->
+		</dependency>
+
 	</dependencies>
 
 

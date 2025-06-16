@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import AdminSideBar from '../AdminSideBar';
 import Pagination from '../../common/Pagination.jsx';
 import SearchIcon from '@mui/icons-material/Search';
-import '../../../css/admin/adminComponents/NoticeManagementModal.css';
+import '../../../css/admin/adminComponents/NoticeManagement_detail.css';
 import NoticeManagementDetail from './NoticeManagement_detail';
 import axios from 'axios';
 import '../../../css/admin/adminComponents/NoticeManagement.css';
@@ -24,7 +24,7 @@ const NoticeManagement = () => {
 
   const fetchNotices = () => {
     axios
-      .get('/community/list', {
+      .get('/api/community/list', {
         params: {
           boardType: 'N',
           page: currentPage,
@@ -143,32 +143,40 @@ const NoticeManagement = () => {
                 </tr>
               </thead>
               <tbody>
-                {noticeList.map((item, idx) => {
-                  const { date, time } = formatDateTime(item.writeDate);
-                  return (
-                    <tr key={item.boardNo}>
-                      <td className="col-checkbox">
-                        <input type="checkbox" disabled />
-                      </td>
-                      <td className="col-number">
-                        {(currentPage - 1) * pageSize + idx + 1}
-                      </td>
-                      <td
-                        className="col-title notice-title"
-                        style={{ cursor: 'pointer' }}
-                        onClick={() => handleView(item)}
-                      >
-                        {item.title}
-                      </td>
-                      <td className="col-date">
-                        <div>{date}</div>
-                        <div>{time}</div>
-                      </td>
-                      <td className="col-priority">{item.priority}</td>
-                      <td className="col-writer">{item.authorName}</td>
-                    </tr>
-                  );
-                })}
+                {noticeList.length > 0 ? (
+                  noticeList.map((item, idx) => {
+                    const { date, time } = formatDateTime(item.writeDate);
+                    return (
+                      <tr key={item.boardNo}>
+                        <td className="col-checkbox">
+                          <input type="checkbox" disabled />
+                        </td>
+                        <td className="col-number">
+                          {totalCount - ((currentPage - 1) * pageSize + idx)}
+                        </td>
+                        <td
+                          className="col-title notice-title"
+                          style={{ cursor: 'pointer' }}
+                          onClick={() => handleView(item)}
+                        >
+                          {item.title}
+                        </td>
+                        <td className="col-date">
+                          <div>{date}</div>
+                          <div>{time}</div>
+                        </td>
+                        <td className="col-priority">{item.priority}</td>
+                        <td className="col-writer">{item.authorName}</td>
+                      </tr>
+                    );
+                  })
+                ) : (
+                  <tr>
+                    <td colSpan="6" className="notice-empty-row">
+                      조회된 공지사항이 없습니다.
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
 
@@ -192,6 +200,7 @@ const NoticeManagement = () => {
           fetchNotices();
           setDetailOpen(false);
         }}
+        onEdit={() => setDetailMode('edit')}
       />
     </div>
   );
