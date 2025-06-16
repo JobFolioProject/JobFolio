@@ -255,6 +255,10 @@ public class ResumeService {
         return resumeMapper.unlikeResume(user_no, resume_no);
     }
 
+    public int deleteResume(int resume_no){
+        return resumeMapper.deleteResume(resume_no);
+    }
+
     public int insertResumeInfo(ResumeInfoVO resumeInfoVO){
         return resumeMapper.insertResumeInfo(resumeInfoVO);
     }
