@@ -57,11 +57,13 @@ const Payment = () => {
   
       const { orderId, amount, order_name, user_no } = res.data;
   
+      console.log(res.data);
       if (!payment) {
         alert("결제 시스템이 초기화되지 않았습니다.");
         return;
       }
-  
+      console.log(res.data);
+
       await payment.requestPayment({
         method: "CARD",
         user_no : user_no,

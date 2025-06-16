@@ -22,4 +22,21 @@
 		)
 	</insert>
 
+	<!-- 결제 정보 생성 -->
+	<delete id="deleteOrder" parameterType="map">
+		DELETE
+		FROM 	tb_payment_his
+		WHERE 	order_Id = #{orderId}
+	</delete>
+
+	<!-- 결제 -->
+	<update id="payToss" parameterType="com.happyjob.jobfolio.vo.pay.PayModel">
+		UPDATE 		tb_payment_his
+		SET 		payment_key	 	 = 	#{payment_key}
+			  ,  	paid_date 	 	 =  NOW()
+		WHERE 		order_Id 		 = #{orderId}
+		AND			user_no			 = #{user_no}
+		AND			amount			 = #{amount}
+	</update>
+
 </mapper>

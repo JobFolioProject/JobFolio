@@ -27,9 +27,15 @@ public class PayService {
 		return payMapper.insertOrder(params);
 	}
 
-//	public Map<String, Object> insertpayCard(Map<String, Object> params) throws Exception {
-//		return payMapper.insertpayCard(params);
-//	}
+	// 결제 실패시 결제 정보 삭제
+    public int deleteOrder(Map<String, Object> params) throws Exception {
+		return payMapper.deleteOrder(params);
+	}
+
+	// 결제
+	public Map<String, Object> payToss(Map<String, Object> params) throws Exception {
+		return payMapper.payToss(params);
+	}
 
 	public Map<String, Object> cardSuccess(Map<String, Object> params) throws Exception {
 		return payMapper.cardSuccess(params);
