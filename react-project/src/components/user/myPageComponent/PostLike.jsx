@@ -34,7 +34,7 @@ const PostLike = () => {
 
             const { resumeList } = response.data;
 
-            if (Array.isArray(resumeList) && resumeList.length > 0) {
+            if (Array.isArray(resumeList) && resumeList.length >= 0) {
                 // 첫 번째 이력서를 resumeInfo에 세팅
                 setResumeList(resumeList);
             }
@@ -43,6 +43,33 @@ const PostLike = () => {
             console.error('Failed to fetch userInfo:', err);
         }
     };
+
+    const unlikeResume = async(resumeNo) => {
+        if(window.confirm("좋아요를 취소 하시겠습니까?")){
+            try {
+                const raw = sessionStorage.getItem('user');
+                if (!raw) return;
+                const { userNo } = JSON.parse(raw);
+                if (!userNo) return;
+
+                // JSON 바디에 userNo 담아 POST
+                const response = await axios.post('/api/resume/unlikeResume', {
+                userNo: userNo,
+                resumeNo: resumeNo
+                });
+                    if (response.status === 200) {
+                        alert(response.data.message);
+                        axiosResumeInfo();
+                    } else {
+                        alert("취소 요청에 실패했습니다.");
+                    }
+            } catch (error) {
+                console.error("취소 요청 실패:", error);
+                alert("취소 중 오류가 발생했습니다.");
+            }
+        }
+    
+    }
 
     useEffect(() => {
         axiosResumeInfo();
@@ -57,7 +84,7 @@ const PostLike = () => {
             <div className="resumeItemCon">
               <div className="resumeItemHeader">
                 <h3 onClick={() => openResumePopup(item.resume_file_pypath)}>{item.title || '제목 없음'}</h3>
-                <FavoriteIcon className="likeIcon" color='error' />
+                <FavoriteIcon className="likeIcon" color='error' onClick={() => unlikeResume(item.resume_no)}/>
               </div>
               <div className="resumeItemDetail">
                 <p className="resumeItemJob">

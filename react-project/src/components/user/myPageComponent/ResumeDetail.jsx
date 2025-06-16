@@ -34,7 +34,7 @@ const ResumeDetail = () => {
 
             const { resumeList } = response.data;
 
-            if (Array.isArray(resumeList) && resumeList.length > 0) {
+            if (Array.isArray(resumeList) && resumeList.length >= 0) {
                 // 첫 번째 이력서를 resumeInfo에 세팅
                 setResumeList(resumeList);
             }

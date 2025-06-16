@@ -67,6 +67,11 @@
 		WHERE resume_no = #{resume_no}
 	</select>
 
+	<delete id="unlikeResume"
+			parameterType="int">
+		DELETE FROM tb_resume_like WHERE resume_no = #{resume_no} AND user_no = #{user_no}
+	</delete>
+
 	<insert id="insertLinkInfo"
 			parameterType="com.happyjob.jobfolio.vo.resume.LinkInfoVO">
 		INSERT INTO tb_link_info (
