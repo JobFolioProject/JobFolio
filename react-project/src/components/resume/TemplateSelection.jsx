@@ -33,7 +33,7 @@ const TemplateSelection = () => {
             setIsLoading(false);//로딩 끝.
         })
     }
-    //테스트를 위해 주석 처리
+    //*********아래 테스트를 위해 주석 처리!! 다음에 API통신 되면 풀어줄거임.
     // useEffect(()=>{
     //     templateInfo();
     // },[])
@@ -45,19 +45,19 @@ const TemplateSelection = () => {
 
     // ✅ 임시 테스트용 더미 데이터 사용
         const dummyData = [
-        { temp_no: 1, temp_name: "Template1", file_pypath: "/resources/html/test.html" },
-        { temp_no: 2, temp_name: "Template1", file_pypath: "/resources/html/test2.html" },
-        { temp_no: 3, temp_name: "Template1", file_pypath: "/resources/html/test3.html" },
-        { temp_no: 4, temp_name: "Template1", file_pypath: "/resources/html/test-template.html" },
-        { temp_no: 5, temp_name: "Template1", file_pypath: "/resources/html/test-template 2.html" },
-        { temp_no: 6, temp_name: "Template1", file_pypath: "/resources/html/test-template 3.html" },
-        { temp_no: 7, temp_name: "Template1", file_pypath: "/resources/html/example.html" },
-        { temp_no: 8, temp_name: "Template1", file_pypath: "/resources/html/example2.html" },
-        { temp_no: 9, temp_name: "Template1", file_pypath: "/resources/html/example-template.html" },
-        { temp_no: 10, temp_name: "Template1", file_pypath: "/test.html" },
-        { temp_no: 11, temp_name: "Template1", file_pypath: "/test.html" },
-        { temp_no: 12, temp_name: "Template1", file_pypath: "/test.html" },
-        { temp_no: 13, temp_name: "Template1", file_pypath: "/test.html" },
+        { temp_no: 1, temp_name: "Template1", file_pypath: "/resources/img/test-template.png"},
+        { temp_no: 2, temp_name: "Template2", file_pypath: "/resources/img/naver_login.png"},
+        { temp_no: 3, temp_name: "Template3", file_pypath: "/resources/img/MainImg.png"},
+        { temp_no: 4, temp_name: "Template4", file_pypath: "/resources/img/MainImg.png"},
+        { temp_no: 5, temp_name: "Template5", file_pypath: "/resources/img/banner.png"},
+        { temp_no: 6, temp_name: "Template6", file_pypath: "/resources/img/test-template.png" },
+        { temp_no: 7, temp_name: "Template7", file_pypath: "/resources/img/test-template.png" },
+        { temp_no: 8, temp_name: "Template8", file_pypath: "/resources/img/test-template.png" },
+        { temp_no: 9, temp_name: "Template9", file_pypath: "/resources/img/test-template.png" },
+        { temp_no: 10, temp_name: "Template10", file_pypath: "/resources/img/test-template.png" },
+        { temp_no: 11, temp_name: "Template11", file_pypath: "/resources/img/test-template.png" },
+        { temp_no: 12, temp_name: "Template12", file_pypath: "/resources/img/test-template.png" },
+        { temp_no: 13, temp_name: "Template13", file_pypath: "/resources/img/test-template.png" },
     ];
     setTempList(dummyData);
     }, []);
@@ -71,6 +71,10 @@ const TemplateSelection = () => {
             {!isLoading && !error && !tempList.length===0 && (
                 <p>선택 가능한 템플릿이 없습니다.</p>)}
             <TemplateSlider tempList={tempList} />
+             {/* 템플릿 리스트가 있고, 로딩 중이 아니고 에러도 없을 때만 슬라이더 렌더링
+            {!isLoading && !error && tempList.length > 0 && (
+                <TemplateSlider tempList={tempList} />
+            )} */}
         </div>
     )
 

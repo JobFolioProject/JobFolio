@@ -63,7 +63,6 @@ body {
     padding: 14px 16px;
     font-size: 15px;
     color: #111827;
-    /* background: #f9fbfd; */
     background: #ffffff;
     border: 1px solid #dbeafe;
     border-radius: 10px;
@@ -83,9 +82,66 @@ body {
     color: #9ca3af;
 }
 
-/* 학력 및 경력 영역 공통 */
-.education-row,
-.experience-row {
+/* --- 기존 학력/경력 정보 표시 섹션 --- */
+.education-display-section,
+.experience-display-section {
+    margin-top: 15px;
+    margin-bottom: 30px;
+    padding: 15px 20px;
+    background-color: #e0f2fe; /* 연한 파란색 배경 */
+    border: 1px solid #bfdbfe; /* 경계선 */
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.education-display-section h4,
+.experience-display-section h4 {
+    color: #1e40af; /* 진한 파란색 글씨 */
+    font-size: 1.1rem;
+    margin-top: 0;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed #93c5fd;
+}
+
+.education-row-display,
+.experience-row-display {
+    display: flex;
+    flex-wrap: wrap; /* 내용이 길어지면 줄바꿈 */
+    gap: 15px; /* 항목 간 간격 */
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px dotted #a7d9f7; /* 각 항목 아래 점선 구분 */
+}
+
+.education-row-display:last-child,
+.experience-row-display:last-child {
+    border-bottom: none; /* 마지막 항목에는 점선 없음 */
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.education-row-display p,
+.experience-row-display p {
+    margin: 0; /* 단락 마진 제거 */
+    font-size: 0.95rem;
+    color: #334155; /* 어두운 회색 글씨 */
+    text-align: left; /* 텍스트 왼쪽 정렬 */
+    /* 개별 항목의 너비 조절 */
+    flex-basis: auto; /* 기본적으로 콘텐츠 크기에 맞게 */
+    flex-grow: 1; /* 가능한 경우 늘어나도록 */
+    min-width: 150px; /* 최소 너비 설정 */
+}
+
+.experience-row-display p strong,
+.education-row-display p strong {
+    color: #0d3680;
+}
+
+/* --- 신규 학력/경력 입력 필드 섹션 --- */
+/* 학력 및 경력 영역 공통 (새로 추가하는 입력 필드) */
+.education-row-input,
+.experience-row-input {
     display: flex;
     flex-wrap: wrap;
     gap: 12px;
@@ -95,60 +151,34 @@ body {
     border-radius: 10px;
     background: #f9fbfd;
     box-shadow: inset 0 1px 3px rgba(0,0,0,0.02);
-      /* 추가: 자식 요소들이 넘칠 경우 스크롤이 아닌 줄바꿈을 유도하므로,
-      명시적으로 justify-content를 설정하여 공간 분배를 명확히 할 수 있습니다.
-      '학력' 항목이 보더 밖으로 넘치는 문제 해결하고 싶어서 추가해봄 */
-    justify-content: flex-start; /* 또는 space-between, center 등 상황에 맞게 */
+    justify-content: flex-start;
 }
-/* .education-row input, */
-/* .experience-row input, */
-/* .experience-row textarea, */
-/* .education-row .date-range-wrapper, */
-/* .experience-row .date-range-wrapper { */
-    /* flex: 1; */
-    /* min-width: 140px; */
-/* } */
 
 /* 학력 항목 내 입력 필드 조정 */
-.education-row > input[type="text"]{
-    /* 학교명/전공 필드가 나머지 필드보다 더 많은 공간을 차지하도록 합니다. */
-    /* flex: 3; // flex: 2보다 더 넓게 사용하려면 3 등으로 조절 */
-    flex: 1 1 250px; /* flex-grow: 1, flex-shrink: 1, flex-basis: 250px. 최소 너비 250px 보장. */
-    min-width: 250px; /* 충분한 최소 너비로 지정하여 텍스트가 잘리지 않도록 합니다. */
-    max-width: 400px; /* 너무 커지지 않도록 최대 너비를 설정할 수도 있습니다. */
+.education-row-input > input[type="text"] {
+    flex: 1 1 200px; /* flex-grow: 1, flex-shrink: 1, flex-basis: 200px. 최소 너비 200px 보장. */
+    min-width: 200px;
 }
 
-/* 학력 및 경력 영역 공통 - 날짜 입력 및 텍스트에어리어 */
-/* flex: 1; min-width: 140px; 규칙은 제거하거나 더 구체적인 선택자로 재정의해야 합니다. */
-/* 아래처럼 더 구체적인 선택자로 날짜 래퍼에만 flex 속성을 지정하는 것이 좋습니다. */
-.education-row .date-range-wrapper,
-.experience-row .date-range-wrapper {
-    /* flex: none; // 이전에 추가했지만, 아래 flex shorthand가 더 명확합니다. */
-    /* flex-grow: 0, flex-shrink: 0, flex-basis: auto; */
-    flex: 0 0 auto; /* 공간이 남아도 늘어나지 않고(0), 공간이 부족해도 줄어들지 않으며(0), 콘텐츠 크기(auto)에 따라 너비가 결정됩니다. */
-    /* width: auto; // DateRangePicker.css에서 최종 너비를 결정하도록 합니다. */
-    min-width: 270px; /* '시작일 ~ 종료일' 전체를 담을 수 있는 최소 너비. DateRangePicker.css의 width와 맞춰 조절 */
+/* Calendar 컴포넌트 래퍼 */
+.education-row-input .date-range-wrapper,
+.experience-row-input .date-range-wrapper {
+    flex: 0 0 auto; /* 늘어나지 않고, 줄어들지 않으며, 콘텐츠 크기에 따라 너비 결정 */
+    min-width: 270px; /* 캘린더 전체를 담을 수 있는 최소 너비 */
 }
-
-/* Calendar 컴포넌트 DatePicker 정리 */
-/* DatePicker 컴포넌트 내부의 input 필드 너비는 DateRangePicker.css에서 120px로 설정했으므로 유지됩니다. */
-/* .education-row .react-datepicker__input-container input,
-.experience-row .react-datepicker__input-container input {
-    width: 100%; // 이는 date-range-wrapper 내부에서 100%를 의미합니다.
-} */
 
 /* 경력 항목 날짜+회사명 묶음 */
-.experience-row > div:first-child {
+.experience-input-group { /* 'experience-row input' 대신 더 명확한 이름 사용 */
     display: flex;
     gap: 10px;
     flex-wrap: wrap;
-    flex: 2;
-    min-width: 300px;
+    flex: 2; /* 이 그룹이 더 많은 공간을 차지하도록 */
+    min-width: 300px; /* 최소 너비 */
 }
 
 /* 삭제 버튼 */
-.education-row .PrettyBtn,
-.experience-row .PrettyBtn {
+.education-row-input .PrettyBtn,
+.experience-row-input .PrettyBtn {
     margin-left: auto;
     align-self: center;
     min-width: 70px;
@@ -162,8 +192,8 @@ body {
     transition: all 0.2s ease;
 }
 
-.education-row .PrettyBtn:hover,
-.experience-row .PrettyBtn:hover {
+.education-row-input .PrettyBtn:hover,
+.experience-row-input .PrettyBtn:hover {
     background-color: #fecaca;
 }
 
@@ -202,9 +232,16 @@ body {
     transition: all 0.3s ease;
 }
 
-
 .resume-content-form .PrettyBtn[type="submit"]:hover {
     background: linear-gradient(to right, #2563eb, #3b82f6);
     box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
 }
- 
+
+/* 템플릿 선택 wrapper */
+.template-selection-wrapper {
+    margin-top: 15px; /* 필요에 따라 마진 조정 */
+    padding: 15px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background-color: #f8fafc;
+}
