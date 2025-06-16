@@ -175,6 +175,6 @@ input.careerInfoInput {
   width: 400px;
   max-width: 90%;
 }
-.userInfoWrap .userInfoInput {
+.userInfoWrap .modal-overlay .userInfoInput {
   background: #f5f5f5;
 }
