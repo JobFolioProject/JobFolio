@@ -2,20 +2,24 @@ import axios from 'axios';
 import '../../css/community/CommuFaq.css';
 import CommuMenuBar from './CommuMenuBar';
 import { useState, useEffect } from 'react';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 const CommuFaq = () => {
     const [ faqList, setFaqList ] = useState([]);
     const [ openItem, setOpenItem ] = useState(null);
 
     useEffect(() => {
-        axios.get('/api/board/list')
+        axios.get('/api/board/list', {
+            params : {
+                board_type : "F"
+            }
+        })
           .then((res) => {
             console.log('받은 데이터 : ', res.data);
             setFaqList(res.data);
           })  
           .catch((err) => {
-            console.error('이용안내 불러오기 실패 : ', err);
+            console.error('FAQ 불러오기 실패 : ', err);
           });
     }, [])
 
@@ -34,16 +38,26 @@ const CommuFaq = () => {
         <ul className="faq-list">
             {faqList.map((item) => (
                 <li key={item.id} className={`faq-item ${openItem === item.id ? 'open' : ''}`}>
-                    <div className="question" onClick={() => toggleItem(item.id)}>
-                        <ChevronRightIcon className="icon"/>
-                        <span> {item.question} </span>
-                    </div>
+                    <div className="faq-box">
+                        <div className="question" onClick={() => toggleItem(item.id)}>
+                            <div className="question-left">
+                                <span className="faq-q">Q.</span>
+                                <span className="faq-question-text">{item.question}</span>
+                            </div>    
+                            <KeyboardArrowDownIcon className="icon"/>
+                        </div>
+
                     {openItem === item.id && (
                         <div className="answer">
-                            <p>{item.answer}</p>
+                            <span className="faq-a">A.</span>
+                            <div className="faq-answer-text">
+                                {item.answer.split('\n\n').map((para, idx) => (
+                                    <p key={idx}>{para}</p>
+                                ))}
+                            </div>
                         </div>
                     )}
-
+                    </div>
                 </li>
             ))}
 

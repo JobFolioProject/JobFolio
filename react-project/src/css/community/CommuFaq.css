@@ -13,3 +13,114 @@
   font-size: 2.5rem;
   font-weight: 900;
 }
+
+.faq-box {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 16px 20px;
+  background-color: #fff;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.faq-item.open .faq-box {
+  background-color: #f9fbff; /* 펼쳐졌을 때 배경 */
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* FAQ 전체 리스트 영역 */
+.faq-list {
+  max-width: 1000px;
+  margin: 50px auto;
+  padding: 0 20px;
+  list-style: none;
+}
+
+/* 각 항목 */
+.faq-item {
+  /* border-bottom: 1px solid #ddd;    중간에 줄 */
+  padding: 10px 0;
+}
+
+.question-left {
+  display: flex;
+  align-items: center;
+  gap: 3px; /* Q.와 질문 텍스트 간 간격 */
+}
+
+.faq-q {
+  font-weight: 700;
+  color: #0b0ea8;
+  font-size: 2.0rem;
+}
+
+.faq-question-text {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #000;
+}
+
+/* 질문 항목 */
+.faq-list .question {
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.2s;
+  display: flex;              /* 💡 수평 정렬 + 세로 정렬 둘 다 */
+  align-items: center;        /* 💡 세로 가운데 정렬 */
+  color : #000;
+}
+
+.faq-list .question span {
+  color: inherit; /* 부모의 color: #000을 따라가게 강제 */
+}
+
+.faq-list .question:hover,
+.faq-item.open .question {
+  color: #0b0ea8;
+}
+
+/* 펼쳐진 상태일 때 색상 유지
+.faq-item.open .question {
+  color: #0b0ea8;
+} */
+
+/* 아이콘 공통 스타일 */
+.icon {
+  font-size: 20px;
+  margin-right: 8px;
+  transition: transform 0.3s ease;
+  color: inherit; /* 텍스트 색상 따라감 */
+}
+
+/* 아이콘 회전도 유지하고 싶다면 추가 */
+.faq-item.open .icon {
+  transform: rotate(180deg);
+}
+
+/* 답변 전체 영역 */
+.faq-list .answer {
+  margin-top: 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  padding-left: 15px;
+}
+
+/* A. 텍스트 */
+.faq-a {
+  font-weight: 700;
+  color: #222;
+  font-size: 1.2rem;
+  white-space: nowrap;
+  margin-top: 4px;
+}
+
+/* 실제 답변 본문 */
+.faq-answer-text p{
+  margin-bottom: 16px;  /* ✅ 문단 간 여백 키우기 */
+  font-size: 0.95rem;
+  color: #444;
+  line-height: 1.6;
+  white-space: pre-line; /* 줄바꿈(\n) 허용 */
+}

@@ -2,7 +2,9 @@ import axios from 'axios';
 import '../../css/community/CommuInfo.css';
 import CommuMenuBar from './CommuMenuBar';
 import { useState , useEffect } from 'react';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import InfoIcon from '@mui/icons-material/Info';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+
 
 
 const CommuInfo = () => {
@@ -10,7 +12,11 @@ const CommuInfo = () => {
   const [openItem, setOpenItem] = useState(null);
 
   useEffect(() => {
-    axios.get('/api/board/list')
+    axios.get('/api/board/list', {
+      params : {
+        board_type : "I"
+      }
+    })
       .then((res) => {
         console.log('받은 데이터:', res.data);
         setInfoList(res.data);
@@ -36,8 +42,11 @@ const CommuInfo = () => {
         {infoList.map((item) => (
           <li key={item.id} className={`info-item ${openItem === item.id ? 'open' : ''}`}>
             <div className="question" onClick={() => toggleItem(item.id)}>
-              <ChevronRightIcon className="icon" /> 
+              <div className='question-left'>
+              <span className="info-Q">Q.</span>
               <span> {item.question}</span>
+              </div>
+              <KeyboardArrowDownIcon className="iconA" />
             </div>
             {openItem === item.id && (
               <div className="answer">
