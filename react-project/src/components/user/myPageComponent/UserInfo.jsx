@@ -79,6 +79,26 @@ const UserInfo = () => {
         }
     };
 
+    // 주소 검색함수
+    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+    const [tempBaseAddress, setTempBaseAddress] = useState("");
+    const [detailAddress, setDetailAddress] = useState("");
+
+    const handleAddressSearch = () => {
+        new window.daum.Postcode({
+            oncomplete: function(data) {
+            let fullAddress = data.roadAddress;
+            if (data.buildingName) {
+                fullAddress += ` (${data.buildingName})`;
+            }
+            fullAddress = `(${data.zonecode}) ${fullAddress}`;
+
+            setTempBaseAddress(fullAddress); // 기본 주소 저장
+            setIsDetailModalOpen(true); // 상세주소 입력 모달 열기
+            }
+        }).open();
+    };
+
     const handleCancelClick = () => {
         setIsEditing(false);
         fetchUserInfo();
@@ -141,8 +161,11 @@ const UserInfo = () => {
                         type="text"
                         className={`userInfoInput ${isEditing ? 'userInfoInput--editable' : ''}`}
                         value={userInfo.address}
+                        onClick={() => {
+                        if (isEditing) handleAddressSearch();
+                        }}
                         onChange={(e) => setUserInfo({ ...userInfo, address: e.target.value })}
-                        readOnly={!isEditing}
+                        readOnly
                     />
                 </div>
                 <hr />
@@ -165,7 +188,50 @@ const UserInfo = () => {
                     <button className="userInfoBackButton2">탈퇴하기</button>
                 </div>
             </div>
+            {isDetailModalOpen && (
+                <div className="modal-overlay">
+                    <div className="modal">
+                    <h3>상세주소 입력</h3>
+                    <p>{tempBaseAddress}</p>
+                    <input
+                        type="text"
+                        placeholder="상세 주소를 입력하세요"
+                        value={detailAddress}
+                        onChange={(e) => setDetailAddress(e.target.value)}
+                        className="userInfoInput"
+                    />
+                    <div style={{ marginTop: "10px" }}>
+                        <button
+                            className="userInfoBackButton"
+                            onClick={() => {
+                                if (!detailAddress.trim()) {
+                                alert("상세주소를 입력해주세요.");
+                                return;
+                                }
+
+                                const finalAddress = `${tempBaseAddress} ${detailAddress}`;
+                                setUserInfo(prev => ({ ...prev, address: finalAddress }));
+                                setIsDetailModalOpen(false);
+                                setDetailAddress("");
+                            }}
+                        >
+                        확인
+                        </button>
+                        <button
+                        className="userInfoBackButton3"
+                        onClick={() => {
+                            setIsDetailModalOpen(false);
+                            setDetailAddress("");
+                        }}
+                        >
+                        취소
+                        </button>
+                    </div>
+                    </div>
+                </div>
+            )}
         </div>
+        
     );
 };
 // test
