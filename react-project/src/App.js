@@ -56,7 +56,7 @@ function AppContent() {
       {!isAdminPath && <MenuBar />}
       <main>
         <Routes>
-          {/* ========== 모든 사용자 접근 가능 ========== */}
+          {/* ========== 모든 사용자 접근 가능 === */}
           <Route path="/" element={<Main />} />
           <Route path="/login" element={<Login />} />
           <Route path="/join" element={<Join />} />
