@@ -6,11 +6,11 @@ import axios from 'axios';
 import '../../../css/user/myPageComponent/SkillSection.css';
 
 const SkillSection = () => {
-    return (
-        <div>
-            <p>여기는 스킬이야</p>
-        </div>
-    );
+  return (
+    <div>
+      <p>여기는 스킬이야</p>
+    </div>
+  );
 };
 
 export default SkillSection;

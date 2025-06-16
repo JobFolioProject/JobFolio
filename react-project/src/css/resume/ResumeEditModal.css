@@ -70,6 +70,11 @@
 
 .checkbox_list {
   display: flex;
+  margin-left: 10px;
+}
+
+.checkbox_list input[type="radio"] {
+  margin-left: 25px;
 }
 
 .checkbox_list .toggleInput {

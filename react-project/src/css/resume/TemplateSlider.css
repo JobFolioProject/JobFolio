@@ -1,0 +1,20 @@
+.template-slider-container {
+  margin: 20px 0;
+}
+
+.template-item {
+  padding: 10px; /* 아이템 간격 조절 */
+  border: 1px solid #eee; /* 테두리 추가 (선택 사항) */
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.1); /* 그림자 추가 (선택 사항) */
+  text-align: center;
+}
+
+.template-item iframe {
+  display: block; /* iframe 아래 공백 제거 */
+}
+
+.slick-arrow.slick-prev:before,
+.slick-arrow.slick-next:before {
+  color: black; /* 원하는 색상으로 변경 */
+  font-size: 24px; /* (선택) 아이콘 크기 조정 */
+}
