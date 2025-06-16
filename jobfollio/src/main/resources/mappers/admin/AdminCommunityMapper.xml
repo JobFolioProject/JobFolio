@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE mapper
+        PUBLIC '-//mybatis.org//DTD Mapper 3.0//EN'
+        'http://mybatis.org/dtd/mybatis-3-mapper.dtd'>
+<mapper namespace='com.happyjob.jobfolio.repository.admin.AdminCommunityMapper'>
+
+    <!-- 공지사항 등록 -->
+    <insert id="insertBoard" parameterType="com.happyjob.jobfolio.vo.community.CommunityBoardVo">
+        INSERT INTO tb_board
+        (board_type, title, content, write_date, author, priority)
+        VALUES
+        (#{boardType}, #{title}, #{content}, NOW(), #{author}, #{priority})
+        <!-- selectKey로 자동 생성 키 반환 -->
+        <selectKey keyProperty="boardNo" resultType="int" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+
+    <!-- 공지사항 수정 -->
+    <update id="updateBoard" parameterType="com.happyjob.jobfolio.vo.community.CommunityBoardVo">
+        UPDATE tb_board
+        SET
+            title = #{title},
+            content = #{content},
+            priority = #{priority}
+        WHERE board_no = #{boardNo}
+    </update>
+
+    <!-- 공지사항 삭제 -->
+    <delete id="deleteBoard" parameterType="int">
+        DELETE FROM tb_board
+        WHERE board_no = #{boardNo}
+    </delete>
+
+</mapper>
