@@ -187,7 +187,7 @@ function AppContent() {
               </PrivateRoute>
             }
           />
-          {/* ========== 최고관리자 전용 (A) ========== */}
+          {/* ========== 최고관리자 전용 (A) ==========시작 */}
           <Route
             path="/adminPage/adminManagement"
             element={
@@ -204,6 +204,7 @@ function AppContent() {
               </PrivateRoute>
             }
           />
+            {/* ========== 최고관리자 전용 (A) ==========끝 */}
           {/* 권한 없음 페이지 */}
           <Route path="/unauthorized" element={<Unauthorized />} />
           <Route path="*" element={<NotFound />} /> {/* 404 페이지 */}
