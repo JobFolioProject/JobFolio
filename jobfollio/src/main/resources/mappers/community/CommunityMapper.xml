@@ -3,37 +3,56 @@
         PUBLIC '-//mybatis.org//DTD Mapper 3.0//EN'
         'http://mybatis.org/dtd/mybatis-3-mapper.dtd'>
 <mapper namespace='com.happyjob.jobfolio.repository.community.CommunityMapper'>
-    <!-- 페이징된 공지사항 목록 조회: 우선순위 내림차순, 작성일 내림차순 -->
-    <select id="selectBoardListPaged" parameterType="map" resultType="com.happyjob.jobfolio.vo.community.CommunityBoardVo">
-        SELECT
-        b.board_no      AS boardNo,
-        b.board_type    AS boardType,
-        b.title,
-        b.content,
-        b.write_date    AS writeDate,
-        b.author,
-        u.user_name     AS authorName,
-        b.priority
+    <!-- 고정글만 조회 -->
+    <select id="selectPriorityBoardList" parameterType="map" resultType="com.happyjob.jobfolio.vo.community.CommunityBoardVo">
+        SELECT b.board_no AS boardNo, b.board_type AS boardType, b.title, b.content,
+               b.write_date AS writeDate, b.author, u.user_name AS authorName, b.priority
+        FROM tb_board b
+                 JOIN tb_userinfo u ON b.author = u.user_no
+        WHERE b.board_type = #{boardType}
+          AND b.priority != 0
+        ORDER BY b.priority DESC, b.write_date DESC
+    </select>
+
+    <!-- 일반글 페이징 조회 -->
+    <select id="selectNormalBoardPaged" parameterType="map" resultType="com.happyjob.jobfolio.vo.community.CommunityBoardVo">
+        SELECT b.board_no AS boardNo, b.board_type AS boardType, b.title, b.content,
+        b.write_date AS writeDate, b.author, u.user_name AS authorName, b.priority
         FROM tb_board b
         JOIN tb_userinfo u ON b.author = u.user_no
         WHERE b.board_type = #{boardType}
+        AND b.priority = 0
         <if test="search != null and search != ''">
             AND b.title LIKE CONCAT('%', #{search}, '%')
         </if>
-        <!-- 정렬: priority 내림차순, 최신 작성일 내림차순 -->
-        ORDER BY b.priority DESC, b.write_date DESC
-        <!-- MySQL 페이징: offset, limit 순서 -->
+        ORDER BY b.write_date DESC
         LIMIT #{offset}, #{limit}
     </select>
 
-    <!-- 전체 건수 조회 -->
-    <select id="countBoardList" parameterType="map" resultType="int">
-        SELECT COUNT(*)
-        FROM tb_board
+    <!-- 일반글 총 개수 -->
+    <select id="countNormalBoardList" parameterType="map" resultType="int">
+        SELECT COUNT(*) FROM tb_board
         WHERE board_type = #{boardType}
+        AND priority = 0
         <if test="search != null and search != ''">
             AND title LIKE CONCAT('%', #{search}, '%')
         </if>
+    </select>
+
+    <!-- 공지사항 내용 조회 -->
+    <select id="selectBoardDetail" parameterType="int" resultType="com.happyjob.jobfolio.vo.community.CommunityBoardVo">
+        SELECT
+            b.board_no AS boardNo,
+            b.board_type AS boardType,
+            b.title,
+            b.content,
+            b.write_date AS writeDate,
+            b.author,
+            u.user_name AS authorName,
+            b.priority
+        FROM tb_board b
+                 JOIN tb_userinfo u ON b.author = u.user_no
+        WHERE b.board_no = #{boardNo}
     </select>
 
 </mapper>

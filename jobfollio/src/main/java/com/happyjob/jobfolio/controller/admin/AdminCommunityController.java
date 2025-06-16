@@ -19,6 +19,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -59,6 +60,17 @@ public class AdminCommunityController {
     @DeleteMapping("/delete")
     public ResponseEntity<Void> deleteNotice(@RequestParam("boardNo") int boardNo) {
         adminCommunityService.deleteNotice(boardNo);
+        return ResponseEntity.ok().build();
+    }
+
+    //     공지사항 일괄 삭제
+    @PostMapping("/delete")
+    public ResponseEntity<Void> deleteNoticeBatch(@RequestBody List<Integer> boardNos) {
+        if (boardNos == null || boardNos.isEmpty()) {
+            return ResponseEntity.badRequest().build(); // 400 Bad Request
+        }
+
+        adminCommunityService.deleteNoticeBatch(boardNos);
         return ResponseEntity.ok().build();
     }
 
@@ -116,5 +128,36 @@ public class AdminCommunityController {
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType))
                 .body(resource);
+    }
+
+    @PostMapping("/updatePriority")
+    public ResponseEntity<Void> updatePriority(@RequestBody CommunityBoardVo vo) {
+        adminCommunityService.updatePriority(vo.getBoardNo(), vo.getPriority());
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/updatePriorityBatch")
+    public ResponseEntity<Void> updatePriorityBatch(@RequestBody List<CommunityBoardVo> updates) {
+        adminCommunityService.updatePriorityBatch(updates);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/unpin")
+    public ResponseEntity<Void> unpinBoardList(@RequestBody List<Integer> boardNos) {
+        if (boardNos == null || boardNos.isEmpty()) {
+            return ResponseEntity.badRequest().build(); // 400
+        }
+
+        adminCommunityService.unpinBoardList(boardNos);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/swapPriority")
+    public ResponseEntity<Void> swapPriority(@RequestBody Map<String, Integer> payload) {
+        int boardNo1 = payload.get("boardNo1");
+        int boardNo2 = payload.get("boardNo2");
+
+        adminCommunityService.swapPriority(boardNo1, boardNo2);
+        return ResponseEntity.ok().build();
     }
 }
