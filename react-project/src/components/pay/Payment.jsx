@@ -48,28 +48,26 @@ const Payment = () => {
   // 결제 요청 함수
   const requestPayment = async (product) => {
     try {
-      // 백엔드에 기본 정보 저장 후 orderId 받아오기
       const res = await axios.post("/pay/insertOrder", {
         product_no: product.product_no,
-        orderName : product.product_name,
-        amount : product.amount,
-        user_no: '1234', 
+        order_name : product.product_name,
+        amount: product.price,
+        user_no: '4'
       });
   
-      const { user_no, product_no, amount, orderId } = res.data;
-
-      
-    if (!payment) {
-      alert("결제 시스템이 아직 초기화되지 않았습니다. 잠시 후 다시 시도해주세요.");
-      return;
-    }
-
-    try {
+      const { orderId, amount, order_name, user_no } = res.data;
+  
+      if (!payment) {
+        alert("결제 시스템이 초기화되지 않았습니다.");
+        return;
+      }
+  
       await payment.requestPayment({
         method: "CARD",
+        user_no : user_no,
         amount: amount,
         orderId: orderId,
-        orderName: orderName,
+        order_name: order_name + "개월",
         successUrl: window.location.origin + "/pay/success?orderId=" + orderId,
         failUrl: window.location.origin + "/payment/fail?orderId=" + orderId,
         card: {
@@ -84,7 +82,7 @@ const Payment = () => {
       alert("결제 중 오류가 발생했습니다.");
     }
   };
-
+  
   return (
     <div className='payment'>
       <div className='paymentWrap'>

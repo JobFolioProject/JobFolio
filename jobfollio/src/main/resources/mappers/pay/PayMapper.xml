@@ -6,16 +6,16 @@
 	<insert id="insertOrder" parameterType="map">
 		INSERT INTO 	tb_payment_his
 		    (
-						product_no
+						order_Id
 				,		product_no
-				,		orderName
+				,		order_name
 				,		amount
 				,		user_no
 				,		paid_date
 		) VALUES (
-						#{product_no}
+						#{orderId}
 		    	,		#{product_no}
-		    	,		#{orderName}
+		    	,		#{order_name}
 		    	,		#{amount}
 		    	,		#{user_no}
 		    	,		NOW()

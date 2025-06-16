@@ -32,16 +32,34 @@ public class PayController {
 			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestBody Map<String, Object> params) throws Exception {
-		Map<String, Object> returnmap = new HashMap<String,Object>();
+
+		Map<String, Object> returnmap = new HashMap<>();
 		try {
+			String orderId = generateOrderId();
+			params.put("orderId", orderId);
+
+
 			returnmap = payService.insertOrder(params);
-			returnmap.put("resultmsg","등록 되었습니다.");
+
+			returnmap.put("orderId", orderId);
+
+			returnmap.put("resultmsg", "등록 되었습니다.");
 		} catch (Exception e) {
 			returnmap.put("resultmsg", e.getMessage());
 		}
 
 		return returnmap;
 	}
+
+
+
+	// 랜덤 숫자 6자리 생성
+	private String generateOrderId() {
+		int randomNum = (int)(Math.random() * 1_000_000); // 0 ~ 999999
+		String padded = String.format("%06d", randomNum); // 앞에 0으로 패딩
+		return "order_" + padded;
+	}
+
 
 	// 결제
 //	@PostMapping("/insertpayCard")
