@@ -12,13 +12,14 @@ const CommuNotice = () => {
     const [totalCount, setTotalCount] = useState(0);
     const [searchKeyword, setSearchKeyword] = useState('');
     const pageSize = 10;
+    const totalPages = Math.ceil(totalCount / pageSize);
 
   useEffect(() => {
         fetchNotices();
     }, [currentPage]);
 
 const fetchNotices = () => {
-  axios.get("/community/list", {
+  axios.get("/api/community/list", {
     params: {
       boardType: "N",
       page: currentPage,
@@ -33,7 +34,6 @@ const fetchNotices = () => {
   });
 };
 
-  const totalPages = Math.ceil(totalCount / pageSize);
     return (
     <>
       <div className="notice-banner">

@@ -1,0 +1,160 @@
+.language-line-item {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  margin-bottom: 5px;
+  gap: 5px; /* 항목 간 기본 간격 */
+}
+
+.language-display-header {
+  margin-bottom: 5px;
+}
+
+.language-name {
+  font-weight: bold;
+  font-size: 1.2em !important;
+  color: #333;
+  margin-right: 0;
+  flex-shrink: 0; /* 줄바꿈 시에도 축소되지 않도록 */
+}
+
+.language-level {
+  font-size: 0.95em;
+  color: #777;
+}
+
+.languageFormBox {
+  padding: 15px;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  align-items: baseline;
+  border-top: 3px solid rgb(47, 130, 255); /* 테마 색상 유지 */
+}
+.languageFormBox .formTitle {
+  font-weight: bold;
+  color: rgb(47, 130, 255);
+  font-size: 1.3em;
+  text-align: center;
+}
+
+.languageContainer {
+  display: flex;
+  justify-content: center;
+  padding: 0 15px;
+}
+.languageInputArea {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(120px, 1fr)); /* Education과 동일한 그리드 레이아웃 */
+  gap: 10px;
+  width: 100%;
+  max-width: 900px;
+}
+.formCol,
+.formColFull {
+  display: flex;
+  flex-direction: column;
+}
+
+/* 언어명 필드 (input)에 대한 그리드 컬럼 설정 */
+.formCol.language-name-field {
+  grid-column: span 3;
+}
+
+.formCol.language-level-field {
+  grid-column: span 1;
+}
+
+/* --- 모든 폼 입력 필드의 공통 기본 스타일 (input, select, textarea) --- */
+/* .languageFormBox 내의 모든 input, select, textarea에 적용되는 기본 스타일 */
+.languageFormBox input,
+.languageFormBox select, /* select 태그 사용되므로 포함 */
+.languageFormBox textarea {
+  padding: 15px;
+  border: 1px solid #a0cbed; /* 테마 색상 유지 */
+  border-radius: 6px;
+  box-sizing: border-box;
+  font-size: 13px;
+  background-color: #ffffff;
+  color: #555;
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  margin-bottom: 5px;
+  width: 100%; /* 부모 formCol에 꽉 차도록 */
+  font-weight: normal;
+}
+
+/* 플레이스홀더 스타일 공통화 */
+.languageFormBox input::placeholder,
+.languageFormBox select::placeholder,
+.languageFormBox textarea::placeholder {
+  color: #999;
+  opacity: 1;
+  font-weight: normal;
+}
+
+/* focus 시 스타일 공통화 (에러 필드가 아닐 때만 파란색 focus 스타일 적용) */
+.languageFormBox input:focus,
+.languageFormBox select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+
+.languageFormBox input.error-field,
+.languageFormBox select.error-field {
+  border-color: #d9534f;
+  box-shadow: 0 0 0 0.2rem rgba(217, 83, 79, 0.25);
+}
+
+/* select 드롭다운 화살표 및 글자색 */
+.languageFormBox select {
+  appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0V0z"/><path d="M7 10l5 5 5-5H7z" fill="%23888"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 16px;
+  color: #555;
+}
+
+/* 선택된 옵션의 색상 */
+.languageFormBox select option {
+  color: #333; /* 실제 옵션 텍스트 색상 */
+}
+
+/* 폼 버튼 컨테이너 */
+.languageFormBox .formButtons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  padding: 0 15px;
+}
+/* 폼 버튼 공통 스타일 */
+.languageFormBox .formButtons button {
+  padding: 13px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 15px;
+  transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+}
+.languageFormBox .formButtons button:first-child {
+  background-color: #dcdcdc;
+  color: #333;
+}
+.languageFormBox .formButtons button:first-child:hover {
+  background-color: #c0c0c0;
+  transform: translateY(-1px);
+}
+.languageFormBox .formButtons button:last-child {
+  background-color: #007bff;
+  color: white;
+}
+.languageFormBox .formButtons button:last-child:hover {
+  background-color: #0056b3;
+  transform: translateY(-1px);
+}

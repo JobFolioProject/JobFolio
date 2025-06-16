@@ -1,0 +1,446 @@
+.career-line-item {
+  /* language-line-item -> career-line-item */
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  margin-bottom: 5px;
+  gap: 5px; /* 항목 간 기본 간격 */
+}
+
+.career-display-header {
+  /* language-display-header -> career-display-header */
+  margin-bottom: 5px;
+}
+
+.career-company-name {
+  /* language-name -> career-company-name */
+  font-weight: bold;
+  font-size: 1.2em !important;
+  color: #333;
+  margin-right: 0;
+  flex-shrink: 0; /* 줄바꿈 시에도 축소되지 않도록 */
+}
+
+.career-period {
+  /* language-level -> career-period (기간 표시용) */
+  font-size: 0.95em;
+  color: #777;
+  margin-left: 10px; /* 회사명과의 간격 */
+}
+
+.career-details-row {
+  /* 새로운 섹션 */
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed #eee;
+}
+
+.career-detail-item {
+  /* 새로운 섹션 */
+  display: flex;
+  align-items: baseline;
+  font-size: 0.9em;
+}
+
+.detail-label {
+  /* 공통 클래스 */
+  font-weight: 500;
+  color: #666;
+  margin-right: 5px;
+  flex-shrink: 0;
+}
+
+.detail-value {
+  /* 공통 클래스 */
+  color: #333;
+}
+
+.career-notes-row {
+  /* 새로운 섹션 */
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed #eee;
+  font-size: 0.9em;
+  color: #555;
+}
+
+/* ============================ */
+/* 경력 추가/수정 폼 박스 디자인 */
+/* ============================ */
+.careerFormBox {
+  /* languageFormBox -> careerFormBox */
+  padding: 15px;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  align-items: baseline;
+  border-top: 3px solid rgb(47, 130, 255); /* 테마 색상 유지 */
+}
+.careerFormBox .formTitle {
+  font-weight: bold;
+  color: rgb(47, 130, 255);
+  font-size: 1.3em;
+  text-align: center;
+}
+
+.careerContainer {
+  /* languageContainer -> careerContainer */
+  display: flex;
+  justify-content: center;
+  padding: 0 15px;
+}
+.careerInputArea {
+  /* languageInputArea -> careerInputArea */
+  display: grid;
+  grid-template-columns: repeat(6, minmax(120px, 1fr)); /* Education과 동일한 그리드 레이아웃 */
+  gap: 10px;
+  width: 100%;
+  max-width: 900px;
+}
+.formCol,
+.formColFull {
+  display: flex;
+  flex-direction: column;
+}
+
+/* 회사명 필드 (input)에 대한 그리드 컬럼 설정 (예시) */
+.formCol.company-name-field {
+  /* 새로운 클래스 */
+  grid-column: span 2;
+}
+
+/* 포지션 필드 (input)에 대한 그리드 컬럼 설정 (예시) */
+.formCol.position-field {
+  /* 새로운 클래스 */
+  grid-column: span 2;
+}
+
+/* 재직중 체크박스 그룹 */
+.formCol.current-job-checkbox-group {
+  display: flex;
+  flex-direction: row; /* 체크박스와 라벨을 가로로 배치 */
+  align-items: center;
+  gap: 5px; /* 체크박스와 라벨 간격 */
+  grid-column: span 2; /* 예시 */
+  padding-top: 10px; /* 상단 입력필드와의 간격 */
+}
+.formCol.current-job-checkbox-group input[type='checkbox'] {
+  width: auto; /* 기본 input 스타일 오버라이드 */
+  margin: 0;
+  padding: 0;
+  /* 추가적인 체크박스 스타일링 (예: 크기, 색상 등) */
+  transform: scale(1.2); /* 체크박스 크기 키우기 */
+  cursor: pointer;
+}
+.formCol.current-job-checkbox-group label {
+  margin: 0; /* 기본 마진 제거 */
+  font-size: 0.9em;
+  color: #555;
+  cursor: pointer;
+}
+
+/* --- 모든 폼 입력 필드의 공통 기본 스타일 (input, select, textarea) --- */
+/* .careerFormBox 내의 모든 input, select, textarea에 적용되는 기본 스타일 */
+.careerFormBox input,
+.careerFormBox select, /* 현재 경력에는 select 없지만, 향후를 위해 유지 가능 */
+.careerFormBox textarea {
+  padding: 15px;
+  border: 1px solid #a0cbed; /* 테마 색상 유지 */
+  border-radius: 6px;
+  box-sizing: border-box;
+  font-size: 13px;
+  background-color: #ffffff;
+  color: #555;
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  margin-bottom: 5px;
+  width: 100%; /* 부모 formCol에 꽉 차도록 */
+  font-weight: normal;
+}
+
+/* DatePicker의 input 필드만 별도로 스타일 정의 (우선순위 높임) */
+.careerFormBox .custom-datepicker-input {
+  padding: 15px;
+  border: 1px solid #a0cbed;
+  border-radius: 6px;
+  box-sizing: border-box;
+  background-color: #ffffff;
+  color: #555;
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  margin-bottom: 5px;
+  width: 100%;
+  font-size: 13px;
+  font-weight: normal;
+}
+
+/* DatePicker input을 감싸는 컨테이너 (width 100% 필수) */
+.careerFormBox .react-datepicker__input-container {
+  width: 100%;
+}
+
+/* 플레이스홀더 스타일 공통화 */
+.careerFormBox input::placeholder,
+.careerFormBox select::placeholder,
+.careerFormBox textarea::placeholder,
+.careerFormBox .custom-datepicker-input::placeholder {
+  color: #999;
+  opacity: 1;
+  font-weight: normal;
+}
+
+/* focus 시 스타일 공통화 (에러 필드가 아닐 때만 파란색 focus 스타일 적용) */
+.careerFormBox input:focus:not(.error-field),
+.careerFormBox select:focus:not(.error-field),
+.careerFormBox textarea:focus:not(.error-field),
+.careerFormBox .custom-datepicker-input:focus:not(.error-field) {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+
+/* --- 에러 필드 스타일: 이 스타일은 공통 CSS (index.css 또는 App.css)에 정의하는 것을 권장합니다. --- */
+/* 만약 공통 CSS에 정의되지 않았다면, 여기에 포함시켜야 합니다. */
+/*
+.error-field {
+  border-color: #d9534f !important;
+  box-shadow: 0 0 0 0.2rem rgba(217, 83, 79, 0.25) !important;
+}
+.careerFormBox input.error-field:focus,
+.careerFormBox select.error-field:focus,
+.careerFormBox textarea.error-field:focus,
+.careerFormBox .custom-datepicker-input.error-field:focus {
+    outline: none;
+    border-color: #d9534f !important;
+    box-shadow: 0 0 0 0.2rem rgba(217, 83, 79, 0.25) !important;
+}
+*/
+
+/* textarea 스타일 */
+.careerFormBox textarea {
+  min-height: 120px;
+  resize: vertical;
+  padding: 12px;
+  box-sizing: border-box;
+  font-size: 13px;
+  font-weight: normal;
+  color: #555;
+  border: 1px solid #a0cbed;
+  border-radius: 6px;
+  background-color: #ffffff;
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  margin-bottom: 5px;
+  width: 100%;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+
+/* 폼 버튼 컨테이너 */
+.careerFormBox .formButtons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 15px;
+  padding: 0 15px;
+}
+/* 폼 버튼 공통 스타일 */
+.careerFormBox .formButtons button {
+  padding: 13px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 15px;
+  transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+}
+.careerFormBox .formButtons button:first-child {
+  background-color: #dcdcdc;
+  color: #333;
+}
+.careerFormBox .formButtons button:first-child:hover {
+  background-color: #c0c0c0;
+  transform: translateY(-1px);
+}
+.careerFormBox .formButtons button:last-child {
+  background-color: #007bff;
+  color: white;
+}
+.careerFormBox .formButtons button:last-child:hover {
+  background-color: #0056b3;
+  transform: translateY(-1px);
+}
+
+/* DatePicker 달력 UI 커스터마이징 (EducationSection의 테마를 따름) */
+.careerFormBox.career-datepicker-theme .react-datepicker {
+  font-family: 'Noto Sans KR', sans-serif;
+  border: 1px solid #dcdcdc;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  padding: 12px;
+  background-color: #fff;
+  z-index: 999;
+  position: absolute;
+}
+.careerFormBox.career-datepicker-theme .react-datepicker__header {
+  background-color: #f0f2f5;
+  border-bottom: 1px solid #e2e4e8;
+  padding: 12px 0;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  position: relative;
+  text-align: center;
+}
+.careerFormBox.career-datepicker-theme .react-datepicker__current-month,
+.careerFormBox.career-datepicker-theme .react-datepicker-time__header,
+.careerFormBox.career-datepicker-theme .react-datepicker-year-header {
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 5px;
+}
+.careerFormBox.career-datepicker-theme .react-datepicker__navigation {
+  top: 15px;
+  line-height: 1.7em;
+  border: none;
+  background: none;
+  font-size: 1.3em;
+  width: 25px;
+  height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s ease;
+}
+.careerFormBox.career-datepicker-theme .react-datepicker__navigation:hover {
+  background-color: #e5e5e5;
+}
+.careerFormBox.career-datepicker-theme .react-datepicker__navigation--previous {
+  left: 5px;
+}
+.careerFormBox.career-datepicker-theme .react-datepicker__navigation--next {
+  right: 5px;
+}
+.careerFormBox.career-datepicker-theme .react-datepicker__navigation-icon::before {
+  border-color: #666;
+  border-width: 1.5px 1.5px 0 0;
+}
+.careerFormBox.career-datepicker-theme .react-datepicker__day-names {
+  background-color: #e9ecef;
+  margin-bottom: 8px;
+  padding: 8px 0;
+  border-radius: 6px;
+}
+.careerFormBox.career-datepicker-theme .react-datepicker__day-name {
+  color: #555;
+  font-size: 0.9em;
+  font-weight: 600;
+  width: 2.5em;
+}
+.careerFormBox.career-datepicker-theme .react-datepicker__day-name:first-child {
+  color: #e74c3c;
+}
+.careerFormBox.career-datepicker-theme .react-datepicker__day-name:last-child {
+  color: #3498db;
+}
+.careerFormBox.career-datepicker-theme .react-datepicker__month {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.careerFormBox.career-datepicker-theme .react-datepicker__week {
+  display: flex;
+  justify-content: center;
+}
+.careerFormBox.career-datepicker-theme .react-datepicker__day,
+.careerFormBox.career-datepicker-theme .react-datepicker__time-name {
+  width: 2.5em;
+  line-height: 2.5em;
+  margin: 3px;
+  border-radius: 50%;
+  color: #444;
+  font-weight: normal;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.1s ease;
+  cursor: pointer;
+}
+.careerFormBox.career-datepicker-theme .react-datepicker__day:hover,
+.careerFormBox.career-datepicker-theme .react-datepicker__time-name:hover {
+  background-color: #e0f2fe;
+  color: #007bff;
+  transform: translateY(-1px);
+}
+.careerFormBox.career-datepicker-theme .react-datepicker__day--selected,
+.careerFormBox.career-datepicker-theme .react-datepicker__day--in-selecting-range,
+.careerFormBox.career-datepicker-theme .react-datepicker__day--in-range,
+.careerFormBox.career-datepicker-theme .react-datepicker__time-name--selected,
+.careerFormBox.career-datepicker-theme .react-datepicker__time-name--in-selecting-range,
+.careerFormBox.career-datepicker-theme .react-datepicker__time-name--in-range {
+  background-color: #007bff;
+  color: #fff;
+  font-weight: bold;
+  border-radius: 50%;
+  box-shadow: 0 2px 5px rgba(0, 123, 255, 0.2);
+}
+.careerFormBox.career-datepicker-theme .react-datepicker__day--today {
+  font-weight: bold;
+  color: #0056b3;
+  border: 1px solid #007bff;
+  background-color: #f8f9fa;
+}
+.careerFormBox.career-datepicker-theme .react-datepicker__day--today.react-datepicker__day--selected {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+}
+.careerFormBox.career-datepicker-theme .react-datepicker__day--outside-month {
+  color: #bbb;
+  pointer-events: none;
+}
+.careerFormBox.career-datepicker-theme .react-datepicker__day--disabled {
+  color: #d1d7de;
+  cursor: not-allowed;
+  background-color: transparent;
+}
+.careerFormBox.career-datepicker-theme .react-datepicker__day--disabled:hover {
+  background-color: transparent;
+  color: #d1d7de;
+  transform: none;
+}
+.careerFormBox.career-datepicker-theme .react-datepicker__monthPicker,
+.careerFormBox.career-datepicker-theme .react-datepicker__yearPicker {
+  padding: 10px;
+}
+.careerFormBox.career-datepicker-theme .react-datepicker__month-text,
+.careerFormBox.career-datepicker-theme .react-datepicker__year-text {
+  width: 4em;
+  height: 3em;
+  line-height: 3em;
+  margin: 5px;
+  border-radius: 4px;
+}
+.careerFormBox.career-datepicker-theme .react-datepicker__month-option,
+.careerFormBox.career-datepicker-theme .react-datepicker__year-option {
+  padding: 8px 15px;
+  font-size: 0.9em;
+  color: #333;
+  transition: background-color 0.2s ease;
+}
+.careerFormBox.career-datepicker-theme .react-datepicker__month-option:hover,
+.careerFormBox.career-datepicker-theme .react-datepicker__year-option:hover {
+  background-color: #f0f0f0;
+}
+.careerFormBox.career-datepicker-theme .react-datepicker__month-option--selected,
+.careerFormBox.career-datepicker-theme .react-datepicker__year-option--selected {
+  background-color: #007bff;
+  color: white;
+  font-weight: bold;
+}
+.careerFormBox.career-datepicker-theme .react-datepicker__week-number {
+  color: #888;
+  font-size: 0.8em;
+  width: 2.2em;
+  line-height: 2.2em;
+  margin: 2px;
+  text-align: center;
+  border-right: 1px solid #eee;
+}

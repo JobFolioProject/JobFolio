@@ -1,0 +1,88 @@
+/* --- 섹션 기본 컨테이너 스타일 --- */
+.careerInfoSection {
+  margin-bottom: 10px;
+  border-radius: 8px;
+  padding: 20px;
+  background-color: #fff;
+}
+
+/* --- 헤더: "학력" 텍스트와 "추가" 버튼 --- */
+.careerInfoHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #333;
+}
+.careerInfoTitle {
+  font-size: 1.5em !important;
+  margin: 0;
+  padding: 0;
+  color: #333 !important;
+}
+
+/* "추가" 버튼 스타일 */
+.plusFunction {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 1em !important;
+  transition: color 0.2s ease-in-out;
+  justify-content: flex-end;
+  margin: 0;
+  padding: 0;
+}
+.plusFunction:hover {
+  color: #007bff;
+}
+.plusIcon {
+  font-size: 18px !important;
+  margin-left: 5px;
+}
+
+/* --- 각 학력 항목 표시 스타일 --- */
+.careerItemDisplay {
+  border-radius: 8px;
+  padding: 10px 0px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  border-bottom: 1px solid #ddd;
+}
+.careerItemDisplay p {
+  margin: 0;
+  padding: 0;
+  line-height: normal;
+  width: auto;
+  color: #555;
+  font-weight: 600;
+}
+
+/* 수정/삭제 아이콘 그룹 */
+.itemActions {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  display: flex;
+  gap: 10px;
+  z-index: 10;
+}
+.itemActions .editIcon,
+.itemActions .deleteIcon {
+  cursor: pointer;
+  font-size: 20px !important;
+  color: #666;
+  transition: color 0.2s ease-in-out;
+}
+.itemActions .editIcon:hover {
+  color: #007bff;
+}
+.itemActions .deleteIcon:hover {
+  color: #dc3545;
+}
+
+.careerItemDisplay:last-child {
+  border-bottom: none;
+}

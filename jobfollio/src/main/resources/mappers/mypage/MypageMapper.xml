@@ -6,7 +6,6 @@
         <result property="hobby" column="U_HOBBY"/>
         <result property="notes" column="U_NOTES"/>
     </resultMap>
-
     <resultMap id="eduInfoResultMap" type="com.happyjob.jobfolio.vo.mypage.EduInfoVO">
         <id property="edu_no" column="E_EDU_NO"/>
         <result property="user_no" column="E_USER_NO"/>
@@ -19,13 +18,11 @@
         <result property="gpa" column="E_GPA"/>
         <result property="notes" column="E_NOTES"/>
     </resultMap>
-
     <resultMap id="languageSkillResultMap" type="com.happyjob.jobfolio.vo.mypage.LanguageSkillVO">
         <id property="user_no" column="L_USER_NO"/>
         <id property="language" column="L_LANGUAGE"/>
         <result property="level" column="L_LEVEL"/>
     </resultMap>
-
     <resultMap id="skillResultMap" type="com.happyjob.jobfolio.vo.mypage.SkillVO">
         <id property="user_no" column="S_USER_NO"/>
         <result property="exp_level" column="S_EXP_LEVEL"/>
@@ -36,7 +33,6 @@
             <result property="detail_name" column="SK_DETAIL_NAME"/>
         </association>
     </resultMap>
-
     <resultMap id="certificateResultMap" type="com.happyjob.jobfolio.vo.mypage.CertificateVO">
         <id property="certification_no" column="C_CERTIFICATION_NO"/>
         <result property="user_no" column="C_USER_NO"/>
@@ -46,7 +42,6 @@
         <result property="acquired_date" column="C_ACQUIRED_DATE"/>
         <result property="notes" column="C_NOTES"/>
     </resultMap>
-
     <resultMap id="careerHistoryResultMap" type="com.happyjob.jobfolio.vo.mypage.CareerHistoryVO">
         <id property="career_no" column="H_CAREER_NO"/>
         <result property="user_no" column="H_USER_NO"/>
@@ -56,7 +51,6 @@
         <result property="position" column="H_POSITION"/>
         <result property="notes" column="H_NOTES"/>
     </resultMap>
-
     <select id="getMyCareerInfo" parameterType="long" resultMap="careerDtoResultMap">
         SELECT
             U.user_no AS U_USER_NO,
@@ -67,7 +61,6 @@
         WHERE
             U.user_no = #{user_no}
     </select>
-
     <select id="getEducationListByUserNo" parameterType="long" resultMap="eduInfoResultMap">
         SELECT
             edu_no AS E_EDU_NO,
@@ -84,8 +77,7 @@
             tb_edu_info
         WHERE user_no = #{user_no}
     </select>
-
-    <select id="getLanguageSkillListByUserNo" parameterType="long" resultMap="languageSkillResultMap">
+    <select id="getLanguageListByUserNo" parameterType="long" resultMap="languageSkillResultMap">
         SELECT
             user_no AS L_USER_NO,
             language AS L_LANGUAGE,
@@ -94,7 +86,6 @@
             tb_language_skill
         WHERE user_no = #{user_no}
     </select>
-
     <select id="getSkillListByUserNo" parameterType="long" resultMap="skillResultMap">
         SELECT
             S.user_no AS S_USER_NO,
@@ -108,7 +99,6 @@
                 LEFT JOIN tb_detail_code DCC ON S.group_code = DCC.group_code AND S.skill_code = DCC.detail_code
         WHERE S.user_no = #{user_no}
     </select>
-
     <select id="getCertificateListByUserNo" parameterType="long" resultMap="certificateResultMap">
         SELECT
             certification_no AS C_CERTIFICATION_NO,
@@ -122,7 +112,6 @@
             tb_certification
         WHERE user_no = #{user_no}
     </select>
-
     <select id="getCareerHistoryListByUserNo" parameterType="long" resultMap="careerHistoryResultMap">
         SELECT
             career_no AS H_CAREER_NO,
@@ -137,6 +126,7 @@
         WHERE user_no = #{user_no}
     </select>
 
+    <!--  회원 정보  -->
     <select id="selectUserInfo" parameterType="map" resultType="com.happyjob.jobfolio.vo.join.UserVO">
         SELECT
             user_no,
@@ -161,8 +151,7 @@
     </select>
 
     <!--  학력 사항  -->
-    <insert id="insertEducation" parameterType="com.happyjob.jobfolio.vo.mypage.EduInfoVO">
-
+    <insert id="insertEducation" parameterType="com.happyjob.jobfolio.vo.mypage.EduInfoVO" keyProperty="edu_no" useGeneratedKeys="true">
         INSERT INTO
             tb_edu_info(
                 user_no,
@@ -203,4 +192,87 @@
         WHERE user_no = #{user_no} AND edu_no = #{edu_no}
     </update>
 
+    <!--  자격증  -->
+    <insert id="insertCertification" parameterType="com.happyjob.jobfolio.vo.mypage.CertificateVO" keyProperty="certification_no" useGeneratedKeys="true">
+        INSERT INTO tb_certification(
+            user_no,
+            certificate_no,
+            certificate_name,
+            issuing_org,
+            acquired_date,
+            notes
+        )
+        VALUES (#{user_no},
+                #{certificate_no},
+                #{certificate_name},
+                #{issuing_org},
+                #{acquired_date},
+                #{notes}
+               )
+    </insert>
+    <delete id="deleteCertification">
+        DELETE FROM tb_certification
+        WHERE user_no = #{user_no} AND certification_no = #{certification_no}
+    </delete>
+    <update id="updateCertification" parameterType="com.happyjob.jobfolio.vo.mypage.CertificateVO">
+        UPDATE tb_certification
+        SET user_no = #{user_no},
+            certificate_no=  #{certificate_no},
+            certificate_name=  #{certificate_name},
+            issuing_org= #{issuing_org},
+            acquired_date=  #{acquired_date},
+            notes= #{notes}
+        WHERE user_no = #{user_no} AND certification_no = #{certification_no}
+    </update>
+
+    <!-- 언어 -->
+    <insert id="insertLanguageSkill" parameterType="com.happyjob.jobfolio.vo.mypage.LanguageSkillVO">
+        INSERT INTO tb_language_skill(
+            user_no,
+            language,
+            level
+        )
+        VALUES (
+                #{user_no},
+                #{language},
+                #{level}
+               )
+    </insert>
+    <delete id="deleteLanguageSkill">
+        DELETE FROM tb_language_skill
+        WHERE user_no = #{user_no} AND language = #{language}
+    </delete>
+    <update id="updateLanguageSkill" parameterType="com.happyjob.jobfolio.vo.mypage.LanguageSkillVO">
+        UPDATE tb_language_skill
+        SET user_no = #{user_no},
+            language = #{language},
+            level = #{level}
+        WHERE user_no = #{user_no} AND language = #{language}
+    </update>
+
+    <!-- 경력 -->
+    <insert id="insertCareerHistory" parameterType="com.happyjob.jobfolio.vo.mypage.CareerHistoryVO" keyProperty="career_no" useGeneratedKeys="true">
+        INSERT INTO tb_career_history(
+            user_no,
+            career_no,
+            company_name,
+            start_date,
+            end_date,
+            position,
+            notes
+        )
+        VALUE (
+            #{user_no},
+            #{career_no},
+            #{company_name},
+            #{start_date},
+            #{end_date},
+            #{position},
+            #{notes}
+            )
+    </insert>
+    <delete id="deleteCareerHistory">
+        DELETE FROM tb_career_history
+        WHERE career_no = #{career_no} AND user_no = #{user_no}
+    </delete>
 </mapper>

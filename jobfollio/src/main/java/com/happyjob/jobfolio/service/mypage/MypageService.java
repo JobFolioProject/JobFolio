@@ -51,7 +51,7 @@ public class MypageService {
             List<EduInfoVO> educationList = mypageMapper.getEducationListByUserNo(userNo);
             careerAllDto.setEducationList(educationList);
             // 언어 목록
-            List<LanguageSkillVO> languageSkillList = mypageMapper.getLanguageSkillListByUserNo(userNo);
+            List<LanguageSkillVO> languageSkillList = mypageMapper.getLanguageListByUserNo(userNo);
             careerAllDto.setLanguageSkillList(languageSkillList);
             // 스킬 목록
             List<SkillVO> skillList = mypageMapper.getSkillListByUserNo(userNo);
@@ -66,10 +66,42 @@ public class MypageService {
         return careerAllDto;
     }
 
+    // 학력 정보
+    public void addEducation(EduInfoVO eduInfoVO) {
+        mypageMapper.insertEducation(eduInfoVO);
+    }
+    public void deleteByUserNoAndEduNo(Long userNo, Integer eduNo) {
+        mypageMapper.deleteEducation(userNo,eduNo);
+    }
+    public void updateByUserNoAndEduNo(EduInfoVO eduInfoVO) {
+        mypageMapper.updateEducation(eduInfoVO);
+    }
+
+    // 자격증 정보 추가
+    public void addCertification(CertificateVO certificateVO) {
+        mypageMapper.insertCertification(certificateVO);
+    }
+    public void deleteByUserNoAndCertNo(Long userNo, Integer certNo) {
+        mypageMapper.deleteCertification(userNo,certNo);
+    }
+    public void updateByUserNoAndCertNo(CertificateVO certificateVO) {
+        mypageMapper.updateCertification(certificateVO);
+    }
+
+    // 언어 정보 추가
+    public void addLanguageSkill(LanguageSkillVO languageSkillVO) {
+        mypageMapper.insertLanguageSkill(languageSkillVO);
+    }
+    public void deleteByUserNoAndLanguage(Long userNo, String language) {
+        mypageMapper.deleteLanguageSkill(userNo,language);
+    }
+    public void updateByUserNoAndLanguage(LanguageSkillVO languageSkillVO) {
+        mypageMapper.updateLanguageSkill(languageSkillVO);
+    }
 
     // 기술 정보 추가
-    public Integer addSkill(SkillVO skillVO) {
-        return mypageMapper.insertSkill(skillVO);
+    public void addSkill(SkillVO skillVO) {
+        mypageMapper.insertSkill(skillVO);
     }
     public void updateSkill(SkillVO skillVO) {
         mypageMapper.updateSkill(skillVO);
@@ -79,48 +111,17 @@ public class MypageService {
     }
 
 
-    // 언어 정보 추가
-    public Integer addLanguage(LanguageSkillVO languageSkillVO) {
-        return mypageMapper.insertLanguageSkill(languageSkillVO);
-    }
-    public void updateLanguage(LanguageSkillVO languageSkillVO) {
-        mypageMapper.updateLanguageSkill(languageSkillVO);
-    }
-    public void deleteLanguage(Long userNo) {
-        mypageMapper.deleteLanguageSkill(userNo);
-    }
-
-    // 자격증 정보 추가
-    public Integer addCertificate(CertificateVO certificateVO) {
-        return mypageMapper.insertCertificate(certificateVO);
-    }
-    public void updateCertificate(CertificateVO certificateVO) {
-        mypageMapper.updateCertificate(certificateVO);
-    }
-    public void deleteCertificate(Long userNo) {
-        mypageMapper.deleteCertificate(userNo);
-    }
-
 
     // 경력 정보 추가
-    public CareerHistoryVO addCareerhistory(CareerHistoryVO careerHistoryVO) {
-        return mypageMapper.insertCareerHistory(careerHistoryVO);
+    public void addCareerhistory(CareerHistoryVO careerHistoryVO) {
+        mypageMapper.insertCareerHistory(careerHistoryVO);
     }
     public void updateCareerhistory(CareerHistoryVO careerHistoryVO) {
         mypageMapper.updateCareerHistory(careerHistoryVO);
     }
-    public void deleteCareerhistory(Long userNo) {
-        mypageMapper.deleteCertificate(userNo);
+    public void deleteCareerhistory(Long userNo, Integer carrerNo) {
+        mypageMapper.deleteCareerHistory(userNo,carrerNo);
     }
 
-    // 학력 정보
-    public Integer addEducation(EduInfoVO eduInfoVO) {
-        return mypageMapper.insertEducation(eduInfoVO);
-    }
-    public void deleteByUserNoAndEduNo(Long userNo, Integer eduNo) {
-        mypageMapper.deleteEducation(userNo,eduNo);
-    }
-    public void updateByUserNoAndEduNo(EduInfoVO eduInfoVO) {
-        mypageMapper.updateEducation(eduInfoVO);
-    }
+
 }
