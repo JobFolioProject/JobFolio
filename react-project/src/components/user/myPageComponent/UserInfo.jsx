@@ -25,14 +25,23 @@ const UserInfo = () => {
         const response = await axios.get(`/api/myPage/userInfo/${userNo}`);
 
         const data = response.data;
+        console.log(data);
+        
 
         setUserInfo({
-        user_no: data.user_no,
-        user_name: data.user_name,
-        hp: data.hp,
-        login_id: data.login_id,
-        address: data.address ?? "",
-        expire_days: data.expire_days ?? "미구독",
+            user_no: data.user_no,
+            user_name: data.user_name,
+            hp: data.hp,
+            login_id: data.login_id,
+            address: data.address ?? "",
+            expire_days: data.expire_days ? (() => {
+                const date = new Date(data.expire_days);
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            })()
+            : "미구독"
         });
     } catch (err) {
         console.error("Failed to fetch userInfo:", err);
