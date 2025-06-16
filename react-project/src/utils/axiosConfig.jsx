@@ -25,7 +25,7 @@ axiosInstance.interceptors.request.use(
     // 기본 헤더 설정
     config.headers["Content-Type"] = "application/json";
 
-    // Memory에서 accessToken 가져와서 Authorization Header에 추가
+    // Memory에서 accessToken 가져와서 Authorization Header에 추가 d
     if (authContextRef?.accessToken) {
       config.headers.Authorization = `Bearer ${authContextRef.accessToken}`;
       // 중요한 API 요청에만 로그 출력
