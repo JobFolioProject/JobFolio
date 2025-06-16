@@ -22,8 +22,8 @@
         </if>
         <!-- 정렬: priority 내림차순, 최신 작성일 내림차순 -->
         ORDER BY b.priority DESC, b.write_date DESC
-        <!-- MySQL 페이징: offset, pageSize 순서 -->
-        LIMIT #{offset}, #{pageSize}
+        <!-- MySQL 페이징: offset, limit 순서 -->
+        LIMIT #{offset}, #{limit}
     </select>
 
     <!-- 전체 건수 조회 -->

@@ -143,30 +143,40 @@ const NoticeManagement = () => {
                 </tr>
               </thead>
               <tbody>
-                {noticeList.map((item, idx) => {
-                  const { date, time } = formatDateTime(item.writeDate);
-                  return (
-                    <tr key={item.boardNo}>
-                      <td className="col-checkbox">
-                        <input type="checkbox" disabled />
-                      </td>
-                      <td className="col-number">{totalCount - ((currentPage - 1) * pageSize + idx)}</td>
-                      <td
-                        className="col-title notice-title"
-                        style={{ cursor: 'pointer' }}
-                        onClick={() => handleView(item)}
-                      >
-                        {item.title}
-                      </td>
-                      <td className="col-date">
-                        <div>{date}</div>
-                        <div>{time}</div>
-                      </td>
-                      <td className="col-priority">{item.priority}</td>
-                      <td className="col-writer">{item.authorName}</td>
-                    </tr>
-                  );
-                })}
+                {noticeList.length > 0 ? (
+                  noticeList.map((item, idx) => {
+                    const { date, time } = formatDateTime(item.writeDate);
+                    return (
+                      <tr key={item.boardNo}>
+                        <td className="col-checkbox">
+                          <input type="checkbox" disabled />
+                        </td>
+                        <td className="col-number">
+                          {totalCount - ((currentPage - 1) * pageSize + idx)}
+                        </td>
+                        <td
+                          className="col-title notice-title"
+                          style={{ cursor: 'pointer' }}
+                          onClick={() => handleView(item)}
+                        >
+                          {item.title}
+                        </td>
+                        <td className="col-date">
+                          <div>{date}</div>
+                          <div>{time}</div>
+                        </td>
+                        <td className="col-priority">{item.priority}</td>
+                        <td className="col-writer">{item.authorName}</td>
+                      </tr>
+                    );
+                  })
+                ) : (
+                  <tr>
+                    <td colSpan="6" className="notice-empty-row">
+                      조회된 공지사항이 없습니다.
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
 
