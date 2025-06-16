@@ -45,19 +45,19 @@ public class SecurityConfig {
 
                 .and()
 
-                // 세션 사용하지 않음 (JWT 사용하므로)
+
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
                 .and()
 
-                // 예외 처리 설정 추가 (현업 방식)
+
                 .exceptionHandling()
                 .accessDeniedHandler(customAccessDeniedHandler)
 
                 .and()
 
-                // 요청별 인증 및 권한 설정
+                // 요청별 인증 및 권한 설정================================================================================
                 .authorizeRequests()
                 // 인증 없이 접근 가능한 경로
                 .antMatchers(
@@ -112,13 +112,13 @@ public class SecurityConfig {
                 "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"
         ));
 
-        // 허용할 헤더
+
         configuration.setAllowedHeaders(Arrays.asList("*"));
 
-        // 쿠키 인증 정보 포함 허용
+
         configuration.setAllowCredentials(true);
 
-        // 노출할 헤더
+
         configuration.setExposedHeaders(Arrays.asList("Set-Cookie"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

@@ -40,7 +40,6 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
         errorResponse.put("message", "접근 권한이 없습니다. 관리자에게 문의하세요.");
         errorResponse.put("path", request.getRequestURI());
 
-        // 현업에서는 보통 상세 정보도 포함
         if (auth != null) {
             Map<String, Object> userInfo = new HashMap<>();
             userInfo.put("currentUser", auth.getName());

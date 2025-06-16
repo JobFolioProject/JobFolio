@@ -1,19 +1,19 @@
-import '../../../css/user/myPageComponent/UserInfo.css';
-import '../../../css/user/myPageComponent/MyCareer.css';
-import EducationSection from './EducationSection';
-import CertificateSection from './CertificateSection';
-import LanguageSection from './LanguageSection';
-import CareerHistorySection from './CareerHistorySection';
-import SkillSection from './SkillSection';
-import { useAuth } from '../../../context/AuthContext';
-import axios from '../../../utils/axiosConfig';
-import React, { useState, useEffect, useCallback } from 'react';
+import "../../../css/user/myPageComponent/UserInfo.css";
+import "../../../css/user/myPageComponent/MyCareer.css";
+import EducationSection from "./EducationSection";
+import CertificateSection from "./CertificateSection";
+import LanguageSection from "./LanguageSection";
+import CareerHistorySection from "./CareerHistorySection";
+import SkillSection from "./SkillSection";
+import { useAuth } from "../../../context/AuthContext";
+import axios from "../../../utils/axiosConfig";
+import React, { useState, useEffect, useCallback } from "react";
 
 // MyCareer 초기 객체 설정
 const careerDataState = {
-  user_no: null, 
-  hobby: '',
-  notes: '',
+  user_no: null,
+  hobby: "",
+  notes: "",
   educationList: [],
   languageSkillList: [],
   skillList: [],
@@ -24,10 +24,10 @@ const careerDataState = {
 const MyCareer = () => {
   // 🔐 AuthContext에서 사용자 정보 가져오기
   const { user, isAuthenticated, isLoading: authLoading } = useAuth();
-  
+
   // 백엔드에서 불러온 모든 커리어 데이터를 저장하는 상태 (CareerDto)
   const [careerData, setCareerData] = useState(careerDataState);
-  
+
   // 로딩상태
   const [loading, setLoading] = useState(true);
   // 에러상태
@@ -49,21 +49,23 @@ const MyCareer = () => {
           ...responseData,
           user_no: user.userNo, // AuthContext의 userNo 사용
           educationList: responseData.educationList?.filter(Boolean) || [],
-          languageSkillList: responseData.languageSkillList?.filter(Boolean) || [],
+          languageSkillList:
+            responseData.languageSkillList?.filter(Boolean) || [],
           skillList: responseData.skillList?.filter(Boolean) || [],
           certificateList: responseData.certificateList?.filter(Boolean) || [],
-          careerHistoryList: responseData.careerHistoryList?.filter(Boolean) || [],
+          careerHistoryList:
+            responseData.careerHistoryList?.filter(Boolean) || [],
         };
 
         setCareerData(cleanedCareerData); // 걸러낸 데이터 상태에 설정
-        console.log('초기 커리어 데이터 확인:', cleanedCareerData);
+        console.log("초기 커리어 데이터 확인:", cleanedCareerData);
       } else {
-        setError('사용자 정보가 없습니다.');
+        setError("사용자 정보가 없습니다.");
       }
     } catch (error) {
-      console.error('커리어 데이터 로딩 실패:', error);
-      setError('데이터 로딩 실패');
-      
+      console.error("커리어 데이터 로딩 실패:", error);
+      setError("데이터 로딩 실패");
+
       // 초기값으로 되돌리기
       setCareerData(careerDataState);
     } finally {
@@ -76,7 +78,7 @@ const MyCareer = () => {
     if (!authLoading && isAuthenticated && user?.userNo) {
       fetchCareerData();
     } else if (!authLoading && !isAuthenticated) {
-      setError('로그인이 필요합니다.');
+      setError("로그인이 필요합니다.");
       setLoading(false);
     }
   }, [user?.userNo, isAuthenticated, authLoading, fetchCareerData]);
@@ -144,12 +146,12 @@ const MyCareer = () => {
       <div className="userInfoWrap">
         <div className="userInfoContent">
           <p className="error-message">❌ {error}</p>
-          <button 
+          <button
             onClick={fetchCareerData}
-            style={{ 
-              marginTop: '10px', 
-              padding: '8px 16px', 
-              cursor: 'pointer' 
+            style={{
+              marginTop: "10px",
+              padding: "8px 16px",
+              cursor: "pointer",
             }}
           >
             다시 시도
@@ -201,10 +203,10 @@ const MyCareer = () => {
           careerHistoryList={careerData.careerHistoryList}
           onListChange={handleCareerHistoryListChange}
         />
-        <SkillSection 
-          userNo={user.userNo} 
-          skillList={careerData.skillList} 
-          onListChange={handleSkillListChange} 
+        <SkillSection
+          userNo={user.userNo}
+          skillList={careerData.skillList}
+          onListChange={handleSkillListChange}
         />
       </div>
     </div>

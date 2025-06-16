@@ -60,10 +60,8 @@ public class CookieUtil {
      * SameSite 속성이 포함된 Access Token 쿠키 생성
      */
     public void createAccessTokenCookieWithSameSite(HttpServletResponse response, String token) {
-        // 기본 쿠키 생성
         createAccessTokenCookie(response, token);
 
-        // SameSite 속성을 수동으로 추가
         String cookieHeader = String.format("%s=%s; Path=/; HttpOnly; Max-Age=%d; SameSite=Lax",
                 ACCESS_TOKEN_COOKIE_NAME, token, 15 * 60);
         response.setHeader("Set-Cookie", cookieHeader);
@@ -92,7 +90,7 @@ public class CookieUtil {
         cookie.setHttpOnly(true);
         cookie.setSecure(false);
         cookie.setPath("/");
-        cookie.setMaxAge(0); // 즉시 만료
+        cookie.setMaxAge(0);
 
         response.addCookie(cookie);
     }

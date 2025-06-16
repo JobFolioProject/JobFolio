@@ -36,11 +36,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
 
         try {
-            // Authorization Header에서 Bearer Token 추출 (새로운 방식)
+            // Authorization Header에서 Bearer Token 추출
             String accessToken = extractTokenFromRequest(request);
 
             if (StringUtils.hasText(accessToken) && jwtTokenProvider.validateAccessToken(accessToken)) {
-                // 토큰에서 사용자 정보 추출 (DB 컬럼명과 통일)
+                // 토큰에서 사용자 정보 추출
                 String login_id = jwtTokenProvider.getLoginIdFromToken(accessToken);
                 Long user_no = jwtTokenProvider.getUserNoFromToken(accessToken);
                 String user_name = jwtTokenProvider.getUserNameFromToken(accessToken);

@@ -15,10 +15,8 @@ public class UserPrincipal implements Serializable {
     private String user_name;
     private String user_type;
 
-    // 기본 생성자
     public UserPrincipal() {}
 
-    // 전체 생성자 (user_type 포함)
     public UserPrincipal(Long user_no, String login_id, String user_name, String user_type) {
         this.user_no = user_no;
         this.login_id = login_id;
@@ -26,7 +24,6 @@ public class UserPrincipal implements Serializable {
         this.user_type = user_type;
     }
 
-    // Getters (DB 컬럼명과 통일)
     public Long getUser_no() {
         return user_no;
     }

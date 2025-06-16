@@ -40,11 +40,9 @@ public class UserService {
     @Autowired
     private EmailService emailService;
 
-    // 🔥 현업용 추가 의존성
     @Autowired
     private RefreshTokenMapper refreshTokenMapper;
 
-    // 보안 관련 의존성 추가
     @Autowired
     private PasswordEncoder passwordEncoder;
 

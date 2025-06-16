@@ -21,10 +21,10 @@ public class JwtTokenProvider {
     @Value("${jwt.secret:mySecretKeyForJwtTokenGenerationThatShouldBeLongEnoughForSecurityPurposes}")
     private String jwtSecret;
 
-    @Value("${jwt.access-expiration:900000}") // 15분 (밀리초)
+    @Value("${jwt.access-expiration:900000}") // 15분
     private long accessTokenExpiration;
 
-    @Value("${jwt.refresh-expiration:1209600000}") // 14일 (밀리초)
+    @Value("${jwt.refresh-expiration:1209600000}") // 14일
     private long refreshTokenExpiration;
 
     private SecretKey getSigningKey() {
@@ -32,7 +32,7 @@ public class JwtTokenProvider {
     }
 
     /**
-     * Access Token 생성 (DB 컬럼명과 통일)
+     * Access Token 생성
      */
     public String generateAccessToken(String login_id, Long user_no, String user_name, String user_type) {
         Map<String, Object> claims = new HashMap<String, Object>();
@@ -45,7 +45,7 @@ public class JwtTokenProvider {
     }
 
     /**
-     * Refresh Token 생성 (DB 컬럼명과 통일)
+     * Refresh Token 생성
      */
     public String generateRefreshToken(String login_id) {
         Map<String, Object> claims = new HashMap<String, Object>();
