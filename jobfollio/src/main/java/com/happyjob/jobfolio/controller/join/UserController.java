@@ -524,4 +524,53 @@ public class UserController {
             return ResponseEntity.internalServerError().body(resultMap);
         }
     }
+
+    @PostMapping("/userInfoCheck")
+    public ResponseEntity<Map<String, Object>> userInfoCheck(
+            @RequestBody Map<String, Object> paramMap,
+            HttpServletRequest request,
+            HttpSession session) {
+
+        logger.info("+ Start UserController.userInfoCheck");
+        logger.info("   - ParamMap : " + paramMap);
+
+        Map<String, Object> resultMap = new HashMap<>();
+
+        System.out.println((String) paramMap.get("login_id")+"----------------------------------");
+
+        try {
+            String loginId = (String) paramMap.get("login_id");
+            String password = (String) paramMap.get("password");
+
+            if (loginId == null || password == null) {
+                resultMap.put("result", "N");
+                resultMap.put("message", "아이디와 비밀번호를 입력해주세요.");
+                return ResponseEntity.ok(resultMap);
+            }
+
+            // UserService에 전달할 paramMap 준비
+            Map<String, Object> serviceMap = new HashMap<>();
+            serviceMap.put("loginId", loginId);  // 서비스에서는 loginId로 사용
+            serviceMap.put("password", password);
+
+            UserVO user = userService.loginUser(serviceMap);
+
+            if (user != null && user.getPassword().equals(password)) {
+
+                resultMap.put("result", "Y");
+                resultMap.put("userInfo", user);
+                return ResponseEntity.ok(resultMap);
+            } else {
+                resultMap.put("result", "N");
+                resultMap.put("message", "아이디 또는 비밀번호가 올바르지 않습니다.");
+                return ResponseEntity.ok(resultMap);
+            }
+
+        } catch (Exception e) {
+            logger.error("Error in loginUser: ", e);
+            resultMap.put("result", "N");
+            resultMap.put("message", "정보 확인 중 오류가 발생했습니다.");
+            return ResponseEntity.internalServerError().body(resultMap);
+        }
+    }
 }

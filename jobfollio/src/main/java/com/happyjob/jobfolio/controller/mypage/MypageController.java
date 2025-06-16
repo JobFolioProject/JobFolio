@@ -38,26 +38,36 @@ public class MypageController {
         return ResponseEntity.ok(userVO);
     }
 
-    // 마이페이지 - 회원 탈퇴
-    @DeleteMapping("/userInfo/{userNo}/delete")
-    public Map<String, Object> deleteByUserId(@PathVariable Long userNo, @RequestBody UserVO userVO) {
-
-
-        mypageService.deleteByUserId(userNo);
-        Map<String, Object> resultMap = new HashMap<String, Object>();
-
-        return resultMap;
+    // 마이페이지 - 회원정보 수정
+    @PostMapping("/editUserInfo")
+    public ResponseEntity<String> editUserInfo(@RequestBody UserVO userInfo) {
+        try {
+            int result = mypageService.updateByUserId(userInfo);
+            if (result > 0) {
+                return ResponseEntity.ok("수정 완료");
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 사용자를 찾을 수 없습니다.");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("수정 실패: " + e.getMessage());
+        }
     }
 
-    // 마이페이지 - 회원정보 수정
-    @PutMapping("/userInfo/{userNo}/update")
-    public Map<String, Object> updateByUserId(@RequestParam Long userNo) {
-
-        mypageService.updateByUserId(userNo);
-
-        Map<String, Object> resultMap = new HashMap<String, Object>();
-
-        return resultMap;
+    // 마이페이지 - 회원 탈퇴
+    @GetMapping("/userInfo/{userNo}/delete")
+    public ResponseEntity<String> deleteByUserId(@PathVariable("userNo") Long userNo) {
+        try {
+            int result = mypageService.deleteByUserId(userNo);
+            if (result > 0) {
+                return ResponseEntity.ok("탈퇴 완료");
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 사용자를 찾을 수 없습니다.");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("탈퇴 실패: " + e.getMessage());
+        }
     }
 
     // ======================================== 이력서 내역 =============================================
