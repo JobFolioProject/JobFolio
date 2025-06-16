@@ -63,7 +63,7 @@ public class MypageService {
             careerAllDto.setCertificateList(certificateList);
             // 경력 목록
             List<CareerHistoryVO> careerHistoryList = mypageMapper.getCareerHistoryListByUserNo(userNo);
-            careerAllDto.setCreerHistoryList(careerHistoryList);
+            careerAllDto.setCareerHistoryList(careerHistoryList);
         }
         return careerAllDto;
     }

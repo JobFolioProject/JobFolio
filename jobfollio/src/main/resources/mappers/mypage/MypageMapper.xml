@@ -273,7 +273,6 @@
     <insert id="insertCareerHistory" parameterType="com.happyjob.jobfolio.vo.mypage.CareerHistoryVO" keyProperty="career_no" useGeneratedKeys="true">
         INSERT INTO tb_career_history(
             user_no,
-            career_no,
             company_name,
             start_date,
             end_date,
@@ -282,7 +281,6 @@
         )
         VALUE (
             #{user_no},
-            #{career_no},
             #{company_name},
             #{start_date},
             #{end_date},
@@ -298,10 +296,10 @@
         UPDATE tb_career_history
         SET  user_no = #{user_no},
             career_no = #{career_no},
-            company_name  #{company_name},
-            start_date #{start_date},
-            end_date #{end_date},
-            position #{position},
+            company_name = #{company_name},
+            start_date =#{start_date},
+            end_date= #{end_date},
+            position =#{position},
             notes = #{notes}
         WHERE career_no = #{career_no} AND user_no = #{user_no}
     </update>

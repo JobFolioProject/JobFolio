@@ -87,11 +87,11 @@ public class CareerAllDto {
         this.certificateList = certificateList;
     }
 
-    public List<CareerHistoryVO> getCreerHistoryList() {
+    public List<CareerHistoryVO> getCareerHistoryList() {
         return careerHistoryList;
     }
 
-    public void setCreerHistoryList(List<CareerHistoryVO> creerHistoryList) {
+    public void setCareerHistoryList(List<CareerHistoryVO> creerHistoryList) {
         this.careerHistoryList = creerHistoryList;
     }
 }
