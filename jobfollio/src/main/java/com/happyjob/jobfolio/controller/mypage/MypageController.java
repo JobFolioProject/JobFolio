@@ -4,6 +4,7 @@ import com.happyjob.jobfolio.service.mypage.MypageService;
 import com.happyjob.jobfolio.service.resume.ResumeService;
 import com.happyjob.jobfolio.vo.join.UserVO;
 import com.happyjob.jobfolio.vo.mypage.*;
+import com.happyjob.jobfolio.vo.system.DetailcodeModel;
 import com.happyjob.jobfolio.vo.resume.ResumeInfoVO;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -91,15 +92,6 @@ public class MypageController {
         return ResponseEntity.ok(dto);
     }
 
-    // 기술 스택
-    @PostMapping("/{user_no}/skills")
-    public ResponseEntity<String> addSkill(@PathVariable(name = "user_no") Long userNo, @RequestBody SkillVO skillVO) {
-
-
-        mypageService.addSkill(skillVO);
-        return new ResponseEntity<>("기술 사항이 정상적으로 추가되었습니다.", HttpStatus.CREATED);
-    }
-
     //학력 저장 - 리액트에서 받는걸 생각해야함.
     @PostMapping("/{user_no}/educations")
     public ResponseEntity<EduInfoVO> addEducation(@PathVariable(name = "user_no") Long userNo, @RequestBody EduInfoVO eduInfoVO) {
@@ -169,27 +161,53 @@ public class MypageController {
         return new ResponseEntity<>("언어 정보가 정상적으로 삭제되었습니다.", HttpStatus.CREATED);
     }
 
-
-
-
     // 경력
     @PostMapping("/{user_no}/careerhistories")
-    public ResponseEntity<String> addCareerHistory(@PathVariable(name = "user_no") Long userNo, @RequestBody CareerHistoryVO careerHistoryVO) {
+    public ResponseEntity<CareerHistoryVO> addCareerHistory(@PathVariable(name = "user_no") Long userNo, @RequestBody CareerHistoryVO careerHistoryVO) {
         mypageService.addCareerhistory(careerHistoryVO);
-        return new ResponseEntity<>("경력 사항이 정상적으로 추가되었습니다.", HttpStatus.CREATED);
+        return new ResponseEntity<>(careerHistoryVO, HttpStatus.CREATED);
     }
-
     @PutMapping("/myCareer/{user_no}/update")
-    public ResponseEntity<String> modifyMyCareer(@PathVariable(name = "user_no") Long userNo, @RequestBody CareerHistoryVO careerHistoryVO) {
-        return new ResponseEntity<>("",HttpStatus.CREATED);
+    public ResponseEntity<String> updateMyCareer(@PathVariable(name = "user_no") Long userNo, @RequestBody CareerHistoryVO careerHistoryVO) {
+        mypageService.updateByUserNoAndCareerhistory(careerHistoryVO);
+        return new ResponseEntity<>("경력 사항이 정상적으로 수정되었습니다.",HttpStatus.CREATED);
     }
     @DeleteMapping("/{user_no}/careerhistories/{carrer_no}")
     public ResponseEntity<String> deleteCareerHisory(@PathVariable(name = "user_no") Long userNo, @PathVariable(name = "carrer_no") Integer carrerNo) {
-        mypageService.deleteCareerhistory(userNo,carrerNo);
-        return new ResponseEntity<>("", HttpStatus.CREATED);
+        mypageService.deleteByUserNoAndCareerhistory(userNo,carrerNo);
+        return new ResponseEntity<>("기술 사항이 정상적으로 삭제되었습니다.", HttpStatus.CREATED);
     }
 
+    // 기술(스킬)
+    @PostMapping("/{user_no}/skills")
+    public ResponseEntity<String> addSkill(@PathVariable(name = "user_no") Long userNo, @RequestBody SkillVO skillVO) {
+        mypageService.addSkill(skillVO);
+        return new ResponseEntity<>("기술 사항이 정상적으로 추가되었습니다.", HttpStatus.CREATED);
+    }
+    @PutMapping("/{user_no}/skills/{skill_code}/{group_code}")
+    public ResponseEntity<String> updateSkill(@PathVariable(name = "user_no") Long userNo,
+                                              @PathVariable(name = "skill_code") String skill_code,
+                                              @PathVariable(name = "group_code") String group_code,
+                                              @RequestParam SkillVO skillVO) {
+        mypageService.updateSkill(skillVO);
+        return new ResponseEntity<>("기술 사항이 정상적으로 수정되었습니다.", HttpStatus.CREATED);
+    }
+    @DeleteMapping("/{user_no}/skills/{skill_code}/{group_code}")
+    public ResponseEntity<String> deleteSkill(@PathVariable(name = "user_no") Long userNo,
+                                              @PathVariable(name = "skill_code") String skillCode,
+                                              @PathVariable(name = "group_code") String groupCode){
+        mypageService.deleteSkill(userNo,skillCode,groupCode);
+        return new ResponseEntity<>("기술 사항이 정상적으로 삭제되었습니다.", HttpStatus.CREATED);
+    }
 
+    // 스킬 상세코드 목록 
+    @GetMapping("/{user_no}/career/{skill_code}/{group_code}")
+    public ResponseEntity<String> getCareerSkillList(@PathVariable(name = "user_no") Long userNo,
+                                                      @PathVariable(name = "skill_code") String skillCode,
+                                                      @PathVariable(name = "group_code") String groupCode) {
+        mypageService.searchByDetailCoad(userNo,skillCode,groupCode);
+        return new ResponseEntity<>("<UNK> <UNK> <UNK> <UNK>.", HttpStatus.CREATED);
+    }
 
     // ======================================== 결재 내역 =============================================
     // 마이페이지 - 결재 내역 조회

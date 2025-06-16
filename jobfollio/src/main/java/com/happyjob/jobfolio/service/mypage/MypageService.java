@@ -101,6 +101,17 @@ public class MypageService {
         mypageMapper.updateLanguageSkill(languageSkillVO);
     }
 
+    // 경력 정보 추가
+    public void addCareerhistory(CareerHistoryVO careerHistoryVO) {
+        mypageMapper.insertCareerHistory(careerHistoryVO);
+    }
+    public void updateByUserNoAndCareerhistory(CareerHistoryVO careerHistoryVO) {
+        mypageMapper.updateCareerHistory(careerHistoryVO);
+    }
+    public void deleteByUserNoAndCareerhistory(Long userNo, Integer carrerNo) {
+        mypageMapper.deleteCareerHistory(userNo,carrerNo);
+    }
+
     // 기술 정보 추가
     public void addSkill(SkillVO skillVO) {
         mypageMapper.insertSkill(skillVO);
@@ -108,22 +119,16 @@ public class MypageService {
     public void updateSkill(SkillVO skillVO) {
         mypageMapper.updateSkill(skillVO);
     }
-    public void deleteSkill(Long userNo) {
-        mypageMapper.deleteSkill(userNo);
+    public void deleteSkill(Long userNo,String skillCode,String groupCode) {
+        mypageMapper.deleteSkill(userNo,skillCode,groupCode);
+    }
+
+    public void searchByDetailCoad(Long userNo, String skillCode,String groupCode) {
+        mypageMapper.searchByDetailCoad(userNo,skillCode,groupCode);
     }
 
 
 
-    // 경력 정보 추가
-    public void addCareerhistory(CareerHistoryVO careerHistoryVO) {
-        mypageMapper.insertCareerHistory(careerHistoryVO);
-    }
-    public void updateCareerhistory(CareerHistoryVO careerHistoryVO) {
-        mypageMapper.updateCareerHistory(careerHistoryVO);
-    }
-    public void deleteCareerhistory(Long userNo, Integer carrerNo) {
-        mypageMapper.deleteCareerHistory(userNo,carrerNo);
-    }
 
 
 }

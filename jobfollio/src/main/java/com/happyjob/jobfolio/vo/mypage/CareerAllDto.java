@@ -20,7 +20,7 @@ public class CareerAllDto {
     // 자격증
     private List<CertificateVO> certificateList;
     // 경력
-    private List<CareerHistoryVO> creerHistoryList;
+    private List<CareerHistoryVO> careerHistoryList;
 
     // 리스트 필드를 null 방지를 위해 초기화하는 생성자
     public CareerAllDto() {
@@ -28,7 +28,7 @@ public class CareerAllDto {
         this.languageSkillList = new ArrayList<>();
         this.skillList = new ArrayList<>();
         this.certificateList = new ArrayList<>();
-        this.creerHistoryList = new ArrayList<>();
+        this.careerHistoryList = new ArrayList<>();
     }
 
     public Long getUser_no() {
@@ -88,10 +88,10 @@ public class CareerAllDto {
     }
 
     public List<CareerHistoryVO> getCreerHistoryList() {
-        return creerHistoryList;
+        return careerHistoryList;
     }
 
     public void setCreerHistoryList(List<CareerHistoryVO> creerHistoryList) {
-        this.creerHistoryList = creerHistoryList;
+        this.careerHistoryList = creerHistoryList;
     }
 }
