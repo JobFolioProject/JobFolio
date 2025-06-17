@@ -49,10 +49,10 @@ const SubscriptManagementDetail = ({ item, onClose, mode, onSaved }) => {
     
     try {
       if (isEdit) {
-        await axios.post('/api/product/updateProduct', payload);
+        await axios.post('/api/admin/product/updateProduct', payload);
         alert('수정되었습니다.');
       } else {
-        await axios.post('/api/product/insertProduct', payload);
+        await axios.post('/api/admin/product/insertProduct', payload);
         alert('등록되었습니다.');
       }
   

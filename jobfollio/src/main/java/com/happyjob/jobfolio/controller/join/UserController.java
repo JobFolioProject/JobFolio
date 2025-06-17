@@ -202,7 +202,25 @@ public class UserController {
                 }
             }
 
-            int registerResult = userService.registerUser(paramMap);
+            // 전화번호에서 하이픈 제거 후 DB 저장용 맵에 추가
+            String originalHp = (String) paramMap.get("hp");
+            String cleanHp = originalHp.replaceAll("[^0-9]", "");
+
+            // 생년월일에서 하이픈 제거
+            String originalBirthday = (String) paramMap.get("birthday");
+            String cleanBirthday = originalBirthday != null ? originalBirthday.replaceAll("[^0-9]", "") : null;
+
+            logger.info("   - 원본 전화번호: " + originalHp + ", 정제된 전화번호: " + cleanHp);
+            logger.info("   - 원본 생년월일: " + originalBirthday + ", 정제된 생년월일: " + cleanBirthday);
+
+            // DB 저장용 맵 생성 (하이픈 제거된 값들로)
+            Map<String, Object> dbParamMap = new HashMap<>(paramMap);
+            dbParamMap.put("hp", cleanHp);
+            if (cleanBirthday != null) {
+                dbParamMap.put("birthday", cleanBirthday);
+            }
+
+            int registerResult = userService.registerUser(dbParamMap);
 
             if (registerResult > 0) {
                 session.removeAttribute("verifiedEmail");
@@ -434,6 +452,9 @@ public class UserController {
     /**
      * 아이디 찾기
      */
+    /**
+     * 아이디 찾기
+     */
     @PostMapping("/find-id")
     public ResponseEntity<Map<String, Object>> findUserId(
             @RequestBody Map<String, Object> paramMap,
@@ -448,25 +469,36 @@ public class UserController {
             String user_name = (String) paramMap.get("user_name");
             String hp = (String) paramMap.get("hp");
 
-            if (user_name == null || hp == null) {
+            if (user_name == null || hp == null || user_name.trim().isEmpty() || hp.trim().isEmpty()) {
                 resultMap.put("result", "N");
                 resultMap.put("message", "이름과 연락처를 모두 입력해주세요.");
                 return ResponseEntity.badRequest().body(resultMap);
             }
 
+            // 전화번호에서 하이픈 제거 (숫자만 추출)
+            String cleanHp = hp.replaceAll("[^0-9]", "");
+
+            logger.info("   - 원본 전화번호: " + hp + ", 정제된 전화번호: " + cleanHp);
+
             Map<String, Object> serviceMap = new HashMap<>();
-            serviceMap.put("user_name", user_name);
-            serviceMap.put("hp", hp);
+            serviceMap.put("user_name", user_name.trim());
+            serviceMap.put("hp", cleanHp); // 숫자만 DB 조회
 
             UserVO user = userService.findUserByNameAndHp(serviceMap);
 
             if (user != null) {
                 String fullEmail = user.getLogin_id();
+                String regDate = user.getReg_date();
+
+                // 날짜 형식 변환 (yyyy-MM-dd HH:mm:ss → yyyy-MM-dd)
+                if (regDate != null && regDate.length() >= 10) {
+                    regDate = regDate.substring(0, 10); // 앞의 10자리만 (yyyy-MM-dd)
+                }
 
                 resultMap.put("result", "Y");
                 resultMap.put("found_id", fullEmail);
-                resultMap.put("reg_date", user.getReg_date());
-                resultMap.put("message", "아이디를 찾았습니다.");
+                resultMap.put("reg_date", regDate);
+                resultMap.put("message", "등록된 아이디를 확인해 주세요");
                 return ResponseEntity.ok(resultMap);
             } else {
                 resultMap.put("result", "N");
@@ -482,7 +514,7 @@ public class UserController {
         }
     }
 
-
+    // 이메일 마스킹 헬퍼 함수 추후 사용
     private String maskEmail(String email) {
         if (email == null || email.length() <= 3) {
             return "***@***";
@@ -554,7 +586,7 @@ public class UserController {
     }
 
     /**
-     * 비밀번호 찾기 - 인증번호 확인 및 새 비밀번호 발송
+     * 비밀번호 찾기
      */
     @PostMapping("/verify-password-reset-and-send-new")
     public ResponseEntity<Map<String, Object>> verifyPasswordResetAndSendNew(

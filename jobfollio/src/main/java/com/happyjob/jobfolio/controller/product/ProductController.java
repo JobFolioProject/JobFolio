@@ -6,18 +6,16 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Controller
-@RequestMapping("/api/product")
+@RequestMapping("/api/admin/product")
 public class ProductController {
 
 	// Set logger
@@ -25,21 +23,6 @@ public class ProductController {
 
 	@Autowired
 	private ProductService productService;
-
-	// 메인 페이지 - 이용권 리스트 조회
-	@RequestMapping("/mainProductList")
-	@ResponseBody
-	public Map<String, Object> mainProductList(@RequestParam Map<String, Object> paramMap) throws Exception {
-
-		logger.info("   - paramMap : " + paramMap);
-
-		List<ProductModel> mainProductList = productService.mainProductList(paramMap);
-
-		Map<String, Object> resultMap = new HashMap<String, Object>();
-		resultMap.put("mainProductList", mainProductList);
-
-		return resultMap;
-	}
 
 	// 관리자 페이지 - 이용권 리스트 조회
 	@RequestMapping("/productList")
@@ -109,7 +92,7 @@ public class ProductController {
 	@ResponseBody
 	public Map<String, Object> deleteProduct(@RequestBody Map<String, Object> paramMap) throws Exception {
 		logger.info("deleteProduct start");
-		logger.info("    - paramMap : " + paramMap);
+		logger.info("      paramMap : " + paramMap);
 
 		Map<String, Object> returnmap = new HashMap<>();
 
