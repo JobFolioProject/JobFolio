@@ -38,6 +38,8 @@ public interface ResumeMapper {
 
     UserVO getUserByUserNo(Long userNo);
 
+//    ResumeInfoVO selectResumeInfoByResumeNo(int resumeNo);
+
 
 //    // 스킬 목록 조회
 //    List<SkillInfoVO> selectSkillInfoList(int user_no);
