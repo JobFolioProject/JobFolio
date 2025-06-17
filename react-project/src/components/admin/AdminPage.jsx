@@ -3,6 +3,7 @@ import '../../css/admin/AdminPage.css';
 import AdminSideBar from './AdminSideBar';
 import { Chart } from 'chart.js/auto';
 import { instanceAdmin } from '../../utils/axiosConfig';
+import axios from "../../utils/axiosConfig";
 
 const AdminPage = () => {
  useEffect(() => {
@@ -53,130 +54,91 @@ const AdminPage = () => {
     checkServerHealth();
 
 
-    // Total Earnings 데이터를 불러오는 API 호출
-    const getTotalEarnings = async () => {
-      try {
-        const response = await fetch(`/api/admin/total-earnings`);
-        if (response.ok) {
-          const data = await response.json();
-          setTotalEarnings(data); // 상태에 데이터 저장
-        } else {
-          console.error('Failed to fetch total earnings');
-        }
-      } catch (error) {
-        console.error('Error fetching total earnings:', error);
-      }
-    };
+    // Total Earnings 데이터 불러오기
+const getTotalEarnings = async () => {
+  try {
+    const response = await axios.get('/api/admin/total-earnings');
+    setTotalEarnings(response);
+  } catch (error) {
+    console.error('Error fetching total earnings:', error);
+  }
+};
 
-    const getTotalConsumers = async () => {
-      try {
-        const response = await fetch(`/api/admin/total-consumers`);
-        if (response.ok) {
-          const data = await response.json();
-          setTotalConsumers(data); // 상태에 데이터 저장
-        } else {
-          console.error('Failed to fetch total consumers');
-        }
-      } catch (error) {
-        console.error('Error fetching total consumers:', error);
-      }
-    };
+// Total Consumers 데이터 불러오기
+const getTotalConsumers = async () => {
+  try {
+    const response = await axios.get('/api/admin/total-consumers');
+    setTotalConsumers(response);
+  } catch (error) {
+    console.error('Error fetching total consumers:', error);
+  }
+};
 
-    const getTotalUsers = async () => {
-      const url = `/api/admin/total-users`;
+// Total Users 데이터 불러오기
+const getTotalUsers = async () => {
+  try {
+    const response = await axios.get('/api/admin/total-users');
+    setTotalUsers(response);
+  } catch (error) {
+    console.error('Error fetching total users:', error);
+  }
+};
 
-      try {
-        const response = await fetch(url);
-        if (response.ok) {
-          const data = await response.json();
-          setTotalUsers(data);
-        } else {
-          console.error('Failed to fetch total users');
-        }
-      } catch (error) {
-        console.error('Error fetching total users:', error);
-      }
-    };
+// 월별 수익 데이터 불러오기
+const getMonthlyEarnings = async () => {
+  try {
+    const response = await axios.get('/api/admin/monthly-earnings');
+    const data = response;
+    if (Array.isArray(data) && data.length > 0) {
+      const labels = data.map(item => item.month);
+      const earnings = data.map(item => item.earnings);
+      updateEarningsChart(labels, earnings);
+    } else {
+      console.error('Invalid data format received from API');
+    }
+  } catch (error) {
+    console.error('Error fetching monthly earnings:', error);
+  }
+};
 
-    // 월별 수익 데이터를 불러오는 API 호출
-    const getMonthlyEarnings = async () => {
-      try {
-        const response = await fetch(`/api/admin/monthly-earnings`);
-        if (response.ok) {
-          const data = await response.json();
+// 차트2: 소비자 분포 데이터
+const getConsumerData = async () => {
+  try {
+    const response = await axios.get('/api/admin/consumer-distribution');
+    const data = response;
+    updateConsumerChart({
+      normal: data.normal,
+      subscribe1: data.subscribe1,
+      subscribe2: data.subscribe2,
+      subscribe3: data.subscribe3,
+    });
+  } catch (error) {
+    console.error('Error fetching consumer distribution:', error);
+  }
+};
 
-          // 데이터 확인 및 변환
-          if (Array.isArray(data) && data.length > 0) {
-            const labels = data.map(item => item.month); // 대소문자를 정확히 맞춤
-            const earnings = data.map(item => item.earnings); // 대소문자를 정확히 맞춤
-            updateEarningsChart(labels, earnings);
-          } else {
-            console.error('Invalid data format received from API');
-          }
-        } else {
-          console.error('Failed to fetch monthly earnings');
-        }
-      } catch (error) {
-        console.error('Error fetching monthly earnings:', error);
-      }
-    };
+// 월별 가입 회원 수 데이터
+const getMonthlyMembers = async () => {
+  try {
+    const response = await axios.get('/api/admin/monthly-members');
+    const data = response;
+    const labels = data.map(item => item.month);
+    const memberCounts = data.map(item => item.memberCount);
+    updateUserChart(labels, memberCounts);
+  } catch (error) {
+    console.error('월별 회원 데이터를 가져오는 중 오류 발생:', error);
+  }
+};
 
-
-    // 차트2 데이터 불러오기
-    const getConsumerData = async () => {
-      try {
-        const response = await fetch(`/api/admin/consumer-distribution`);
-        if (response.ok) {
-          const data = await response.json();
-
-          // 차트 데이터 업데이트
-          updateConsumerChart({
-            normal: data.normal,
-            subscribe1: data.subscribe1,
-            subscribe2: data.subscribe2,
-            subscribe3: data.subscribe3,
-          });
-          
-        } else {
-          console.error(`HTTP ${response.status}: ${response.statusText}`);
-        }
-      } catch (error) {
-        console.error('Error fetching consumer distribution:', error);
-      }
-    };
-
-    // 월별 가입 회원 데이터 가져오기
-    const getMonthlyMembers = async () => {
-      try {
-        const response = await fetch(`/api/admin/monthly-members`);
-        if (response.ok) {
-          const data = await response.json();
-
-          // 데이터에서 라벨과 값을 추출
-          const labels = data.map(item => item.month); // "YYYY-MM" 형식의 월 데이터
-          const memberCounts = data.map(item => item.memberCount); // 월별 회원 수
-          updateUserChart(labels, memberCounts); // 차트 업데이트
-        } else {
-          console.error('월별 회원 데이터 요청 실패');
-        }
-      } catch (error) {
-        console.error('월별 회원 데이터를 가져오는 중 오류 발생:', error);
-      }
-    };
-
-    const getTotalTasks = async () => {
-      try {
-        const response = await fetch(`/api/admin/total-tasks`);
-        if (response.ok) {
-          const data = await response.json();
-          setTotalTasks(data); // 상태 업데이트
-        } else {
-          console.error('Failed to fetch total tasks');
-        }
-      } catch (error) {
-        console.error('Error fetching total tasks:', error);
-      }
-    };
+// 총 작업 수 데이터
+const getTotalTasks = async () => {
+  try {
+    const response = await axios.get('/api/admin/total-tasks');
+    setTotalTasks(response);
+  } catch (error) {
+    console.error('Error fetching total tasks:', error);
+  }
+};
 
     getTotalEarnings();
     getTotalConsumers();
@@ -314,7 +276,7 @@ const AdminPage = () => {
             {/* Total Earnings */}
             <div className="card">
               <h3>Total Earnings</h3>
-              <p>{totalEarnings.toLocaleString()}</p>
+              <p>{Number(totalEarnings ?? 0).toLocaleString()}</p>
             </div>
 
             {/* Total Consumer */}
