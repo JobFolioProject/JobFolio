@@ -26,6 +26,8 @@ public class ResumeInfoVO {
     /** 이력서 파일 논리경로 */
     private String resume_file_lopath;
 
+    private String publication_yn;
+
     public int getResume_no() {
         return resume_no;
     }
@@ -88,5 +90,13 @@ public class ResumeInfoVO {
 
     public void setResume_file_lopath(String resume_file_lopath) {
         this.resume_file_lopath = resume_file_lopath;
+    }
+
+    public String getPublication_yn() {
+        return publication_yn;
+    }
+
+    public void setPublication_yn(String publication_yn) {
+        this.publication_yn = publication_yn;
     }
 }

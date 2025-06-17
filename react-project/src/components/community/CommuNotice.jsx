@@ -3,7 +3,7 @@ import { Link, NavLink } from 'react-router-dom';
 import CommuMenuBar from './CommuMenuBar';
 import SearchIcon from '@mui/icons-material/Search';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import axios from "../../utils/axiosConfig";
 import Pagination from '../common/Pagination.jsx';
 
 const CommuNotice = () => {
@@ -12,6 +12,7 @@ const CommuNotice = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
   const [searchKeyword, setSearchKeyword] = useState('');
+  const [category, setCategory] = useState('all');
   const pageSize = 10;
   const totalPages = Math.ceil(totalCount / pageSize);
 
@@ -22,15 +23,15 @@ const CommuNotice = () => {
   const fetchNotices = () => {
     axios.get("/api/community/list", {
       params: {
-        boardType: "N",
+        boardType: "N", // 다른 용도라고 했으니 그대로 둠
         page: currentPage,
         pageSize: pageSize,
         search: searchKeyword
       }
     }).then(res => {
-      setPriorityList(res.data.priorityList);
-      setNoticeList(res.data.boardList);
-      setTotalCount(res.data.totalCount);
+      setPriorityList(res.priorityList);
+      setNoticeList(res.boardList);
+      setTotalCount(res.totalCount);
     }).catch(err => {
       console.error("공지사항 조회 실패", err);
     });
@@ -44,6 +45,9 @@ const CommuNotice = () => {
     const dd = String(date.getDate()).padStart(2, '0');
     return `${yyyy}-${mm}-${dd}`;
   };
+
+  const filteredPriorityList = category === 'important' || category === 'all' ? priorityList : [];
+  const filteredNormalList = category === 'normal' || category === 'all' ? noticeList : [];
 
   return (
     <>
@@ -61,21 +65,40 @@ const CommuNotice = () => {
           <div className='community-notice-category'>
             <div className='community-notice-tap'>
               <ul className='notice-tap-list'>
-                <li><NavLink to="/">전체</NavLink></li>
-                <li><NavLink to="/">중요</NavLink></li>
-                <li><NavLink to="/">안내</NavLink></li>
+                <li>
+                  <button
+                    onClick={() => setCategory("all")}
+                    className={category === "all" ? "active" : ""}
+                  >
+                    전체
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() => setCategory("important")}
+                    className={category === "important" ? "active" : ""}
+                  >
+                    중요
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() => setCategory("normal")}
+                    className={category === "normal" ? "active" : ""}
+                  >
+                    일반
+                  </button>
+                </li>
               </ul>
             </div>
             <div className='community-notice-search'>
               <div className="community-notice-search-container">
                 <input className='community-notice-search-input' type="text" value={searchKeyword}
-                  onChange={(e) => {
-                    setSearchKeyword(e.target.value);
-                  }}
+                  onChange={(e) => setSearchKeyword(e.target.value)}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
-                      setCurrentPage(1);     // 검색은 항상 1페이지부터
-                      fetchNotices();        // 검색 실행
+                      setCurrentPage(1);
+                      fetchNotices();
                     }
                   }}
                 />
@@ -103,8 +126,8 @@ const CommuNotice = () => {
 
             <div className="community-notice-body">
               <ul className="community-notice-list">
-                {/* 항상 상단에 표시되는 우선순위 글 */}
-                {priorityList.map(item => (
+                {/* 고정공지 */}
+                {filteredPriorityList.map(item => (
                   <li className="community-notice-list-item notice-priority" key={item.boardNo}>
                     <Link to={`/community/detail/${item.boardNo}`}>
                       <div className='notice-body-col num'></div>
@@ -115,8 +138,8 @@ const CommuNotice = () => {
                   </li>
                 ))}
 
-                {/* 일반글 (페이지네이션 대상) */}
-                {noticeList.map((item, index) => (
+                {/* 일반공지 */}
+                {filteredNormalList.map((item, index) => (
                   <li className="community-notice-list-item" key={item.boardNo}>
                     <Link to={`/community/detail/${item.boardNo}`}>
                       <div className='notice-body-col num'>

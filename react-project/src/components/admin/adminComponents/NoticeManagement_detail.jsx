@@ -3,19 +3,19 @@ import PropTypes from 'prop-types';
 import { useQuill } from 'react-quilljs';
 import 'quill/dist/quill.snow.css';
 import DOMPurify from 'dompurify';
-import axios from 'axios';
+import axios from "../../../utils/axiosConfig";
 import '../../../css/admin/adminComponents/NoticeManagement_detail.css';
 
 const NoticeManagementDetail = ({ open, mode, onClose, onSaved, onEdit, noticeData }) => {
   if (!open) return null;
   return (
     <NoticeModalContent
-      open={open}
-      mode={mode}
-      onClose={onClose}
-      onSaved={onSaved}
-      onEdit={onEdit}
-      noticeData={noticeData}
+    open={open}
+    mode={mode}
+    onClose={onClose}
+    onSaved={onSaved}
+    onEdit={onEdit}
+    noticeData={noticeData}
     />
   );
 };
@@ -27,36 +27,36 @@ const NoticeModalContent = ({ open, mode, onClose, onSaved, onEdit, noticeData }
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(false);
   const firstInputRef = useRef(null);
-
+  
   // Quill 초기화 (handlers 비우기)
   const { quill, quillRef } = useQuill({
     theme: 'snow',
     modules: {
       toolbar: isView
-        ? false
-        : {
-            container: [
-              [{ header: [1, 2, false] }],
-              ['bold', 'italic', 'underline'],
-              [{ list: 'ordered' }, { list: 'bullet' }],
-              ['link', 'image'],
-              ['clean'],
-            ],
-            handlers: {},
-          },
+      ? false
+      : {
+        container: [
+          [{ header: [1, 2, false] }],
+          ['bold', 'italic', 'underline'],
+          [{ list: 'ordered' }, { list: 'bullet' }],
+          ['link', 'image'],
+          ['clean'],
+        ],
+        handlers: {},
+      },
     },
     formats: ['header', 'bold', 'italic', 'underline', 'list', 'link', 'image'],
     readOnly: isView,
     placeholder: isView ? '' : '내용을 입력하세요...',
   });
-
+  
   // 이미지 핸들러 등록
   useEffect(() => {
     if (!quill) return;
     const toolbar = quill.getModule('toolbar');
     toolbar.addHandler('image', handleImageUpload);
   }, [quill]);
-
+  
   // 모달 열림 및 mode 변경 시 초기화
   useEffect(() => {
     if (open) {
@@ -67,7 +67,7 @@ const NoticeModalContent = ({ open, mode, onClose, onSaved, onEdit, noticeData }
       startTransition(() => firstInputRef.current?.focus());
     }
   }, [open, mode, quill, noticeData, isView, isEdit]);
-
+  
   // open이 false일 때 상태 초기화
   useEffect(() => {
     if (!open) {
@@ -75,7 +75,7 @@ const NoticeModalContent = ({ open, mode, onClose, onSaved, onEdit, noticeData }
       setContent('');
     }
   }, [open]);
-
+  
   // Quill 변경 이벤트로 content 업데이트
   useEffect(() => {
     if (!quill || isView) return;
@@ -83,13 +83,13 @@ const NoticeModalContent = ({ open, mode, onClose, onSaved, onEdit, noticeData }
     quill.on('text-change', handler);
     return () => quill.off('text-change', handler);
   }, [quill, isView]);
-
+  
   // 모달 닫기
   const handleClose = () => {
     quill?.blur();
     onClose();
   };
-
+  
   // 저장/등록
   const handleSave = async () => {
     setLoading(true);
@@ -143,7 +143,7 @@ const NoticeModalContent = ({ open, mode, onClose, onSaved, onEdit, noticeData }
         const res = await axios.post('/api/admin/community/upload/image', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
         const range = quill.getSelection();
         const index = range?.index ?? quill.getLength();
-        quill.insertEmbed(index, 'image', res.data.url);
+        quill.insertEmbed(index, 'image', res.url);
         quill.setSelection(index + 1);
       } catch (err) {
         console.error('이미지 업로드 실패', err);
