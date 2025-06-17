@@ -22,8 +22,10 @@
 }
 .community-notice-container
  .community-notice-wrapper{
-  width: 1000px;  
-
+  max-width: 1000px; 
+  width: 100%; 
+  padding: 0 16px; 
+  box-sizing: border-box;
 }
 .community-notice-content ul{
   list-style-type: none;
@@ -39,15 +41,34 @@
  .community-notice-category {
   display: flex;
   justify-content: space-between;
+  border-top: 1px solid black;
 }
 .community-notice-container
  .community-notice-wrapper
  .community-notice-category
+ .community-notice-tap {
+  height: 60px;
+  display: flex;
+  align-items: stretch;
+ }
+.community-notice-container
+ .community-notice-wrapper
+ .community-notice-category
  .community-notice-tap ul{
-  list-style-type: none;
+  height: 100%;
   display: flex;
   flex-wrap: wrap;
+  align-items: stretch;
   padding-left: 0;
+  margin: 0;
+  list-style-type: none;
+  padding-left: 0;
+}
+.community-notice-container
+ .community-notice-wrapper
+ .community-notice-category
+ .community-notice-tap ul li{
+  height: 100%;
 }
 .community-notice-container
  .community-notice-wrapper
@@ -105,8 +126,8 @@
   box-sizing: border-box;
 }
 .community-notice-search-btn:hover {
-  background-color: #333;
-  color: white;
+  background-color: #0000003b;
+  color: black;
 }
 .community-notice-search-icon {
   margin-right: 5px;
@@ -116,7 +137,7 @@
  .community-notice-section
  .community-notice-head {
   display: flex;
-  width: 1000px;
+  flex-wrap: wrap;
   padding: 16px 0 16px;
   border-top: 2px solid black;
   border-bottom: 1px solid black;
@@ -200,4 +221,48 @@
 /* 중요 공지 배경 스타일 */
 .notice-priority {
   background-color: #0000003b; 
+}
+
+/* 버튼 스타일 정의 */
+.community-notice-container
+ .community-notice-wrapper
+ .community-notice-category
+ .community-notice-tap
+ ul li button {
+  height: 100%;
+  display: flex;
+  padding: 0 20px;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  border: none;
+  border-top: 2px solid transparent;
+  border-bottom: 2px solid transparent;
+  background-color: transparent;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+/* hover 효과 */
+.community-notice-container
+ .community-notice-wrapper
+ .community-notice-category
+ .community-notice-tap
+ ul li button:hover {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+/* 활성화된 탭 스타일 */
+.community-notice-container
+ .community-notice-wrapper
+ .community-notice-category
+ .community-notice-tap
+ ul li button.active {
+  border-top: 2px solid #1f78ff;
+  border-bottom: 2px solid #1f78ff;
+  font-weight: bold;
+  color: #1f78ff;
+  background-color: transparent;
 }
