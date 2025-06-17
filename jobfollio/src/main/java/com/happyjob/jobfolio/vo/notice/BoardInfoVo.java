@@ -12,6 +12,15 @@ public class BoardInfoVo {
 	private int priority ;
 	private String board_type;
 	private String author;
+	private String status_yn = "N";
+
+	public String getStatus_yn() {
+		return status_yn;
+	}
+
+	public void setStatus_yn(String status_yn) {
+		this.status_yn = status_yn;
+	}
 
 	public String getAuthor() {
 		return author;

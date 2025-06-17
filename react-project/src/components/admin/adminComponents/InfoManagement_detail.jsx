@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import axios from "../../../utils/axiosConfig";
 import '../../../css/admin/adminComponents/InfoManagement_detail.css';
+import { useAuth } from '../../../context/AuthContext';
 
 const InfoManagementDetail = ({ item, onClose, mode, onSaved, boardType }) => {
   
@@ -10,6 +11,7 @@ const InfoManagementDetail = ({ item, onClose, mode, onSaved, boardType }) => {
   const [isEditing, setIsEditing] = useState(isPost);
   const [editQuestion, setEditQuestion] = useState(item?.question || '');
   const [editAnswer, setEditAnswer] = useState(item?.answer || '');
+  const { user, isAuthenticated } = useAuth();
 
   const paragraphs = editAnswer.split('\n\n'); 
   
@@ -17,10 +19,7 @@ const InfoManagementDetail = ({ item, onClose, mode, onSaved, boardType }) => {
     
 
   const handleSave = async () => {
-    const raw = sessionStorage.getItem("user");
-    if (!raw) return;
-
-    const { userNo } = JSON.parse(raw);
+    const  userNo  = user.userNo;
     if (!userNo) return;
 
     const payload = {
@@ -33,9 +32,9 @@ const InfoManagementDetail = ({ item, onClose, mode, onSaved, boardType }) => {
 
     try {
       if (isEdit) {
-        await axios.put('/api/board', payload); // 수정요청하는거 
+        await axios.put('/api/admin/board/update', payload); // 수정요청하는거 
       } else {
-        await axios.post('/api/board', payload); // 새로 등록
+        await axios.post('/api/admin/board/insert', payload); // 새로 등록
       }
       
       onSaved(); // 성공 후 목록 다시 불러오게 함

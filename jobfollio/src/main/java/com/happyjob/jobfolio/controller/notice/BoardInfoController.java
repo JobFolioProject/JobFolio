@@ -17,7 +17,7 @@ import com.happyjob.jobfolio.service.NoticeService.BoardInfoService;
 import com.happyjob.jobfolio.vo.notice.BoardInfoVo;
 
 @RestController
-@RequestMapping("/api/board")
+@RequestMapping("/api")
 public class BoardInfoController {
 
     private final BoardInfoService boardInfoService;
@@ -26,14 +26,34 @@ public class BoardInfoController {
         this.boardInfoService = boardInfoService;
     }
 
-    @GetMapping("/list")
-    public List<BoardInfoVo> getBoardList(@RequestParam("board_type") String boardType) {
-        return boardInfoService.getBoardsByType(boardType);
+    @GetMapping("/admin/board/list")
+    public ResponseEntity<List<BoardInfoVo>> getBoardList(
+			@RequestParam String board_type,
+			@RequestParam(required = false) Integer userNo) {
+	/*	boolean isAdmin = userNo != null && userNo <= 4;*/
+		List<BoardInfoVo> list = boardInfoService.getBoardsByType(board_type);
+		System.out.println(list);
+        return ResponseEntity.ok(list);
     }
+
+	@GetMapping("/board/user/info/list")
+	public ResponseEntity<List<BoardInfoVo>> getPublicInfoList(@RequestParam String board_type,
+														  @RequestParam(required = false) Integer userNo) {
+		boolean isAdmin = false;
+		return ResponseEntity.ok(boardInfoService.getPublicInfoList(board_type));
+	}
+
+	@GetMapping("/board/user/faq/list")
+	public ResponseEntity<List<BoardInfoVo>> getPublicFaqList(@RequestParam String board_type,
+																@RequestParam(required = false) Integer userNo) {
+		boolean isAdmin = false;
+		return ResponseEntity.ok(boardInfoService.getPublicFaqList(board_type));
+	}
     
     // 게시글 등록
-    @PostMapping
+    @PostMapping("/admin/board/insert")
     public ResponseEntity<String> insertBoardInfo(@RequestBody BoardInfoVo vo) {
+		System.out.println(vo.toString());
     	try {
     		boardInfoService.insertBoardInfo(vo);
     		return ResponseEntity.ok("등록성공");
@@ -43,14 +63,14 @@ public class BoardInfoController {
     	}
     }
     
-    @PostMapping("/delete")
+    @PostMapping("/admin/board/delete")
     public ResponseEntity<String> deleteBoardInfo(@RequestBody List<Integer> ids) {
     	boardInfoService.deleteBoardInfo(ids);
     	return ResponseEntity.ok("삭제 성공");
     }
     
 
-    @PutMapping
+    @PutMapping("/admin/board/update")
     public ResponseEntity<String> updateBoardInfo(@RequestBody BoardInfoVo vo){
     	try {
     		boardInfoService.updateBoardInfo(vo);
@@ -61,7 +81,7 @@ public class BoardInfoController {
     	}
     }
     
-    @PostMapping("/updatePriority")
+    @PostMapping("/admin/board/updatePriority")
     public ResponseEntity<String> updatePriority(@RequestBody Map<String, Object> payload) {
     	try {
 			int id = (int) payload.get("id");
@@ -79,6 +99,15 @@ public class BoardInfoController {
 		  return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류");
 	  }
     }
+
+	@PostMapping("/admin/board/updateStatus")
+	public ResponseEntity<String> updateStatus(@RequestBody Map<String, Object> payload) {
+		int id = (int) payload.get("id");
+		String statusYn = (String) payload.get("status_yn");
+
+		boardInfoService.updateStatusYn(id, statusYn);
+		return ResponseEntity.ok("표시여부 변경 성공");
+	}
     
     
 
