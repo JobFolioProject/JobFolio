@@ -163,7 +163,7 @@
     <!-- 회원 탈퇴 -->
     <update id="deleteByUserId" parameterType="map">
         UPDATE tb_userinfo
-        SET 
+        SET
         status_yn = 'Y'
         WHERE user_no = #{user_no} and status_yn = 'N'
     </update>
@@ -303,19 +303,25 @@
         WHERE career_no = #{career_no} AND user_no = #{user_no}
     </update>
 
+    <resultMap id="commSkillResultMap" type="com.happyjob.jobfolio.vo.mypage.CommSkillDto">
+        <result property="group_code" column="GROUP_CODE"/>
+        <result property="detail_name" column="DETAIL_NAME"/>
+        <result property="detail_code" column="DETAIL_CODE"/>
+        <result property="group_name" column="GROUP_NAME"/>
+    </resultMap>
 
     <!--  스킬 조회 -->
-<!--    <select id="selectAllCommonSkills" resultMap="com.happyjob.jobfolio.vo.mypage.CommSkillDto">-->
-<!--        SELECT tdc.detail_code as skill_code,-->
-<!--               tdc.group_code as group_code,-->
-<!--               tdc.detail_name as skill_name,-->
-<!--               tgc.group_name as group_name-->
-<!--        FROM tb_detail_code tdc-->
-<!--        JOIN tb_group_code tgc-->
-<!--             ON tdc.group_code = tgc.group_code-->
-<!--        WHERE tgc.category_code = 'SKILL'-->
-<!--        ORDER BY tdc.detail_name;-->
-<!--    </select>-->
+    <select id="selectAllCommonSkills" resultMap="commSkillResultMap">
+        SELECT tdc.detail_code as skill_code,
+               tdc.group_code as group_code,
+               tdc.detail_name as skill_name,
+               tgc.group_name as group_name
+        FROM tb_detail_code tdc
+        JOIN tb_group_code tgc
+             ON tdc.group_code = tgc.group_code
+        WHERE tgc.category_code = 'SKILL'
+        ORDER BY tdc.detail_name;
+    </select>
     <!--  내 스킬 조회 -->
     <resultMap id="skillVOResultMap" type="com.happyjob.jobfolio.vo.mypage.SkillVO">
         <id property="skillId" column="SKILL_ID" />

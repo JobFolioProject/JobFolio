@@ -91,6 +91,88 @@ const SkillAddForm = React.memo(({ userNo, onSave, onCancel, existingSkillList, 
         const isAlreadySelectedInForm = currentFormSkills.some(
             (s) => `${s.skill_code}-${s.group_code}` === skillUniqueId // currentFormSkills는 SkillVO 형태
         );
+        // existingSkillList (DB에 원래 있던 스킬)에 포함되어 있는지 (disabled 처리용)
+        const isAlreadySavedInDB = existingSkillList.some(
+            (s) => `${s.skill_code}-${s.group_code}` === skillUniqueId // existingSkillList는 SkillVO 형태
+        );
+        // '추가' 모드이고 && 이미 DB에 저장된 스킬이라면 클릭을 막고 alert 메시지 표시
+        if (!isEditMode && isAlreadySavedInDB) {
+            alert(`'${selectedSkill.detail_name} (${selectedSkill.group_name})'은 이미 등록된 스킬입니다.`);
+            return;
+        }
+        if (isAlreadySelectedInForm) {
+            // 이미 선택된 경우 -> 제거
+            setCurrentFormSkills((prev) => prev.filter((s) => `${s.skill_code}-${s.group_code}` !== skillUniqueId));
+        } else {
+            // 새로 선택된 경우 -> 추가
+            // newSkillData는 SkillVO 형태의 객체로 currentFormSkills에 추가됩니다.
+            const newSkillData = {
+                user_no: userNo, // 사용자 번호 설정
+                skill_code: selectedSkill.detail_code, // CommSkillDto의 detail_code -> SkillVO의 skill_code
+                group_code: selectedSkill.group_code, // CommSkillDto의 group_code -> SkillVO의 group_code
+                skill_name: selectedSkill.detail_name, // CommSkillDto의 detail_name -> SkillVO의 skill_name
+                group_name: selectedSkill.group_name, // CommSkillDto의 group_name -> SkillVO의 group_name
+                ...DEFAULT_NEW_SKILL_DETAILS, // exp_level, skill_tool 초기값
+            };
+            setCurrentFormSkills((prev) => [...prev, newSkillData]);
+        }
+    };
+    // 폼 내부의 '선택된/편집된 스킬' 태그에서 삭제 버튼 클릭 시 (currentFormSkills에서 제거)
+    const removeSkillItem = (skillToRemove) => {
+        // 함수명 유지: removeSkillItem
+        setErrorMessage('');
+        setCurrentFormSkills((prev) =>
+            prev.filter(
+                (s) => !(s.skill_code === skillToRemove.skill_code && s.group_code === skillToRemove.group_code)
+            )
+        );
+    };
+    // SkillDetailModal에서 '저장' 시 호출될 콜백 (currentFormSkills 내의 스킬 상세 정보 업데이트)
+    // updatedSkillData는 SkillVO 형태
+    const updateSkillDetailInForm = useCallback((updatedSkillData) => {
+        setCurrentFormSkills((prevSkills) =>
+            prevSkills.map((skill) =>
+                skill.skill_code === updatedSkillData.skill_code && skill.group_code === updatedSkillData.group_code
+                    ? {
+                          ...skill,
+                          exp_level: updatedSkillData.exp_level, // 숙련도 업데이트
+                          skill_tool: updatedSkillData.skill_tool, // skill_tool 업데이트
+                      }
+                    : skill
+            )
+        );
+    }, []);
+
+    // SkillDetailModal에서 '삭제' 시 호출될 콜백 (currentFormSkills에서 스킬 제거)
+    // skillToDeleteCode, skillToDeleteGroupCode는 string
+    const deleteSkillInForm = useCallback((skillToDeleteCode, skillToDeleteGroupCode) => {
+        setCurrentFormSkills((prevSkills) =>
+            prevSkills.filter(
+                (skill) => !(skill.skill_code === skillToDeleteCode && skill.group_code === skillToDeleteGroupCode)
+            )
+        );
+    }, []);
+
+    // 폼의 "저장" 버튼 클릭 핸들러 (부모 SkillSection으로 currentFormSkills 전달)
+    const saveForm = () => {
+        // 함수명 유지: saveForm
+        setErrorMessage('');
+        // 저장할 스킬이 없는 경우
+        if (!isEditMode && currentFormSkills.length === 0) {
+            setErrorMessage('선택된 스킬이 없습니다. 스킬을 선택해주세요.');
+            setTimeout(() => {
+                if (searchInputRef.current) {
+                    searchInputRef.current.focus();
+                    searchInputRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }, 10);
+            return;
+        }
+        // 수정 모드에서 변경사항이 없는 경우 (currentFormSkills와 existingSkillList가 동일한지는 SkillSection에서 최종 판단)
+        // 여기서는 단순히 currentFormSkills가 비어있는지 여부만 체크
+
+        // 부모 컴포넌트(SkillSection)의 onSave 콜백 호출 (currentFormSkills 전체를 전달)
+        onSave(currentFormSkills);
     };
     return (
         <div className="skill-add-form-container">
@@ -157,6 +239,53 @@ const SkillAddForm = React.memo(({ userNo, onSave, onCancel, existingSkillList, 
                     !loading &&
                     searchKeyword.trim().length > 0 && <p className="no-results-message">검색 결과가 없습니다.</p>
                 )}
+            </div>
+            {currentFormSkills.length > 0 && (
+                <div className="temporary-skill-tags">
+                    <h4>{isEditMode ? '현재 편집 중인 스킬:' : '선택된 스킬:'}</h4> {/* 제목 변경 */}
+                    <div className="tags-wrapper">
+                        {currentFormSkills.map(
+                            (
+                                skill // skill은 SkillVO 형태
+                            ) => (
+                                <div
+                                    key={`${skill.skill_code}-${skill.group_code}`}
+                                    className="temp-skill-tag"
+                                    onClick={() =>
+                                        onTagClick({
+                                            // onTagClick 호출 시 SkillDetailModal에 전달될 데이터와 콜백 포함
+                                            ...skill, // SkillVO 형태의 스킬 데이터
+                                            onDetailSave: updateSkillDetailInForm, // 상세 수정 후 currentFormSkills 업데이트용 콜백
+                                            onDetailDelete: deleteSkillInForm, // 상세 모달에서 삭제 후 currentFormSkills 업데이트용 콜백
+                                        })
+                                    }
+                                >
+                                    <span>
+                                        {skill.skill_name} ({skill.group_name})
+                                    </span>{' '}
+                                    {/* SkillVO의 skill_name과 group_name 표시 */}
+                                    <span
+                                        className="temp-skill-tag-remove"
+                                        onClick={(e) => {
+                                            e.stopPropagation(); // 태그 클릭 이벤트(모달 열기) 전파 방지
+                                            removeSkillItem(skill);
+                                        }}
+                                    >
+                                        &times;
+                                    </span>
+                                </div>
+                            )
+                        )}
+                    </div>
+                </div>
+            )}
+            <div className="formButtons">
+                <button type="button" onClick={onCancel}>
+                    취소
+                </button>
+                <button type="button" onClick={saveForm} ref={saveButtonRef}>
+                    저장
+                </button>
             </div>
         </div>
     );
