@@ -28,12 +28,27 @@ public class BoardInfoService {
 		this.boardInfoRepository = boardInfoRepository; 
 	}
 	
-	public List<BoardInfoVo> getBoardsByType(String board_type) { 
-		return boardInfoRepository.selectByBoardType(board_type);
+	public List<BoardInfoVo> getBoardsByType(String board_type) {
+		Map<String, Object> param = new HashMap<>();
+		param.put("board_type", board_type);
+		return boardInfoRepository.selectByBoardType(param);
 	}
+
+	public List<BoardInfoVo> getPublicInfoList(String board_type){
+		Map<String, Object> param = new HashMap<>();
+		param.put("board_type", board_type);
+		return boardInfoRepository.selectUserVisibleInfo(param);
+	}
+
+	public List<BoardInfoVo> getPublicFaqList(String board_type){
+		Map<String, Object> param = new HashMap<>();
+		param.put("board_type", board_type);
+		return boardInfoRepository.selectUserVisibleFaq(param);
+	}
+
 	
 	public void insertBoardInfo(BoardInfoVo vo) {
-		int nexBoardNo = boardInfoRepository.getNextBoardNo(vo.getBoard_type());
+		int nexBoardNo = boardInfoRepository.getNextBoardNo();
 		vo.setId(nexBoardNo);
 		
 		vo.setPriority(boardInfoRepository.getNextPriority(vo.getBoard_type()));
@@ -86,6 +101,13 @@ public class BoardInfoService {
 		}
 
 		boardInfoRepository.updateOwnPriority(id, newPriority); // 본인 우선순서 바꾸기 
+	}
+
+	public void updateStatusYn(int id, String statusYn) {
+		Map<String, Object> param = new HashMap<>();
+		param.put("id", id);
+		param.put("status_yn", statusYn);
+		boardInfoRepository.updateStatusYn(param);
 	}
 
 }

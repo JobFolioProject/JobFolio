@@ -602,9 +602,6 @@ const Resume = () => {
                         setFormData={setFormData} // formData 상태를 자식 컴포넌트에 전달
                      />
                      <br/>
-                        {/* <div style={{ display: 'flex', justifyContent: 'center' }}>
-                            <PrettyBtn type="submit" onClick={handleSubmit} >이력서 제출</PrettyBtn>
-                        </div> */}
                         <br/>
                         <label>
                             <div><span>Template</span></div>
@@ -617,14 +614,6 @@ const Resume = () => {
                             <PrettyBtn type="submit">이력서 제출</PrettyBtn>
                         </div>
                     </form>
-                    {/* <ResumeAiCoverLetter
-                        formData={formData}
-                        myCoverLetter={formData.coverLetter}
-                        setMyCoverLetter={(value) => setFormData({ ...formData, coverLetter: value })}
-                        setFormData={setFormData} // formData 상태를 자식 컴포넌트에 전달
-                     />
-                     <br/> */}
-                     
                 </div>
                 </div>
         </div>

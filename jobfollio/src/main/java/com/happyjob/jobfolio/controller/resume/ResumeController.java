@@ -12,6 +12,7 @@ import com.happyjob.jobfolio.vo.mypage.CertificateVO;
 import com.happyjob.jobfolio.vo.resume.ResumeInfoVO;
 import com.happyjob.jobfolio.vo.resume.TemplateVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -384,12 +385,17 @@ public class ResumeController {
 
     @PostMapping("/deleteResume")
     public ResponseEntity<Map<String,Object>> deleteResume(@RequestBody Map<String,Integer> requestMap) {
-        int resume_no = requestMap.get("resume_no");
-        int result = resumeService.deleteResume(resume_no);
-
         Map<String, Object> resultMap = new HashMap<>();
-        resultMap.put("result", result);
-        return ResponseEntity.ok(resultMap);
+            int resume_no = requestMap.get("resume_no");
+            int result = resumeService.deleteResume(resume_no);
+            if (result == 1) {
+                resultMap.put("message", "Y");
+                return ResponseEntity.ok(resultMap);
+            } else {
+                resultMap.put("message", "N");
+                return ResponseEntity.ok(resultMap);
+            }
+
     }
 
 

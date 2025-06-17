@@ -11,13 +11,17 @@ import com.happyjob.jobfolio.vo.notice.BoardInfoVo;
 @Mapper
 public interface BoardInfoRepository {
 	
-	List<BoardInfoVo> selectByBoardType(@Param("board_type") String board_type);
+	List<BoardInfoVo> selectByBoardType(Map<String, Object> param);
+
+	List<BoardInfoVo> selectUserVisibleInfo(Map<String, Object> param);
+
+	List<BoardInfoVo> selectUserVisibleFaq(Map<String, Object> param);
 	
 	int getNextPriority(String board_type);
 	
 	int newPriority();
 	
-	int getNextBoardNo(String board_type);
+	int getNextBoardNo();
 
 	// totalcount max 까지
 	int countByType(String board_type);
@@ -39,5 +43,7 @@ public interface BoardInfoRepository {
 	void shiftPrioritiesDown(Map<String, Object> paramMap);
 
 	void shiftPrioritiesUp(Map<String, Object> paramMap);
+
+	void updateStatusYn(Map<String, Object> param);
 
 }
