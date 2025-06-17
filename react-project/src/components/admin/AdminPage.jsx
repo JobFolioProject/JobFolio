@@ -38,7 +38,7 @@ const AdminPage = () => {
     const checkServerHealth = async () => {
       try {
         const response = await instanceAdmin.get(`/api/admin/status-check`);
-        if (response.status === 200 && response.data.status === 'UP') {
+        if ( response.status === 'UP') {
           setServerStatus('Work');
           setServerColor('rgb(0, 175, 0)'); // 녹색
         } else {

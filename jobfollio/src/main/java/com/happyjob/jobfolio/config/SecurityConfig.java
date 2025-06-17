@@ -66,7 +66,8 @@ public class SecurityConfig {
                         "/api/logout/**",         // 로그아웃 관련
                         "/api/email/**",          // 이메일 인증 관련
                         "/api/auth/refresh",
-                        "/resume/**",             // 결제 관련
+                        "/api/product/**",
+                        "/api/resume/**",             // 결제 관련
                         "/error"                  // 에러 페이지
                 ).permitAll()
 
@@ -75,9 +76,6 @@ public class SecurityConfig {
 
                 // 모든관리자(A, B) 전용 경로
                 .antMatchers("/api/admin/**").hasAnyAuthority("ROLE_A", "ROLE_B")
-
-                // 일반 사용자(A, B, C) 접근 가능 경로
-                .antMatchers("/api/**").hasAnyAuthority("ROLE_A", "ROLE_B", "ROLE_C")
 
                 // OAuth2 관련 경로 (추후 소셜 로그인용)
                 .antMatchers("/oauth2/**", "/login/oauth2/**").permitAll()

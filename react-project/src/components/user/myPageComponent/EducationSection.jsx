@@ -312,7 +312,7 @@ const EducationSection = React.memo(({ userNo, educationList, onListChange }) =>
 
                 // onListChange 콜백 함수를 넣어줘야 화면에 다시 그려줌
                 if (onListChange) {
-                    const newEdu = response.data; // 반환한 새 데이터
+                    const newEdu = response; // 반환한 새 데이터
                     console.log('데이터 newEdu : ', newEdu);
 
                     onListChange([...educationList, newEdu]);
