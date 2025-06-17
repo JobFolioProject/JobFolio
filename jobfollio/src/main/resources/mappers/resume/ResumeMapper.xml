@@ -19,6 +19,22 @@
 		WHERE user_no = #{user_no}
 	</select>
 
+	<select id="resumeLikedList"
+			parameterType="int"
+			resultType="com.happyjob.jobfolio.vo.resume.ResumeInfoVO">
+		SELECT
+			resume_no,
+			user_no,
+			title,
+			desired_position,
+			template_no,
+			resume_file_name,
+			resume_file_pypath,
+			resume_file_lopath
+		FROM tb_resume_info
+		WHERE resume_no in (select resume_no from tb_resume_like where user_no = #{user_no})
+	</select>
+
 	<insert id="insertResumeInfo"
 			parameterType="com.happyjob.jobfolio.vo.resume.ResumeInfoVO">
 		INSERT INTO tb_resume_info (
@@ -40,6 +56,11 @@
 				 )
 	</insert>
 
+	<delete id="deleteResume"
+			parameterType="int">
+		DELETE FROM tb_resume_info WHERE resume_no = #{resume_no}
+	</delete>
+
 	<select id="selectLinkInfoByResume"
 			parameterType="int"
 			resultType="com.happyjob.jobfolio.vo.resume.LinkInfoVO">
@@ -50,6 +71,11 @@
 		FROM tb_link_info
 		WHERE resume_no = #{resume_no}
 	</select>
+
+	<delete id="unlikeResume"
+			parameterType="int">
+		DELETE FROM tb_resume_like WHERE resume_no = #{resume_no} AND user_no = #{user_no}
+	</delete>
 
 	<insert id="insertLinkInfo"
 			parameterType="com.happyjob.jobfolio.vo.resume.LinkInfoVO">

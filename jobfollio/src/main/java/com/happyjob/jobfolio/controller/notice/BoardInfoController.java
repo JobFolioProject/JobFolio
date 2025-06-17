@@ -64,12 +64,16 @@ public class BoardInfoController {
     @PostMapping("/updatePriority")
     public ResponseEntity<String> updatePriority(@RequestBody Map<String, Object> payload) {
     	try {
-    		int id = (int) payload.get("id");
-    		String board_type = (String) payload.get("board_type");
-    		int newPriority = (int) payload.get("newPriority");
-    	
-    	boardInfoService.updatePriority(id, board_type, newPriority);
-    	return ResponseEntity.ok("우선순위 변경 완료");
+			int id = (int) payload.get("id");
+			String board_type = (String) payload.get("board_type");
+			int newPriority = (int) payload.get("newPriority");
+
+			boardInfoService.updatePriority(id, board_type, newPriority);
+
+			return ResponseEntity.ok("우선순위 변경 완료");
+
+		}catch (IllegalArgumentException e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("우선순위 오류: " + e.getMessage());
 	  }catch (Exception e) {
 		  e.printStackTrace();
 		  return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류");

@@ -8,11 +8,19 @@ public class BoardInfoVo {
 	private String question;
 	private String answer;
 	private Date createdAt;
-	private int writer;
+	private String writer;
 	private int priority ;
 	private String board_type;
-	
-	
+	private String author;
+
+	public String getAuthor() {
+		return author;
+	}
+
+	public void setAuthor(String author) {
+		this.author = author;
+	}
+
 	public String getBoard_type() {
 		return board_type;
 	}
@@ -43,10 +51,10 @@ public class BoardInfoVo {
 	public void setCreatedAt(Date createdAt) {
 		this.createdAt = createdAt;
 	}
-	public int getWriter() {
+	public String getWriter() {
 		return writer;
 	}
-	public void setWriter(int writer) {
+	public void setWriter(String writer) {
 		this.writer = writer;
 	}
 	public int getPriority() {

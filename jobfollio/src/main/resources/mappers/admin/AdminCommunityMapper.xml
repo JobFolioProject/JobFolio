@@ -32,4 +32,46 @@
         WHERE board_no = #{boardNo}
     </delete>
 
+    <!--  공지사항 일괄 삭제  -->
+    <delete id="deleteBoardBatch" parameterType="list">
+        DELETE FROM tb_board
+        WHERE board_no IN
+        <foreach collection="list" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!-- 우선순위 조회 -->
+    <select id="selectPriority" parameterType="int" resultType="int">
+        SELECT priority
+        FROM tb_board
+        WHERE board_no = #{boardNo}
+    </select>
+
+    <!--  우선순위 변경  -->
+    <update id="updatePriority">
+        UPDATE tb_board
+        SET priority = #{priority}
+        WHERE board_no = #{boardNo}
+    </update>
+
+    <!-- 우선순위 일괄 변경 -->
+    <update id="updatePriorityBatch">
+        <foreach collection="updates" item="item" separator=";">
+            UPDATE tb_board
+            SET priority = #{item.priority}
+            WHERE board_no = #{item.boardNo}
+        </foreach>
+    </update>
+
+    <!--  공지 고정 해제  -->
+    <update id="unpinBoardList">
+        UPDATE tb_board
+        SET priority = 0
+        WHERE board_no IN
+        <foreach collection="boardNos" item="boardNo" open="(" separator="," close=")">
+            #{boardNo}
+        </foreach>
+    </update>
+
 </mapper>
