@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import "../../../css/user/join/JoinForm.css";
 import axios from "../../../utils/axiosConfig";
+import { useNavigate } from "react-router-dom";
 
 const JoinForm = () => {
   // 상태 정의
@@ -18,6 +19,7 @@ const JoinForm = () => {
   const [tokenMsg, setTokenMsg] = useState("");
   const [joinMsg, setJoinMsg] = useState("");
   const [joinError, setJoinError] = useState("");
+  const navigate = useNavigate();
 
   // 검증 에러 메시지
   const [emailError, setEmailError] = useState("");
@@ -267,7 +269,7 @@ const JoinForm = () => {
       setTokenMsg("인증번호가 올바르지 않습니다.");
     }
   };
-  // 회원가입 처리 (전체 검증 추가)
+  // 회원가입 처리 
   const handleJoin = async (e) => {
     e.preventDefault();
     setJoinMsg("");
@@ -352,15 +354,16 @@ const JoinForm = () => {
     }
     try {
       await axios.post("http://localhost:80/api/join/register", {
-        login_id: email, // loginId → login_id 변경
-        user_name: userName, // userName → user_name 변경
+        login_id: email,
+        user_name: userName, 
         password,
         sex,
         hp,
         birthday,
-        address: fullAddress, // 합친 주소 전송
+        address: fullAddress, 
       });
       setJoinMsg("회원가입이 완료되었습니다. 로그인 후 이용해주세요.");
+      navigate("/");
     } catch (err) {
       setJoinError("회원가입에 실패했습니다. 입력값을 확인해주세요.");
     }

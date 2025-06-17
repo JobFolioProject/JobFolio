@@ -67,7 +67,7 @@ public class SecurityConfig {
                         "/api/email/**",          // 이메일 인증 관련
                         "/api/auth/refresh",
                         "/api/product/**",
-                        "/api/resume/**",             // 결제 관련
+                        "/api/resume/**",
                         "/resumes/**",
                         "/api/community/**",
                         "/error"                  // 에러 페이지
