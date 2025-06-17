@@ -12,12 +12,14 @@ import com.happyjob.jobfolio.vo.mypage.CertificateVO;
 import com.happyjob.jobfolio.vo.resume.ResumeInfoVO;
 import com.happyjob.jobfolio.vo.resume.TemplateVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -300,6 +302,16 @@ public class ResumeController {
 
 
         return resultMap;
+    }
+
+    @RequestMapping("/selectOneResume")
+    public ResponseEntity<String> selectOneResume(@RequestParam String resume_file_path) throws IOException {
+
+        Path path = Paths.get(resume_file_path);
+        String html = new String(Files.readAllBytes(path), StandardCharsets.UTF_8);
+//        Map<String,Object> resultMap = new HashMap<>();
+
+        return ResponseEntity.ok().body(html);
     }
 
 

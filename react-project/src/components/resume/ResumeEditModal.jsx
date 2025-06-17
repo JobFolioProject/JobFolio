@@ -10,7 +10,7 @@ import CertSectionModify from "./CertSectionModify";
 import axios from "axios";
 import Loading from "../common/Loading";
 
-const ResumeEditModal = ({ open, onClose, props }) => {
+const ResumeEditModal = ({ open, onClose, props, htmlString }) => {
   const [initHtmlcontent, setInitHtmlContent] = useState("");
   const [htmlContent, setHtmlContent] = useState("");
   const [initalResumeInfo, setInitialResumeInfo] = useState(null);
@@ -72,18 +72,13 @@ const ResumeEditModal = ({ open, onClose, props }) => {
     ],
   });
   const [selectedRadio, setSelectedRadio] = useState("");
-  const [fixedPath, setFixedPath] = useState(props.fixedPath);
   const iframeRef = useRef(null);
 
-  //html 파일 호출 후 text로 변수에 저장
+  //html string prop전달한거 set
   useEffect(() => {
-    fetch(fixedPath + "example.html")
-      .then((res) => res.text())
-      .then((html) => {
-        setHtmlContent(html);
-        setInitHtmlContent(html);
-      });
-  }, []);
+    setHtmlContent(htmlString);
+    setInitHtmlContent(htmlString);
+  }, [htmlString]);
 
   // htmlContent에 있는 특정 class별로 변수 set
   useEffect(() => {
@@ -305,7 +300,7 @@ const ResumeEditModal = ({ open, onClose, props }) => {
     //자기소개서 정보
     const coverLetterDiv = doc.querySelector(".coverLetter");
 
-    //사용자가 입력한 textarea값을 각각 class 값에 적용
+    // 사용자가 입력한 textarea값을 각각 class 값에 적용
     nameDiv.innerText = resumeInfo.name;
     posDiv.innerText = resumeInfo.desired_position;
     addressDiv.innerText = resumeInfo.address;
@@ -498,12 +493,6 @@ const ResumeEditModal = ({ open, onClose, props }) => {
       });
   };
 
-  const changeSelectedTemplate = () => {
-    fetch(fixedPath + "example-copy.html")
-      .then((res) => res.text())
-      .then((html) => setHtmlContent(html));
-  };
-
   const handleClose = () => {
     //모달창 닫을 시 기본값 초기화
     if (initalResumeInfo && initHtmlcontent) {
@@ -635,9 +624,6 @@ const ResumeEditModal = ({ open, onClose, props }) => {
         <Loading loading={loading}></Loading>
 
         <div className="buttonRow">
-          <button className="secondaryBtn" onClick={changeSelectedTemplate}>
-            템플릿 변경 (테스트)
-          </button>
           <button className="secondaryBtn" onClick={saveModify}>
             수정 사항 저장
           </button>

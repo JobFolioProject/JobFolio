@@ -261,7 +261,8 @@ public class ResumeService {
             ObjectNode sysMsg = messages.addObject();
             sysMsg.put("role", "system");
             sysMsg.put("content",
-                 "Please provide specific advice on the strengths, weaknesses, and areas for improvement in this resume \n\n"
+                 "Please provide only specific advice on the strengths, weaknesses, and areas for improvement in this resume in Korean\n"
+                         + "You do not have to mention the introduction  \n\n"
                     + resumeDataJson
             );
 
@@ -317,6 +318,10 @@ public class ResumeService {
     public UserVO getUserByUserNo(Long userNo) {
         return resumeMapper.getUserByUserNo(userNo);
     }
+
+//    public ResumeInfoVO selectResumeInfoByResumeNo(int resumeNo) {
+//        return  resumeMapper.selectResumeInfoByResumeNo(resumeNo);
+//    }
 
 //    // 스킬 목록 조회
 //    public List<SkillInfoVO> selectSkillInfoList(long user_no) {
