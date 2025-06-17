@@ -36,11 +36,15 @@ const CustomDataPickerInput = forwardRef(
     )
 );
 
+// DatePicker의 input 필드를 커스터마이징하고 ref를 연결
 const CareerHistorySection = React.memo(({ userNo, careerHistoryList, onListChange }) => {
     const [showAddForm, setShowAddForm] = useState(false); // 새로운 경력 폼의 가시성 제어
     const [editingCareerNo, setEditingCareerNo] = useState(null); // 수정중인 경력 번호
     const [currentFormCareer, setCurrentFormCareer] = useState(formCareerData); // 폼의 현재 데이터
     const [errorMessage, setErrorMessage] = useState(''); // 유효성 검사 에러 메시지
+
+    // 재직중 상태
+    const [isCurrentJob, setIsCurrentJob] = useState(false);
 
     // DatePicker를 위한 Date 객체 상태
     const [startDate, setStartDate] = useState(null);
@@ -62,7 +66,13 @@ const CareerHistorySection = React.memo(({ userNo, careerHistoryList, onListChan
     // DatePicker 날짜 상태 동기화
     useEffect(() => {
         setStartDate(currentFormCareer.start_date ? new Date(currentFormCareer.start_date) : null);
-        setEndDate(currentFormCareer.end_date ? new Date(currentFormCareer.end_date) : null);
+
+        // 재직중인 경우 isCurrentJob을 true로 설정하고 endDate는 null
+        const isCurrentlyWorking = currentFormCareer.end_date === '재직중';
+        setEndDate(
+            isCurrentlyWorking ? new Date() : currentFormCareer.end_date ? new Date(currentFormCareer.end_date) : null
+        );
+        setIsCurrentJob(isCurrentlyWorking);
     }, [currentFormCareer]);
 
     // "추가" 버튼 클릭 핸들러
@@ -115,8 +125,14 @@ const CareerHistorySection = React.memo(({ userNo, careerHistoryList, onListChan
             setShowAddForm(true); // 폼 열기
             setErrorMessage('');
             setErrors({});
+
+            // 재직중이면 체크박스 상태 설정해야함.
+            const isCurrentlyWorking = modifyCareer.end_date === '재직중';
             setStartDate(modifyCareer.start_date ? new Date(modifyCareer.start_date) : null);
-            setEndDate(modifyCareer.end_date ? new Date(modifyCareer.end_date) : null);
+            setEndDate(
+                isCurrentlyWorking ? new Date() : modifyCareer.end_date ? new Date(modifyCareer.end_date) : null
+            );
+            setIsCurrentJob(isCurrentlyWorking);
         }
     };
     // 삭제 아이콘 버튼 클릭 핸들러
@@ -126,7 +142,7 @@ const CareerHistorySection = React.memo(({ userNo, careerHistoryList, onListChan
         if (isConfirm) {
             setErrorMessage('');
             try {
-                await axios.delete(`/api/myPage/${userNo}/careers/${careerNoToDelete}`); // URL 변경
+                await axios.delete(`/api/myPage/${userNo}/careerhistories/${careerNoToDelete}`); // URL 변경
                 alert('경력이 삭제되었습니다.');
 
                 if (onListChange) {
@@ -153,11 +169,12 @@ const CareerHistorySection = React.memo(({ userNo, careerHistoryList, onListChan
             setErrors({});
             setStartDate(null);
             setEndDate(null);
+            setIsCurrentJob(false); // 폼 취소시에도 상태 초기화(체크해제)
         }
     };
 
-    // 데이터 저장 및 수정 핸들러
-    const saveAndUpdateForm = async (currentFormCareer) => {
+    // 데이터 저장 및 수정
+    const saveAndUpdateForm = async () => {
         setErrorMessage('');
         const messageToSet = '저장에 필요한 필수 정보를 입력해주세요.';
 
@@ -176,12 +193,12 @@ const CareerHistorySection = React.memo(({ userNo, careerHistoryList, onListChan
             if (!firstErrorRef) firstErrorRef = startDateRef;
             hasError = true;
         }
-        if (!currentFormCareer.end_date) {
+        if (!isCurrentJob && !currentFormCareer.end_date) {
             // 종료일은 필수로 하되, 시작일보다 빠를 수 없음
             setErrors((prev) => ({ ...prev, end_date: true }));
             if (!firstErrorRef) firstErrorRef = endDateRef;
             hasError = true;
-        } else {
+        } else if (!isCurrentJob) {
             const sd = new Date(currentFormCareer.start_date);
             const ed = new Date(currentFormCareer.end_date);
             if (ed < sd) {
@@ -189,9 +206,6 @@ const CareerHistorySection = React.memo(({ userNo, careerHistoryList, onListChan
                 if (!firstErrorRef) firstErrorRef = endDateRef;
                 hasError = true;
                 setErrorMessage('종료일은 시작일보다 빠를 수 없습니다.'); // 구체적인 메시지
-                // hasError가 true일 때만 메시지 설정
-                if (!hasError) setErrorMessage(messageToSet);
-                // return; // 여기서 바로 리턴하지 않고 에러 메시지 설정 후 스크롤 로직으로 넘어감
             }
         }
         if (!currentFormCareer.position) {
@@ -217,18 +231,24 @@ const CareerHistorySection = React.memo(({ userNo, careerHistoryList, onListChan
             }, 10);
             return;
         }
+
+        const finalDateToSend = {
+            ...currentFormCareer,
+            user_no: userNo,
+            end_date: isCurrentJob ? '재직중' : currentFormCareer.end_date, // 재직중이면 재직중 문자열
+        };
+
         // 수정 시작
         try {
             let response;
-            const dataToSend = { ...currentFormCareer, user_no: userNo };
 
             if (editingCareerNo) {
-                response = await axios.put(`/api/myPage/${userNo}/careerhistories/${editingCareerNo}`, dataToSend); // URL 변경
+                response = await axios.put(`/api/myPage/${userNo}/careerhistories/${editingCareerNo}`, finalDateToSend); // URL 변경
                 alert('경력이 수정되었습니다.');
 
                 if (onListChange) {
                     const updatedCareerHistoryList = careerHistoryList.map((career) =>
-                        career.career_no === editingCareerNo ? { ...career, ...dataToSend } : career
+                        career.career_no === editingCareerNo ? { ...career, ...finalDateToSend } : career
                     );
                     onListChange(updatedCareerHistoryList);
                 }
@@ -245,11 +265,11 @@ const CareerHistorySection = React.memo(({ userNo, careerHistoryList, onListChan
                     return;
                 }
 
-                response = await axios.post(`/api/myPage/${userNo}/careerhistories`, dataToSend); // URL 변경
+                response = await axios.post(`/api/myPage/${userNo}/careerhistories`, finalDateToSend); // URL 변경
                 alert('경력이 저장되었습니다.');
 
                 if (onListChange) {
-                    const newCareer = response.data; // 백엔드에서 반환한 새 데이터 (ex. career_no 포함)
+                    const newCareer = response; // 백엔드에서 반환한 새 데이터 (ex. career_no 포함)
                     console.log('새 경력 데이터:', newCareer);
                     onListChange([...careerHistoryList, newCareer]);
                 }
@@ -263,6 +283,7 @@ const CareerHistorySection = React.memo(({ userNo, careerHistoryList, onListChan
             setErrors({});
             setStartDate(null);
             setEndDate(null);
+            setIsCurrentJob(false);
         } catch (error) {
             console.error('경력 저장/수정 실패:', error);
             alert('경력 저장/수정에 실패했습니다. 다시 시도해주세요.');
@@ -320,12 +341,14 @@ const CareerHistorySection = React.memo(({ userNo, careerHistoryList, onListChan
     // 재직중 체크박스 상태 관리
     const handleCurrentJobChange = (e) => {
         const isChecked = e.target.checked;
+        setIsCurrentJob(isChecked);
         if (isChecked) {
             setCurrentFormCareer((prev) => ({ ...prev, end_date: '재직중' }));
-            setEndDate(null); // DatePicker 종료일 초기화
+            setEndDate(new Date()); // DatePicker 종료일 초기화
         } else {
             setCurrentFormCareer((prev) => ({ ...prev, end_date: '' }));
             // 체크 해제 시에도 초기화 (사용자가 직접 선택하도록)
+            setEndDate(null); // 체크 해제 시 DatePicker 초기화
         }
         setErrors((prevErrors) => ({ ...prevErrors, end_date: false }));
         setErrorMessage('');
@@ -360,14 +383,12 @@ const CareerHistorySection = React.memo(({ userNo, careerHistoryList, onListChan
 
                                 <div className="career-details-row">
                                     <div className="career-detail-item">
-                                        <span className="detail-label">직무</span>
                                         <span className="detail-value">{career.position}</span>
                                     </div>
                                 </div>
 
                                 {career.notes && (
                                     <div className="career-notes-row">
-                                        <span className="detail-label">활동 설명</span>
                                         <span className="detail-value">{career.notes}</span>
                                     </div>
                                 )}
@@ -424,6 +445,7 @@ const CareerHistorySection = React.memo(({ userNo, careerHistoryList, onListChan
                                     className={`custom-datepicker-input ${errors.start_date ? 'error-field' : ''}`}
                                     popperPlacement="bottom-start"
                                     customInput={<CustomDataPickerInput ref={startDateRef} />}
+                                    maxDate={new Date()}
                                 />
                             </div>
 
@@ -437,7 +459,7 @@ const CareerHistorySection = React.memo(({ userNo, careerHistoryList, onListChan
                                     className={`custom-datepicker-input ${errors.end_date ? 'error-field' : ''}`}
                                     popperPlacement="bottom-start"
                                     customInput={<CustomDataPickerInput ref={endDateRef} />}
-                                    readOnly={currentFormCareer.end_date === '재직중'} // '재직중'이면 readOnly
+                                    readOnly={isCurrentJob} // '재직중'이면 readOnly
                                     minDate={startDate} // 시작일자보다 빠를 수 없음
                                 />
                             </div>
@@ -458,7 +480,7 @@ const CareerHistorySection = React.memo(({ userNo, careerHistoryList, onListChan
                                 <input
                                     type="text"
                                     name="position"
-                                    placeholder="포지션 (예: 백엔드 개발자)"
+                                    placeholder="직무 (예: 백엔드 개발자)"
                                     value={currentFormCareer.position || ''}
                                     onChange={formChange}
                                     maxLength={50}
@@ -471,7 +493,10 @@ const CareerHistorySection = React.memo(({ userNo, careerHistoryList, onListChan
                             <div className="formColFull">
                                 <textarea
                                     name="notes"
-                                    placeholder="활동 설명"
+                                    placeholder="활동 설명을 입력해주세요. 
+                  - 경력사항 별로 중요한 내용만 엄선해서 작성하는 것이 중요합니다.
+                  - 담당한 업무 내용을 요약해서 작성해 보세요
+                  - 프로젝트 내용을 적을 경우. 역할/팀구성/기여도/성과를 기준으로 요약해서 작성해보세요"
                                     value={currentFormCareer.notes || ''}
                                     onChange={formChange}
                                     maxLength={2000}
@@ -485,7 +510,7 @@ const CareerHistorySection = React.memo(({ userNo, careerHistoryList, onListChan
 
                     <div className="formButtons">
                         <button onClick={cancelForm}>취소</button>
-                        <button onClick={() => saveAndUpdateForm}>저장</button>
+                        <button onClick={saveAndUpdateForm}>저장</button>
                     </div>
                 </div>
             )}

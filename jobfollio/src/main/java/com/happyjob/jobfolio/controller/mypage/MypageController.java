@@ -4,8 +4,6 @@ import com.happyjob.jobfolio.service.mypage.MypageService;
 import com.happyjob.jobfolio.service.resume.ResumeService;
 import com.happyjob.jobfolio.vo.join.UserVO;
 import com.happyjob.jobfolio.vo.mypage.*;
-import com.happyjob.jobfolio.vo.system.DetailcodeModel;
-import com.happyjob.jobfolio.vo.resume.ResumeInfoVO;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -167,23 +165,41 @@ public class MypageController {
         mypageService.addCareerhistory(careerHistoryVO);
         return new ResponseEntity<>(careerHistoryVO, HttpStatus.CREATED);
     }
-    @PutMapping("/myCareer/{user_no}/update")
-    public ResponseEntity<String> updateMyCareer(@PathVariable(name = "user_no") Long userNo, @RequestBody CareerHistoryVO careerHistoryVO) {
+    @PutMapping("/{user_no}/careerhistories/{carrer_no}")
+    public ResponseEntity<String> updateMyCareer(@PathVariable(name = "user_no") Long userNo, @PathVariable(name = "carrer_no") Integer carrerNo, @RequestBody CareerHistoryVO careerHistoryVO) {
+        careerHistoryVO.setUser_no(userNo);
+        careerHistoryVO.setCareer_no(carrerNo);
         mypageService.updateByUserNoAndCareerhistory(careerHistoryVO);
         return new ResponseEntity<>("경력 사항이 정상적으로 수정되었습니다.",HttpStatus.CREATED);
     }
     @DeleteMapping("/{user_no}/careerhistories/{carrer_no}")
     public ResponseEntity<String> deleteCareerHisory(@PathVariable(name = "user_no") Long userNo, @PathVariable(name = "carrer_no") Integer carrerNo) {
         mypageService.deleteByUserNoAndCareerhistory(userNo,carrerNo);
-        return new ResponseEntity<>("기술 사항이 정상적으로 삭제되었습니다.", HttpStatus.CREATED);
+        return new ResponseEntity<>("경력 사항이 정상적으로 삭제되었습니다.", HttpStatus.CREATED);
     }
 
+
     // 기술(스킬)
-    @PostMapping("/{user_no}/skills")
-    public ResponseEntity<String> addSkill(@PathVariable(name = "user_no") Long userNo, @RequestBody SkillVO skillVO) {
-        mypageService.addSkill(skillVO);
-        return new ResponseEntity<>("기술 사항이 정상적으로 추가되었습니다.", HttpStatus.CREATED);
+    // 스킬 공통 목록
+    @GetMapping("/skills/all")
+    public ResponseEntity<CommSkillDto> getCareerSkillList() {
+        mypageService.getAllCommonSkills();
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
+    // 사용자 스킬 목록
+    @GetMapping("/{user_no}/skills")
+    public ResponseEntity<List<SkillVO>> getUserSkills(@PathVariable(name = "user_no") Long userNo) {
+        List<SkillVO> dto = mypageService.getUserNoBySkill(userNo);
+        return ResponseEntity.ok(dto);
+    }
+    // 스킬 추가
+    @PostMapping("/{user_no}/skills")
+    public ResponseEntity<SkillVO> addSkill(@PathVariable(name = "user_no") Long userNo, @RequestBody SkillVO skillVO) {
+        skillVO.setUser_no(userNo);
+        mypageService.addSkill(skillVO);
+        return new ResponseEntity<>(skillVO, HttpStatus.CREATED);
+    }
+    // 스킬 업데이트
     @PutMapping("/{user_no}/skills/{skill_code}/{group_code}")
     public ResponseEntity<String> updateSkill(@PathVariable(name = "user_no") Long userNo,
                                               @PathVariable(name = "skill_code") String skill_code,
@@ -192,6 +208,7 @@ public class MypageController {
         mypageService.updateSkill(skillVO);
         return new ResponseEntity<>("기술 사항이 정상적으로 수정되었습니다.", HttpStatus.CREATED);
     }
+    // 스킬 삭제
     @DeleteMapping("/{user_no}/skills/{skill_code}/{group_code}")
     public ResponseEntity<String> deleteSkill(@PathVariable(name = "user_no") Long userNo,
                                               @PathVariable(name = "skill_code") String skillCode,
@@ -200,14 +217,7 @@ public class MypageController {
         return new ResponseEntity<>("기술 사항이 정상적으로 삭제되었습니다.", HttpStatus.CREATED);
     }
 
-    // 스킬 상세코드 목록 
-    @GetMapping("/{user_no}/career/{skill_code}/{group_code}")
-    public ResponseEntity<String> getCareerSkillList(@PathVariable(name = "user_no") Long userNo,
-                                                      @PathVariable(name = "skill_code") String skillCode,
-                                                      @PathVariable(name = "group_code") String groupCode) {
-        mypageService.searchByDetailCoad(userNo,skillCode,groupCode);
-        return new ResponseEntity<>("<UNK> <UNK> <UNK> <UNK>.", HttpStatus.CREATED);
-    }
+
 
     // ======================================== 결재 내역 =============================================
     // 마이페이지 - 결재 내역 조회
