@@ -1,7 +1,7 @@
 import "../../../css/user/join/LoginForm.css";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import FindAccountForm from "./FindAccountForm";
+import FindAccountForm from "./FindAccountForm"; // 🔥 수정: FindPasswordForm → FindAccountForm
 import { useAuth } from "../../../context/AuthContext";
 
 const LoginForm = ({ onClose }) => {
@@ -48,8 +48,12 @@ const LoginForm = ({ onClose }) => {
 
         // AuthContext가 자동으로 상태 관리하므로 추가 작업 불필요
       } else {
-        // 로그인 실패
-        setError(result.message || "로그인에 실패했습니다.");
+        // 🔥 탈퇴 회원 감지 및 처리
+        if (result.message && result.message.includes("탈퇴한 계정")) {
+          setError("탈퇴한 계정입니다. 고객센터에 문의하시거나 계정 복구를 요청해주세요.");
+        } else {
+          setError(result.message || "로그인에 실패했습니다.");
+        }
       }
     } catch (error) {
       console.error("Login error:", error);
@@ -79,6 +83,7 @@ const LoginForm = ({ onClose }) => {
 
   const handleFindAccountClose = () => {
     setShowFindAccount(false);
+    setFindAccountType("");
   };
 
   return (
@@ -90,7 +95,7 @@ const LoginForm = ({ onClose }) => {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="login-form-container">
-              <h1 className="login-form-title">jobfollio</h1>
+              <h1 className="login-form-title">jobfolio</h1> {/* 🔥 오타 수정: jobfollio → jobfolio */}
               <h3 className="login-form-subtitle">
                 AI기반의 자기소개서 생성서비스
               </h3>
