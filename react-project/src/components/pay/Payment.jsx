@@ -1,8 +1,9 @@
 import '../../css/pay/Payment.css';
 
-import axios from 'axios';
+import axios from '../../utils/axiosConfig';
 import { loadTossPayments } from '@tosspayments/tosspayments-sdk';
 import { useEffect, useState } from 'react';
+import { useAuth } from '../../context/AuthContext';
 
 const clientKey = "test_ck_D5GePWvyJnrK0W0k6q8gLzN97Eoq";
 const customerKey = "syN4ED8k8qZuTmIXjuZMR";
@@ -10,18 +11,14 @@ const customerKey = "syN4ED8k8qZuTmIXjuZMR";
 const Payment = () => {
   const [productList, setProductList] = useState([]);
   const [payment, setPayment] = useState(null);
-  const [amount] = useState({
-    currency: "KRW",
-    value: 50000,
-  });
+  const { user } = useAuth();
 
   // 상품 목록 불러오기
   const mainProductList = async () => {
     try {
-      const res = await axios.post('/product/mainProductList');
-      setProductList(res.data.mainProductList);
+      const res = await axios.post('api/product/mainProductList');
+      setProductList(res.mainProductList);
     } catch (err) {
-      console.error('Failed to load product list:', err);
       alert(err.message);
     }
   };
@@ -35,41 +32,42 @@ const Payment = () => {
     async function fetchPayment() {
       try {
         const tossPayments = await loadTossPayments(clientKey);
-        const paymentInstance = tossPayments.payment({ customerKey });
-        setPayment(paymentInstance);
+        const payment = tossPayments.payment({ customerKey });
+        setPayment(payment);
       } catch (error) {
         console.error("Error initializing TossPayments:", error);
       }
     }
 
     fetchPayment();
-  }, []);
+  }, [clientKey, customerKey]);
 
   // 결제 요청 함수
   const requestPayment = async (product) => {
     try {
-      const res = await axios.post("/pay/insertOrder", {
+      const res = await axios.post("/api/pay/insertOrder", {
         product_no: product.product_no,
-        order_name : product.product_name,
-        amount: product.price,
-        user_no: '4'
+        order_name: product.product_name,
+        amount: Number(product.price),
+        user_no: user.userNo,
       });
-  
-      const { orderId, amount, order_name, user_no } = res.data;
-  
-      console.log(res.data);
-      if (!payment) {
-        alert("결제 시스템이 초기화되지 않았습니다.");
+      
+      const { orderId, amount, order_name: orderName } = res;
+      
+      console.log("orderId:", orderId);
+      console.log("amount 타입:", typeof amount);
+      console.log("amount 값:", amount);
+      
+      if (!orderId || !orderName || typeof amount !== 'number' || isNaN(amount)) {
+        console.error("❌ 결제 정보가 누락되었거나 형식이 잘못됨");
         return;
       }
-      console.log(res.data);
-
+      
       await payment.requestPayment({
         method: "CARD",
-        user_no : user_no,
         amount: amount,
         orderId: orderId,
-        order_name: order_name + "개월",
+        orderName: orderName + "개월",
         successUrl: window.location.origin + "/pay/cardSuccess",
         failUrl: window.location.origin + "/pay/cardFail",
         card: {
@@ -79,11 +77,13 @@ const Payment = () => {
           useAppCardOnly: false,
         },
       });
+      
     } catch (err) {
       console.error("결제 요청 실패:", err);
       alert("결제 중 오류가 발생했습니다.");
     }
   };
+  
   
   return (
     <div className='payment'>

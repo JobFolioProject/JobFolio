@@ -20,7 +20,7 @@ const SubscriptManagement = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get('/api/product/productList', {
+        const res = await axios.get('/api/admin/product/productList', {
           params: {
             currentpage: currentPage,
             pagesize: itemsPerPage
@@ -45,11 +45,11 @@ const SubscriptManagement = () => {
     if (!window.confirm('선택한 상품을 삭제하시겠습니까?')) return;
 
     try {
-      await axios.post('/api/product/deleteProduct', { product_no: selected });
+      await axios.post('/api/admin/product/deleteProduct', { product_no: selected });
       alert('삭제가 완료되었습니다.');
 
       // 삭제 후 목록 다시 가져오기
-      const res = await axios.get('/api/product/productList', {
+      const res = await axios.get('/api/admin/product/productList', {
         params: {
           currentpage: currentPage,
           pagesize: itemsPerPage
@@ -125,7 +125,7 @@ const SubscriptManagement = () => {
               onClose={() => setIsDetailOpen(false)}
               mode={modalMode}
               onSaved={() => {
-                axios.get('/api/product/productList', {
+                axios.get('/api/admin/product/productList', {
                   params: {
                     currentpage: currentPage,
                     pagesize: itemsPerPage,

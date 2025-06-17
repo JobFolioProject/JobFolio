@@ -11,7 +11,7 @@ import java.util.Map;
 public interface PayMapper {
 
 	// 결제 정보 생성
-	public Map<String, Object> insertOrder(Map<String, Object> paramMap);
+	int insertOrder(Map<String, Object> paramMap);
 
 	// 결제 실패시 미리 생성한 결제 정보 삭제
 	int deleteOrder(Map<String, Object> params);
