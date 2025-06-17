@@ -89,8 +89,8 @@ public class ProductController {
 		logger.info("   - paramMap : " + paramMap);
 
 		paramMap.put("product_no", paramMap.get("product_no"));
-		paramMap.put("price", Integer.parseInt((String)paramMap.get("price")));
-		paramMap.put("sub_period", Integer.parseInt((String)paramMap.get("sub_period")));
+		paramMap.put("price", paramMap.get("price"));
+		paramMap.put("sub_period", paramMap.get("sub_period"));
 
 		Map<String, Object> returnmap = new HashMap<String,Object>();
 
