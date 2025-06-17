@@ -23,11 +23,6 @@ const SkillSection = React.memo(({ userNo, skillList, onListChange }) => {
     const [editingSkillDetail, setEditingSkillDetail] = useState(null); // 상세 보기/수정 중인 스킬 (skillList의 원본 객체)
     const [errorMessage, setErrorMessage] = useState(''); // 에러 메시지
 
-    const [errors, setErrors] = useState({
-        exp_level: false,
-        skill_tool: false,
-    });
-
     // 스킬 최대 개수 설정
     const MAX_SKILL_COUNT = 5;
 
@@ -43,7 +38,7 @@ const SkillSection = React.memo(({ userNo, skillList, onListChange }) => {
         setErrorMessage('');
     };
 
-    const editSkills = () => {
+    const modifiedSkills = () => {
         if (skillList.length === 0) {
             alert('수정할 스킬이 없습니다. 먼저 스킬을 추가해주세요');
 
@@ -62,25 +57,27 @@ const SkillSection = React.memo(({ userNo, skillList, onListChange }) => {
 
         try {
             // 기존 DB 스킬 목록과 폼의 최종 스킬 목록 비교
-            const existingSkillUniqueIds = new Set(skillList.map((s) => `${s.skill_code} - ${s.group_code}`));
-            const formSkillUniqueIds = new Set(currentFormSkills.map((s) => `${s.skill_code}-${s.group_code}`));
-
+            const existingSkillMap = new Map(skillList.map((s) => `${s.skill_code}-${s.group_code}`));
+            const formSkillMap = new Map(currentFormSkills.map((s) => [`${s.skill_code}-${s.group_code}`, s]));
             // INSERT 대상: 폼에는 있지만 기존 DB에 없는 스킬 (새로 추가될 스킬)
             const skillsToInsert = currentFormSkills.filter(
-                (s) => !existingSkillUniqueIds.has(`${s.skill_code}-${s.group_code}`)
+                (s) => !existingSkillMap.has(`${s.skill_code}-${s.group_code}`)
             );
 
             // DELETE 대상: 기존 DB에는 있었지만 폼에 없는 스킬 (삭제될 스킬)
-            const skillsToDelete = skillList.filter((s) => !formSkillUniqueIds.has(`${s.skill_code}-${s.group_code}`));
+            const skillsToDelete = skillList.filter((s) => !formSkillMap.has(`${s.skill_code}-${s.group_code}`));
 
             let hasChanges = false;
             if (skillsToInsert.length > 0) {
                 // DB에 남을 개수 = 기존 개수 + 추가 개수 - 삭제 개수)
                 hasChanges = true;
+                // MAX_SKILL_COUNT를 초과하는지 최종 검사
                 if (skillList.length + skillsToInsert.length - skillsToDelete.length > MAX_SKILL_COUNT) {
-                    setErrorMessage(`최대 ${MAX_SKILL_COUNT}개의 스킬만 등록할 수 있습니다.`);
-                    setShowAddForm(true); // 폼을 열고 사용자에게 알리고 저장 중단하기
-                    return;
+                    setErrorMessage(
+                        `최대 ${MAX_SKILL_COUNT}개의 스킬만 등록할 수 있습니다. 추가할 스킬 수를 조절해주세요.`
+                    );
+                    setShowAddForm(true); // 폼을 다시 열어 사용자에게 알림
+                    return; // 저장 중단
                 }
                 const insertPromises = skillsToInsert.map((skill) => {
                     const dataToSend = {
@@ -98,18 +95,45 @@ const SkillSection = React.memo(({ userNo, skillList, onListChange }) => {
                 // 작업이 성공적으로 완료되기를 기다림..
                 await Promise.all(insertPromises); // 결론은 하나라도 실패하면 즉시 실패, 성공하면 모두 성공
             }
+            const skillsToUpdate = currentFormSkills.filter((formSkill) => {
+                const uniqueId = `${formSkill.skill_code}-${formSkill.group_code}`;
+                const existing = existingSkillMap.get(uniqueId);
+                // DB에 있었고 폼에도 있는 스킬 중, exp_level 또는 skill_tool이 변경된 경우
+                return (
+                    existing &&
+                    (existing.exp_level !== formSkill.exp_level || existing.skill_tool !== formSkill.skill_tool)
+                );
+            });
+
+            if (skillsToUpdate.length > 0) {
+                hasChanges = true;
+                const updatePromises = skillsToUpdate.map((skill) => {
+                    const dataToSend = {
+                        user_no: userNo,
+                        skill_code: skill.skill_code,
+                        group_code: skill.group_code,
+                        exp_level: skill.exp_level,
+                        skill_tool: skill.skill_tool,
+                    };
+                    return axios.put(
+                        `/api/myPage/${userNo}/skills/${skill.skill_code}/${skill.group_code}`,
+                        dataToSend // 수정된 데이터 전송
+                    );
+                });
+                await Promise.all(updatePromises);
+            }
 
             // Delete 요청
             if (skillsToDelete.length > 0) {
                 hasChanges = true;
                 const deletePromises = skillsToDelete.map((skill) => {
-                    return axios.delete(`/api/myPage/${skill.skill_code}/${skill.group_code}`);
+                    return axios.delete(`/api/myPage/${user_no}/skills/${skill.skill_code}/${skill.group_code}`);
                 });
                 await Promise.all(deletePromises);
             }
 
             if (hasChanges) {
-                alert('dz');
+                alert('스킬이 성공적으로 저장/삭제/수정되었습니다.');
             } else {
                 alert('변경사항이 없어 저장할 내용이 없습니다.');
             }
@@ -132,67 +156,17 @@ const SkillSection = React.memo(({ userNo, skillList, onListChange }) => {
     };
 
     // SkillAddForm에서 스킬 태그 클릭 시 호출될 콜백 (상세 보기/수정 모달 열기)
-    // 함수명 유지: modifiedItemClick
-    const modifiedItemClick = useCallback((skillDataToEdit) => {
-        setEditingSkillDetail(skillDataToEdit); // 스킬 객체 전체를 설정
-        setShowSkillDetailModal(true); // 상세 보기/수정 모달 열기
+    const openDetailModalFromAddForm = useCallback((skillDataToEditWithCallbacks) => {
+        setEditingSkillDetail(skillDataToEditWithCallbacks); // 스킬 객체 전체 (콜백 포함)를 설정
+        setShowSkillDetailModal(true);
         setErrorMessage('');
-    }, []); // 이 함수 자체는 SkillAddForm에서 전달될 것이므로 skillList에 의존하지 않음
+    }, []);
 
-    // SkillDetailModal에서 '저장' 버튼 클릭 시 호출될 콜백 (숙련도/툴/특이사항 업데이트)
-    const saveSkillDetailForm = async (updatedSkillData) => {
-        // 함수명 유지: saveSkillDetailForm
-        setShowSkillDetailModal(false);
-        setErrorMessage('');
-
-        try {
-            await axios.put(
-                `/api/myPage/${userNo}/skills/${updatedSkillData.skill_code}/${updatedSkillData.group_code}`,
-                updatedSkillData // 수정된 모든 데이터 전송
-            );
-            alert('스킬 상세 정보가 수정되었습니다.');
-
-            if (onListChange) {
-                onListChange();
-            }
-            setEditingSkillDetail(null);
-        } catch (error) {
-            console.error('스킬 상세 정보 수정 실패:', error);
-            setErrorMessage('스킬 상세 정보 수정에 실패했습니다. 다시 시도해주세요.');
-        }
-    };
-
-    // SkillDetailModal에서 '취소' 버튼 클릭 시 호출될 콜백
+    // SkillDetailModal에서 '취소' 버튼 클릭 시 호출될 콜백 (모달 닫기만 함)
     const cancelSkillDetailForm = () => {
-        // 함수명 유지: cancelSkillDetailForm
         setShowSkillDetailModal(false);
         setEditingSkillDetail(null);
         setErrorMessage('');
-    };
-
-    // SkillDetailModal에서 '삭제' 버튼 클릭 시 호출될 콜백 (DB에서 스킬 삭제)
-    const deleteSkillDetailItem = async (skillCodeToDelete, groupCodeToDelete) => {
-        // 함수명 유지: deleteSkillDetailItem
-        setShowSkillDetailModal(false); // 모달 닫기
-        setErrorMessage('');
-
-        const isConfirm = window.confirm('정말로 이 스킬을 삭제하시겠습니까? 되돌릴 수 없습니다.');
-        if (!isConfirm) {
-            return; // 사용자가 취소하면 아무것도 하지 않음
-        }
-
-        try {
-            await axios.delete(`/api/myPage/${userNo}/skills/${skillCodeToDelete}/${groupCodeToDelete}`);
-            alert('스킬이 삭제되었습니다.');
-
-            if (onListChange) {
-                onListChange(); // MyCareer에서 skillList 전체 새로고침
-            }
-            setEditingSkillDetail(null);
-        } catch (error) {
-            console.error('스킬 삭제 실패:', error);
-            alert('스킬 삭제에 실패했습니다. 다시 시도해주세요.');
-        }
     };
 
     return (
@@ -240,7 +214,7 @@ const SkillSection = React.memo(({ userNo, skillList, onListChange }) => {
                                     <EditIcon
                                         className="editIcon"
                                         style={{ cursor: 'pointer', fontSize: 'large' }}
-                                        onClick={() => modifiedItemClick(editSkills)}
+                                        onClick={() => modifiedItemClick(modifiedSkills)}
                                     />
                                 </div>
                             </div>
