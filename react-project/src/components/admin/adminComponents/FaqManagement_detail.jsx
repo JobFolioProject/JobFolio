@@ -1,6 +1,6 @@
 // FaqManagement_detail.jsx
 import React, { useState } from 'react';
-import axios from 'axios';
+import axios from "../../../utils/axiosConfig";
 import '../../../css/admin/adminComponents/FaqManagement_detail.css';
 
 const FaqManagementDetail = ({ item, onClose, mode, onSaved, boardType }) => {

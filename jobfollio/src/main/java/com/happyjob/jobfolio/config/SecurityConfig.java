@@ -68,7 +68,8 @@ public class SecurityConfig {
                         "/api/auth/refresh",
                         "/api/product/**",
                         "/api/resume/**",             // 결제 관련
-                        "/error"                  // 에러 페이지
+                        "/error", // 에러 페이지
+                        "/resumes/**"
                 ).permitAll()
 
                 // 최고관리자(A) 전용 경로
