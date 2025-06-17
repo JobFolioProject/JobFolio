@@ -17,8 +17,6 @@ const SubscriptManagement = () => {
   const [modalMode, setModalMode] = useState('edit');
   const [totalCount, setTotalCount] = useState(0);
 
-
-  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -28,15 +26,8 @@ const SubscriptManagement = () => {
             pagesize: itemsPerPage
           }
         });
-<<<<<<< HEAD
-
-        setData(res.data.productList);
-        setTotalCount(res.data.totalcnt);
-=======
-  
-        setData(res.productList);
-        setTotalCount(res.totalcnt); 
->>>>>>> main
+          setData(res.productList);
+          setTotalCount(res.totalcnt);
       } catch (err) {
         console.error('상품 안내 불러오기 실패:', err);
       }
@@ -54,25 +45,24 @@ const SubscriptManagement = () => {
     if (!window.confirm('선택한 상품을 삭제하시겠습니까?')) return;
 
     try {
-      await axios.post('/product/deleteProduct', { product_no: selected });
+      await axios.post('/api/product/deleteProduct', { product_no: selected });
       alert('삭제가 완료되었습니다.');
 
       // 삭제 후 목록 다시 가져오기
-      const res = await axios.get('/product/productList', {
+      const res = await axios.get('/api/product/productList', {
         params: {
           currentpage: currentPage,
           pagesize: itemsPerPage
         }
       });
-      setData(res.data.productList);
-      setTotalCount(res.data.totalcnt);
+      setData(res.productList);
+      setTotalCount(res.totalcnt);
       setSelected([]);
     } catch (err) {
       console.error('상품 삭제 실패:', err);
       alert('삭제 중 오류가 발생했습니다.');
     }
   };
-
 
   const itemsPerPage = 10;
   const currentItems = data;
@@ -135,15 +125,15 @@ const SubscriptManagement = () => {
               onClose={() => setIsDetailOpen(false)}
               mode={modalMode}
               onSaved={() => {
-                axios.get('/product/productList', {
+                axios.get('/api/product/productList', {
                   params: {
                     currentpage: currentPage,
                     pagesize: itemsPerPage,
                   },
                 })
                   .then((res) => {
-                    setData(res.data.productList);
-                    setTotalCount(res.data.totalcnt);
+                    setData(res.productList);
+                    setTotalCount(res.totalcnt);
                   })
                   .catch((err) => console.error(err));
               }}
