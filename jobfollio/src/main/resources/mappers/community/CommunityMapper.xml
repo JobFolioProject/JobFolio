@@ -55,4 +55,42 @@
         WHERE b.board_no = #{boardNo}
     </select>
 
+    <!-- 이전 글 조회 -->
+    <select id="selectPreviousPost" parameterType="int" resultType="com.happyjob.jobfolio.vo.community.CommunityBoardVo">
+        SELECT
+        b.board_no AS boardNo,
+        b.board_type AS boardType,
+        b.title,
+        b.content,
+        b.write_date AS writeDate,
+        b.author,
+        u.user_name AS authorName,
+        b.priority
+        FROM tb_board b
+        JOIN tb_userinfo u ON b.author = u.user_no
+        WHERE b.board_type = 'N'
+        AND b.priority = 0
+        AND b.board_no &lt; #{boardNo}
+        ORDER BY b.board_no DESC
+        LIMIT 1
+    </select>
+    <!--  다음 글 조회  -->
+    <select id="selectNextPost" parameterType="int" resultType="com.happyjob.jobfolio.vo.community.CommunityBoardVo">
+        SELECT
+            b.board_no AS boardNo,
+            b.board_type AS boardType,
+            b.title,
+            b.content,
+            b.write_date AS writeDate,
+            b.author,
+            u.user_name AS authorName,
+            b.priority
+        FROM tb_board b
+                 JOIN tb_userinfo u ON b.author = u.user_no
+        WHERE b.board_type = 'N'
+          AND b.priority = 0
+          AND b.board_no &gt; #{boardNo}
+        ORDER BY b.board_no ASC
+            LIMIT 1
+    </select>
 </mapper>

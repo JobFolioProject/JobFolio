@@ -2,11 +2,13 @@ import '../../../css/user/myPageComponent/ResumeDetail.css';
 import FavoriteIcon from '@mui/icons-material/FavoriteBorder';
 import axios from '../../../utils/axiosConfig';
 import { useEffect, useState } from 'react';
+import { useAuth } from '../../../context/AuthContext';
 
 const ResumeDetail = () => {
 
     const [resumeList, setResumeList] = useState([]);
 
+    const { user, isAuthenticated } = useAuth();
     
 
     // 팝업 열기 유틸
@@ -21,18 +23,16 @@ const ResumeDetail = () => {
 
     const axiosResumeInfo = async () => {
         try {
-            const raw = sessionStorage.getItem('user');
-            if (!raw) return;
-            const { userNo } = JSON.parse(raw);
-            if (!userNo) return;
+            const userNo = user.userNo;
+            
 
             // JSON 바디에 userNo 담아 POST
             const response = await axios.post('/api/resume/resumeDetail', {
             userNo: userNo
             });
-            console.log(response.data);
+            console.log(response);
 
-            const { resumeList } = response.data;
+            const { resumeList } = response;
 
             if (Array.isArray(resumeList) && resumeList.length >= 0) {
                 // 첫 번째 이력서를 resumeInfo에 세팅
@@ -50,13 +50,30 @@ const ResumeDetail = () => {
     }
 
     const deleteResume = async (resume_no)=>{
+      if(window.confirm("이력서를 삭제 하시겠습니까?")){
+
         await axios.post("/api/resume/deleteResume", {resume_no: resume_no})
         .then((res)=>{
 
+          const { message, errorDetail } = res;
+          if (message === "Y") {
+            alert("삭제되었습니다");
+            axiosResumeInfo();
+            // TODO: 삭제 후 처리 (리스트 갱신, 모달 닫기 등)
+        } else if (message === "N") {
+            alert("삭제 실패: 서버에서 N 응답");
+            // TODO: 사용자에게 실패 안내
+        } else { // "ERROR" 케이스
+            console.error("서버 오류:", errorDetail);
+            // TODO: 사용자에게 에러 안내 (예: "서버 오류가 발생했습니다.")
+        }
+
         })
         .catch((err)=>{
-            
+            console.log(err)
         })
+      }
+        
         
     }
 

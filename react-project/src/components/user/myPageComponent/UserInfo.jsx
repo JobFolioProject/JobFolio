@@ -24,8 +24,7 @@ const UserInfo = () => {
                 return;
             }
 
-            const response = await axios.get(`/api/myPage/userInfo/${user.userNo}`);
-            const data = response;
+            const data = await axios.get(`/api/myPage/userInfo/${user.userNo}`);
             console.log("사용자 상세정보:", data);
 
             setUserInfo({
@@ -75,7 +74,7 @@ const UserInfo = () => {
 
                     const response = await axios.post(`/api/myPage/editUserInfo`, cleanedUserInfo);
 
-                    if (response.status === 200) {
+                    if (response !== null) {
                         alert("수정이 완료되었습니다.");
                         setIsEditing(false);
                     } else {
@@ -111,10 +110,10 @@ const UserInfo = () => {
                 password: password
             });
 
-            if (response.status === 200 && response.result === 'Y') {
+            if (response!== null) {
                 try {
                     const deleteResponse = await axios.get(`/api/myPage/userInfo/${user.userNo}/delete`);
-                    if (deleteResponse.status === 200) {
+                    if (deleteResponse !== null) {
                         alert("탈퇴가 완료되었습니다.");
                         logout(); // AuthContext의 logout 사용 (자동으로 상태 정리 및 리다이렉트)
                     } else {

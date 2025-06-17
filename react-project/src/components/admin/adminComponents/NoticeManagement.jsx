@@ -4,7 +4,7 @@ import Pagination from '../../common/Pagination.jsx';
 import SearchIcon from '@mui/icons-material/Search';
 import '../../../css/admin/adminComponents/NoticeManagement_detail.css';
 import NoticeManagementDetail from './NoticeManagement_detail';
-import axios from 'axios';
+import axios from "../../../utils/axiosConfig";
 import '../../../css/admin/adminComponents/NoticeManagement.css';
 
 const NoticeManagement = () => {
@@ -42,9 +42,9 @@ const NoticeManagement = () => {
       },
     })
       .then((res) => {
-        setPriorityList(res.data.priorityList || []);
-        setNoticeList(res.data.boardList || []);
-        setTotalCount(res.data.totalCount);
+        setPriorityList(res.priorityList || []);
+        setNoticeList(res.boardList || []);
+        setTotalCount(res.totalCount);
       })
       .catch((err) => console.error('공지사항 조회 실패', err));
   };

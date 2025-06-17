@@ -14,9 +14,11 @@
 			template_no,
 			resume_file_name,
 			resume_file_pypath,
-			resume_file_lopath
+			resume_file_lopath,
+			publication_yn
 		FROM tb_resume_info
 		WHERE user_no = #{user_no}
+		and status_yn = 'N'
 	</select>
 
 	<select id="resumeLikedList"
@@ -44,7 +46,9 @@
 			template_no,
 			resume_file_name,
 			resume_file_pypath,
-			resume_file_lopath
+			resume_file_lopath,
+		    status_yn,
+		    publication_yn
 		) VALUES (
 					 #{user_no},
 					 #{title},
@@ -52,14 +56,18 @@
 					 #{template_no},
 					 #{resume_file_name},
 					 #{resume_file_pypath},
-					 #{resume_file_lopath}
+					 #{resume_file_lopath},
+		             'N',
+		          	 #{publication_yn}
 				 )
 	</insert>
 
-	<delete id="deleteResume"
+	<update id="deleteResume"
 			parameterType="int">
-		DELETE FROM tb_resume_info WHERE resume_no = #{resume_no}
-	</delete>
+		UPDATE tb_resume_info
+		SET status_yn = 'Y'
+		WHERE resume_no = #{resume_no};
+	</update>
 
 	<select id="selectLinkInfoByResume"
 			parameterType="int"
