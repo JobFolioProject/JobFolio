@@ -2,7 +2,7 @@ import '../../../css/user/myPageComponent/SkillSection.css'; // 스킬 섹션 �
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit'; // '수정' 버튼에 사용될 아이콘
-import axios from 'axios';
+import axios from '../../../utils/axiosConfig';
 import ValidationMessage from './ValidationMessage';
 import SkillAddForm from './SkillAddForm'; // 스킬 추가/편집 폼 (드롭다운)
 import SkillDetailModal from './SkillDetailModal'; // 스킬 상세 보기/수정 모달

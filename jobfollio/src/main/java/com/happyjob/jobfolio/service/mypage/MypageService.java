@@ -7,7 +7,6 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.happyjob.jobfolio.vo.join.UserVO;
 
 import java.util.List;
 
@@ -123,12 +122,11 @@ public class MypageService {
         mypageMapper.deleteSkill(userNo,skillCode,groupCode);
     }
 
-    public void searchByDetailCoad(Long userNo, String skillCode,String groupCode) {
-        mypageMapper.searchByDetailCoad(userNo,skillCode,groupCode);
+    public void getAllCommonSkills() {
+        mypageMapper.selectAllCommonSkills();
     }
-
-
-
-
+    public List<SkillVO> getUserNoBySkill(Long userNo) {
+        return mypageMapper.selectUserSkill(userNo);
+    }
 
 }

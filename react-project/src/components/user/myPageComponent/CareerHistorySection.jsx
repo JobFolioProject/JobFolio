@@ -269,7 +269,7 @@ const CareerHistorySection = React.memo(({ userNo, careerHistoryList, onListChan
                 alert('경력이 저장되었습니다.');
 
                 if (onListChange) {
-                    const newCareer = response.data; // 백엔드에서 반환한 새 데이터 (ex. career_no 포함)
+                    const newCareer = response; // 백엔드에서 반환한 새 데이터 (ex. career_no 포함)
                     console.log('새 경력 데이터:', newCareer);
                     onListChange([...careerHistoryList, newCareer]);
                 }

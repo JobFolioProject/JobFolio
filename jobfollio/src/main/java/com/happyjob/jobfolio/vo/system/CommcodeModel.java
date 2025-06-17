@@ -70,6 +70,14 @@ public class CommcodeModel {
 		this.delyn = delyn;
 	}
 
+	public String getCategory_code() {
+		return category_code;
+	}
+
+	public void setCategory_code(String category_code) {
+		this.category_code = category_code;
+	}
+
 	private String group_code;
 	private String group_name;
 	private String note;
@@ -81,6 +89,6 @@ public class CommcodeModel {
 	private String updateId;
 	private String update_date;
 	private String delyn;
-	
+	private String category_code;
 	
 }
