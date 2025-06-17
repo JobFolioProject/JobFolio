@@ -68,7 +68,7 @@ public class SecurityConfig {
                         "/api/auth/refresh",
                         "/api/product/**",
                         "/api/resume/**",             // 결제 관련
-                        "/resumes/**"
+                        "/resumes/**",
                         "/api/community/**",
                         "/error"                  // 에러 페이지
                 ).permitAll()
