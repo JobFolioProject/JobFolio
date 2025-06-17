@@ -56,6 +56,8 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
             return "최고관리자(A) 권한 필요";
         } else if (path.startsWith("/api/admin/")) {
             return "관리자(A, B) 권한 필요";
+        }else if (path.startsWith("/api/")) {
+            return "로그인 권한 필요";
         }
         return "로그인 필요";
     }

@@ -1,10 +1,14 @@
 // InfoManagement.jsx
-import axios from 'axios';
+import axios from "../../../utils/axiosConfig";
 import '../../../css/admin/adminComponents/InfoManagement.css';
 import InfoManagementDetail from './InfoManagement_detail';
 import AdminSideBar from '../AdminSideBar';
 import { useState, useEffect } from 'react';
 import Pagination from '../../common/Pagination.jsx'; 
+import { useAuth } from '../../../context/AuthContext';
+import { Select, MenuItem } from "@mui/material";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 const InfoManagement = () => {
   const [data, setData] = useState([]);
@@ -14,16 +18,20 @@ const InfoManagement = () => {
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [modalMode, setModalMode] = useState('edit');
   const [priorityMap, setPriorityMap] = useState({});    // 우선순위 수정중 
+  const { user, isAuthenticated } = useAuth();
 
     useEffect(() => {
-    axios.get('/api/board/list', {
-      params : {board_type : "I"}
+      const userNo = user.userNo
+            if (!userNo) return;
+
+    axios.get('/api/admin/board/list', {
+      params : {board_type : "I", userNo : userNo}
     })
       .then((res) => {
-        if (Array.isArray(res.data)) {
-          setData(res.data);
+        if (Array.isArray(res)) {
+          setData(res);
         } else {
-          console.error('이용안내 예상치 못한 응답 데이터:', res.data);
+          console.error('이용안내 예상치 못한 응답 데이터:', res);
         }
       })
       .catch((err) => {
@@ -42,12 +50,12 @@ const InfoManagement = () => {
     if (!window.confirm("삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.")) 
       return;
 
-    axios.post('/api/board/delete', selected)
-      .then(() => axios.get('/api/board/list', {
+    axios.post('/api/admin/board/delete', selected)
+      .then(() => axios.get('/api/admin/board/list', {
         params: { board_type: "I"}
       }))
       .then((res) => {
-        setData(res.data);
+        setData(res);
         setSelected([]);
       })
       .catch((err) => {
@@ -63,18 +71,18 @@ const InfoManagement = () => {
       return;
     }
 
-    axios.post('/api/board/updatePriority', {
+    axios.post('/api/admin/board/updatePriority', {
       id: item.id,
       board_type : item.board_type || "I",
       newPriority : newPriority
     })
     .then(() => {
-      return axios.get('/api/board/list', {
+      return axios.get('/api/admin/board/list', {
         params : { board_type: item.board_type || "I"}
       });
     })
     .then((res) => {
-      setData(res.data);
+      setData(res);
       setPriorityMap({});
     })
     .catch((err) => {
@@ -137,10 +145,10 @@ const InfoManagement = () => {
         mode={modalMode}
         boardType = "I"     // board_type으로 해야하나?? 몰라 
         onSaved={() => {
-          axios.get('/api/board/list', {
+          axios.get('/api/admin/board/list', {
             params: { board_type: "I"}  
           })
-          .then((res) => setData(res.data))
+          .then((res) => setData(res))
           .catch((err) => console.error(err));
         }}
       />
@@ -156,6 +164,7 @@ const InfoManagement = () => {
               <th>작성일(수정일)</th>
               <th>우선순위</th>
               <th>작성자</th>
+              <th>표시 여부</th>
             </tr>
           </thead>
           <tbody>
@@ -190,6 +199,59 @@ const InfoManagement = () => {
                 </td>
                 
                 <td>{item.writer}</td>
+
+                <td>
+                  <Select
+                    className="input-status-select"
+                    value={item.status_yn ?? "N"}
+                    onChange={ (e) => {
+                      const newStatus = e.target.value;
+
+                      console.log("변경 요청 payload", {
+                          id: item.id,
+                          status_yn: newStatus
+                      });
+
+                      axios.post("/api/admin/board/updateStatus", {
+                        id : item.id,
+                        status_yn : newStatus
+                      })
+                      .then(() => {
+
+                        const raw = sessionStorage.getItem("user");
+                        const { userNo } = JSON.parse(raw || "{}");
+
+                        return axios.get("/api/admin/board/list", { 
+                          params: {board_type: item.board_type || "I", userNo : userNo}
+                        });
+                      })
+                      .then(() => {
+                        setData(prev =>
+                          prev.map(row =>
+                            row.id === item.id ? {...row, status_yn: newStatus } : row
+                          )
+                        );
+                      })
+                      .catch((err) => {
+                        console.error("표시여부 변경 실패 : ", err);
+                        alert("표시여부 변경 실패")
+                      });
+                    }}
+                    >
+                    <MenuItem value="N" className="menu-item">
+                      <div className="menu-item-content">
+                       <VisibilityIcon className="menu-icon" />
+                       <sapn>노출</sapn>
+                      </div>
+                    </MenuItem>
+                    <MenuItem value="Y" className="menu-item">
+                      <div className="menu-item-content">
+                        <VisibilityOffIcon className="menu-icon" />
+                        <sapn>숨김</sapn>
+                      </div>
+                    </MenuItem>
+                  </Select>  
+                </td>
               </tr>
             ))}
           </tbody>

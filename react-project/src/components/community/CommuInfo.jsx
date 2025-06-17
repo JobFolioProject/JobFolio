@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from "../../utils/axiosConfig";
 import '../../css/community/CommuInfo.css';
 import CommuMenuBar from './CommuMenuBar';
 import { useState , useEffect } from 'react';
@@ -12,14 +12,15 @@ const CommuInfo = () => {
   const [openItem, setOpenItem] = useState(null);
 
   useEffect(() => {
-    axios.get('/api/board/list', {
+   
+    axios.get('/api/board/user/info/list', {
       params : {
         board_type : "I"
       }
     })
       .then((res) => {
-        console.log('받은 데이터:', res.data);
-        setInfoList(res.data);
+        console.log('받은 데이터:', res);
+        setInfoList(res);
       })
       .catch((err) => {
         console.error('이용안내 불러오기 대실패:', err);

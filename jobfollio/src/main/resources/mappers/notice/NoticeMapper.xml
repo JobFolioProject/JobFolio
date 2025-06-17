@@ -3,7 +3,7 @@
 <mapper namespace="com.happyjob.jobfolio.repository.notice.BoardInfoRepository">
 	
    	<!-- 이용안내 목록 조회 -->
-	<select id = "selectByBoardType" parameterType="String" resultType = "com.happyjob.jobfolio.vo.notice.BoardInfoVo">
+	<select id = "selectByBoardType" parameterType="map" resultType = "com.happyjob.jobfolio.vo.notice.BoardInfoVo">
 
 		SELECT
 			b.board_no AS id,
@@ -11,13 +11,41 @@
 			b.content AS answer,
 			b.write_date AS createdAt,
 			u.user_name AS writer,
-			b.priority
+			b.priority,
+			b.status_yn
 		FROM tb_board b
 				 LEFT JOIN tb_userinfo u ON b.author = u.user_no
 		WHERE b.board_type = #{board_type}
 		ORDER BY b.priority DESC;
 	</select>
-	
+
+	<!-- user 전용 이용안내 -->
+	<select id="selectUserVisibleInfo" parameterType="map" resultType="com.happyjob.jobfolio.vo.notice.BoardInfoVo">
+		SELECT
+		    b.board_no AS id,
+		    b.title AS question,
+		    b.content AS answer,
+		    b.write_date AS createdAt
+		FROM tb_board b
+		WHERE b.board_type = #{board_type}
+			AND b.status_yn = 'N'  <!-- 노출하려고 하는거만 -->
+		ORDER BY b.priority DESC
+	</select>
+
+	<!-- user 전용 FAQ -->
+	<select id="selectUserVisibleFaq" parameterType="map" resultType="com.happyjob.jobfolio.vo.notice.BoardInfoVo">
+		SELECT
+		b.board_no AS id,
+		b.title AS question,
+		b.content AS answer,
+		b.write_date AS createdAt
+		FROM tb_board b
+		WHERE b.board_type = #{board_type}
+		AND b.status_yn = 'N'  <!-- 노출하려고 하는거만 -->
+		ORDER BY b.priority DESC
+	</select>
+
+
 	<select id="selectOne" parameterType="int" resultType="com.happyjob.jobfolio.vo.notice.BoardInfoVo">
 		SELECT
 			board_no AS id,
@@ -41,7 +69,8 @@
             content,
             write_date,
             author,
-            priority
+            priority,
+			status_yn
             
 		) VALUES (
 			#{id},
@@ -50,7 +79,8 @@
 			#{answer},
 			now(),
 			#{author},
-			#{priority}
+			#{priority},
+			'N'
 		)
 	</insert>
 	
@@ -82,7 +112,6 @@
 	<select id="getNextBoardNo" parameterType="String" resultType="int">
 		SELECT IFNULL(MAX(board_no), 0) + 1
 		FROM tb_board
-		WHERE board_type = #{board_type}
 	</select>
 	
 	<update id="shiftPriorityAfterDelete" parameterType="map">
@@ -123,6 +152,13 @@
 		 	content = #{answer},
 		 	write_date = NOW()
 	 	WHERE board_no = #{id}
+	</update>
+
+	<!-- 표시여부 -->
+	<update id="updateStatusYn" parameterType="map">
+		UPDATE tb_board
+		SET status_yn = #{status_yn}
+		WHERE board_no = #{id}
 	</update>
 
 
