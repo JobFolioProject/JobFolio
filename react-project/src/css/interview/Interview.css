@@ -28,14 +28,15 @@
     margin: 0;
 }
 
-.interview .interview-wrapper {    
+.interview .interview-container {    
     display: flex;    
     position: relative;
     justify-content: center;
+    margin: auto;    
 }
-.interview .interview-wrapper .interview-container {    
+.interview .interview-container .interview-wrapper {    
     display: flex;    
-    width: 70%;
+    width: 60%;
 }
 
 .interview .interview-container-left {

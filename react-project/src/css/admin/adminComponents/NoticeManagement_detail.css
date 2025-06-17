@@ -160,6 +160,29 @@
   background: #b71c1c;
 }
 
+.noticeManagementDetail .notice-status-select {
+  margin: 12px 0;
+  font-size: 14px;
+}
+
+/* 공개여부 셀렉트 박스 */
+.noticeManagementDetail .notice-status-select {
+  margin: 10px 0;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.noticeManagementDetail .notice-status-select select {
+  height: 36px;              
+  padding: 0 12px;           
+  font-size: 14px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background-color: white;
+  cursor: pointer;
+}
+
 /* 반응형 처리 */
 @media (max-width: 600px) {
   .noticeManagementDetail .modal-content {

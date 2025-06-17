@@ -10,6 +10,7 @@ public class CommunityBoardVo {
     private Date writeDate;
     private int author;
     private int priority;
+    private String statusYn;
     private String authorName;
 
     public int getBoardNo() {
@@ -66,6 +67,14 @@ public class CommunityBoardVo {
 
     public void setPriority(int priority) {
         this.priority = priority;
+    }
+
+    public String getStatusYn() {
+        return statusYn;
+    }
+
+    public void setStatusYn(String statusYn) {
+        this.statusYn = statusYn;
     }
 
     public String getAuthorName() {
