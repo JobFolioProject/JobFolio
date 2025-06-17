@@ -14,8 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 
-@Controller
-@RequestMapping("/pay")
+@RestController
+@RequestMapping("/api/pay")
 public class PayController {
 
 	// Set logger
@@ -27,13 +27,6 @@ public class PayController {
 	@Autowired
 	private PayService payService;
 
-	// ORDER_ID용 랜덤 숫자 6자리 생성
-	private String generateOrderId() {
-		int randomNum = (int)(Math.random() * 1_000_000);
-		String padded = String.format("%06d", randomNum);
-		return "order_" + padded;
-	}
-
 	// 결제 정보 생성 후 데이터 초기 저장
 	@PostMapping("/insertOrder")
 	public Map<String, Object> insertOrder(
@@ -43,18 +36,12 @@ public class PayController {
 
 		Map<String, Object> returnmap = new HashMap<>();
 		try {
-			String orderId = generateOrderId();
-			params.put("orderId", orderId);
-
 			returnmap = payService.insertOrder(params);
 			returnmap.put("resultmsg", "등록 되었습니다.");
-
 		} catch (Exception e) {
 			int deleted = payService.deleteOrder(params);
 			returnmap.put("resultmsg", e.getMessage());
-			returnmap.put("deleteCount", deleted);
 		}
-
 			return returnmap;
 	}
 

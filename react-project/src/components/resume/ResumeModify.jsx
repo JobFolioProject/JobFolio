@@ -2,12 +2,13 @@ import { useEffect, useRef, useState } from "react";
 import "../../css/resume/ResumeModify.css";
 import ResumeSidebar from "./ResumeSidebar";
 import ResumeEditModal from "./ResumeEditModal";
-import FavoriteIcon from "@mui/icons-material/FavoriteBorder";
 import axios from "../../utils/axiosConfig";
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from "../../context/AuthContext";
 
 const ResumeModify = () => {
   const [resumeList, setResumeList] = useState([]);
+  const [resumeTitle, setResumeTitle] = useState("");
+  const [publication, setPublication] = useState("");
   const [htmlString, setHtmlString] = useState("");
   const [showDetailResume, setShowDetailResume] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -16,8 +17,6 @@ const ResumeModify = () => {
   const { user, isAuthenticated } = useAuth();
   //이력서 리스트 출력
   const getResumeList = async () => {
-
-
     const userNo = user.userNo;
     if (!userNo) return;
 
@@ -36,17 +35,19 @@ const ResumeModify = () => {
   };
 
   //해당 이력서 상세 정보 렌더링
-  const openResumeDetail = async (resumeFilePath) => {
-    console.log(resumeFilePath);
+  const openResumeDetail = async (resumeFilePath, resumeTitle, publication) => {
     await axios
-      .get("/resume/selectOneResume", {
+      .get("/api/resume/selectOneResume", {
         params: {
           resume_file_path: resumeFilePath,
         },
       })
       .then((res) => {
-        setHtmlString(res.data);
+        console.log(res);
+        setHtmlString(res);
         setShowDetailResume(true);
+        setResumeTitle(resumeTitle);
+        setPublication(publication);
       })
       .catch((err) => {
         console.error(err);
@@ -55,11 +56,18 @@ const ResumeModify = () => {
 
   // 이력서 목록으로 돌아가기
   const showList = () => {
+    setHtmlString("");
+    setResumeTitle("");
     setShowDetailResume(false);
   };
 
   useEffect(() => {
     getResumeList();
+    // if(context === ""){
+    // openResumeDetail(response)
+    //   setShowDetailResume("true");
+    // context 비우기*****************
+    // }
   }, []);
 
   //iframe html파일 크기에 맞춰 출력
@@ -94,11 +102,16 @@ const ResumeModify = () => {
                 <div className="resumeItemContent">
                   <div className="resumeItemTitle">
                     <h3
-                      onClick={() => openResumeDetail(item.resume_file_pypath)}
+                      onClick={() =>
+                        openResumeDetail(
+                          item.resume_file_pypath,
+                          item.title,
+                          item.publication_yn
+                        )
+                      }
                     >
                       {item.title || "제목 없음"}
                     </h3>
-                    <FavoriteIcon className="likeIcon"></FavoriteIcon>
                   </div>
                   <div className="resumeItemDetail">
                     <p className="resumeItemJob">
@@ -134,9 +147,12 @@ const ResumeModify = () => {
       </div>
 
       <ResumeEditModal
+        key={resumeTitle + htmlString}
         open={isEditModalOpen}
         onClose={handleCloseModal}
         htmlString={htmlString}
+        resumeTitle={resumeTitle}
+        publication={publication}
       ></ResumeEditModal>
     </>
   );

@@ -10,12 +10,12 @@ const NoticeManagementDetail = ({ open, mode, onClose, onSaved, onEdit, noticeDa
   if (!open) return null;
   return (
     <NoticeModalContent
-    open={open}
-    mode={mode}
-    onClose={onClose}
-    onSaved={onSaved}
-    onEdit={onEdit}
-    noticeData={noticeData}
+      open={open}
+      mode={mode}
+      onClose={onClose}
+      onSaved={onSaved}
+      onEdit={onEdit}
+      noticeData={noticeData}
     />
   );
 };
@@ -25,57 +25,60 @@ const NoticeModalContent = ({ open, mode, onClose, onSaved, onEdit, noticeData }
   const isEdit = mode === 'edit';
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+  const [statusYn, setStatusYn] = useState('Y');
   const [loading, setLoading] = useState(false);
   const firstInputRef = useRef(null);
-  
+
   // Quill 초기화 (handlers 비우기)
   const { quill, quillRef } = useQuill({
     theme: 'snow',
     modules: {
       toolbar: isView
-      ? false
-      : {
-        container: [
-          [{ header: [1, 2, false] }],
-          ['bold', 'italic', 'underline'],
-          [{ list: 'ordered' }, { list: 'bullet' }],
-          ['link', 'image'],
-          ['clean'],
-        ],
-        handlers: {},
-      },
+        ? false
+        : {
+          container: [
+            [{ header: [1, 2, false] }],
+            ['bold', 'italic', 'underline'],
+            [{ list: 'ordered' }, { list: 'bullet' }],
+            ['link', 'image'],
+            ['clean'],
+          ],
+          handlers: {},
+        },
     },
     formats: ['header', 'bold', 'italic', 'underline', 'list', 'link', 'image'],
     readOnly: isView,
     placeholder: isView ? '' : '내용을 입력하세요...',
   });
-  
+
   // 이미지 핸들러 등록
   useEffect(() => {
     if (!quill) return;
     const toolbar = quill.getModule('toolbar');
     toolbar.addHandler('image', handleImageUpload);
   }, [quill]);
-  
+
   // 모달 열림 및 mode 변경 시 초기화
   useEffect(() => {
     if (open) {
       setTitle((isEdit || isView) ? noticeData?.title || '' : '');
       setContent((isEdit || isView) ? noticeData?.content || '' : '');
+      setStatusYn((isEdit || isView) ? noticeData?.statusYn || 'Y' : 'Y');
       quill?.clipboard.dangerouslyPasteHTML((isEdit || isView) ? noticeData?.content || '' : '');
       quill?.enable(!isView);
       startTransition(() => firstInputRef.current?.focus());
     }
   }, [open, mode, quill, noticeData, isView, isEdit]);
-  
+
   // open이 false일 때 상태 초기화
   useEffect(() => {
     if (!open) {
       setTitle('');
       setContent('');
+      setStatusYn('Y');
     }
   }, [open]);
-  
+
   // Quill 변경 이벤트로 content 업데이트
   useEffect(() => {
     if (!quill || isView) return;
@@ -83,25 +86,27 @@ const NoticeModalContent = ({ open, mode, onClose, onSaved, onEdit, noticeData }
     quill.on('text-change', handler);
     return () => quill.off('text-change', handler);
   }, [quill, isView]);
-  
+
   // 모달 닫기
   const handleClose = () => {
     quill?.blur();
     onClose();
   };
-  
+
   // 저장/등록
   const handleSave = async () => {
     setLoading(true);
     try {
       const clean = DOMPurify.sanitize(content, {
-        ALLOWED_TAGS: ['p','br','strong','em','a','ul','ol','li','img','h1','h2'],
-        ALLOWED_ATTR: ['href','src','alt','title'],
+        ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'a', 'ul', 'ol', 'li', 'img', 'h1', 'h2'],
+        ALLOWED_ATTR: ['href', 'src', 'alt', 'title'],
       });
       if (isEdit) {
-        await axios.put('/api/admin/community/update', { boardNo: noticeData.boardNo, title: title.trim(), content: clean });
+        await axios.put('/api/admin/community/update', { boardNo: noticeData.boardNo, title: title.trim(), content: clean,
+          statusYn, });
       } else {
-        await axios.post('/api/admin/community/create', { title: title.trim(), content: clean, boardType: 'N' });
+        await axios.post('/api/admin/community/create', { title: title.trim(), content: clean, boardType: 'N',
+          statusYn, });
       }
       onSaved();
       handleClose();
@@ -167,7 +172,7 @@ const NoticeModalContent = ({ open, mode, onClose, onSaved, onEdit, noticeData }
           <button className="modal-close" onClick={handleClose}>×</button>
           <h2 id="modal-title">
             {isEdit ? '공지 수정' : mode === 'view' ? '공지 내용 보기' : '새 공지 등록'}
-          </h2>
+          </h2>          
           <input
             ref={firstInputRef}
             type="text"
@@ -176,13 +181,25 @@ const NoticeModalContent = ({ open, mode, onClose, onSaved, onEdit, noticeData }
             onChange={e => setTitle(e.target.value)}
             disabled={isView}
             className={isView ? 'input-readonly' : ''}
-          />
+          />          
           {isView ? (
             <div className="notice-view-content" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content) }} />
           ) : (
             <div ref={quillRef} className="ql-container" />
           )}
-          <div className="modal-actions">
+          <div className="modal-actions">  
+            {!isView && (
+            <div className="notice-status-select">
+              <select
+                id="statusYn"
+                value={statusYn}
+                onChange={(e) => setStatusYn(e.target.value)}
+              >
+                <option value="Y">공개</option>
+                <option value="N">비공개</option>
+              </select>
+            </div>
+          )}          
             <button className="btn-cancel" onClick={handleClose} disabled={loading}>
               {isView ? '닫기' : '취소'}
             </button>
@@ -205,14 +222,14 @@ const NoticeModalContent = ({ open, mode, onClose, onSaved, onEdit, noticeData }
 
 NoticeManagementDetail.propTypes = {
   open: PropTypes.bool.isRequired,
-  mode: PropTypes.oneOf(['create','view','edit']).isRequired,
+  mode: PropTypes.oneOf(['create', 'view', 'edit']).isRequired,
   onClose: PropTypes.func.isRequired,
   onSaved: PropTypes.func.isRequired,
   onEdit: PropTypes.func.isRequired,
   noticeData: PropTypes.shape({ boardNo: PropTypes.number, title: PropTypes.string, content: PropTypes.string }),
 };
 NoticeManagementDetail.defaultProps = {
-  onEdit: () => {},
+  onEdit: () => { },
   noticeData: null
 };
 

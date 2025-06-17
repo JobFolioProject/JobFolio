@@ -6,7 +6,7 @@
     <!-- 고정글만 조회 -->
     <select id="selectPriorityBoardList" parameterType="map" resultType="com.happyjob.jobfolio.vo.community.CommunityBoardVo">
         SELECT b.board_no AS boardNo, b.board_type AS boardType, b.title, b.content,
-               b.write_date AS writeDate, b.author, u.user_name AS authorName, b.priority
+               b.write_date AS writeDate, b.author, u.user_name AS authorName, b.priority, b.status_yn  AS statusYn
         FROM tb_board b
                  JOIN tb_userinfo u ON b.author = u.user_no
         WHERE b.board_type = #{boardType}
@@ -17,7 +17,7 @@
     <!-- 일반글 페이징 조회 -->
     <select id="selectNormalBoardPaged" parameterType="map" resultType="com.happyjob.jobfolio.vo.community.CommunityBoardVo">
         SELECT b.board_no AS boardNo, b.board_type AS boardType, b.title, b.content,
-        b.write_date AS writeDate, b.author, u.user_name AS authorName, b.priority
+        b.write_date AS writeDate, b.author, u.user_name AS authorName, b.priority, b.status_yn  AS statusYn
         FROM tb_board b
         JOIN tb_userinfo u ON b.author = u.user_no
         WHERE b.board_type = #{boardType}
@@ -49,7 +49,8 @@
             b.write_date AS writeDate,
             b.author,
             u.user_name AS authorName,
-            b.priority
+            b.priority,
+            b.status_yn AS statusYn
         FROM tb_board b
                  JOIN tb_userinfo u ON b.author = u.user_no
         WHERE b.board_no = #{boardNo}
@@ -65,7 +66,8 @@
         b.write_date AS writeDate,
         b.author,
         u.user_name AS authorName,
-        b.priority
+        b.priority,
+        b.status_yn AS statusYn
         FROM tb_board b
         JOIN tb_userinfo u ON b.author = u.user_no
         WHERE b.board_type = 'N'
@@ -84,7 +86,8 @@
             b.write_date AS writeDate,
             b.author,
             u.user_name AS authorName,
-            b.priority
+            b.priority,
+            b.status_yn AS statusYn
         FROM tb_board b
                  JOIN tb_userinfo u ON b.author = u.user_no
         WHERE b.board_type = 'N'
