@@ -1,13 +1,13 @@
 import '../../../css/user/myPageComponent/ResumeDetail.css';
 import FavoriteIcon from '@mui/icons-material/FavoriteBorder';
-import axios from 'axios';
+import axios from "../../../utils/axiosConfig";
 import { useEffect, useState } from 'react';
+import { useAuth } from '../../../context/AuthContext';
 
 const PostLike = () => {
 
-   const [resumeList, setResumeList] = useState([]);
-
-    
+  const [resumeList, setResumeList] = useState([]);
+  const { user, isAuthenticated } = useAuth();
 
     // 팝업 열기 유틸
   const openResumePopup = (physicalPath) => {
@@ -21,18 +21,16 @@ const PostLike = () => {
 
     const axiosResumeInfo = async () => {
         try {
-            const raw = sessionStorage.getItem('user');
-            if (!raw) return;
-            const { userNo } = JSON.parse(raw);
+            const userNo = user.userNo
             if (!userNo) return;
 
             // JSON 바디에 userNo 담아 POST
             const response = await axios.post('/api/resume/resume/liked', {
             userNo: userNo
             });
-            console.log(response.data);
-
-            const { resumeList } = response.data;
+            console.log(response);
+            
+            const { resumeList } = response;
 
             if (Array.isArray(resumeList) && resumeList.length >= 0) {
                 // 첫 번째 이력서를 resumeInfo에 세팅
@@ -47,18 +45,16 @@ const PostLike = () => {
     const unlikeResume = async(resumeNo) => {
         if(window.confirm("좋아요를 취소 하시겠습니까?")){
             try {
-                const raw = sessionStorage.getItem('user');
-                if (!raw) return;
-                const { userNo } = JSON.parse(raw);
-                if (!userNo) return;
+              const userNo = user.userNo
+              if (!userNo) return;
 
                 // JSON 바디에 userNo 담아 POST
                 const response = await axios.post('/api/resume/unlikeResume', {
                 userNo: userNo,
                 resumeNo: resumeNo
                 });
-                    if (response.status === 200) {
-                        alert(response.data.message);
+                    if (response.message !== null ) {
+                        alert(response.message);
                         axiosResumeInfo();
                     } else {
                         alert("취소 요청에 실패했습니다.");
