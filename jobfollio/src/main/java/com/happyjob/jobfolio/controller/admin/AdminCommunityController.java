@@ -142,4 +142,16 @@ public class AdminCommunityController {
         adminCommunityService.swapPriority(boardNo1, boardNo2);
         return ResponseEntity.ok().build();
     }
+
+    // 공개/비공개 토글
+    @PostMapping("/toggleStatus")
+    public ResponseEntity<Void> toggleStatus(@RequestBody CommunityBoardVo vo) {
+        if (vo.getBoardNo() == 0 || vo.getStatusYn() == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        adminCommunityService.updateStatusYn(vo.getBoardNo(), vo.getStatusYn());
+        System.out.println(vo.getBoardNo()+" "+vo.getStatusYn());
+        return ResponseEntity.ok().build();
+    }
 }
