@@ -132,8 +132,8 @@ const SkillSection = React.memo(({ userNo, skillList, onListChange }) => {
     };
 
     // SkillAddForm에서 스킬 태그 클릭 시 호출될 콜백 (상세 보기/수정 모달 열기)
+    // 함수명 유지: modifiedItemClick
     const modifiedItemClick = useCallback((skillDataToEdit) => {
-        // 함수명 유지: modifiedItemClick
         setEditingSkillDetail(skillDataToEdit); // 스킬 객체 전체를 설정
         setShowSkillDetailModal(true); // 상세 보기/수정 모달 열기
         setErrorMessage('');
@@ -232,16 +232,10 @@ const SkillSection = React.memo(({ userNo, skillList, onListChange }) => {
                 <div className="skill-tags-container">
                     {skillList && skillList.length > 0 ? (
                         skillList.map((skill) => (
-                            <div
-                                key={`${skill.user_no}-${skill.skill_code}-${skill.group_code}`}
-                                className="skill-tag"
-                                // 메인 UI의 태그는 클릭해도 아무 일도 일어나지 않음 (읽기 전용 뷰)
-                            >
-                                {/* 스킬명 (그룹명) */}
+                            <div key={`${skill.user_no}-${skill.skill_code}-${skill.group_code}`} className="skill-tag">
                                 <span className="skill-tag-name">
                                     {skill.skill_name} ({skill.group_name})
                                 </span>
-                                {/* 메인 UI 태그 옆에는 삭제/수정 아이콘 없음 */}
                                 <div className="itemActions">
                                     <EditIcon
                                         className="editIcon"

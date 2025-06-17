@@ -91,7 +91,7 @@ public class CareerAllDto {
         return careerHistoryList;
     }
 
-    public void setCareerHistoryList(List<CareerHistoryVO> creerHistoryList) {
-        this.careerHistoryList = creerHistoryList;
+    public void setCareerHistoryList(List<CareerHistoryVO> careerHistoryList) {
+        this.careerHistoryList = careerHistoryList;
     }
 }
