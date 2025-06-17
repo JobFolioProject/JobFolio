@@ -9,7 +9,9 @@ import java.util.Map;
 @Mapper
 public interface CommunityMapper {
 
-    List<CommunityBoardVo> selectBoardListPaged(Map<String, Object> paramMap);
+    List<CommunityBoardVo> selectPriorityBoardList(Map<String, Object> paramMap);
+    List<CommunityBoardVo> selectNormalBoardPaged(Map<String, Object> paramMap);
+    int countNormalBoardList(Map<String, Object> paramMap);
 
-    int countBoardList(Map<String, Object> paramMap);
+    CommunityBoardVo selectBoardDetail(int boardNo);
 }

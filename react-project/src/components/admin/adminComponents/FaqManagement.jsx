@@ -17,7 +17,7 @@ const FaqManagement = () => {
   const [priorityMap, setPriorityMap] = useState({});
 
     useEffect(() => {
-      axios.get('api/board/list', {
+      axios.get('/api/board/list', {
         params : {board_type : "F"}
       })
         .then((res) => {
@@ -37,7 +37,7 @@ const FaqManagement = () => {
         alert("삭제할 항목을 선택해 주세요");
         return;
       }
-      if (!window.confirm("삭제하시겠습니까? 이 작업은 되돌릴 수 없습ㄴ디ㅏ."))
+      if (!window.confirm("삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다."))
         return;
 
       axios.post('/api/board/delete', selected)
@@ -78,6 +78,7 @@ const FaqManagement = () => {
       .catch((err) => {
         console.error('우선순위 업데이트 실패 :', err);
         alert('우선순위 저장 실패');
+        setPriorityMap({});
       });
     };
 
@@ -165,7 +166,7 @@ const FaqManagement = () => {
                     onChange={() => toggleCheckbox(item.id)}
                   />
                 </td>
-                <td>{i++}</td>
+                <td>{JSON.stringify(currentPage-1) === '0' ? (1+i++) : JSON.stringify(currentPage-1) + (1+i++)}</td>
                 <td
                   className='faq-title'
                   onClick={() => openDetail(item)}

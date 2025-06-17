@@ -91,12 +91,12 @@ const MyCareer = () => {
     }));
   }, []);
 
-  const handleCertificateListChange = useCallback((updatedList) => {
-    setCareerData((prev) => ({
-      ...prev,
-      certificateList: updatedList, // 자격증 리스트만 새로운 리스트로 교체
-    }));
-  }, []);
+    const handleCertificateListChange = useCallback((updatedList) => {
+        setCareerData((prev) => ({
+            ...prev,
+            certificateList: updatedList, // 자격증 리스트만 새로운 리스트로 교체
+        }));
+    }, []);
 
   const handleLanguageListChange = useCallback((updatedList) => {
     setCareerData((prev) => ({
@@ -105,19 +105,19 @@ const MyCareer = () => {
     }));
   }, []);
 
-  const handleCareerHistoryListChange = useCallback((updatedList) => {
-    setCareerData((prev) => ({
-      ...prev,
-      careerHistoryList: updatedList, // 경력 리스트만 새로운 리스트로 교체
-    }));
-  }, []);
+    const handleCareerHistoryListChange = useCallback((updatedList) => {
+        setCareerData((prev) => ({
+            ...prev,
+            careerHistoryList: updatedList, // 경력 리스트만 새로운 리스트로 교체
+        }));
+    }, []);
 
-  const handleSkillListChange = useCallback((updatedList) => {
-    setCareerData((prev) => ({
-      ...prev,
-      skillList: updatedList, // 기술 리스트만 새로운 리스트로 교체
-    }));
-  }, []);
+    const handleSkillListChange = useCallback((updatedList) => {
+        setCareerData((prev) => ({
+            ...prev,
+            skillList: updatedList, // 기술 리스트만 새로운 리스트로 교체
+        }));
+    }, []);
 
   // 🔄 로딩 상태 처리
   if (authLoading || loading) {
@@ -171,7 +171,7 @@ const MyCareer = () => {
     );
   }
 
-  /*
+    /*
    * 정리 
     학력: 학력 구분(사람인) 각각 폼 입력 받는거 다르게 또는 기준학점(4.0, 4.5, 7, 100) 테이블 또는 컬럼 생각해보기
     자격증: 한국산업인력공단 API 자격목록 가져와서 팝업창으로 검색해서 바로 넣을 수 있게.

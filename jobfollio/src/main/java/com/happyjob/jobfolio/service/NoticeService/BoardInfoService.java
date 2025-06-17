@@ -1,6 +1,7 @@
 package com.happyjob.jobfolio.service.NoticeService;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -44,7 +45,10 @@ public class BoardInfoService {
 		for(int id : ids) {
 			BoardInfoVo item = boardInfoRepository.selectOne(id);
 			if(item != null) {
-				boardInfoRepository.shiftPriorityAfterDelete(item.getBoard_type(), item.getPriority());
+				boardInfoRepository.shiftPriorityAfterDelete(
+						item.getBoard_type(),
+						item.getPriority(),
+						boardInfoRepository.countByType(item.getBoard_type() ));
 				boardInfoRepository.deleteBoardInfoById(id);
 			}
 		}
@@ -53,10 +57,35 @@ public class BoardInfoService {
 	public void updateBoardInfo(BoardInfoVo vo) {
 		boardInfoRepository.updateBoardInfo(vo);
 	}
-	
+
+
 	public void updatePriority(int id, String board_type, int newPriority) {
-		boardInfoRepository.shiftPriorities(id, board_type, newPriority); //밑에 애들 밀기
+		int totalCount = boardInfoRepository.countByType(board_type); // 전체 게시글 개수
+		System.out.println("총 개수 = " +  totalCount + ", 요청값 = " + newPriority);
+
+		if (newPriority < 1 || newPriority > totalCount) {
+			throw new IllegalArgumentException("우선순위는 1 이상" + totalCount + "이하만 가능합니다.");
+		}
+
+		// 현재 우선순위 조회
+		BoardInfoVo current =  boardInfoRepository.selectOne(id);
+		int currentPriority = current.getPriority();
+
+		Map<String,Object> paramMap = new HashMap<>();
+		paramMap.put("id", id);
+		paramMap.put("board_type", board_type);
+		paramMap.put("newPriority", newPriority);
+		paramMap.put("currentPriority", currentPriority);
+
+		if ( newPriority > currentPriority) {
+			// 아래로 이동 -1값 처리
+			boardInfoRepository.shiftPrioritiesDown(paramMap);
+		}else if ( newPriority < currentPriority) {
+			// 위로 이동 +1값 처리
+			boardInfoRepository.shiftPrioritiesUp(paramMap);
+		}
+
 		boardInfoRepository.updateOwnPriority(id, newPriority); // 본인 우선순서 바꾸기 
 	}
-	
+
 }

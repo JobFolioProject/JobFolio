@@ -247,6 +247,18 @@ public class ResumeService {
         return resumeMapper.selectResumeInfo(user_no);
     }
 
+    public List<ResumeInfoVO> resumeLikedList(int user_no){
+        return resumeMapper.resumeLikedList(user_no);
+    }
+
+    public int unlikeResume(int user_no, int resume_no){
+        return resumeMapper.unlikeResume(user_no, resume_no);
+    }
+
+    public int deleteResume(int resume_no){
+        return resumeMapper.deleteResume(resume_no);
+    }
+
     public int insertResumeInfo(ResumeInfoVO resumeInfoVO){
         return resumeMapper.insertResumeInfo(resumeInfoVO);
     }

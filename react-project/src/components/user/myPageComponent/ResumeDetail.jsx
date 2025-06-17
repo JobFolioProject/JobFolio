@@ -27,14 +27,14 @@ const ResumeDetail = () => {
             if (!userNo) return;
 
             // JSON 바디에 userNo 담아 POST
-            const response = await axios.post('/api/myPage/resumeDetail', {
+            const response = await axios.post('/api/resume/resumeDetail', {
             userNo: userNo
             });
             console.log(response.data);
 
             const { resumeList } = response.data;
 
-            if (Array.isArray(resumeList) && resumeList.length > 0) {
+            if (Array.isArray(resumeList) && resumeList.length >= 0) {
                 // 첫 번째 이력서를 resumeInfo에 세팅
                 setResumeList(resumeList);
             }
@@ -43,6 +43,22 @@ const ResumeDetail = () => {
             console.error('Failed to fetch userInfo:', err);
         }
     };
+
+    const modifyResume = async (resume_no)=>{
+
+
+    }
+
+    const deleteResume = async (resume_no)=>{
+        await axios.post("/api/resume/deleteResume", {resume_no: resume_no})
+        .then((res)=>{
+
+        })
+        .catch((err)=>{
+            
+        })
+        
+    }
 
     useEffect(() => {
         axiosResumeInfo();
@@ -57,7 +73,8 @@ const ResumeDetail = () => {
             <div className="resumeItemCon">
               <div className="resumeItemHeader">
                 <h3 onClick={() => openResumePopup(item.resume_file_pypath)}>{item.title || '제목 없음'}</h3>
-                <FavoriteIcon className="likeIcon" />
+                <button onClick={() => modifyResume(item.resume_no)}>수정</button>
+                <button onClick={() => deleteResume(item.resume_no)}>삭제</button>
               </div>
               <div className="resumeItemDetail">
                 <p className="resumeItemJob">
