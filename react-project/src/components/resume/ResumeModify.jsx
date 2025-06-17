@@ -8,6 +8,7 @@ import { useAuth } from "../../context/AuthContext";
 const ResumeModify = () => {
   const [resumeList, setResumeList] = useState([]);
   const [resumeTitle, setResumeTitle] = useState("");
+  const [publication, setPublication] = useState("");
   const [htmlString, setHtmlString] = useState("");
   const [showDetailResume, setShowDetailResume] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -34,7 +35,7 @@ const ResumeModify = () => {
   };
 
   //해당 이력서 상세 정보 렌더링
-  const openResumeDetail = async (resumeFilePath, resumeTitle) => {
+  const openResumeDetail = async (resumeFilePath, resumeTitle, publication) => {
     await axios
       .get("/api/resume/selectOneResume", {
         params: {
@@ -46,6 +47,7 @@ const ResumeModify = () => {
         setHtmlString(res);
         setShowDetailResume(true);
         setResumeTitle(resumeTitle);
+        setPublication(publication);
       })
       .catch((err) => {
         console.error(err);
@@ -101,7 +103,11 @@ const ResumeModify = () => {
                   <div className="resumeItemTitle">
                     <h3
                       onClick={() =>
-                        openResumeDetail(item.resume_file_pypath, item.title)
+                        openResumeDetail(
+                          item.resume_file_pypath,
+                          item.title,
+                          item.publication_yn
+                        )
                       }
                     >
                       {item.title || "제목 없음"}
@@ -146,6 +152,7 @@ const ResumeModify = () => {
         onClose={handleCloseModal}
         htmlString={htmlString}
         resumeTitle={resumeTitle}
+        publication={publication}
       ></ResumeEditModal>
     </>
   );

@@ -239,6 +239,7 @@ public class ResumeController {
         resumeInfoVO.setDesired_position(resumeInfo.get("desired_position").toString());
         resumeInfoVO.setResume_file_name(fileName);
         resumeInfoVO.setResume_file_pypath(filePath.toString());
+        resumeInfoVO.setPublication_yn(resumeInfo.get("publication_yn").toString());
 
 
         String logicalBase = "/resume_output/resume_made/";

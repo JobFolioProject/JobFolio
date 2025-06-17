@@ -11,7 +11,13 @@ import axios from "../../utils/axiosConfig";
 import Loading from "../common/Loading";
 import { useAuth } from "../../context/AuthContext";
 
-const ResumeEditModal = ({ open, onClose, resumeTitle, htmlString }) => {
+const ResumeEditModal = ({
+  open,
+  onClose,
+  resumeTitle,
+  htmlString,
+  publication,
+}) => {
   const [initHtmlcontent, setInitHtmlContent] = useState("");
   const { user, isAuthenticated } = useAuth();
   const [htmlContent, setHtmlContent] = useState("");
@@ -234,6 +240,7 @@ const ResumeEditModal = ({ open, onClose, resumeTitle, htmlString }) => {
         certifications: certificationList,
         languages: languageList,
         coverLetter: coverLetterDiv ? coverLetterDiv.innerText : "",
+        publication_yn: publication,
       };
 
       setResumeInfo(parsedResumeInfo);
@@ -637,17 +644,23 @@ const ResumeEditModal = ({ open, onClose, resumeTitle, htmlString }) => {
             AI comment
           </button>
         </div>
+        <div className="publication_title">
+          <h3> 이력서 공개 여부 </h3>
+        </div>
 
-        <div>
+        <div className="publication_ratio_area">
           <input
             type="radio"
             name="publication_yn"
             id="public"
             value="Y"
             onChange={publicationToggle}
-            checked
+            checked={resumeInfo.publication_yn === "Y"}
+            className="custom-radio"
           />
-          <label htmlFor="public">공개</label>
+          <label htmlFor="public" className="radio-label">
+            공개
+          </label>
 
           <input
             type="radio"
@@ -655,8 +668,12 @@ const ResumeEditModal = ({ open, onClose, resumeTitle, htmlString }) => {
             id="private"
             value="N"
             onChange={publicationToggle}
+            checked={resumeInfo.publication_yn === "N"}
+            className="custom-radio"
           />
-          <label htmlFor="edprivateu">비공개</label>
+          <label htmlFor="private" className="radio-label">
+            비공개
+          </label>
         </div>
 
         <div className="buttonRow">
