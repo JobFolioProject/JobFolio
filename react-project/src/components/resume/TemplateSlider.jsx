@@ -8,7 +8,7 @@ const TemplateSlider = ({ tempList }) => {
     dots: true, // 하단에 점으로 페이지네이션 표시
     infinite: true, // 무한 루프
     speed: 500, // 슬라이드 전환 속도
-    slidesToShow: 5, // 한 번에 보여줄 슬라이드 개수
+    slidesToShow: 4, // 한 번에 보여줄 슬라이드 개수
     slidesToScroll: 4, // 한 번에 스크롤할 슬라이드 개수
     autoplay: true, // 자동 재생
     autoplaySpeed: 3000, // 자동 재생 간격 (3초)
@@ -52,12 +52,16 @@ const TemplateSlider = ({ tempList }) => {
           <Slider {...settings}>
             {tempList.map((template) => (
               <div id={`template-slide-${template.temp_no}`} key={template.temp_no} className="template-slide">
+            {/* <div key={template.temp_no} className="template-slide"></div> */}
                {/* <img> 태그로 변경 및 이미지 경로 사용 */}
-                <img
-                    src={template.file_pypath} // 변경된 이미지 경로 사용
-                    alt={`템플릿 미리보기 ${template.temp_name}`}
-                    className="template-preview-image" // 이미지 스타일링을 위한 클래스 추가
-                />
+                <iframe
+                  src={template.file_pypath} // 변경된 이미지 경로 사용
+                  title={`템플릿 미리보기 ${template.temp_name}`} // 고유한 title 속성 추가
+                  alt={`템플릿 미리보기 ${template.temp_name}`}
+                  className="template-preview-image" // 이미지 스타일링을 위한 클래스 추가
+                  width="100%"
+                  height="300px"
+                ></iframe>
                 {/* 필요하다면 여기에 템플릿 이름을 표시할 수 있습니다 */}
                 {/* <p>{template.temp_name}</p> */}
               </div>

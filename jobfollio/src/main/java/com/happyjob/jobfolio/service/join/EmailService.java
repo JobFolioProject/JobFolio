@@ -264,7 +264,7 @@ public class EmailService {
         html.append("<div class='token'>").append(resetToken).append("</div>");
         html.append("</div>");
         html.append("<div class='warning'>");
-        html.append("<p><strong>🔒 보안 안내:</strong></p>");
+        html.append("<p><strong> 보안 안내:</strong></p>");
         html.append("<ul>");
         html.append("<li>인증번호는 <strong>5분간</strong> 유효합니다.</li>");
         html.append("<li>본인이 요청하지 않았다면 즉시 고객센터로 연락해주세요.</li>");
@@ -308,7 +308,7 @@ public class EmailService {
         html.append("<div class='content'>");
         html.append("<h2>비밀번호가 성공적으로 변경되었습니다!</h2>");
         html.append("<div class='success-box'>");
-        html.append("<p><strong>✅ 비밀번호 변경 완료</strong></p>");
+        html.append("<p><strong> 비밀번호 변경 완료</strong></p>");
         html.append("<p>변경 시간: ").append(new java.util.Date().toString()).append("</p>");
         html.append("</div>");
         html.append("<p>이제 새로운 비밀번호로 로그인하실 수 있습니다.</p>");

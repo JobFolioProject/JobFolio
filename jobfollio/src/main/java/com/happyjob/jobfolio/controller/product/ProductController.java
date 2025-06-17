@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-@RequestMapping("/product")
+@RequestMapping("/api/product")
 public class ProductController {
 
 	// Set logger

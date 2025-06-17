@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import '../../css/admin/AdminPage.css';
 import AdminSideBar from './AdminSideBar';
 import { Chart } from 'chart.js/auto';
-import instanceAdmin from './axiosAdmin.js';
+import { instanceAdmin } from '../../utils/axiosConfig';
 
 const AdminPage = () => {
  useEffect(() => {
@@ -38,7 +38,7 @@ const AdminPage = () => {
     const checkServerHealth = async () => {
       try {
         const response = await instanceAdmin.get(`/api/admin/status-check`);
-        if (response.status === 200 && response.data.status === 'UP') {
+        if ( response.status === 'UP') {
           setServerStatus('Work');
           setServerColor('rgb(0, 175, 0)'); // 녹색
         } else {
@@ -331,7 +331,7 @@ const AdminPage = () => {
 
             {/* Total Tasks */}
             <div className="card">
-              <h3>Total Tasks</h3>
+              <h3>Total Resumes</h3>
               <p>{totalTasks}</p>
             </div>
           </div>
@@ -358,11 +358,11 @@ const AdminPage = () => {
               <ul>
                 <li>
                   Open AI - Status:{' '}
-                  <span style={{ color: 'rgb(0, 175, 0)' }}>Work</span>
+                  <span style={{ color: serverColor }}>{serverStatus}</span>
                 </li>
                 <li>
                   Open API - Status:{' '}
-                  <span style={{ color: 'rgb(0, 175, 0)' }}>Work</span>
+                  <span style={{ color: serverColor }}>{serverStatus}</span>
                 </li>
                 <li>
                   Web Server - Status:{' '}

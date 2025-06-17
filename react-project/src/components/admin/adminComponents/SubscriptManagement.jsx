@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from '../../../utils/axiosConfig';
 import '../../../css/admin/adminComponents/InfoManagement.css';
 
 import SubscriptManagementDetail from './SubscriptManagement_detail';
@@ -22,15 +22,21 @@ const SubscriptManagement = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get('/product/productList', {
+        const res = await axios.get('/api/product/productList', {
           params: {
             currentpage: currentPage,
             pagesize: itemsPerPage
           }
         });
+<<<<<<< HEAD
 
         setData(res.data.productList);
         setTotalCount(res.data.totalcnt);
+=======
+  
+        setData(res.productList);
+        setTotalCount(res.totalcnt); 
+>>>>>>> main
       } catch (err) {
         console.error('상품 안내 불러오기 실패:', err);
       }

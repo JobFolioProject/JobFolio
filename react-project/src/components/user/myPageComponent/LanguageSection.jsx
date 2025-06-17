@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import axios from 'axios';
+import axios from '../../../utils/axiosConfig';
 import '../../../css/user/myPageComponent/LanguageSection.css';
 import ValidationMessage from './ValidationMessage';
 
