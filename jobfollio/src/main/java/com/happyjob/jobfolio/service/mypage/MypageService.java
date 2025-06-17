@@ -122,11 +122,11 @@ public class MypageService {
         mypageMapper.deleteSkill(userNo,skillCode,groupCode);
     }
 
-    public void getAllCommonSkills() {
-        mypageMapper.selectAllCommonSkills();
+    public List<CommSkillDto> getAllCommonSkills() {
+        return mypageMapper.selectAllCommonSkills();
     }
     public List<SkillVO> getUserNoBySkill(Long userNo) {
-        return mypageMapper.selectUserSkill(userNo);
+        return mypageMapper.getSkillListByUserNo(userNo);
     }
 
 }

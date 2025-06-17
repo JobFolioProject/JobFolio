@@ -28,9 +28,7 @@
         <result property="exp_level" column="S_EXP_LEVEL"/>
         <result property="skill_code" column="S_SKILL_CODE"/>
         <result property="skill_tool" column="S_SKILL_TOOL"/>
-        <result property="group_code" column="SK_GROUP_CODE"/>
-        <result property="group_name" column="SK_GROUP_NAME"/>
-        <result property="skill_name" column="SK_DETAIL_NAME"/>
+        <result property="group_code" column="S_GROUP_CODE"/>
     </resultMap>
     <resultMap id="certificateResultMap" type="com.happyjob.jobfolio.vo.mypage.CertificateVO">
         <id property="certification_no" column="C_CERTIFICATION_NO"/>
@@ -50,6 +48,7 @@
         <result property="position" column="H_POSITION"/>
         <result property="notes" column="H_NOTES"/>
     </resultMap>
+
     <select id="getMyCareerInfo" parameterType="long" resultMap="careerDtoResultMap">
         SELECT
             U.user_no AS U_USER_NO,
@@ -88,14 +87,12 @@
     <select id="getSkillListByUserNo" parameterType="long" resultMap="skillResultMap">
         SELECT
             S.user_no AS S_USER_NO,
-            DCC.group_code AS SK_GROUP_CODE,
-            DCC.detail_code AS SK_DETAIL_CODE,
-            DCC.detail_name AS SK_DETAIL_NAME,
+            S.skill_code AS S_SKILL_CODE,
+            S.group_code AS S_GROUP_CODE,
             S.exp_level AS S_EXP_LEVEL,
             S.skill_tool AS S_SKILL_TOOL
         FROM
             tb_skill S
-                LEFT JOIN tb_detail_code DCC ON S.group_code = DCC.group_code AND S.skill_code = DCC.detail_code
         WHERE S.user_no = #{user_no}
     </select>
     <select id="getCertificateListByUserNo" parameterType="long" resultMap="certificateResultMap">
@@ -303,43 +300,25 @@
         WHERE career_no = #{career_no} AND user_no = #{user_no}
     </update>
 
+
+    <!--  스킬 조회 -->
     <resultMap id="commSkillResultMap" type="com.happyjob.jobfolio.vo.mypage.CommSkillDto">
         <result property="group_code" column="GROUP_CODE"/>
         <result property="detail_name" column="DETAIL_NAME"/>
         <result property="detail_code" column="DETAIL_CODE"/>
         <result property="group_name" column="GROUP_NAME"/>
     </resultMap>
-
-    <!--  스킬 조회 -->
     <select id="selectAllCommonSkills" resultMap="commSkillResultMap">
-        SELECT tdc.detail_code as skill_code,
-               tdc.group_code as group_code,
-               tdc.detail_name as skill_name,
-               tgc.group_name as group_name
+        SELECT tdc.group_code as GROUP_CODE,
+               tgc.group_name as GROUP_NAME,
+               tdc.detail_code as DETAIL_CODE,
+               tdc.detail_name as DETAIL_NAME
         FROM tb_detail_code tdc
         JOIN tb_group_code tgc
              ON tdc.group_code = tgc.group_code
         WHERE tgc.category_code IN ('SKILL_CAT', 'INDUSTRY') ORDER BY tdc.detail_name;
     </select>
-    <!--  내 스킬 조회 -->
-    <resultMap id="skillVOResultMap" type="com.happyjob.jobfolio.vo.mypage.SkillVO">
-        <id property="skillId" column="SKILL_ID" />
-        <result property="skillName" column="SKILL_NAME" />
-    </resultMap>
-    <select id="selectUserSkill" parameterType="Long" resultMap="skillResultMap">
-        SELECT
-            ts.user_no,
-            ts.skill_code,
-            ts.group_code,
-            ts.exp_level,
-            ts.skill_tool,
-            tdc.detail_name AS skill_name,
-            tgc.group_name AS group_name
-        FROM tb_skill ts
-        JOIN tb_detail_code tdc ON ts.skill_code = tdc.detail_code
-        JOIN tb_group_code tgc ON tdc.group_code = tgc.group_code
-        WHERE ts.user_no = #{user_no}
-    </select>
+
     <insert id="insertSkill" parameterType="com.happyjob.jobfolio.vo.mypage.SkillVO">
         INSERT INTO tb_skill(
             user_no,
@@ -362,10 +341,7 @@
     </delete>
     <update id="updateSkill" parameterType="com.happyjob.jobfolio.vo.mypage.SkillVO">
         UPDATE tb_skill
-        SET user_no = #{user_no},
-            skill_code = #{skill_code},
-            group_code = #{group_code},
-            exp_level = #{exp_level},
+        SET exp_level = #{exp_level},
             skill_tool = #{skill_tool}
         WHERE user_no = #{user_no} AND skill_code = #{skill_code} AND group_code = #{group_code}
     </update>

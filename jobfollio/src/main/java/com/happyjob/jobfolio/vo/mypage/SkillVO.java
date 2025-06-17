@@ -8,22 +8,18 @@ public class SkillVO {
     private Long user_no; // 유저번호
     private String exp_level; // 숙련도
     private String skill_tool; // 툴
-    private String skill_name;
-    private String group_name;
-    private String skill_code;
-    private String group_code;
+    private String skill_code;  // detail_code 테이블의 detail_code 와 연결
+    private String group_code; // group_code 테이블의 group_code 와 연결
 
-    @Override
-    public String toString() {
-        return "SkillVO{" +
-                "user_no=" + user_no +
-                ", exp_level='" + exp_level + '\'' +
-                ", skill_tool='" + skill_tool + '\'' +
-                ", skill_name='" + skill_name + '\'' +
-                ", group_name='" + group_name + '\'' +
-                ", skill_code='" + skill_code + '\'' +
-                ", group_code='" + group_code + '\'' +
-                '}';
+    public SkillVO() {
+    }
+
+    public SkillVO(Long user_no, String exp_level, String skill_tool, String skill_code, String group_code) {
+        this.user_no = user_no;
+        this.exp_level = exp_level;
+        this.skill_tool = skill_tool;
+        this.skill_code = skill_code;
+        this.group_code = group_code;
     }
 
     public Long getUser_no() {
@@ -50,22 +46,6 @@ public class SkillVO {
         this.skill_tool = skill_tool;
     }
 
-    public String getSkill_name() {
-        return skill_name;
-    }
-
-    public void setSkill_name(String skill_name) {
-        this.skill_name = skill_name;
-    }
-
-    public String getGroup_name() {
-        return group_name;
-    }
-
-    public void setGroup_name(String group_name) {
-        this.group_name = group_name;
-    }
-
     public String getSkill_code() {
         return skill_code;
     }
@@ -81,4 +61,5 @@ public class SkillVO {
     public void setGroup_code(String group_code) {
         this.group_code = group_code;
     }
+
 }
