@@ -96,6 +96,8 @@
   display: flex;
   gap: 12px;
   justify-content: flex-end;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .modal-content .secondaryBtn {
@@ -179,4 +181,57 @@
   resize: vertical;
   box-sizing: border-box;
   background: #fff;
+}
+
+.modal-content .aiSection {
+  background: #f4f6fb;
+  border-radius: 12px;
+  padding: 24px 20px;
+  margin-top: 10px;
+}
+
+.modal-content .aiTitle {
+  font-size: 1.2rem;
+  color: #1976d2;
+  margin-bottom: 10px;
+}
+
+.modal-content .aiInput {
+  font-family: "Pretendard", "Noto Sans KR", Arial, sans-serif;
+  width: 100%;
+  min-height: 200px;
+  border: 1.2px solid #e0e5ee;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  color: #222;
+  line-height: 1.6;
+  padding: 10px 14px;
+  margin-bottom: 18px;
+  resize: vertical;
+  box-sizing: border-box;
+  background: #fff;
+}
+
+.modal-content .aiInput:focus {
+  border: 2px solid #4285f4;
+  outline: none;
+}
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+}
+
+.loading-content {
+  text-align: center;
+  color: #fff;
+  font-size: 1.2rem;
 }

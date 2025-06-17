@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect, useCallback, forwardRef } from 'rea
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import axios from 'axios';
+import axios from '../../../utils/axiosConfig';
 import DatePicker from 'react-datepicker'; // 날짜 선택을 위해 DatePicker 사용
 import 'react-datepicker/dist/react-datepicker.css';
 import ValidationMessage from './ValidationMessage';

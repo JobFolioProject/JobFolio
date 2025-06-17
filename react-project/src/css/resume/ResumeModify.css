@@ -10,6 +10,51 @@
   justify-content: center;
 }
 
+.resumeList {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 50px;
+  margin: 70px;
+}
+.resumeList .resumeEachItem {
+  position: relative;
+  display: flex;
+  width: 470px;
+  height: 150px;
+  border: 1px solid #cacaca;
+  border-radius: 15px;
+  margin-bottom: 40px;
+}
+
+.resumeList .resumeEachItem:hover {
+  box-shadow: 0 4px 16px rgba(25, 118, 210, 0.12);
+}
+
+.resumeItemContent {
+  position: relative;
+  padding: 40px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  align-self: center;
+}
+
+.resumeItemTitle {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.resumeItemTitle h3 {
+  color: #5f4dff;
+  margin: 0;
+}
+.resumeItemTitle h3:hover {
+  cursor: pointer;
+}
+
 .resumeContent .resumeModifyPart {
   padding-bottom: 24px;
   margin-bottom: 32px;
@@ -65,30 +110,4 @@
 
 .resumeContent .secondaryBtn:hover {
   background: #bbdefb;
-}
-
-.resumeContent .aiSection {
-  background: #f4f6fb;
-  border-radius: 12px;
-  padding: 24px 20px;
-  margin-top: 10px;
-}
-
-.resumeContent .aiTitle {
-  font-size: 1.2rem;
-  color: #1976d2;
-  margin-bottom: 10px;
-}
-
-.resumeContent .aiInput {
-  width: 100%;
-  min-height: 80px;
-  border: 1.2px solid #e0e5ee;
-  border-radius: 8px;
-  font-size: 1rem;
-  padding: 10px 14px;
-  margin-bottom: 18px;
-  resize: vertical;
-  box-sizing: border-box;
-  background: #fff;
 }
