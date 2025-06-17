@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.happyjob.jobfolio.repository.pay.PayMapper">
+
+	<!-- 결제 정보 생성 -->
+	<insert id="insertOrder" parameterType="map">
+		INSERT INTO 	tb_payment_his
+		    (
+						order_Id
+				,		product_no
+				,		order_name
+				,		amount
+				,		user_no
+				,		paid_date
+		) VALUES (
+						#{orderId}
+		    	,		#{product_no}
+		    	,		#{order_name}
+		    	,		#{amount}
+		    	,		#{user_no}
+		    	,		NOW()
+		)
+	</insert>
+
+	<!-- 결제 정보 생성 -->
+	<delete id="deleteOrder" parameterType="map">
+		DELETE
+		FROM 	tb_payment_his
+		WHERE 	order_Id = #{orderId}
+	</delete>
+
+	<!-- 결제 -->
+	<update id="cardSuccess" parameterType="com.happyjob.jobfolio.vo.pay.PayModel">
+		UPDATE 		tb_payment_his
+		SET 		payment_key	 	 = 	#{payment_key}
+			  ,  	paid_date 	 	 =  NOW()
+		WHERE 		order_Id 		 = #{orderId}
+		AND			user_no			 = #{user_no}
+		AND			amount			 = #{amount}
+	</update>
+
+</mapper>

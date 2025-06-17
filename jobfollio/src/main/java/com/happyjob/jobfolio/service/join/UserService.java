@@ -235,10 +235,10 @@ public class UserService {
                 return result;
             }
 
-            // 새로운 Access Token 생성
+
             String newAccessToken = jwtTokenProvider.generateAccessToken(
                     user.getLogin_id(),
-                    user.getUser_no().longValue(),  // Integer → Long 변환
+                    user.getUser_no().longValue(),
                     user.getUser_name(),
                     user.getUser_type()
             );
@@ -261,7 +261,7 @@ public class UserService {
     }
 
     /**
-     * 현업용 로그아웃 (DB 토큰 무효화)
+     * 현업용 로그아웃
      */
     @Transactional
     public boolean logoutUser(String refreshToken, Integer userNo) throws Exception {
@@ -293,7 +293,7 @@ public class UserService {
     }
 
     /**
-     * 🔥 사용자의 모든 토큰 무효화 (관리자 기능)
+     *  사용자의 모든 토큰 무효화
      */
     @Transactional
     public boolean invalidateUserTokens(Integer userNo, String reason) throws Exception {
@@ -565,16 +565,67 @@ public class UserService {
     }
 
     /**
-     * 회원 탈퇴 (상태 변경)
+     * 아이디 찾기
      */
+    public UserVO findUserByNameAndHp(Map<String, Object> paramMap) throws Exception {
+        logger.info("+ Start UserService.findUserByNameAndHp");
+        logger.info("   - ParamMap : " + paramMap);
+
+        try {
+            return userMapper.selectUserByNameAndHp(paramMap);
+
+        } catch (Exception e) {
+            logger.error("Error in findUserByNameAndHp", e);
+            throw e;
+        }
+    }
+
+    /**
+     * 회원 탈퇴
+     */
+    @Transactional
     public int withdrawUser(Map<String, Object> paramMap) throws Exception {
         logger.info("+ Start UserService.withdrawUser");
         logger.info("   - ParamMap : " + paramMap);
 
-        // status_yn을 'Y'로 설정하여 탈퇴 처리
-        paramMap.put("status_yn", "Y");
+        try {
+            paramMap.put("status_yn", "Y");
 
-        return userMapper.withdrawUser(paramMap);
+            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String withdrawalDateStr = sdf.format(new Date());
+            paramMap.put("withdrawal_date", withdrawalDateStr);
+
+            Object userNoObj = paramMap.get("user_no");
+            Integer userNo = null;
+            if (userNoObj instanceof Long) {
+                userNo = ((Long) userNoObj).intValue();
+                paramMap.put("user_no", userNo);
+            } else if (userNoObj instanceof Integer) {
+                userNo = (Integer) userNoObj;
+            }
+
+            // DB 업데이트 실행
+            int updateResult = userMapper.withdrawUser(paramMap);
+
+            if (updateResult > 0) {
+                String loginId = (String) paramMap.get("login_id");
+
+                logger.info("회원 탈퇴 처리 완료 (개인정보 보존) - User: " + loginId + " (No: " + userNo + ")");
+
+                try {
+                    invalidateUserTokens(userNo, "USER_WITHDRAWAL");
+                    logger.info("탈퇴 사용자의 모든 토큰 무효화 완료: " + userNo);
+                } catch (Exception tokenError) {
+                    logger.error("토큰 무효화 중 오류 (탈퇴는 계속 진행): ", tokenError);
+                }
+            }
+
+            return updateResult;
+
+        } catch (Exception e) {
+            logger.error("Error in withdrawUser", e);
+            throw e;
+        }
     }
 
     /**
@@ -783,5 +834,169 @@ public class UserService {
      */
     private String generateVerificationCode() {
         return String.format("%06d", (int)(Math.random() * 1000000));
+    }
+
+    public boolean checkEmailExists(String email) throws Exception {
+        logger.info("+ Start UserService.checkEmailExists");
+        logger.info("   - Email : " + email);
+
+        try {
+            Map<String, Object> paramMap = new HashMap<>();
+            paramMap.put("login_id", email); // 이메일은 login_id로 저장됨
+            int count = userMapper.checkLoginIdDuplicate(paramMap);
+            return count > 0;
+        } catch (Exception e) {
+            logger.error("Error in checkEmailExists", e);
+            return false;
+        }
+    }
+
+    /**
+     * 비밀번호 재설정용 인증번호 발송 (새로운 프로세스)
+     */
+    public boolean sendPasswordResetVerification(String email) throws Exception {
+        logger.info("+ Start UserService.sendPasswordResetVerification");
+        logger.info("   - Email : " + email);
+
+        try {
+            // 6자리 인증번호 생성
+            String verificationCode = generateVerificationCode();
+
+            // 기존 인증번호 삭제 (같은 이메일)
+            emailVerificationMapper.deleteUnusedByEmail(email);
+
+            // 새 인증번호 저장 (5분 유효)
+            Date expireTime = new Date(System.currentTimeMillis() + (5 * 60 * 1000));
+            EmailVerificationVO verification = new EmailVerificationVO(email, verificationCode, expireTime);
+
+            int insertResult = emailVerificationMapper.insertEmailVerification(verification);
+
+            if (insertResult > 0) {
+                // 이메일 발송
+                String subject = "[JobFolio] 비밀번호 재설정 인증번호";
+                String content = String.format(
+                        "비밀번호 재설정을 위한 인증번호입니다.\n\n" +
+                                "인증번호: %s\n\n" +
+                                "이 인증번호는 5분간 유효합니다.\n\n" +
+                                "JobFolio 드림",
+                        verificationCode
+                );
+
+                return emailService.sendEmail(email, subject, content);
+            }
+
+        } catch (Exception e) {
+            logger.error("Error in sendPasswordResetVerification", e);
+        }
+
+        return false;
+    }
+
+    /**
+     * 인증번호 확인 및 새 비밀번호 생성/발송 (새로운 프로세스)
+     */
+    @Transactional
+    public boolean verifyCodeAndResetPassword(String email, String verificationCode) throws Exception {
+        logger.info("+ Start UserService.verifyCodeAndResetPassword");
+        logger.info("   - Email : " + email);
+
+        try {
+            // 인증번호 확인
+            EmailVerificationVO verification = emailVerificationMapper.selectByVerificationCode(verificationCode);
+
+            if (verification == null || !verification.getEmail().equals(email)) {
+                logger.warn("   - Invalid verification code for email: " + email);
+                return false;
+            }
+
+            // 만료 시간 확인
+            if (verification.getExpireTime().before(new Date())) {
+                logger.warn("   - Expired verification code for email: " + email);
+                return false;
+            }
+
+            // 새 비밀번호 생성 (8자리)
+            String newPassword = generateRandomPassword();
+
+            // DB에 암호화된 비밀번호 저장
+            String encodedPassword = passwordEncoder.encode(newPassword);
+
+            Map<String, Object> updateMap = new HashMap<>();
+            updateMap.put("login_id", email);
+            updateMap.put("newPassword", encodedPassword);
+
+            int updateResult = userMapper.updatePassword(updateMap);
+
+            if (updateResult > 0) {
+                // 사용된 인증번호 삭제/무효화
+                emailVerificationMapper.updateVerificationUsed(verification.getId());
+
+                // 사용자 이름 조회
+                Map<String, Object> userMap = new HashMap<>();
+                userMap.put("login_id", email);
+                UserVO user = userMapper.selectUserByLoginId(userMap);
+                String userName = user != null ? user.getUser_name() : "";
+
+                // 실제 비밀번호를 이메일로 발송
+                String subject = "[JobFolio] 새로운 비밀번호 안내";
+                String content = String.format(
+                        "안녕하세요 %s님,\n\n" +
+                                "새로운 비밀번호를 안내드립니다.\n\n" +
+                                "새 비밀번호: %s\n\n" +
+                                "보안을 위해 로그인 후 반드시 비밀번호를 변경해주세요.\n\n" +
+                                "JobFolio 드림",
+                        userName, newPassword
+                );
+
+                boolean emailSent = emailService.sendEmail(email, subject, content);
+
+                if (emailSent) {
+                    logger.info("   - Password reset successful for email: " + email);
+                    return true;
+                } else {
+                    logger.error("   - Failed to send new password email to: " + email);
+                }
+            }
+
+        } catch (Exception e) {
+            logger.error("Error in verifyCodeAndResetPassword", e);
+        }
+
+        return false;
+    }
+    /**
+     * 8자리 랜덤 비밀번호 생성 (영문+숫자+특수문자)
+     */
+    private String generateRandomPassword() {
+        String upperCase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String lowerCase = "abcdefghijklmnopqrstuvwxyz";
+        String numbers = "0123456789";
+        String specialChars = "@#$%";
+        String allChars = upperCase + lowerCase + numbers + specialChars;
+
+        StringBuilder password = new StringBuilder();
+        java.security.SecureRandom random = new java.security.SecureRandom();
+
+        // 각 타입에서 최소 1개씩 선택
+        password.append(upperCase.charAt(random.nextInt(upperCase.length())));
+        password.append(lowerCase.charAt(random.nextInt(lowerCase.length())));
+        password.append(numbers.charAt(random.nextInt(numbers.length())));
+        password.append(specialChars.charAt(random.nextInt(specialChars.length())));
+
+        // 나머지 4자리는 모든 문자에서 랜덤 선택
+        for (int i = 4; i < 8; i++) {
+            password.append(allChars.charAt(random.nextInt(allChars.length())));
+        }
+
+        // 문자 순서 섞기
+        char[] chars = password.toString().toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            int randomIndex = random.nextInt(chars.length);
+            char temp = chars[i];
+            chars[i] = chars[randomIndex];
+            chars[randomIndex] = temp;
+        }
+
+        return new String(chars);
     }
 }

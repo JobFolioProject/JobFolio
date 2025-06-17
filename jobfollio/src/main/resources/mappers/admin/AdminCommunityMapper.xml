@@ -74,4 +74,11 @@
         </foreach>
     </update>
 
+    <!--  공개/비공개 토글  -->
+    <update id="updateStatusYn">
+        UPDATE tb_board
+        SET status_yn = #{statusYn}
+        WHERE board_no = #{boardNo}
+    </update>
+
 </mapper>

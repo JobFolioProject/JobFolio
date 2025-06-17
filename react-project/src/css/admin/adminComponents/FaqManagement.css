@@ -96,7 +96,7 @@
 
 /* input-priority */
 .faqManagement .input-priority {
-  width: 20px;
+  width: 50px;
   border: none;
   text-align: center;
 }
@@ -128,3 +128,22 @@
   width: 28px;
   height: 28px;
 }
+
+.menu-item-content {
+  display: flex;
+  align-items: center;
+  gap: 6px; /* 아이콘과 글자 간격 */
+  font-size: 14px;
+}
+
+.menu-icon {
+  font-size: 16px; /* 아이콘 작게 */
+}
+
+.input-status-select {
+  height: 36px;     /* 드롭다운 높이 줄임 */
+  min-width: 120px; /* 넉넉한 가로 너비 */
+  font-size: 14px;
+  padding: 4px 8px;
+}
+

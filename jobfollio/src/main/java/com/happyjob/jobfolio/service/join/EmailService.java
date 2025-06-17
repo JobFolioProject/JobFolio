@@ -55,6 +55,17 @@ public class EmailService {
     }
 
     /**
+     * 범용 이메일 발송 (제목과 내용 자유 설정)
+     */
+    public boolean sendEmail(String to, String subject, String content) throws Exception {
+        logger.info("+ Start EmailService.sendEmail");
+        logger.info("   - To: " + to);
+        logger.info("   - Subject: " + subject);
+
+        return sendSimpleEmail(to, subject, content);
+    }
+
+    /**
      * HTML 이메일 발송
      */
     public boolean sendHtmlEmail(String to, String subject, String htmlContent) {

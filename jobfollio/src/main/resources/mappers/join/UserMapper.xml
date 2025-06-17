@@ -142,16 +142,12 @@
     <update id="withdrawUser" parameterType="map">
         UPDATE tb_userinfo
         SET
-            status_yn = 'Y',
-            withdrawal_date = NOW(),
-            user_name = '탈퇴회원',
-            hp = NULL,
-            address = NULL,
-            hobby = NULL,
-            notes = '회원탈퇴'
+        status_yn = #{status_yn},
+        withdrawal_date = #{withdrawal_date}
         WHERE user_no = #{user_no}
-          AND status_yn = 'N'
-          AND withdrawal_date IS NULL
+        AND login_id = #{login_id}
+        AND status_yn = 'N'
+        AND withdrawal_date IS NULL
     </update>
 
     <!-- 이름과 연락처로 사용자 조회 -->

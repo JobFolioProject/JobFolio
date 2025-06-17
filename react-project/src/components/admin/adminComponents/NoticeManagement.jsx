@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import AdminSideBar from '../AdminSideBar';
 import Pagination from '../../common/Pagination.jsx';
 import SearchIcon from '@mui/icons-material/Search';
+import VisibilityIcon from '@mui/icons-material/VisibilityOutlined';
+import InvisibilityIcon from '@mui/icons-material/VisibilityOffOutlined';
 import '../../../css/admin/adminComponents/NoticeManagement_detail.css';
 import NoticeManagementDetail from './NoticeManagement_detail';
-import axios from 'axios';
+import axios from "../../../utils/axiosConfig";
 import '../../../css/admin/adminComponents/NoticeManagement.css';
 
 const NoticeManagement = () => {
@@ -26,6 +28,9 @@ const NoticeManagement = () => {
   const [detailMode, setDetailMode] = useState('create');
   const [selectedNotice, setSelectedNotice] = useState(null);
 
+  // 로딩 상태
+  const [loadingStatusToggleId, setLoadingStatusToggleId] = useState(null);
+
   // 페이지 변경 시 공지사항 목록 조회
   useEffect(() => {
     fetchNotices();
@@ -42,9 +47,9 @@ const NoticeManagement = () => {
       },
     })
       .then((res) => {
-        setPriorityList(res.data.priorityList || []);
-        setNoticeList(res.data.boardList || []);
-        setTotalCount(res.data.totalCount);
+        setPriorityList(res.priorityList || []);
+        setNoticeList(res.boardList || []);
+        setTotalCount(res.totalCount);
       })
       .catch((err) => console.error('공지사항 조회 실패', err));
   };
@@ -220,6 +225,25 @@ const NoticeManagement = () => {
   // 가장 위 고정 공지 확인
   const topFixedBoardNo = sortedPriorityList.length > 0 ? sortedPriorityList[0].boardNo : null;
 
+  // 공개/비공개 상태 토글 함수
+  const toggleStatus = async (item) => {
+    const newStatus = item.statusYn === 'Y' ? 'N' : 'Y';
+    setLoadingStatusToggleId(item.boardNo); // 로딩 시작
+
+    try {
+      await axios.post('/api/admin/community/toggleStatus', {
+        boardNo: item.boardNo,
+        statusYn: newStatus,
+      });
+      fetchNotices();
+    } catch (err) {
+      console.error('공개 여부 변경 실패', err);
+      alert('공개 여부 변경 중 오류가 발생했습니다.');
+    } finally {
+      setLoadingStatusToggleId(null); // 로딩 종료
+    }
+  };
+
   // 날짜 포맷 함수
   const formatDateTime = (isoStr) => {
     const d = new Date(isoStr);
@@ -275,6 +299,7 @@ const NoticeManagement = () => {
                     <th className="col-date">작성일</th>
                     <th className="col-writer">작성자</th>
                     <th className="col-priority">우선순위</th>
+                    <th className="col-visible">공개여부</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -303,6 +328,21 @@ const NoticeManagement = () => {
                             disabled={item.boardNo === topFixedBoardNo}
                           >▲</button>
                           <button onClick={() => handlePriorityChange(item, 'down')}>▼</button>
+                        </td>
+                        <td className='col-visible'>
+                          <button onClick={() => toggleStatus(item)} disabled={loadingStatusToggleId === item.boardNo}>
+                            {loadingStatusToggleId === item.boardNo ? (
+                              <span className="spinner" />
+                            ) : item.statusYn === 'Y' ? (
+                              <>
+                                <VisibilityIcon className="visiblity-icon" /> 공개
+                              </>
+                            ) : (
+                              <>
+                                <InvisibilityIcon className="visiblity-icon" /> 비공개
+                              </>
+                            )}
+                          </button>
                         </td>
                       </tr>
                     );
@@ -360,6 +400,7 @@ const NoticeManagement = () => {
                   <th className="col-title">제목</th>
                   <th className="col-date">작성일</th>
                   <th className="col-writer">작성자</th>
+                  <th className="col-visible">공개여부</th>
                 </tr>
               </thead>
               <tbody>
@@ -384,6 +425,21 @@ const NoticeManagement = () => {
                           <div>{time}</div>
                         </td>
                         <td className="col-writer">{item.authorName}</td>
+                        <td className='col-visible'>
+                          <button onClick={() => toggleStatus(item)} disabled={loadingStatusToggleId === item.boardNo}>
+                            {loadingStatusToggleId === item.boardNo ? (
+                              <span className="spinner" />
+                            ) : item.statusYn === 'Y' ? (
+                              <>
+                                <VisibilityIcon className="visiblity-icon" /> 공개
+                              </>
+                            ) : (
+                              <>
+                                <InvisibilityIcon className="visiblity-icon" /> 비공개
+                              </>
+                            )}
+                          </button>
+                        </td>
                       </tr>
                     );
                   })

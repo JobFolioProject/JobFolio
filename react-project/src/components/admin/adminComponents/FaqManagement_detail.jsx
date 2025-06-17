@@ -1,7 +1,8 @@
 // FaqManagement_detail.jsx
 import React, { useState } from 'react';
-import axios from 'axios';
+import axios from "../../../utils/axiosConfig";
 import '../../../css/admin/adminComponents/FaqManagement_detail.css';
+import { useAuth } from '../../../context/AuthContext';
 
 const FaqManagementDetail = ({ item, onClose, mode, onSaved, boardType }) => {
   const isEdit = mode === 'edit';
@@ -9,22 +10,27 @@ const FaqManagementDetail = ({ item, onClose, mode, onSaved, boardType }) => {
   const [isEditing, setIsEditing] = useState(isPost);
   const [editQuestion, setEditQuestion] = useState(item?.question || '');
   const [editAnswer, setEditAnswer] = useState(item?.answer || '');
+  const { user, isAuthenticated } = useAuth();
 
   const paragraphs = editAnswer.split('\n\n');
 
   const handleSave = async () => {
+    const  userNo  = user.userNo;
+    if (!userNo) return;
+
     const payload = {
       id : item?.id,
       question : editQuestion,
       answer : editAnswer,
-      board_type : boardType
+      board_type : boardType,
+      author: userNo
     };
 
     try {
       if(isEdit) {
-        await axios.put('/api/board', payload);
+        await axios.put('/api/admin/board/update', payload);
       }else {
-        await axios.post('/api/board', payload);
+        await axios.post('/api/admin/board/insert', payload);
       }
 
       onSaved();

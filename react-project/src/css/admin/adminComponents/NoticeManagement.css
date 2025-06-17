@@ -128,6 +128,8 @@
   background-color: #fff;
   font-size: 14px;
   margin-top: 12px;
+  display: block;
+  overflow-x: auto;
 }
 
 .noticeManagement .notice-table th,
@@ -160,7 +162,7 @@
 
 .noticeManagement .notice-table th.col-title,
 .noticeManagement .notice-table td.col-title {
-  width: 60%;
+  width: 45%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -173,11 +175,15 @@
 
 .noticeManagement .notice-table th.col-priority,
 .noticeManagement .notice-table td.col-priority {
-  width: 5%;
+  width: 10%;
 }
 
 .noticeManagement .notice-table th.col-writer,
 .noticeManagement .notice-table td.col-writer {
+  width: 10%;
+}
+.noticeManagement .notice-table th.col-visible,
+.noticeManagement .notice-table td.col-visible {
   width: 10%;
 }
 
@@ -285,4 +291,52 @@
   border-color: #ddd;
   cursor: not-allowed;
   opacity: 0.5;
+}
+
+/* 공개 비공개 버튼 */
+.noticeManagement .notice-table .col-visible button {
+  min-width: 100px;              /* 버튼 너비 고정 */
+  height: 36px;
+  padding: 6px 10px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #ffffff;
+  box-sizing: border-box;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.noticeManagement .notice-table .col-visible button:hover {
+  background-color: #f9f9f9;
+}
+
+/* 스피너 스타일 */
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #ccc;
+  border-top: 2px solid #444;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  box-sizing: border-box;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 아이콘 스타일 */
+.noticeManagement .notice-table .col-visible .visiblity-icon {
+  font-size: 18px;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 2px;
 }
