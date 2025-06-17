@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import "../../css/resume/ResumeModify.css";
 import ResumeSidebar from "./ResumeSidebar";
 import ResumeEditModal from "./ResumeEditModal";
-import FavoriteIcon from "@mui/icons-material/FavoriteBorder";
 import axios from "../../utils/axiosConfig";
 import { useAuth } from "../../context/AuthContext";
 
@@ -62,6 +61,11 @@ const ResumeModify = () => {
 
   useEffect(() => {
     getResumeList();
+    // if(context === ""){
+    // openResumeDetail(response)
+    //   setShowDetailResume("true");
+    // context 비우기*****************
+    // }
   }, []);
 
   //iframe html파일 크기에 맞춰 출력
@@ -137,6 +141,7 @@ const ResumeModify = () => {
       </div>
 
       <ResumeEditModal
+        key={resumeTitle + htmlString}
         open={isEditModalOpen}
         onClose={handleCloseModal}
         htmlString={htmlString}

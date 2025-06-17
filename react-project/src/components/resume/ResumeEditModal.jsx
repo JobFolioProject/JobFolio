@@ -29,6 +29,7 @@ const ResumeEditModal = ({ open, onClose, resumeTitle, htmlString }) => {
     resumeNo: "",
     templateNo: "",
     coverLetter: "",
+    publication_yn: "",
     education: [
       {
         school_name: "",
@@ -81,14 +82,7 @@ const ResumeEditModal = ({ open, onClose, resumeTitle, htmlString }) => {
   useEffect(() => {
     setHtmlContent(htmlString);
     setInitHtmlContent(htmlString);
-  }, [htmlString]);
-
-  useEffect(() => {
-    setResumeInfo((prev) => ({
-      ...prev,
-      title: resumeTitle,
-    }));
-  }, [resumeTitle]);
+  }, [htmlString, resumeTitle]);
 
   // htmlContent에 있는 특정 class별로 변수 set
   useEffect(() => {
@@ -227,6 +221,7 @@ const ResumeEditModal = ({ open, onClose, resumeTitle, htmlString }) => {
       }));
 
       const parsedResumeInfo = {
+        title: resumeTitle,
         name: nameDiv ? nameDiv.innerText : "",
         desired_position: posDiv ? posDiv.innerText : "",
         address: addressDiv ? addressDiv.innerText : "",
@@ -490,6 +485,13 @@ const ResumeEditModal = ({ open, onClose, resumeTitle, htmlString }) => {
     setSelectedRadio(event.target.id);
   };
 
+  const publicationToggle = (event) => {
+    setResumeInfo((prev) => ({
+      ...prev,
+      publication_yn: event.target.value,
+    }));
+  };
+
   // 이력서 수정 버튼 클릭 이벤트
   const saveModify = async () => {
     const updatedHtml = getPreviewHtml();
@@ -635,7 +637,27 @@ const ResumeEditModal = ({ open, onClose, resumeTitle, htmlString }) => {
             AI comment
           </button>
         </div>
-        <Loading loading={loading}></Loading>
+
+        <div>
+          <input
+            type="radio"
+            name="publication_yn"
+            id="public"
+            value="Y"
+            onChange={publicationToggle}
+            checked
+          />
+          <label htmlFor="public">공개</label>
+
+          <input
+            type="radio"
+            name="publication_yn"
+            id="private"
+            value="N"
+            onChange={publicationToggle}
+          />
+          <label htmlFor="edprivateu">비공개</label>
+        </div>
 
         <div className="buttonRow">
           <button className="secondaryBtn" onClick={saveModify}>
@@ -646,6 +668,7 @@ const ResumeEditModal = ({ open, onClose, resumeTitle, htmlString }) => {
           </button>
         </div>
       </div>
+      <Loading loading={loading}></Loading>
     </div>
   );
 };

@@ -239,6 +239,7 @@ public class ResumeController {
         resumeInfoVO.setResume_file_name(fileName);
         resumeInfoVO.setResume_file_pypath(filePath.toString());
 
+
         String logicalBase = "/resume_output/resume_made/";
         resumeInfoVO.setResume_file_lopath(logicalBase + fileName);
         int result = resumeService.insertResumeInfo(resumeInfoVO);
