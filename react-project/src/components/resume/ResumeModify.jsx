@@ -3,7 +3,8 @@ import "../../css/resume/ResumeModify.css";
 import ResumeSidebar from "./ResumeSidebar";
 import ResumeEditModal from "./ResumeEditModal";
 import FavoriteIcon from "@mui/icons-material/FavoriteBorder";
-import axios from "axios";
+import axios from "../../utils/axiosConfig";
+import { useAuth } from '../../context/AuthContext';
 
 const ResumeModify = () => {
   const [resumeList, setResumeList] = useState([]);
@@ -12,19 +13,19 @@ const ResumeModify = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const iframeRef = useRef(null);
-
+  const { user, isAuthenticated } = useAuth();
   //이력서 리스트 출력
   const getResumeList = async () => {
-    const raw = sessionStorage.getItem("user");
-    if (!raw) return;
-    const { userNo } = JSON.parse(raw);
+
+
+    const userNo = user.userNo;
     if (!userNo) return;
 
     await axios
-      .post("/api/myPage/resumeDetail", { userNo: userNo })
+      .post("/api/resume/resumeDetail", { userNo: userNo })
       .then((res) => {
-        console.log(res.data);
-        const { resumeList } = res.data;
+        console.log(res);
+        const { resumeList } = res;
         if (Array.isArray(resumeList) && resumeList.length > 0) {
           setResumeList(resumeList);
         }
