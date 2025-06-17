@@ -22,6 +22,11 @@ public class CareerAllDto {
     // 경력
     private List<CareerHistoryVO> careerHistoryList;
 
+    //ai 자소서 생성용 추가사항 입니다.
+    private String myCoverLetter;
+    private String title;           // 이력서 제목
+    private String desired_position; // 희망 직무
+
     // 리스트 필드를 null 방지를 위해 초기화하는 생성자
     public CareerAllDto() {
         this.educationList = new ArrayList<>();

@@ -26,12 +26,12 @@
     <resultMap id="skillResultMap" type="com.happyjob.jobfolio.vo.mypage.SkillVO">
         <id property="user_no" column="S_USER_NO"/>
         <result property="exp_level" column="S_EXP_LEVEL"/>
+        <result property="skill_code" column="S_SKILL_CODE"/>
         <result property="skill_tool" column="S_SKILL_TOOL"/>
-        <association property="skill" javaType="com.happyjob.jobfolio.vo.system.DetailcodeModel">
-            <result property="group_code" column="SK_GROUP_CODE"/>
-            <result property="detail_code" column="SK_DETAIL_CODE"/>
-            <result property="detail_name" column="SK_DETAIL_NAME"/>
-        </association>
+        <result property="group_code" column="SK_GROUP_CODE"/>
+        <result property="group_name" column="SK_GROUP_NAME"/>
+        <result property="skill_name" column="SK_DETAIL_NAME"/>
+
     </resultMap>
     <resultMap id="certificateResultMap" type="com.happyjob.jobfolio.vo.mypage.CertificateVO">
         <id property="certification_no" column="C_CERTIFICATION_NO"/>

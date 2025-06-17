@@ -1,4 +1,6 @@
 package com.happyjob.jobfolio.vo.resume;
+import java.util.List;
+import com.happyjob.jobfolio.vo.mypage.EduInfoVO;
 
 public class ResumeInfoVO {
 
@@ -25,6 +27,31 @@ public class ResumeInfoVO {
 
     /** 이력서 파일 논리경로 */
     private String resume_file_lopath;
+
+    /** 사용자가 입력한 자기소개서 내용 (또는 AI 생성 전 입력될 초기값) */
+    private String myCoverLetter;
+
+    /** 학력 정보 리스트 (사용자 DB 저장용 아님, AI 프롬프트 생성 시 사용) */
+    private List<EduInfoVO> newEducation;
+
+    public List<EduInfoVO> getNewEducation() {
+        return newEducation;
+    }
+
+    public void setNewEducation(List<EduInfoVO> newEducation) {
+        this.newEducation = newEducation;
+    }
+
+    public String getMyCoverLetter() {
+        return myCoverLetter;
+    }
+
+    public void setMyCoverLetter(String myCoverLetter) {
+        this.myCoverLetter = myCoverLetter;
+    }
+
+
+
 
     public int getResume_no() {
         return resume_no;
