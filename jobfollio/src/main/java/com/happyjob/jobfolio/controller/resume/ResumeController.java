@@ -208,11 +208,41 @@ public class ResumeController {
     }
 
     @RequestMapping("/saveModifiedResume")
-    public Map<String,Object> saveModifiedResume(@RequestBody Map<String,Object> paramMap){
+    public Map<String,Object> saveModifiedResume(@RequestBody Map<String,Object> paramMap) throws IOException {
         Map<String,Object> resultMap = new HashMap<>();
+        ResumeInfoVO resumeInfoVO = new ResumeInfoVO();
+        Map<String, Object> resumeInfo = (Map<String, Object>) paramMap.get("resumeInfo");
+        Long user_no = Long.valueOf(paramMap.get("userNo").toString());
+
+
 
         String htmlContent = paramMap.get("html").toString();
 
+        String outputDir = "X:/resume_output/resume_made";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
+        String timestamp = LocalDateTime.now().format(formatter);
+        String fileName = "modifiedResume_" + user_no + "_" + timestamp + ".html";
+        Path dirPath = Paths.get(outputDir);
+        Path filePath = dirPath.resolve(fileName);
+
+        if (Files.notExists(dirPath)) {
+            Files.createDirectories(dirPath);
+        }
+
+        byte[] bytes = htmlContent.getBytes(StandardCharsets.UTF_8);
+        Files.write(filePath, bytes);
+
+        resumeInfoVO.setUser_no(Integer.parseInt(paramMap.get("userNo").toString()));
+        resumeInfoVO.setTemplate_no(Integer.parseInt(paramMap.get("templateNo").toString()));
+        resumeInfoVO.setTitle(resumeInfo.get("title").toString());
+        resumeInfoVO.setDesired_position(resumeInfo.get("desired_position").toString());
+        resumeInfoVO.setResume_file_name(fileName);
+        resumeInfoVO.setResume_file_pypath(filePath.toString());
+
+        String logicalBase = "/resume_output/resume_made/";
+        resumeInfoVO.setResume_file_lopath(logicalBase + fileName);
+        int result = resumeService.insertResumeInfo(resumeInfoVO);
+        resultMap.put("result", result);
 
         return resultMap;
 
@@ -306,7 +336,6 @@ public class ResumeController {
 
         Path path = Paths.get(resume_file_path);
         String html = new String(Files.readAllBytes(path), StandardCharsets.UTF_8);
-//        Map<String,Object> resultMap = new HashMap<>();
 
         return ResponseEntity.ok().body(html);
     }

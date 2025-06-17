@@ -7,17 +7,20 @@ import EduSectionModify from "./EduSectionModify";
 import SkillSectionModify from "./SkillSectionModify";
 import LanguageSectionModify from "./LanguageSectionModify";
 import CertSectionModify from "./CertSectionModify";
-import axios from "axios";
+import axios from "../../utils/axiosConfig";
 import Loading from "../common/Loading";
+import { useAuth } from "../../context/AuthContext";
 
-const ResumeEditModal = ({ open, onClose, props, htmlString }) => {
+const ResumeEditModal = ({ open, onClose, resumeTitle, htmlString }) => {
   const [initHtmlcontent, setInitHtmlContent] = useState("");
+  const { user, isAuthenticated } = useAuth();
   const [htmlContent, setHtmlContent] = useState("");
   const [initalResumeInfo, setInitialResumeInfo] = useState(null);
   const [aiComment, setAiComment] = useState(null);
   const [loading, setLoading] = useState(false);
   const [resumeInfo, setResumeInfo] = useState({
     name: "",
+    title: "",
     address: "",
     email: "",
     hp: "",
@@ -79,6 +82,13 @@ const ResumeEditModal = ({ open, onClose, props, htmlString }) => {
     setHtmlContent(htmlString);
     setInitHtmlContent(htmlString);
   }, [htmlString]);
+
+  useEffect(() => {
+    setResumeInfo((prev) => ({
+      ...prev,
+      title: resumeTitle,
+    }));
+  }, [resumeTitle]);
 
   // htmlContent에 있는 특정 class별로 변수 set
   useEffect(() => {
@@ -482,9 +492,14 @@ const ResumeEditModal = ({ open, onClose, props, htmlString }) => {
 
   // 이력서 수정 버튼 클릭 이벤트
   const saveModify = async () => {
-    // const updatedHtml = getPreviewHtml();
+    const updatedHtml = getPreviewHtml();
     await axios
-      .post("/resume/saveModifiedResume", { resumeInfo: resumeInfo })
+      .post("/api/resume/saveModifiedResume", {
+        userNo: user.userNo,
+        resumeInfo: resumeInfo,
+        templateNo: 2,
+        html: updatedHtml,
+      })
       .then((res) => {
         console.log(res);
       })
@@ -505,12 +520,11 @@ const ResumeEditModal = ({ open, onClose, props, htmlString }) => {
   };
 
   const getAiComment = async () => {
-    console.log(resumeInfo);
     setLoading(true);
     await axios
-      .post("/resume/getAiComment", { resumeInfo: resumeInfo })
+      .post("/api/resume/getAiComment", { resumeInfo: resumeInfo })
       .then((res) => {
-        const parsedAnswer = JSON.parse(res.data.response);
+        const parsedAnswer = JSON.parse(res.response);
         setAiComment(parsedAnswer.choices[0].message.content);
       })
       .catch((err) => {

@@ -3,6 +3,24 @@ const PersonalInfoModify = ({ resumeInfo, setResumeInfo }) => {
     <>
       <label>
         <div>
+          <span>제목</span>
+        </div>
+        <div>
+          <input
+            type="text"
+            name="title"
+            value={resumeInfo.title}
+            onChange={(e) => {
+              setResumeInfo({
+                ...resumeInfo,
+                title: e.target.value,
+              });
+            }}
+          />
+        </div>
+      </label>
+      <label>
+        <div>
           <span>이름</span>
         </div>
         <div>
