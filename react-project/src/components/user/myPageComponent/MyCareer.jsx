@@ -201,7 +201,11 @@ const MyCareer = () => {
                     careerHistoryList={careerData.careerHistoryList}
                     onListChange={handleCareerHistoryListChange}
                 />
-                <SkillSection userNo={user.userNo} skillList={careerData.skillList} onListChange={fetchCareerData} />
+                <SkillSection
+                    userNo={user.userNo}
+                    skillList={careerData.skillList}
+                    onListChange={handleSkillListChange}
+                />
             </div>
         </div>
     );
