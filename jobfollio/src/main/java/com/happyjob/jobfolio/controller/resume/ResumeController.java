@@ -170,6 +170,7 @@ public class ResumeController {
             resumeInfoVO.setTitle(paramMap.get("title").toString());
             resumeInfoVO.setDesired_position(paramMap.get("desired_position").toString());
             resumeInfoVO.setTemplate_no(Integer.parseInt(paramMap.get("template_no").toString()));
+            resumeInfoVO.setPublication_yn(paramMap.get("publication_yn").toString());
             // 파일명
             resumeInfoVO.setResume_file_name(fileName);
             // 물리경로 (Physical Path)
