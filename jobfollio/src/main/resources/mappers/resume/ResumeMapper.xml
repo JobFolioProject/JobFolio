@@ -23,6 +23,7 @@
 			create_date
 		FROM tb_resume_info r
 		WHERE status_yn = 'N'
+		ORDER BY create_date DESC
 	</select>
 
 	<select id="resumeLikedList"
