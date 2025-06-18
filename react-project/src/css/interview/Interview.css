@@ -1,178 +1,222 @@
-.interview {
-    margin-top: 50px;
-}
-
+/* ─── 배너 ─── */
 .interview-banner img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+.interview-banner h1 {
+  position: absolute;
+  top: 120px;
+  left: 10%;
+  transform: translate(-50%, -50%);
+  color: #ffffff;
+  font-size: 2.5rem;
+  font-weight: 900;
 }
 
-.interview-banner h1 {
-    position: absolute;
-    top: 120px;
-    left: 10%;
-    transform: translate(-50%, -50%);
-    color: #ffffff;
-    font-size: 2.5rem;
-    font-weight: 900;
-}
 .interview-banner .interview-description {
-    position: absolute;
-    top: 200px;
-    left: 13%;
-    color: #ffffff;
-    transform: translate(-50%, -50%);
+  position: absolute;
+  top: 200px;
+  left: 13%;
+  transform: translate(-50%, -50%);
+  color: #ffffff;
 }
 .interview-banner .interview-description p {
-    margin: 0;
+  margin: 0;
 }
 
-.interview .interview-container {    
-    display: flex;    
-    position: relative;
-    justify-content: center;
-    margin: auto;    
+/* ─── 컨테이너 ─── */
+.interview .interview-container {
+  display: flex;
+  justify-content: center;
+  margin: auto;
+  padding: 0 10px;
 }
-.interview .interview-container .interview-wrapper {    
-    display: flex;    
-    width: 60%;
+.interview .interview-container .interview-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  max-width: 1200px;
+  gap: 40px;
 }
 
-.interview .interview-container-left {
-    flex-shrink: 0;
-}
+/* ─── 좌우 영역 ─── */
+.interview .interview-container-left,
 .interview .interview-container-right {
-    padding-top: 10px;
-    flex-shrink: 0;
+  flex: 1 1 48%;
+  min-width: 280px;
 }
 
-.interview .interview-container-left .interview-container-left-content {    
-    margin: 20px;
-    min-height: 450px;
-    border-radius: 10px;
-}
-.interview .interview-container-left .interview-container-left-content h1{    
-    font-size: 1.5rem;
-    font-weight: 700;
-}
-.interview .interview-container-left .interview-container-left-content .customInput{    
-    flex-direction: column;
-    width: fit-content;
-    margin-bottom: 10px;
-}
-.interview .interview-container-left .interview-container-left-content .customInput input[type=text].input {
-    padding: 11px 10px;
-    margin-bottom: 10px;
-    font-size: 1rem;
-    border: 2px #818CF8 solid;
-    border-radius: 5px;
-    background: #ffffff;
-}
-.interview .interview-container-right div.interview-gpt-title {
-    margin-left: 25px;
-}
-.interview .interview-container-left .interview-container-left-content .customInput label.text, 
-.interview .interview-container-right .interview-gpt-title {
-    font-size: 1.25rem;
-    color: #818CF8;
-    font-weight: 700;
-    top: 0.5rem;
-    margin: 0 0 0 7px;
-    padding: 0 3px;
-    background: rgb(253, 250, 250);
-    width: fit-content;
-}
-.interview .interview-container-left .interview-container-left-content textarea{    
-    height: 300px;
-    width: 620px;
-    padding: 11px 10px;
-    font-size: 1rem;
-    border: 2px #818CF8 solid;
-    border-radius: 5px;
-    background: #ffffff;
-}
-.interview .interview-container-left .interview-container-left-content > div{    
-    display: flex;
-    justify-content: center;
-}
-.interview .interview-container-right .interview-container-right-content {
-    margin: 20px;
-    margin-top: 5px;
-    min-height: 600px;
-    width: 620px;
-    border: 2px solid #818CF8;
-    border-radius: 10px;
-}
-.interview .interview-container-right .interview-container-right-content .interview-gpt-practice ul {
-    list-style-type: none;
-    padding: 20px;
-    padding-top: 0;
-}
-.interview .interview-container-right .interview-container-right-content .interview-gpt-practice ul li{
-    border: 1px solid black;
-    border-radius: 10px;
-    margin: 5px;
-    padding: 10px;
+/* ─── 왼쪽 (입력폼) ─── */
+/* 이력서 선택 + 버튼 한 줄에 배치 */
+.resume-load-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;       /* 요소 사이 간격 */
+  margin-bottom: 16px;
 }
 
-/* 버튼 */
-.interview-button .interview-make-button {
+/* select 박스만 세로 중앙 정렬, 기존 customInput 스타일 유지 */
+.customInput.resume-select {
+  display: flex;
+  flex-direction: column; /* 라벨과 셀렉트는 세로 배치 */
+}
+.resume-load-group .customInput.resume-select .input {
+  min-width: 200px;       /* 원하는 최소 너비 지정 */
+}
+
+/* 버튼 높이를 select와 맞춤 */
+.resume-load-group .get-my-introduce-button {
+  height: 40px;           /* select 높이와 유사하게 */
+  padding: 0 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.interview .interview-container-left-content {
+  margin: 20px 0;
+  border-radius: 10px;
+}
+.interview .customInput {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+  width: 100%;
+}
+.interview .customInput label.text {
+  font-size: 1.25rem;
+  color: #818CF8;
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+.interview .customInput input.input,
+.interview .customInput textarea {
+  width: 100%;
+  padding: 11px 10px;
+  font-size: 1rem;
+  border: 2px #818CF8 solid;
+  border-radius: 5px;
+  background: #ffffff;
+}
+.interview .customInput textarea {
+  height: 300px;
+}
+
+/* ─── 오른쪽 (결과) ─── */
+.interview .interview-gpt-title {
+  font-size: 1.25rem;
+  color: #818CF8;
+  font-weight: 700;
+  margin: 20px 0 0 7px;
+  background: #fdfafa;
+  display: inline-block;
+  padding: 0 3px;
+}
+.interview .interview-container-right-content {
+  margin: 5px 0 20px;
+  min-height: 600px;
+  width: 100%;
+  border: 2px solid #818CF8;
+  border-radius: 10px;
+  overflow-y: auto;
+}
+.interview .interview-gpt-practice ul {
+  list-style: none;
+  padding: 20px;
+  margin: 0;
+}
+.interview .interview-gpt-practice ul li {
+  border: 1px solid #000;
+  border-radius: 10px;
+  margin: 5px 0;
+  padding: 10px;
+}
+
+/* ─── 버튼 ─── */
+.interview-button {
+  display: flex;
+  justify-content: center;
+}
+.interview-button button {
   --primary-color: #645bff;
   --secondary-color: #fff;
   --hover-color: #111;
   --arrow-width: 10px;
   --arrow-stroke: 2px;
-  box-sizing: border-box;
   border: 0;
   border-radius: 20px;
   color: var(--secondary-color);
+  margin: 5px;
   padding: 1em 1.8em;
   background: var(--primary-color);
   display: flex;
-  transition: 0.2s background;
   align-items: center;
-  gap: 0.6em;
+  gap: 0.5em;
   font-weight: bold;
+  transition: background 0.2s;
 }
-
-.interview-button .interview-make-button .interview-button-arrow-wrapper {
+.interview-button-arrow-wrapper {
   display: flex;
-  justify-content: center;
   align-items: center;
 }
-
-.interview-button .interview-make-button .interview-button-arrow {
+.interview-button-arrow {
   margin-top: 1px;
   width: var(--arrow-width);
-  background: var(--primary-color);
   height: var(--arrow-stroke);
+  background: var(--primary-color);
   position: relative;
-  transition: 0.2s;
+  transition: background 0.2s;
 }
-
-.interview-button .interview-make-button .interview-button-arrow::before {
+.interview-button-arrow::before {
   content: "";
-  box-sizing: border-box;
   position: absolute;
   border: solid var(--secondary-color);
   border-width: 0 var(--arrow-stroke) var(--arrow-stroke) 0;
-  display: inline-block;
   top: -3px;
   right: 3px;
-  transition: 0.2s;
   padding: 3px;
   transform: rotate(-45deg);
+  transition: right 0.2s;
 }
-
 .interview-button .interview-make-button:hover {
-  background-color: var(--hover-color);
+  background: var(--hover-color);
 }
-
 .interview-button .interview-make-button:hover .interview-button-arrow {
   background: var(--secondary-color);
 }
-
-.interview-button .interview-make-button:hover .interview-button-arrow:before {
+.interview-button .interview-make-button:hover .interview-button-arrow::before {
   right: 0;
+}
+
+/* ─── 반응형 미디어쿼리 ─── */
+
+/* Tablet (≤1024px) */
+@media (max-width: 1024px) {
+  .interview .interview-container-left,
+  .interview .interview-container-right {
+    flex: 1 1 100%;
+  }
+  .interview .customInput textarea {
+    height: 250px;
+  }
+}
+
+/* Mobile (≤768px) */
+@media (max-width: 768px) {
+  /* 텍스트영역 높이만 축소 */
+  .interview .customInput textarea {
+    height: 200px;
+  }
+}
+
+/* Very Small (≤480px) */
+@media (max-width: 480px) {
+  .interview-button .interview-make-button {
+    padding: 0.8em 1.2em;
+    font-size: 0.9rem;
+  }
+  .interview-button-arrow {
+    --arrow-width: 8px;
+    --arrow-stroke: 1.5px;
+  }
 }
