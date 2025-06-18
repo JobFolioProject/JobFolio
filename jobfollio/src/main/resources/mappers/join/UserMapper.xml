@@ -20,11 +20,11 @@
         <result property="address" column="address"/>
         <result property="hobby" column="hobby"/>
         <result property="notes" column="notes"/>
+        <result property="social_type" column="social_type"/>
+        <result property="social_id" column="social_id"/>
     </resultMap>
 
-    <!-- ================= 기본 CRUD ================= -->
-
-    <!-- 사용자 등록 -->
+    <!-- 회원가입 -->
     <insert id="insertUser" parameterType="map" useGeneratedKeys="true" keyProperty="user_no">
         INSERT INTO tb_userinfo (
         login_id,
@@ -47,7 +47,7 @@
         #{birthday},
         #{sex},
         #{hp},
-        NOW(),
+        CURDATE(),
         'N',  <!-- 'N'사용상태, 'Y'=탈퇴상태 -->
         #{address},
         #{hobby},
@@ -180,6 +180,49 @@
           AND status_yn = 'N'
           AND withdrawal_date IS NULL
           AND reg_date >= DATE_SUB(NOW(), INTERVAL 2 YEAR)
+    </select>
+
+    <!-- 소셜 타입과 소셜 ID로 사용자 조회 -->
+    <select id="selectBySocialTypeAndSocialId" parameterType="map" resultType="com.happyjob.jobfolio.vo.join.UserVO">
+        SELECT
+            user_no, login_id, user_type, user_name, password,
+            birthday, sex, hp, reg_date, withdrawal_date, status_yn,
+            expire_days, address, hobby, notes, social_type, social_id
+        FROM tb_userinfo
+        WHERE social_type = #{social_type}
+          AND social_id = #{social_id}
+          AND status_yn = 'N'
+    </select>
+
+    <!-- 소셜 사용자 신규 등록 -->
+    <insert id="insertSocialUser" parameterType="map" useGeneratedKeys="true" keyProperty="user_no">
+        INSERT INTO tb_userinfo (
+            login_id, user_type, user_name, password,
+            birthday, sex, hp, reg_date, status_yn,
+            social_type, social_id
+        ) VALUES (
+                     #{login_id},
+                     'C',
+                     #{user_name},
+                     NULL,
+                     #{birthday},
+                     #{sex},
+                     #{hp},
+                     CURDATE(),
+                     'N',
+                     #{social_type},
+                     #{social_id}
+                 )
+    </insert>
+
+    <!-- 이메일로 기존 일반 사용자 확인  -->
+    <select id="selectByLoginId" parameterType="map" resultType="com.happyjob.jobfolio.vo.join.UserVO">
+        SELECT
+            user_no, login_id, user_type, user_name,
+            social_type, social_id, status_yn
+        FROM tb_userinfo
+        WHERE login_id = #{login_id}
+          AND status_yn = 'N'
     </select>
 
 </mapper>
