@@ -38,7 +38,8 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
                     user.getLogin_id(),
                     user.getUser_no(),
                     user.getUser_name(),
-                    user.getUser_type()
+                    user.getUser_type(),
+                    user.getExpire_days()
             );
 
             String refreshToken = jwtTokenProvider.generateRefreshToken(user.getLogin_id());
