@@ -26,6 +26,13 @@
         WHERE board_no = #{boardNo}
     </update>
 
+    <!-- 수정시 파일  -->
+    <delete id="deleteFileInfoByBoardNoAndFilename">
+        DELETE FROM tb_file_info
+        WHERE board_no = #{boardNo}
+          AND file_lopath LIKE CONCAT('%', #{filename})
+    </delete>
+
     <!-- 공지사항 삭제 -->
     <delete id="deleteBoard" parameterType="int">
         DELETE FROM tb_board
@@ -39,6 +46,50 @@
         <foreach collection="list" item="id" open="(" separator="," close=")">
             #{id}
         </foreach>
+    </delete>
+
+    <!-- 파일정보 단건 저장 -->
+    <insert id="insertFileInfo" parameterType="com.happyjob.jobfolio.vo.community.FileInfoVo">
+        INSERT INTO tb_file_info
+            (file_name, board_no, file_pypath, file_lopath, extension)
+        VALUES
+            (#{fileName}, #{boardNo}, #{filePypath}, #{fileLopath}, #{extension})
+    </insert>
+
+    <!-- 파일정보 일괄 저장 -->
+    <insert id="insertFileInfoBatch">
+        <foreach collection="list" item="file" separator=";">
+            INSERT INTO tb_file_info
+            (file_name, board_no, file_pypath, file_lopath, extension)
+            VALUES
+            (#{file.fileName}, #{file.boardNo},
+            #{file.filePypath}, #{file.fileLopath},
+            #{file.extension})
+        </foreach>
+    </insert>
+
+    <!-- 파일정보 조회 -->
+    <select id="selectFileInfoByBoardNo"
+            parameterType="int"
+            resultType="com.happyjob.jobfolio.vo.community.FileInfoVo">
+        SELECT file_name   AS fileName,
+               board_no    AS boardNo,
+               file_pypath AS filePypath,
+               file_lopath AS fileLopath,
+               extension
+        FROM tb_file_info
+        WHERE board_no = #{boardNo}
+    </select>
+
+    <!-- 파일정보 삭제 -->
+    <delete id="deleteFileInfoByBoardNo" parameterType="int">
+        DELETE FROM tb_file_info
+        WHERE board_no = #{boardNo}
+    </delete>
+
+    <delete id="deleteFileInfoByFilename">
+        DELETE FROM tb_file_info
+        WHERE file_name = #{fileName}
     </delete>
 
     <!-- 우선순위 조회 -->

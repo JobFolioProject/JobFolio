@@ -16,6 +16,6 @@ public interface CommunityMapper {
     CommunityBoardVo selectBoardDetail(int boardNo);
 
     // 이전, 다음글
-    CommunityBoardVo selectPreviousPost(int boardNo);
-    CommunityBoardVo selectNextPost(int boardNo);
+    CommunityBoardVo selectPreviousPost(Map<String, Object> param);
+    CommunityBoardVo selectNextPost(Map<String, Object> param);
 }
