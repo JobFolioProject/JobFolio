@@ -116,7 +116,7 @@ public class ResumeInfoVO {
 
     public void setMyCoverLetter(String myCoverLetter) {
         this.myCoverLetter = myCoverLetter;
-
+    }
     public String getPublication_yn() {
         return publication_yn;
     }
