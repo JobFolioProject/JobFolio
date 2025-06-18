@@ -3,9 +3,10 @@ package com.happyjob.jobfolio.controller.admin;
 import com.happyjob.jobfolio.security.UserPrincipal;
 import com.happyjob.jobfolio.service.admin.AdminCommunityService;
 import com.happyjob.jobfolio.vo.community.CommunityBoardVo;
+import com.happyjob.jobfolio.vo.community.FileInfoVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.util.StringUtils;
@@ -40,7 +41,7 @@ public class AdminCommunityController {
         this.adminCommunityService = adminCommunityService;
     }
 
-    //     공지사항 등록
+    // 공지사항 등록
     @PostMapping("/create")
     public ResponseEntity<CommunityBoardVo> createNotice(
             @RequestBody CommunityBoardVo vo,
@@ -51,47 +52,43 @@ public class AdminCommunityController {
         return ResponseEntity.ok(created);
     }
 
-    //     공지사항 수정
+    // 공지사항 수정
     @PutMapping("/update")
     public ResponseEntity<CommunityBoardVo> updateNotice(@RequestBody CommunityBoardVo vo) {
         CommunityBoardVo updated = adminCommunityService.updateNotice(vo);
         return ResponseEntity.ok(updated);
     }
 
-    //     공지사항 삭제
+    // 공지사항 삭제 (단건)
     @DeleteMapping("/delete")
     public ResponseEntity<Void> deleteNotice(@RequestParam("boardNo") int boardNo) {
         adminCommunityService.deleteNotice(boardNo);
         return ResponseEntity.ok().build();
     }
 
-    //     공지사항 일괄 삭제
-    @PostMapping("/delete")
+    // 공지사항 삭제 (일괄)
+    @DeleteMapping("/deleteBatch")
     public ResponseEntity<Void> deleteNoticeBatch(@RequestBody List<Integer> boardNos) {
         if (boardNos == null || boardNos.isEmpty()) {
-            return ResponseEntity.badRequest().build(); // 400 Bad Request
+            return ResponseEntity.badRequest().build();
         }
-
         adminCommunityService.deleteNoticeBatch(boardNos);
         return ResponseEntity.ok().build();
     }
 
-    //     이미지 업로드
-    @PostMapping("/upload/image")
+    // 이미지 업로드
+    @PostMapping(
+            value    = "/upload/image",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+    )
     public ResponseEntity<Map<String, String>> uploadImage(
             @RequestParam("image") MultipartFile file
     ) throws IOException {
-        // 1) 업로드 루트 + 공지용 서브폴더 결합
         Path uploadDir = Paths.get(rootPath, noticePath);
-        System.out.println("=== Upload dir: " + uploadDir.toAbsolutePath());
         if (!Files.exists(uploadDir)) {
             Files.createDirectories(uploadDir);
-            System.out.println("→ Created directory: " + uploadDir.toAbsolutePath());
-        } else {
-            System.out.println("→ Directory already exists.");
         }
 
-        // 2) 파일명 생성 및 저장
         String original = StringUtils.cleanPath(file.getOriginalFilename());
         String ext = "";
         int idx = original.lastIndexOf('.');
@@ -104,41 +101,60 @@ public class AdminCommunityController {
             Files.copy(is, target, StandardCopyOption.REPLACE_EXISTING);
         }
 
-        // 3) 클라이언트에 공개할 URL 조합
-        String url = "/api/admin/community/image/" + filename;
-
+        String url = "/api/community/image/" + filename;
         Map<String, String> body = new HashMap<>();
         body.put("url", url);
         return ResponseEntity.ok(body);
     }
 
+    // 업로드한 이미지 삭제 */
+    @DeleteMapping("/delete/image")
+    public ResponseEntity<Void> deleteUploadedImage(
+            @RequestParam("filename") String filename) throws IOException {
+
+        // 1) 물리 파일 삭제
+        Path phys = Paths.get(rootPath, noticePath, filename);
+        Files.deleteIfExists(phys);
+
+        // 2) DB에 기록된 메타 삭제 (이미 saveImageFileInfo에서만 저장되기 때문에
+        //    create 직후라면 레코드가 없을 수도 있지만, 있으면 삭제)
+        FileInfoVo vo = new FileInfoVo();
+        vo.setBoardNo(0); // boardNo 모를 땐 0으로 넘기고,
+        vo.setFileName(filename);
+        adminCommunityService.deleteFileInfoByFilename(vo);
+
+        return ResponseEntity.ok().build();
+    }
+
+    // 우선순위 단건 변경
     @PostMapping("/updatePriority")
     public ResponseEntity<Void> updatePriority(@RequestBody CommunityBoardVo vo) {
         adminCommunityService.updatePriority(vo.getBoardNo(), vo.getPriority());
         return ResponseEntity.ok().build();
     }
 
+    // 우선순위 일괄 변경
     @PostMapping("/updatePriorityBatch")
     public ResponseEntity<Void> updatePriorityBatch(@RequestBody List<CommunityBoardVo> updates) {
         adminCommunityService.updatePriorityBatch(updates);
         return ResponseEntity.ok().build();
     }
 
+    // 공지 고정 해제
     @PostMapping("/unpin")
     public ResponseEntity<Void> unpinBoardList(@RequestBody List<Integer> boardNos) {
         if (boardNos == null || boardNos.isEmpty()) {
-            return ResponseEntity.badRequest().build(); // 400
+            return ResponseEntity.badRequest().build();
         }
-
         adminCommunityService.unpinBoardList(boardNos);
         return ResponseEntity.ok().build();
     }
 
+    // 우선순위 스왑
     @PostMapping("/swapPriority")
     public ResponseEntity<Void> swapPriority(@RequestBody Map<String, Integer> payload) {
         int boardNo1 = payload.get("boardNo1");
         int boardNo2 = payload.get("boardNo2");
-
         adminCommunityService.swapPriority(boardNo1, boardNo2);
         return ResponseEntity.ok().build();
     }
@@ -149,9 +165,7 @@ public class AdminCommunityController {
         if (vo.getBoardNo() == 0 || vo.getStatusYn() == null) {
             return ResponseEntity.badRequest().build();
         }
-
         adminCommunityService.updateStatusYn(vo.getBoardNo(), vo.getStatusYn());
-        System.out.println(vo.getBoardNo()+" "+vo.getStatusYn());
         return ResponseEntity.ok().build();
     }
 }

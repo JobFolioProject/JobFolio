@@ -44,6 +44,7 @@
 .noticeManagement .notice-header h3 {
   font-size: 18px;
   font-weight: bold;
+  margin-top: 0;
   margin-bottom: 10px;
 }
 
@@ -122,14 +123,14 @@
 
 /* 테이블 */
 .noticeManagement .notice-table {
-  width: 100%;
-  table-layout: fixed;
+  display: table;                 
+  width: 100%;                    
+  min-width: 100%;                
+  table-layout: fixed;            
   border-collapse: collapse;
   background-color: #fff;
   font-size: 14px;
   margin-top: 12px;
-  display: block;
-  overflow-x: auto;
 }
 
 .noticeManagement .notice-table th,
