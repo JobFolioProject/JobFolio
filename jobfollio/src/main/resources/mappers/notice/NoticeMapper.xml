@@ -29,7 +29,7 @@
 		FROM tb_board b
 		WHERE b.board_type = #{board_type}
 			AND b.status_yn = 'N'  <!-- 노출하려고 하는거만 -->
-		ORDER BY b.priority DESC
+		ORDER BY b.priority
 	</select>
 
 	<!-- user 전용 FAQ -->
@@ -42,7 +42,7 @@
 		FROM tb_board b
 		WHERE b.board_type = #{board_type}
 		AND b.status_yn = 'N'  <!-- 노출하려고 하는거만 -->
-		ORDER BY b.priority DESC
+		ORDER BY b.priority
 	</select>
 
 

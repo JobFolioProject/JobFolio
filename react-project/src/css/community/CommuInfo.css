@@ -29,7 +29,7 @@
 }
 
 /* 질문 항목 */
-.info-item .question {
+.info-item .question-info {
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
@@ -42,21 +42,46 @@
 .question-left{
   display: flex;
   align-items: center;
-  gap: 4px; /* Q. 와 질문 사이 여백 */
+  
 }
 
 .info-Q {
+  font-size : 22px;
   font-weight: bold;
-  color: black;
+  color: #86e3ff;
+  margin-right: 15px; /* 여기 간격 늘리기 */
 }
 
-.info-item .question:hover {
-  color: #0b0ea8;
+.info-question {
+  font-weight: 500;
+  color: #6d6d6d;  /* ← 기본 글자색 */
+  font-size: 1rem;
+  transition : color 0.3s ease;
+}
+
+/* 선택된 항목 - 진하게 */
+.info-question.active {
+  color: #000000;
+  font-weight: bold;
+}
+
+/* 선택 안 된 항목 - 연하게 */
+.info-question.inactive {
+  color: #bbb;
+  font-weight: normal;
+}
+
+.info-item .question-info .info-Q:hover {
+  color: #64d9fd;
+}
+
+.info-item .question-info .info-question:hover {
+  color: #000000;
 }
 
 /* 펼쳐진 상태일 때 색상 유지 */
-.info-item.open .question {
-  color: #0b0ea8;
+.info-item.open .info-Q {
+  color: #2ac3f1;
 }
 
 /* 아이콘 공통 스타일 */
@@ -82,9 +107,16 @@
 }
 
 /* 답변 영역 */
-.info-item .answer {
+.info-list .info-item .answer{
+  background-color : #f0f3ff;
+  padding: 16px;
+  border-radius: 8px;
   margin-top: 10px;
   font-size: 0.95rem;
   color: #444;
   line-height: 1.6;
+  white-space: pre-line;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+  opacity: 1;
 }
