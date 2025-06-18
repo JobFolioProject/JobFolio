@@ -1,7 +1,7 @@
 package com.happyjob.jobfolio.vo.system;
 
 public class CommcodeModel {
-	
+
 	public String getGroup_code() {
 		return group_code;
 	}
@@ -37,8 +37,8 @@ public class CommcodeModel {
 	}
 	public void setReg_date(String reg_date) {
 		this.reg_date = reg_date;
-	}	
-	
+	}
+
 	public String getDetail_code() {
 		return detail_code;
 	}
@@ -90,5 +90,5 @@ public class CommcodeModel {
 	private String update_date;
 	private String delyn;
 	private String category_code;
-	
+
 }

@@ -193,7 +193,7 @@ public class ResumeController {
     }
 
     @RequestMapping("/generateCoverLetter")
-    public Map<String,Object> generateCoverLetter(@RequestParam Map<String,Object> paramMap){
+    public Map<String,Object> generateCoverLetter(@RequestBody Map<String,Object> paramMap){
         Map<String,Object> resultMap = new HashMap<>();
 
         ResumeInfoVO resumeInfoVO = new ResumeInfoVO();

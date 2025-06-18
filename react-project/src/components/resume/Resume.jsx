@@ -6,12 +6,13 @@ import DropDown from './ResumeDropdown';
 import ResumeAiCoverLetter from './ResumeAiCovLetter';
 import PrettyBtn from './PrettyBtn'; // PrettyBtn 컴포넌트 임포트
 import Calendar from '../common/Calendar';
-import axios from 'axios';
 import TemplateSelection from './TemplateSelection';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import MyCareer from '../user/myPageComponent/MyCareer';
 import { major } from '@mui/system';
+
+import axios from "../../utils/axiosConfig";
 
 
 const Resume = () => {
@@ -33,7 +34,7 @@ const Resume = () => {
     console.log('최종 제출 이력서 데이터:', dataToSend);
     alert('이력서가 제출되었습니다.');
     // axios.post('/api/resume/submit', dataToSend)
-    //   .then(res => console.log('성공:', res.data))
+    //   .then(res => console.log('성공:', res))
     //   .catch(err => console.error('에러:', err));
 }
 
@@ -41,12 +42,6 @@ const Resume = () => {
     const [userNo, setUserNo] = useState(4);
     
 
-    //경력 D-data
-    const [experience, setExperience] = useState([]);
-    const [education, setEducation] = useState([]);
-    const [language, setLanguage] = useState([]);
-    const [skill, setSkill] = useState([]); //기술 툴
-    const [certificate, setCertificate] = useState([]);
 
 
     // test!!! 기술/툴 드롭다운 옵션 샘플데이터
@@ -57,7 +52,7 @@ const Resume = () => {
     const [formData, setFormData] = useState({
         title: '',
         desired_position: '',
-        skill_tool: '',
+        skillList: [],
         link_url: '',
         //API로 불러온 기존데이터(DB에서 조회해온)
         experience: [],
@@ -79,7 +74,7 @@ const Resume = () => {
     // const selectResumeInfo = async() => {
     //     await axios.get("/resume/selectResumeInfo", { user_no: 4 })
     //     .then((res)=>{
-    //         console.log(res.data);
+    //         console.log(res);
     //     })
     //     .catch((err)=>{
     //         console.log(err);
@@ -95,19 +90,20 @@ const Resume = () => {
     const getMyCareerInfo = async () => {
         try {
             const response = await axios.get(`/api/myPage/${userNo}/career`);
+            console.log('API 응답 초기 데이터:', response);
             setFormData((prev) => ({
                 ...prev, //기존의 FormData 값 유지.
-                title:response.data.title|| '', //db에 없음. input하는 값(db에 저장x)
-                desired_position : response.data.desired_position|| '', //db에 없음. input하는 값(db에 저장x)
-                skill_tool : response.data.skill_tool || '',
-                link_url : response.data.link_url || '', //db에 없음. input하는 값(db에 저장x)
-                experience : response.data.creerHistoryList || [], // API로 불러온 경력
-                education : response.data.educationList || [], //API로 불러온 학력
-                coverLetter : response.data.coverLetter || '', //db에 없음. input하는 값(db에 저장x)
-                template_no : response.data.template_no || null, //mypage에서 조회하는 것 아님. 즉 `/api/myPage/${userNo}/career` api 사용x
+                title:response.title|| '', //db에 없음. input하는 값(db에 저장x)
+                desired_position : response.desired_position|| '', //db에 없음. input하는 값(db에 저장x)
+                skillList : response.skillList || '',
+                link_url : response.link_url || '', //db에 없음. input하는 값(db에 저장x)
+                experience : response.creerHistoryList || [], // API로 불러온 경력
+                education : response.educationList || [], //API로 불러온 학력
+                coverLetter : response.coverLetter || '', //db에 없음. input하는 값(db에 저장x)
+                template_no : response.template_no || null, //mypage에서 조회하는 것 아님. 즉 `/api/myPage/${userNo}/career` api 사용x
                 // newExperience와 newEducation은 그대로 빈 배열로 유지
             }));
-            console.log('초기 데이터 확인', response.data);
+            console.log('초기 데이터 확인', response);
         } catch (error) {
             console.log("데이터를 불러올 수 없습니다", error);
 
@@ -159,7 +155,7 @@ const Resume = () => {
     // const selectResumeInfo = async() => {
     //     await axios.get("/resume/selectResumeInfo", { user_no: 4 })
     //     .then((res)=>{
-    //         console.log(res.data);
+    //         console.log(res);
     //     })
     //     .catch((err)=>{
     //         console.log(err);
@@ -237,7 +233,7 @@ const Resume = () => {
             enroll_date: null, 
             grad_date: null,
             //새로운 항목 추가 시에도 edu_no 부여하기.
-            edu_no: Date.now(), 
+            edu_no: Date.now(), //edu_no: 1750118974000
         }],
     }));
   };
@@ -403,7 +399,7 @@ const Resume = () => {
             <div className="resume-banner">
                 <img src="/resources/img/banner.png" alt="Banner" />
             </div>
-        <div className='resume_Wrap'>
+        <div className='resume_wrap'>
             <ResumeSidebar/>
             <div className='resume-content'>
                 {/* <div style={{ marginLeft: '200px', padding: '200px' }}> */}
@@ -429,23 +425,71 @@ const Resume = () => {
                         {/* 나머지 부분도 동일하게 적용 */}
                         <label>
                             <span>기술스택/툴</span><br />
-                            <div><input type="text" name="skill_tool" onChange={handleChange} value={formData.skill_tool}/></div>
+                            <div>
+                                <input 
+                                    type="text" 
+                                    readOnly 
+                                    name="skillList" 
+                                    // onChange={handleChange} 
+                                     // formData.skillList에 있는 각 스킬의 skill_name을 쉼표로 연결하여 표시
+                                    value={formData.skillList.map(skill => skill.skill_name).join(', ')}
+                                    />
+                                    </div>
                             <DropDown
                                 options={dummySkillOptions}
-                                selected={formData.skill_tool}
+                                // selected={formData.skillList}
+                                selected={''} // 드롭다운이 단일 선택이 아닌 추가 기능이므로 selected는 필요 없습니다.
                                 placeholder="기술/툴을 선택하세요"
-                                onSelect={(option)=>{
-                                    setFormData((prev) => ({
+                                onSelect={(selectedSkillName)=>{
+                                    setFormData((prev)=>{
+                                        const isAlreadyAdded = prev.skillList.some(
+                                            (item)=> item.skill_name === selectedSkillName
+                                        );
+                                    if (isAlreadyAdded){
+                                        alert(`${selectedSkillName}은 이미 추가된 기술입니다.`)
+                                        return prev;
+                                    } 
+                                     // ⭐ SkillVO 구조에 맞춰 새로운 스킬 객체 생성 ⭐
+                                    
+                                    const newSkill = {
+                                        user_no: userNo, // Resume 컴포넌트의 userNo를 사용
+                                        //exp_level: selectedExpLevel, // 프론트에서 받아오는 숙련도 (UI에서 선택된 값)
+                                        exp_level: '중', // ⭐ 초기 숙련도. 필요시 UI 추가하여 사용자 입력받기 ⭐
+                                        skill_tool: 'pc', // 드롭다운에서 선택된 스킬 이름을 그대로 사용
+                                        skill_name: 'pc', // 드롭다운에서 선택된 스킬 이름을 그대로 사용
+                                        // group_name과 group_code는 백엔드에서 처리해주거나, 프론트에서 매핑 필요.
+                                        // 현재는 AI 자기소개서 생성 목적이므로 필수로 채우지 않아도 될 수 있습니다.
+                                        skill_code: selectedSkillName,
+                                        group_code: 'IT', // 또는 적절한 기본값
+                                        group_name: '기술스택', // 또는 적절한 기본값
+                                    };
+
+                                    return {
                                         ...prev,
-                                        skill_tool: option // 선택한 기술/툴을 formData에 저장
-                                    }));
-                                    console.log("선택한 기술/툴:", option); // 선택한 옵션 확인
+                                        skillList: [...prev.skillList, newSkill],
+                                    };
+                                    })
+                                    console.log("선택한 기술/툴:", selectedSkillName); // 선택한 옵션 확인
                                 }}
                                 />
                                 {/* 드롭다운 컴포넌트 사용 */}
-                                {formData.skill_tool && <p>선택한 기술: {formData.skill_tool}</p>}
-                                <br />
-                        </label>
+                                {/* 스킬 목록을 렌더링하는 부분. ul 태그로 감싸는 것이 일반적입니다. */}
+                            {formData.skillList.length > 0 && (
+                                <ul className="skill-list"> {/* ul 태그 추가 */}
+                                    {formData.skillList.map((skill, index) => (
+                                        <li key={index}>
+                                            <span>
+                                                {skill.skill_code}
+                                            </span>
+                                            {/* 숙련도를 표시하고 싶다면: <span> ({skill.exp_level})</span> */}
+                                            {/* 삭제 버튼 추가 예시: <button type="button" onClick={() => removeSkill(index)}>삭제</button> */}
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
+
+                            </label> {/* DropDown 컴포넌트와 스킬 목록을 감싸는 label 태그의 닫힘 */}
+
                         <br />
                     <label>
                         <div><span>링크</span></div>
@@ -600,6 +644,7 @@ const Resume = () => {
                         myCoverLetter={formData.coverLetter}
                         setMyCoverLetter={(value) => setFormData({ ...formData, coverLetter: value })}
                         setFormData={setFormData} // formData 상태를 자식 컴포넌트에 전달
+                        userNo={userNo} 
                      />
                      <br/>
                         <br/>
