@@ -333,11 +333,7 @@ public class ResumeService {
     }
 
     // 이력서 목록 조회
-    public List<ResumeInfoVO> getPagedNormalBoardList(Map<String, Object> paramMap){return resumeMapper.selectPagedNormalBoardList(paramMap); };
-
-    public int getNormalBoardTotalCount(Map<String, Object> paramMap){
-        return resumeMapper.selectNormalBoardTotalCount(paramMap);
-    }
+    public List<ResumeInfoVO> communityResumeList(Map<String, Object> paramMap){return resumeMapper.communityResumeList(paramMap); };
 
 //    public ResumeInfoVO selectResumeInfoByResumeNo(int resumeNo) {
 //        return  resumeMapper.selectResumeInfoByResumeNo(resumeNo);

@@ -433,11 +433,11 @@ public class ResumeController {
         paramMap.put("offset", offset);
         paramMap.put("limit", pageSize);
 
-        List<ResumeInfoVO> boardList = resumeService.getPagedNormalBoardList(paramMap);
-        int totalCount = resumeService.getNormalBoardTotalCount(paramMap);
+        List<ResumeInfoVO> boardList = resumeService.communityResumeList(paramMap);
 
         resultMap.put("boardList", boardList);
-        resultMap.put("totalCount", totalCount);
+
+        System.out.println(resultMap);
 
         return resultMap;
     }
