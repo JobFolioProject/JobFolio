@@ -5,15 +5,15 @@
 	<!-- 결제 DB 저장 -->
 	<insert id="insertOrder" parameterType="map">
 		INSERT INTO 	tb_payment_his
-		(
-				order_Id
-		,		product_no
-		,		order_name
-		,		amount
-		,		user_no
-		,		pay_status
-		,		paid_date
-		) VALUES (
+				(
+						order_Id
+				,		product_no
+				,		order_name
+				,		amount
+				,		user_no
+				,		pay_status
+				,		paid_date
+				) VALUES (
 						#{orderId}
 				 ,		#{product_no}
 				 ,		#{order_name}
@@ -33,11 +33,47 @@
 		WHERE 		order_Id	 	 =  #{orderId}
 	</update>
 
-	<!-- 결제 후 유저 테이블에서 구독 마감 날짜 갱신 -->
-	<update id="updateDate" parameterType="com.happyjob.jobfolio.vo.usermgr.UserModel">
-		UPDATE 		tb_userinfo
-		SET 		expire_days		 = 	#{expire_days}
-		WHERE 		user_no	 	 	 =  #{user_no}
-	</update>
+	<!-- 결제 후 결제한 상품 구독 기간 가져오기 -->
+<!--	<update id="updateUserExDate" parameterType="com.happyjob.jobfolio.vo.usermgr.UserModel">-->
+<!--		UPDATE 		tb_userinfo-->
+<!--		SET 		expire_days		 = 	#{expire_days}-->
+<!--		WHERE 		user_no	 	 	 =  #{user_no}-->
+<!--	</update>-->
 
+	<!-- 결제 후 결제한 유저 PK 가져오기 -->
+<!--	<update id="updateUserExDate" parameterType="com.happyjob.jobfolio.vo.usermgr.UserModel">-->
+<!--		UPDATE 		tb_userinfo-->
+<!--		SET 		expire_days		 = 	#{expire_days}-->
+<!--		WHERE 		user_no	 	 	 =  #{user_no}-->
+<!--	</update>-->
+
+	<select id="selectProductNoByOrderId" resultType="int">
+		SELECT 		product_no
+		FROM 		tb_payment_his
+		WHERE 		order_id = #{orderId}
+	</select>
+
+	<select id="selectSubPeriodByProductNo" resultType="int">
+		SELECT 		sub_period
+		FROM 		tb_product_info
+		WHERE 		product_no = #{productNo}
+	</select>
+
+	<select id="selectUserNoByOrderId" resultType="int">
+		SELECT 		user_no
+		FROM 		tb_payment_his
+		WHERE 		order_id = #{orderId}
+	</select>
+
+	<select id="selectExpireDateByUserNo" resultType="java.time.LocalDate">
+		SELECT 		expire_days
+		FROM 		tb_userinfo
+		WHERE 		user_no = #{userNo}
+	</select>
+
+	<update id="updateExpireDate">
+		UPDATE 		tb_userinfo
+		SET 		expire_days = #{newExpireDate}
+		WHERE 		user_no = #{userNo}
+	</update>
 </mapper>

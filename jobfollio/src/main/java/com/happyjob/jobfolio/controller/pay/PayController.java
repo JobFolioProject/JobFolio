@@ -19,6 +19,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
@@ -131,6 +132,8 @@ public class PayController {
 			int inserted = payService.cardSuccess(paramMap);
 			if (inserted > 0) {
 				result.put("status", "success");
+
+				postUpdateProcess(orderId);
 			} else {
 				result.put("status", "fail");
 				result.put("message", "DB 저장 실패");
@@ -144,15 +147,10 @@ public class PayController {
 		return result;
 	}
 
-	// 결제 실패 (종류에 상관없이 동일하게 처리)
-	@GetMapping("/cardFail")
-	public RedirectView cardFail(
-			HttpServletRequest request,
-			HttpServletResponse response,
-			@RequestParam(value = "message", required = true) String message
-	) {
-
-		return new RedirectView("/cashMain" + "?pgMessage=" + message);
+	// 결제 승인 완료 후 유저 구독 기간 갱신
+	private void postUpdateProcess(String orderId) throws Exception {
+		payService.updateUserSubscription(orderId);
 	}
+
 
 }

@@ -2,6 +2,7 @@ package com.happyjob.jobfolio.repository.pay;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import java.time.LocalDate;
 import java.util.Map;
 
 @Mapper
@@ -13,6 +14,13 @@ public interface PayMapper {
 	// 토스 api 결제 승인시
 	int cardSuccess(Map<String, Object> params);
 
-	// 토스 api 결제 승인시
-	int updateDate(Map<String, Object> params);
+	Integer selectProductNoByOrderId(String orderId);
+
+	Integer selectSubPeriodByProductNo(Integer productNo);
+
+	Integer selectUserNoByOrderId(String orderId);
+
+	LocalDate selectExpireDateByUserNo(Integer userNo);
+
+	int updateExpireDate(Integer userNo, LocalDate newExpireDate);
 }
