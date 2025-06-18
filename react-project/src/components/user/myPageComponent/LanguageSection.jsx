@@ -278,7 +278,9 @@ const LanguageSection = React.memo(({ userNo, languageSkillList, onListChange })
             {(showAddForm || editingLanguage !== null) && (
                 <div className="languageFormBox language-input-theme">
                     <div>
-                        <p className="formTitle">{editingLanguage !== null ? '어학 능력 수정' : '새 어학 능력 추가'}</p>{' '}
+                        <h2 className="formTitle">
+                            {editingLanguage !== null ? '어학 능력 수정' : '새 어학 능력 추가'}
+                        </h2>{' '}
                     </div>
                     <div className="languageContainer">
                         <div className="languageInputArea">

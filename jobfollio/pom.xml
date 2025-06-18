@@ -253,6 +253,13 @@
 			<version>5.8.6</version> <!-- Spring 5.x 이상이면 OK -->
 		</dependency>
 
+		<!-- pdf -->
+		<dependency>
+			<groupId>com.openhtmltopdf</groupId>
+			<artifactId>openhtmltopdf-pdfbox</artifactId>
+			<version>1.0.10</version>
+		</dependency>
+
 	</dependencies>
 
 

@@ -19,6 +19,8 @@ public interface ResumeMapper {
 
     int unlikeResume(int user_no, int resume_no);
 
+    int likeResume(int user_no, int resume_no);
+
     int deleteResume(int resume_no);
 
     int insertResumeInfo(ResumeInfoVO resumeInfoVO);
@@ -40,9 +42,7 @@ public interface ResumeMapper {
     UserVO getUserByUserNo(Long userNo);
 
     // 이력서 목록 조회
-    List<ResumeInfoVO> selectPagedNormalBoardList(Map<String, Object> paramMap);
-
-    int selectNormalBoardTotalCount(Map<String, Object> paramMap);
+    List<ResumeInfoVO> communityResumeList(Map<String, Object> paramMap);
 
 //    ResumeInfoVO selectResumeInfoByResumeNo(int resumeNo);
 
