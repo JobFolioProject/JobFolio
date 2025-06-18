@@ -9,12 +9,9 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.sun.deploy.config.Config.isDebugMode;
 
 /**
  * OAuth2 사용자 정보를 처리하는 핵심 서비스
@@ -23,8 +20,11 @@ import static com.sun.deploy.config.Config.isDebugMode;
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
+
     @Autowired
     private UserMapper userMapper;
+
+
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -39,6 +39,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             return new CustomOAuth2User(user, oauth2User.getAttributes());
 
         } catch (Exception e) {
+            System.err.println("CustomOAuth2UserService 에러: " + e.getMessage());
+            e.printStackTrace();
             throw new OAuth2AuthenticationException("소셜 로그인 처리 중 오류가 발생했습니다: " + e.getMessage());
         }
     }
@@ -226,4 +228,5 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private boolean isDebugMode() {
         return "dev".equals(System.getProperty("spring.profiles.active"));
     }
+
 }

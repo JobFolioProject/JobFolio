@@ -1,5 +1,6 @@
 package com.happyjob.jobfolio.config;
 
+import com.happyjob.jobfolio.security.oauth2.CustomOidcUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,6 +37,9 @@ public class SecurityConfig {
 
     @Autowired
     private OAuth2SuccessHandler oAuth2SuccessHandler;
+
+    @Autowired
+    private CustomOidcUserService customOidcUserService;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -106,7 +110,8 @@ public class SecurityConfig {
                 .successHandler(oAuth2SuccessHandler)
                 .failureUrl("http://localhost:3000/login?error=oauth2")
                 .userInfoEndpoint()
-                .userService(customOAuth2UserService);
+                .userService(customOAuth2UserService)
+                .oidcUserService(customOidcUserService);
 
 
         return http.build();

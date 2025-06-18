@@ -3,6 +3,9 @@ package com.happyjob.jobfolio.security.oauth2;
 import com.happyjob.jobfolio.vo.join.UserVO;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth2.core.oidc.OidcIdToken;
+import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.Collection;
@@ -10,10 +13,10 @@ import java.util.Collections;
 import java.util.Map;
 
 /**
- * Spring Security OAuth2User 인터페이스 구현
+ * Spring Security OAuth2User/OidcUser 인터페이스 구현
  * 소셜 로그인 후 생성되는 사용자 객체
  */
-public class CustomOAuth2User implements OAuth2User {
+public class CustomOAuth2User implements OAuth2User, OidcUser {
 
     private final UserVO userVO;
     private final Map<String, Object> attributes;
@@ -60,6 +63,22 @@ public class CustomOAuth2User implements OAuth2User {
     @Override
     public String getName() {
         return String.valueOf(userVO.getUser_no());
+    }
+
+    // OidcUser 구현 (기본 구현)
+    @Override
+    public OidcIdToken getIdToken() {
+        return null; // 기본 구현
+    }
+
+    @Override
+    public OidcUserInfo getUserInfo() {
+        return null; // 기본 구현
+    }
+
+    @Override
+    public Map<String, Object> getClaims() {
+        return getAttributes(); // attributes와 동일하게 반환
     }
 
     /**
