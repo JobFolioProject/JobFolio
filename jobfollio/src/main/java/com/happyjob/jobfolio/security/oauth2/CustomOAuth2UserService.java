@@ -14,6 +14,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.sun.deploy.config.Config.isDebugMode;
+
 /**
  * OAuth2 사용자 정보를 처리하는 핵심 서비스
  * 소셜 로그인 시 사용자 정보를 가져오고 DB에 저장/조회
@@ -58,7 +60,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     }
 
     /**
-     * 구글 사용자 정보 추출
+     * 구글 사용자 정보 추출 - 누락 데이터 처리 개선
      */
     private SocialUserInfo extractGoogleInfo(OAuth2User oauth2User) {
         String originalEmail = oauth2User.getAttribute("email");
@@ -67,36 +69,80 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         return SocialUserInfo.builder()
                 .social_type("GOOGLE")
                 .social_id(oauth2User.getAttribute("sub"))
-                .login_id(prefixedEmail)  // GOOGLE_ 식별키 추가
+                .login_id(prefixedEmail)
                 .user_name(oauth2User.getAttribute("name"))
+                .sex(null)
+                .birthday(null)
+                .birthyear(null)
+                .hp(null)
                 .build();
     }
 
-    /**
-     * 카카오 사용자 정보 추출
-     */
+    //    카카오
     @SuppressWarnings("unchecked")
     private SocialUserInfo extractKakaoInfo(OAuth2User oauth2User) {
+        System.out.println("=== 카카오 OAuth2User 전체 데이터 ===");
+        System.out.println("전체 속성: " + oauth2User.getAttributes());
+
         Map<String, Object> kakaoAccount = oauth2User.getAttribute("kakao_account");
+
+        System.out.println("kakao_account: " + kakaoAccount);
 
         String originalEmail = kakaoAccount != null ? (String) kakaoAccount.get("email") : null;
         String prefixedEmail = originalEmail != null ? "KAKAO_" + originalEmail : null;
         Object kakaoIdObj = oauth2User.getAttribute("id");
         String kakaoId = kakaoIdObj != null ? kakaoIdObj.toString() : null;
 
+        String userName = kakaoAccount != null ? (String) kakaoAccount.get("name") : null;
+
+        String phoneNumber = kakaoAccount != null ? (String) kakaoAccount.get("phone_number") : null;
+
+
+        String birthday = null;
+        String birthyear = null;
+
+        if (kakaoAccount != null) {
+            birthyear = (String) kakaoAccount.get("birthyear");
+            String birthdayRaw = (String) kakaoAccount.get("birthday");
+
+            System.out.println("birthyear: " + birthyear);
+            System.out.println("birthday raw: " + birthdayRaw);
+
+            if (birthdayRaw != null) {
+                if (birthdayRaw.matches("\\d{4}")) {
+                    String month = birthdayRaw.substring(0, 2);
+                    String day = birthdayRaw.substring(2);
+                    birthday = String.format("%02d-%02d", Integer.parseInt(month), Integer.parseInt(day));
+                } else {
+                    birthday = birthdayRaw;
+                }
+            }
+        }
+
+        String gender = kakaoAccount != null ? (String) kakaoAccount.get("gender") : null;
+
+        System.out.println("=== 카카오 추출 결과 ===");
+        System.out.println("실명: " + userName);
+        System.out.println("원본 전화번호: " + phoneNumber);
+        System.out.println("성별: " + gender);
+        System.out.println("생년: " + birthyear);
+        System.out.println("생일: " + birthday);
+        System.out.println("=======================");
+
         return SocialUserInfo.builder()
                 .social_type("KAKAO")
                 .social_id(kakaoId)
                 .login_id(prefixedEmail)
-                .user_name(kakaoAccount != null ? (String) kakaoAccount.get("name") : null)
-                .sex(kakaoAccount != null ? (String) kakaoAccount.get("gender") : null)
-                .birthday(kakaoAccount != null ? (String) kakaoAccount.get("birthday") : null)
-                .birthyear(kakaoAccount != null ? (String) kakaoAccount.get("birthyear") : null)
+                .user_name(userName)
+                .sex(gender)
+                .birthday(birthday)
+                .birthyear(birthyear)
+                .hp(phoneNumber)
                 .build();
-        }
+    }
 
     /**
-     * 네이버 사용자 정보 추출
+     * 네이버 사용자 정보 추출 - 개선된 버전
      */
     @SuppressWarnings("unchecked")
     private SocialUserInfo extractNaverInfo(OAuth2User oauth2User) {
@@ -109,6 +155,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String originalEmail = (String) response.get("email");
         String prefixedEmail = originalEmail != null ? "NAVER_" + originalEmail : null;
 
+        String mobile = (String) response.get("mobile");
+
         return SocialUserInfo.builder()
                 .social_type("NAVER")
                 .social_id((String) response.get("id"))
@@ -117,7 +165,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 .sex((String) response.get("gender"))
                 .birthday((String) response.get("birthday"))
                 .birthyear((String) response.get("birthyear"))
-                .hp((String) response.get("mobile"))
+                .hp(mobile)
                 .build();
     }
 
@@ -146,31 +194,36 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             );
         }
 
-        // 3. 신규 소셜 사용자 생성
         return createNewSocialUser(socialUserInfo);
     }
 
-    /**
-     * 신규 소셜 사용자 생성
-     */
     private UserVO createNewSocialUser(SocialUserInfo socialUserInfo) throws Exception {
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("login_id", socialUserInfo.getLogin_id());
-        paramMap.put("user_name", socialUserInfo.getUser_name());
-        paramMap.put("birthday", socialUserInfo.getFullBirthday()); // yyyy-MM-dd 형태로 저장
-        paramMap.put("sex", socialUserInfo.getConvertedSex()); // M/F 형태로 저장
-        paramMap.put("hp", socialUserInfo.getHp());
+        paramMap.put("user_name", socialUserInfo.getNormalizedUserName());
+        paramMap.put("birthday", socialUserInfo.getFullBirthday());
+        paramMap.put("sex", socialUserInfo.getConvertedSex());
+        paramMap.put("hp", socialUserInfo.getNormalizedHp());
         paramMap.put("social_type", socialUserInfo.getSocial_type());
         paramMap.put("social_id", socialUserInfo.getSocial_id());
 
-        // DB에 신규 사용자 등록
+        if (isDebugMode()) {
+            socialUserInfo.printConvertedInfo();
+        }
+
         int result = userMapper.insertSocialUser(paramMap);
 
         if (result <= 0) {
             throw new OAuth2AuthenticationException("소셜 사용자 등록에 실패했습니다.");
         }
 
-        // 등록된 사용자 정보 다시 조회하여 반환
         return userMapper.selectBySocialTypeAndSocialId(paramMap);
+    }
+
+    /**
+     * 개발 모드 확인 (디버깅용)
+     */
+    private boolean isDebugMode() {
+        return "dev".equals(System.getProperty("spring.profiles.active"));
     }
 }

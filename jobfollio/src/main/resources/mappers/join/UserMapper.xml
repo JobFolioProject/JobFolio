@@ -24,7 +24,7 @@
         <result property="social_id" column="social_id"/>
     </resultMap>
 
-    <!-- 사용자 등록 -->
+    <!-- 회원가입 -->
     <insert id="insertUser" parameterType="map" useGeneratedKeys="true" keyProperty="user_no">
         INSERT INTO tb_userinfo (
         login_id,
@@ -47,7 +47,7 @@
         #{birthday},
         #{sex},
         #{hp},
-        NOW(),
+        CURDATE(),
         'N',  <!-- 'N'사용상태, 'Y'=탈퇴상태 -->
         #{address},
         #{hobby},
@@ -208,7 +208,7 @@
                      #{birthday},
                      #{sex},
                      #{hp},
-                     NOW(),
+                     CURDATE(),
                      'N',
                      #{social_type},
                      #{social_id}

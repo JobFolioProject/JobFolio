@@ -31,29 +31,24 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
                                         Authentication authentication) throws IOException, ServletException {
 
         try {
-            // 1. OAuth2 사용자 정보 추출
             CustomOAuth2User oauth2User = (CustomOAuth2User) authentication.getPrincipal();
             UserVO user = oauth2User.getUserVO();
 
-            // 2. 기존 JWT 토큰 생성 방식 사용 (DB 컬럼명 그대로 사용)
             String accessToken = jwtTokenProvider.generateAccessToken(
-                    user.getLogin_id(),    // login_id (DB 컬럼명)
-                    user.getUser_no(),     // user_no (DB 컬럼명)
-                    user.getUser_name(),   // user_name (DB 컬럼명)
-                    user.getUser_type()    // user_type (DB 컬럼명)
+                    user.getLogin_id(),
+                    user.getUser_no(),
+                    user.getUser_name(),
+                    user.getUser_type()
             );
 
             String refreshToken = jwtTokenProvider.generateRefreshToken(user.getLogin_id());
 
-            // 3. Refresh Token을 HttpOnly 쿠키로 설정 (기존 방식 사용)
             cookieUtil.createRefreshTokenCookie(response, refreshToken);
 
-            // 4. 프론트엔드로 리다이렉트 (Access Token을 쿼리 파라미터로 전달)
             String redirectUrl = "http://localhost:3000/oauth/callback?token=" + accessToken;
             response.sendRedirect(redirectUrl);
 
         } catch (Exception e) {
-            // 5. 오류 발생 시 에러 페이지로 리다이렉트
             String errorUrl = "http://localhost:3000/oauth/error?message=" +
                     java.net.URLEncoder.encode("로그인 처리 중 오류가 발생했습니다.", "UTF-8");
             response.sendRedirect(errorUrl);
