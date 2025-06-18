@@ -33,6 +33,7 @@ import Configuration from "./components/admin/adminComponents/Configuration";
 import ResumeModify from "./components/resume/ResumeModify";
 import Join from "./components/user/join/JoinForm";
 import { AuthProvider } from "./context/AuthContext";
+import { ResumeEditProvider } from './context/ResumeEditContext';
 import PrivateRoute from "./components/common/PrivateRoute";
 import Unauthorized from "./components/common/Unauthorized";
 import NotFound from "./components/common/NotFound";
@@ -40,9 +41,11 @@ import NotFound from "./components/common/NotFound";
 function App() {
   return (
     <AuthProvider>
-      <BrowserRouter>
-        <AppContent />
-      </BrowserRouter>
+      <ResumeEditProvider>
+        <BrowserRouter>
+          <AppContent />
+        </BrowserRouter>
+      </ResumeEditProvider>
     </AuthProvider>
   );
 }

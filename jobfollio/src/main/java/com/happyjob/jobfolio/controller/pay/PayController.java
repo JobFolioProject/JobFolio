@@ -28,7 +28,7 @@ public class PayController {
 	private PayService payService;
 
 	// 결제 정보 생성 후 데이터 초기 저장
-	@PostMapping("/insertOrder")
+	@PostMapping(value = "/insertOrder", produces = "application/json")
 	public Map<String, Object> insertOrder(
 			HttpServletRequest request,
 			HttpServletResponse response,
@@ -38,6 +38,8 @@ public class PayController {
 		try {
 			returnmap = payService.insertOrder(params);
 			returnmap.put("resultmsg", "등록 되었습니다.");
+
+			System.out.println("📦 returnmap: " + returnmap);
 		} catch (Exception e) {
 			int deleted = payService.deleteOrder(params);
 			returnmap.put("resultmsg", e.getMessage());
