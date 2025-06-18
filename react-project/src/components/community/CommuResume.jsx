@@ -104,6 +104,15 @@ const CommuResume = () => {
         window.open(url, '_blank', 'width=900,height=700');
     };
 
+    // hover이벤트 추가
+    const handleMouseEnterIcon = (e) => {
+        e.currentTarget.closest('.template-view-wrapper')?.classList.add('no-hover');
+    };
+
+    const handleMouseLeaveIcon = (e) => {
+        e.currentTarget.closest('.template-view-wrapper')?.classList.remove('no-hover');
+    };
+
   return (
     <>
       <div className="resume-banner">
@@ -125,11 +134,18 @@ const CommuResume = () => {
             <div className="resume-template-grid">
             {currentTemplates.map((template) => (
                 <div key={template.resume_no} className="template-view-wrapper">
-                  <FavoriteIcon 
-                    className="likeIcon" 
-                    color={template.resume_liked === 1 ? 'error' : 'inherit'}
-                    onClick={template.resume_liked === 0 ? ()=>resumeLike(template.resume_no) : ()=>resumeUnLike(template.resume_no)}
-                />
+                    <FavoriteIcon 
+                        className="likeIcon"
+                        color={template.resume_liked === 1 ? 'error' : 'inherit'}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            template.resume_liked === 0
+                            ? resumeLike(template.resume_no)
+                            : resumeUnLike(template.resume_no);
+                        }}
+                        onMouseEnter={handleMouseEnterIcon}
+                        onMouseLeave={handleMouseLeaveIcon}
+                    />
                 <div className="template-slide" onClick={() => openResumePopup(template.resume_file_pypath)}>
                     <iframe
                     srcDoc={template.html}
