@@ -9,40 +9,77 @@ import Calendar from '../common/Calendar';
 import TemplateSelection from './TemplateSelection';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { useAuth } from "../../context/AuthContext";
 import MyCareer from '../user/myPageComponent/MyCareer';
 import { major } from '@mui/system';
-
 import axios from "../../utils/axiosConfig";
 
 
 const Resume = () => {
     // 이력서 작성 페이지 컴포넌트
-    // 이력서 작성 폼을 포함하고 있으며, 사이드바를 사용하여 다른 이력서 관련 페이지로 이동할 수 있습니다.  
-    const handleSubmit = (event) => {
-    event.preventDefault();
+    // 이력서 작성 폼을 포함하고 있으며, 사이드바를 사용하여 다른 이력서 관련 페이지로 이동할 수 있습니다.
 
-    const dataToSend = {
-        ...formData,
-        education: [...formData.existingEducation, ...formData.newEducation], // 기존 + 신규 학력
-        experience: [...formData.existingExperience, ...formData.newExperience], // 기존 + 신규 경력
-        existingEducation: undefined, // 전송할 때는 필요 없으니 제거
-        newEducation: undefined,      // 전송할 때는 필요 없으니 제거
-        existingExperience: undefined,
-        newExperience: undefined,
-    };
+    const { user, isAuthenticated } = useAuth();
+    const {filePath, setFilePath} = useState("");
 
-    console.log('최종 제출 이력서 데이터:', dataToSend);
-    alert('이력서가 제출되었습니다.');
-    // axios.post('/api/resume/submit', dataToSend)
-    //   .then(res => console.log('성공:', res))
-    //   .catch(err => console.error('에러:', err));
-}
+    const handleSubmit = async () => {
 
+        const dataToSend = {
+            ...formData,
+            education: [...formData.education, ...formData.newEducation], // 기존 + 신규 학력
+            experience: [...formData.experience, ...formData.newExperience], // 기존 + 신규 경력
+            newEducation: undefined,      // 전송할 때는 필요 없으니 제거
+            newExperience: undefined,
+        };
+        console.log('최종 제출 이력서 데이터:', dataToSend);
+        
+        
+            await axios.post('/api/resume/insertResumeInfo', dataToSend)
+            .then((res)=>{
+                if(res.result === 1){
+                    setFilePath(res.filePath);
+                    alert("이력서 저장이 완료되었습니다")
+                }else {
+                    alert("이력서 저장에 실패했습니다.")
+                }
+                
+            })
+            .catch((err)=>{
+                console.log(err);
+            })
+           
 
-    const [userNo, setUserNo] = useState(4);
+          
+    }
+
+    const pdfDownload = async () =>{
+        try {
+            // 1) 서버에 저장 및 물리경로 리턴
+            // 2) PDF 변환 API 호출 (blob으로 받기)
+           // 2) PDF 변환 요청 (ArrayBuffer 로 받기)
+           console.log(filePath)
+            const pdfResponse = await axios.post(
+                '/api/resume/exportPdf',
+                { filePath },
+                { responseType: 'arraybuffer', maxBodyLength: Infinity }
+                );
+
+            // 3) Blob 생성 & 다운로드
+            const blob = new Blob([pdfResponse], { type: 'application/pdf' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'resume.pdf';
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+
+            } catch (err) {
+            console.error(err);
+            alert('PDF 다운로드 중 오류가 발생했습니다.');
+            }
+
+    }
     
-
-
 
     // test!!! 기술/툴 드롭다운 옵션 샘플데이터
     const dummySkillOptions = ['JavaScript', 'Python', 'Java', 'C++', 'React', 'Node.js', 'HTML/CSS', 'SQL', 'Git', 'Docker'];
@@ -50,6 +87,7 @@ const Resume = () => {
     // 이력서 작성 폼 데이터 상태
     // U-data
     const [formData, setFormData] = useState({
+        user_no: user.userNo,
         title: '',
         desired_position: '',
         skillList: [],
@@ -62,34 +100,14 @@ const Resume = () => {
          // 새로 추가 중인 (임시) 학력 데이터
         newEducation: [], // 여기에 항상 최대 1개의 객체만 존재하도록 관리
         coverLetter: '', // 자기소개서 상태 추가
-        template_no : null, //
+        template_no : 1, //
     });
 
 
 
-
-
-//test!!!!!!
-
-    // const selectResumeInfo = async() => {
-    //     await axios.get("/resume/selectResumeInfo", { user_no: 4 })
-    //     .then((res)=>{
-    //         console.log(res);
-    //     })
-    //     .catch((err)=>{
-    //         console.log(err);
-    //     })
-    // }
-
-    // useEffect(()=>{
-    //     selectResumeInfo();
-    // },[])
-
-    
-
     const getMyCareerInfo = async () => {
         try {
-            const response = await axios.get(`/api/myPage/${userNo}/career`);
+            const response = await axios.get(`/api/myPage/${user.userNo}/career`);
             console.log('API 응답 초기 데이터:', response);
             setFormData((prev) => ({
                 ...prev, //기존의 FormData 값 유지.
@@ -100,7 +118,7 @@ const Resume = () => {
                 experience : response.creerHistoryList || [], // API로 불러온 경력
                 education : response.educationList || [], //API로 불러온 학력
                 coverLetter : response.coverLetter || '', //db에 없음. input하는 값(db에 저장x)
-                template_no : response.template_no || null, //mypage에서 조회하는 것 아님. 즉 `/api/myPage/${userNo}/career` api 사용x
+                template_no : response.template_no || 1, //mypage에서 조회하는 것 아님. 즉 `/api/myPage/${userNo}/career` api 사용x
                 // newExperience와 newEducation은 그대로 빈 배열로 유지
             }));
             console.log('초기 데이터 확인', response);
@@ -118,10 +136,10 @@ const Resume = () => {
 
     // 데이터 호출
     useEffect(() => {
-        if (userNo !== null) {
+        if (user.userNo !== null) {
             getMyCareerInfo();
         }
-    }, [userNo]);
+    }, [user.userNo]);
 
 
     //템플렛 정보 요청하고 받아오기. >>> 
@@ -409,7 +427,7 @@ const Resume = () => {
                     이력서를 작성하는 페이지입니다.
                     <br />
                 </p>
-            <form onSubmit={handleSubmit}>
+            <form >
                         <label>
                             <div><span>제목</span></div> {/* 제목을 div로 감싸고 */}
                             <div><input type="text" name="title" onChange={handleChange} value={formData.title}/></div> {/* 인풋을 div로 감쌉니다 */}
@@ -452,7 +470,7 @@ const Resume = () => {
                                      // ⭐ SkillVO 구조에 맞춰 새로운 스킬 객체 생성 ⭐
                                     
                                     const newSkill = {
-                                        user_no: userNo, // Resume 컴포넌트의 userNo를 사용
+                                        user_no: user.userNo, // Resume 컴포넌트의 userNo를 사용
                                         //exp_level: selectedExpLevel, // 프론트에서 받아오는 숙련도 (UI에서 선택된 값)
                                         exp_level: '중', // ⭐ 초기 숙련도. 필요시 UI 추가하여 사용자 입력받기 ⭐
                                         skill_tool: 'pc', // 드롭다운에서 선택된 스킬 이름을 그대로 사용
@@ -505,7 +523,7 @@ const Resume = () => {
                                 <h4>기존 학력 정보</h4>
                                 {formData.education.map((edu) => {
                                      // 디버깅: 각 렌더링되는 학력 항목의 ID와 학교명 확인
-                            console.log(`렌더링 중인 학력 항목: ID=${edu.edu_no}, 학교명=${edu.school_name}`);
+                            //console.log(`렌더링 중인 학력 항목: ID=${edu.edu_no}, 학교명=${edu.school_name}`);
                             return (
                                       <div key={`edu-${edu.edu_no}`} className="education-row-display">
                                         <p><strong>학교명:</strong> {edu.school_name}</p>
@@ -644,7 +662,7 @@ const Resume = () => {
                         myCoverLetter={formData.coverLetter}
                         setMyCoverLetter={(value) => setFormData({ ...formData, coverLetter: value })}
                         setFormData={setFormData} // formData 상태를 자식 컴포넌트에 전달
-                        userNo={userNo} 
+                        userNo={user.userNo} 
                      />
                      <br/>
                         <br/>
@@ -656,7 +674,8 @@ const Resume = () => {
                             </div>
                         <br/>
                         <div style={{ display: 'flex', justifyContent: 'center' }}>
-                            <PrettyBtn type="submit">이력서 제출</PrettyBtn>
+                            <PrettyBtn onClick={handleSubmit}>이력서 저장</PrettyBtn>
+                            <PrettyBtn onClick={pdfDownload}>이력서 저장 및 PDF 다운로드</PrettyBtn>
                         </div>
                     </form>
                 </div>
