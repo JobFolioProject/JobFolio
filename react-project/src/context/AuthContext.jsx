@@ -53,13 +53,13 @@ export const AuthProvider = ({ children }) => {
 
         // 사용자 정보 요청
         const userResponse = await axios.post("/api/join/check-login-status");
-
         if (userResponse.result === "Y") {
           const userData = {
             userNo: userResponse.user_no,
             loginId: userResponse.login_id,
             userName: userResponse.user_name,
             userType: userResponse.user_type,
+            expire_days: userResponse.expire_days,
           };
           setUser(userData);
           setIsAuthenticated(true);
@@ -98,6 +98,7 @@ export const AuthProvider = ({ children }) => {
           loginId: response.user.login_id,
           userName: response.user.user_name,
           userType: response.user.user_type,
+          expire_days: response.user.expire_days,
         };
 
         setAccessToken(newAccessToken);
@@ -165,6 +166,7 @@ export const AuthProvider = ({ children }) => {
           loginId: response.login_id,
           userName: response.user_name,
           userType: response.user_type,
+          expire_days: response.expire_days,
         });
         setIsAuthenticated(true);
       } else {
