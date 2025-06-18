@@ -6,10 +6,14 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+.resume-content {
+    width: 100%;
+    padding-left: 40px;
+}
 /* 이력서 콘텐츠 박스 */
 .resume-content-form {
     padding: 40px;
-    max-width: 960px;
+    width: 960px;
     margin: 50px auto;
     background: #ffffff;
     border-radius: 20px;
@@ -83,6 +87,7 @@ body {
 }
 
 /* --- 기존 학력/경력 정보 표시 섹션 --- */
+.skill-display-section,
 .education-display-section,
 .experience-display-section {
     margin-top: 15px;
@@ -93,7 +98,7 @@ body {
     border-radius: 10px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
-
+.skill-display-section h4,
 .education-display-section h4,
 .experience-display-section h4 {
     color: #1e40af; /* 진한 파란색 글씨 */
@@ -103,7 +108,7 @@ body {
     padding-bottom: 10px;
     border-bottom: 1px dashed #93c5fd;
 }
-
+.skill-row-display,
 .education-row-display,
 .experience-row-display {
     display: flex;
@@ -113,7 +118,7 @@ body {
     padding-bottom: 10px;
     border-bottom: 1px dotted #a7d9f7; /* 각 항목 아래 점선 구분 */
 }
-
+.skill-row-display:last-child,
 .education-row-display:last-child,
 .experience-row-display:last-child {
     border-bottom: none; /* 마지막 항목에는 점선 없음 */
@@ -121,6 +126,7 @@ body {
     padding-bottom: 0;
 }
 
+.skill-row-display p,
 .education-row-display p,
 .experience-row-display p {
     margin: 0; /* 단락 마진 제거 */
@@ -132,7 +138,7 @@ body {
     flex-grow: 1; /* 가능한 경우 늘어나도록 */
     min-width: 150px; /* 최소 너비 설정 */
 }
-
+.skill-row-display p strong,
 .experience-row-display p strong,
 .education-row-display p strong {
     color: #0d3680;

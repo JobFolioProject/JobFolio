@@ -90,7 +90,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (credentials) => {
     try {
       const response = await axios.post("/api/join/login", credentials);
-
+      console.log(response);
       if (response.result === "Y") {
         const newAccessToken = response.accessToken;
         const userData = {
