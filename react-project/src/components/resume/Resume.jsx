@@ -30,6 +30,7 @@ const Resume = () => {
             experience: [...formData.experience, ...formData.newExperience], // 기존 + 신규 경력
             newEducation: undefined,      // 전송할 때는 필요 없으니 제거
             newExperience: undefined,
+            skillList: [...formData.skillList, ...formData.newSkillList],
         };
         console.log('최종 제출 이력서 데이터:', dataToSend);
         
@@ -143,57 +144,6 @@ const Resume = () => {
     }, [user.userNo]);
 
 
-    //템플렛 정보 요청하고 받아오기. >>> 
-    //백쪽은 그럼 select * from tb_template;.
-    //그리고 이거는 뭐... json 형태로 res에 들어오겠나?
-    //그럼 
-    
-    // const [tempInfos, setTempInfos] = useState({  //템플렛이 가져올때마 변하는 값도 아닌데... 이렇게 변화를 감지하는 게 맞나??? 일단은 템플렛 정보들만 가져와서 변수 안에 저장해서 사용하면 되는데...
-    //     template_no:null,
-    //     template_name:'',
-    //     file_pypath:'',
-    //     file_lopath:'',
-    // });
-    
-
-    // const templateInfo = async() => {
-    //     await axios.get("/resume/templateInfo")
-    //     .then((res)=>{
-    //         setTempInfos((prev)=>({ 
-    //             ...prev,
-
-    //         }));
-    //     })
-    //     .catch((err)=>{
-    //         console.log(err)
-    //     })
-    // }
-
-
-
-    // const selectResumeInfo = async() => {
-    //     await axios.get("/resume/selectResumeInfo", { user_no: 4 })
-    //     .then((res)=>{
-    //         console.log(res);
-    //     })
-    //     .catch((err)=>{
-    //         console.log(err);
-    //     })
-    // }
-
-    // useEffect(()=>{
-    //     selectResumeInfo();
-    // },[])
-
-
-
-    // const handleChange = (event) =>{
-    //     setFormData({
-    //         ...formData,
-    //         [event.target.name]: event.target.value
-    //     });
-    // }
-
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({
@@ -263,7 +213,7 @@ const Resume = () => {
 
 //(공통) 새로 추가한 항목 '저장' 버튼 클릭 시 호출
 const saveFieldData = (type) => {
-    if (!['newEducation', 'newExperience'].includes(type)) return;
+    if (!['newEducation', 'newExperience', 'newSkillList'].includes(type)) return;
 
     const fieldMap = {
         newEducation: {
@@ -275,6 +225,11 @@ const saveFieldData = (type) => {
             targetKey: 'experience',
             requiredFields: ['company_name', 'position', 'start_date', 'end_date', 'notes'],
             idKey: 'career_no'
+        },
+        newSkillList: {
+            targetKey: 'skillList',
+            requiredFields: ['group_code', 'skill_code', 'exp_level'],
+            idKey: 'skill_code' //스킬코드가 고유하니까.
         }
     };
     
@@ -286,13 +241,23 @@ const saveFieldData = (type) => {
         alert(`${missingField}은 필수 입력 항목입니다`);
         return;
     }
+    //스킬 코드 중복 검사.skillList에 이미 있는 스킬인지 - skill_code가 고유값이므로
+    if (type === 'newSkillList') {
+        const isAlreadyAdded = formData.skillList.some(
+            (item) => item.skill_code === newEntry.skill_code
+        );
+        if (isAlreadyAdded) {
+            alert(`${newEntry.skill_code}은(는) 이미 추가된 기술입니다.`);
+            return;
+        }
+    }
 
     // 저장
     setFormData((prev)=>({
         ...prev,
         [targetKey]: [
             ...prev[targetKey],
-            {...newEntry, [idKey]:Date.now()},
+            {...newEntry},
         ],
         [type]:[], //임시 입력 데이터 비우기
     }));
@@ -319,7 +284,7 @@ const saveFieldData = (type) => {
 
         const idKey = fieldMap[type];
         if (!idKey){
-            console.error('삭제불가함');
+            console.error('삭제불가함. 유효하지 않은 type, idkey가 정의되지 않음');
             return;
         }
 
@@ -327,7 +292,7 @@ const saveFieldData = (type) => {
             const originalList = prev[type];
             const updatedList = originalList.filter((item)=>item[idKey] !== idToRemove);
 
-                    console.log(`[${type}] 삭제 전 목록:`, originalList);
+        console.log(`[${type}] 삭제 전 목록:`, originalList);
         console.log(`[${type}] 삭제할 ID:`, idToRemove);
         console.log(`[${type}] 삭제 후 목록:`, updatedList);
 
@@ -362,8 +327,32 @@ const saveFieldData = (type) => {
     }));
   }
 
+//==========스킬 추가=============================
+//기술 추가 버튼 클릭 시 새  항목 추가 ! 근데 기존 기술과 별도로, 새로운 기술 배열에 추가
+  const addSkill = () => {
+// 이미 새로운 학력 입력 중이거나, skillList 총 기술이 4개 이상이면 추가하지 않음
+    if (formData.newSkillList.length > 0 || (formData.skillList.length + formData.newSkillList.length) >= 4) {
+        return;
+    }
+    setFormData((prev) =>({
+        ...prev,
+        newSkillList: [{
+            group_code:'',
+            skill_code: '',
+            exp_level:'',
+            skill_tool:'',
+            user_no: user.userNo, 
+            //새로운 항목 추가 시에도 skill_no 부여하기.
+
+        }],
+    }));
+  };
 
 
+  const handleDropdownChange = (name, value, type) => {
+    // handleFieldChange가 예상하는 'e' (이벤트 객체) 형태로 객체를 생성
+    handleFieldChange({ target: { name: name, value: value } }, type, 0); // newSkillList는 index 0 사용
+};
  
     return (
         <>
@@ -395,81 +384,26 @@ const saveFieldData = (type) => {
 
                         {/* 나머지 부분도 동일하게 적용 */}
                         <label>
-                            <span>기술스택/툴</span><br />
-                            <div>
-                                <input 
-                                    type="text" 
-                                    readOnly 
-                                    name="skillList" 
-                                    // onChange={handleChange} 
-                                     // formData.skillList에 있는 각 스킬의 skill_name을 쉼표로 연결하여 표시
-                                    value={formData.skillList.map(skill => skill.skill_name).join(', ')}
-                                    />
-                                    </div>
-                            <DropDown
-                                options={dummySkillOptions}
-                                // selected={formData.skillList}
-                                selected={''} // 드롭다운이 단일 선택이 아닌 추가 기능이므로 selected는 필요 없습니다.
-                                placeholder="기술/툴을 선택하세요"
-                                onSelect={(selectedSkillName)=>{
-                                    setFormData((prev)=>{
-                                        const isAlreadyAdded = prev.skillList.some(
-                                            (item)=> item.skill_name === selectedSkillName
-                                        );
-                                    if (isAlreadyAdded){
-                                        alert(`${selectedSkillName}은 이미 추가된 기술입니다.`)
-                                        return prev;
-                                    } 
-                                     // ⭐ SkillVO 구조에 맞춰 새로운 스킬 객체 생성 ⭐
-                                    
-                                    const newSkill = {
-                                        user_no: user.userNo, // Resume 컴포넌트의 userNo를 사용
-                                        //exp_level: selectedExpLevel, // 프론트에서 받아오는 숙련도 (UI에서 선택된 값)
-                                        exp_level: '중', // ⭐ 초기 숙련도. 필요시 UI 추가하여 사용자 입력받기 ⭐
-                                        skill_tool: 'pc', // 드롭다운에서 선택된 스킬 이름을 그대로 사용
-                                        skill_name: 'pc', // 드롭다운에서 선택된 스킬 이름을 그대로 사용
-                                        // group_name과 group_code는 백엔드에서 처리해주거나, 프론트에서 매핑 필요.
-                                        // 현재는 AI 자기소개서 생성 목적이므로 필수로 채우지 않아도 될 수 있습니다.
-                                        skill_code: selectedSkillName,
-                                        group_code: 'IT', // 또는 적절한 기본값
-                                        group_name: '기술스택', // 또는 적절한 기본값
-                                    };
-
-                                    return {
-                                        ...prev,
-                                        skillList: [...prev.skillList, newSkill],
-                                    };
-                                    })
-                                    console.log("선택한 기술/툴:", selectedSkillName); // 선택한 옵션 확인
-                                }}
-                                />
-                                {/* 드롭다운 컴포넌트 사용 */}
-                                {/* 스킬 목록을 렌더링하는 부분. ul 태그로 감싸는 것이 일반적입니다. */}
-
-                        <label>
-                            <div><span>기술부분수정</span></div>
+                            <div><span>기술/툴</span></div>
                         </label>
                             {formData.skillList.length > 0 ?(
-                                <div className="skill-list"> 
-                                    {formData.skillList.map((skill, index) =>{
+                                <div className="skill-display-section"> 
+                                <h4>기존 기술 정보</h4>
+                                    {formData.skillList.map((skill) =>{
                                         return (
                                             <div key={`skill-${skill.skill_code}`} className='skill-row-display'>
                                                 <PrettyBtn 
-                                            type="button" 
-                                            size="sm" 
-                                            onClick={() => removeStagedField('skillList', skill.skill_code)} // id를 전달하여 해당 항목 삭제
-                                            style={{ marginLeft: '10px' }} // 버튼 간격 조절
-                                        >
-                                            <img
-                                                src="/resources/img/minus_circle.png" // ⭐ 로컬에 저장된 이미지 파일 경로 ⭐
-                                                alt="기술 삭제" // ⭐ 접근성을 위한 alt 텍스트 필수 ⭐
-                                                style={{
-                                                    width: '20px', // 아이콘의 너비 (필요에 따라 조절)
-                                                    height: '20px', // 아이콘의 높이 (필요에 따라 조절)
-                                                    border: 'none', // 이미지에 기본적으로 생길 수 있는 테두리 제거
-                                                    backgroundColor: 'transparent'
-                                                }}
-                                            />
+                                                    type="button" 
+                                                    size="sm" 
+                                                    onClick={() => removeStagedField('skillList', skill.skill_code)} // id를 전달하여 해당 항목 삭제
+                                                    style={{ marginRight: '10px', padding: '5px 8px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                                                     // 버튼 간격 조절
+                                                >
+                                                <img
+                                                    src="/resources/img/minus_circle.png" // ⭐ 로컬에 저장된 이미지 파일 경로 ⭐
+                                                    alt="기술 삭제" // ⭐ 접근성을 위한 alt 텍스트 필수 ⭐
+                                                    style={{width: '20px', height: '20px', border: 'none', backgroundColor: 'transparent'}}
+                                                />
                                         </PrettyBtn>
                                         <p><strong>분야:</strong>{skill.group_code}</p>
                                         {skill.group_code && <p><strong>기술:</strong>{skill.skill_code}</p>}
@@ -482,9 +416,40 @@ const saveFieldData = (type) => {
                                 <p>등록된 기존 기술 정보가 없습니다</p>
                             )}
 
-                            </label> {/* DropDown 컴포넌트와 스킬 목록을 감싸는 label 태그의 닫힘 */}
-                            {/* 신규 학력 입력 버튼 */}
-                            
+                             {/* DropDown 컴포넌트와 스킬 목록을 감싸는 label 태그의 닫힘 */}
+                            {/* 신규 기술 입력 버튼 */}
+                            {formData.newSkillList.length === 0 && formData.skillList.length < 4 && (
+                                <div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        <PrettyBtn type="button" size="sm" onClick={addSkill} >새 기술 추가</PrettyBtn>
+                                    </div>
+                                </div>
+                            )} 
+                            {formData.newSkillList.length > 0 && (// newSkill 배열을 맵핑하여 입력 드롭다운 생성
+                                <div className='skill-row-input'>
+                                    <DropDown
+                                        options={['IT', '디자인', '경제']}
+                                        // selected={formData.skillList}
+                                        selected={formData.newSkillList[0]?.group_code || ''}
+                                        placeholder="분야 선택"
+                                        onSelect={(value)=>handleDropdownChange('group_code', value, 'newSkillList' )}/>
+                                    <DropDown
+                                        options={dummySkillOptions}
+                                        // selected={formData.skillList}
+                                        selected={formData.newSkillList[0]?.skill_code || ''}
+                                        placeholder="분야 선택"
+                                        onSelect={(value)=>handleDropdownChange('skill_code', value, 'newSkillList' )}/>
+                                    <DropDown
+                                        options={['상','중','하']}
+                                        // selected={formData.skillList}
+                                        selected={formData.newSkillList[0]?.exp_level || ''}
+                                        placeholder="분야 선택"
+                                        onSelect={(value)=>handleDropdownChange('exp_level', value, 'newSkillList' )}/>
+
+                                    <PrettyBtn type="button" size="sm" onClick={() => saveFieldData('newSkillList')} style={{ marginLeft: '10px' }}>저장</PrettyBtn>
+                                    <PrettyBtn type="button" size="sm" onClick={(e) => removeNewField(e, 'newSkillList')} style={{ marginLeft: '5px' }}>취소</PrettyBtn>
+                                </div>
+                            )}
 
                         <br />
                     <label>
