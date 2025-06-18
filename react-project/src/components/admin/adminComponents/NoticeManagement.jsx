@@ -76,11 +76,13 @@ const NoticeManagement = () => {
     if (!confirmed) return;
 
     try {
-      await axios.post('/api/admin/community/delete', selectedIds, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      await axios.delete(
+        '/api/admin/community/deleteBatch',
+        {
+          data: selectedIds,  
+          headers: { 'Content-Type': 'application/json' }
+        }
+      );
       alert('삭제가 완료되었습니다.');
       setSelectedIds([]);
       fetchNotices();
