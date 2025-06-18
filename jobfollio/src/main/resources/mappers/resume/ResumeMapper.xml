@@ -3,6 +3,24 @@
 
 <mapper namespace="com.happyjob.jobfolio.repository.resume.ResumeMapper">
 
+	<select id="selectResumeInfo"
+			parameterType="int"
+			resultType="com.happyjob.jobfolio.vo.resume.ResumeInfoVO">
+		SELECT
+			resume_no,
+			user_no,
+			title,
+			desired_position,
+			template_no,
+			resume_file_name,
+			resume_file_pypath,
+			resume_file_lopath,
+			publication_yn
+		FROM tb_resume_info
+		WHERE user_no = #{user_no}
+		  and status_yn = 'N'
+	</select>
+
 	<select id="communityResumeList"
 			parameterType="map"
 			resultType="com.happyjob.jobfolio.vo.resume.ResumeInfoVO">
