@@ -40,9 +40,7 @@ public interface ResumeMapper {
     UserVO getUserByUserNo(Long userNo);
 
     // 이력서 목록 조회
-    List<ResumeInfoVO> selectPagedNormalBoardList(Map<String, Object> paramMap);
-
-    int selectNormalBoardTotalCount(Map<String, Object> paramMap);
+    List<ResumeInfoVO> communityResumeList(Map<String, Object> paramMap);
 
 //    ResumeInfoVO selectResumeInfoByResumeNo(int resumeNo);
 
