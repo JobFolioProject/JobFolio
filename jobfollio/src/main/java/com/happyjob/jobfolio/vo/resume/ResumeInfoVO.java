@@ -33,25 +33,7 @@ public class ResumeInfoVO {
 
     /** 학력 정보 리스트 (사용자 DB 저장용 아님, AI 프롬프트 생성 시 사용) */
     private List<EduInfoVO> newEducation;
-
-    public List<EduInfoVO> getNewEducation() {
-        return newEducation;
-    }
-
-    public void setNewEducation(List<EduInfoVO> newEducation) {
-        this.newEducation = newEducation;
-    }
-
-    public String getMyCoverLetter() {
-        return myCoverLetter;
-    }
-
-    public void setMyCoverLetter(String myCoverLetter) {
-        this.myCoverLetter = myCoverLetter;
-    }
-
-
-
+    
 
     public int getResume_no() {
         return resume_no;
@@ -115,5 +97,21 @@ public class ResumeInfoVO {
 
     public void setResume_file_lopath(String resume_file_lopath) {
         this.resume_file_lopath = resume_file_lopath;
+    }
+
+    public List<EduInfoVO> getNewEducation() {
+        return newEducation;
+    }
+
+    public void setNewEducation(List<EduInfoVO> newEducation) {
+        this.newEducation = newEducation;
+    }
+
+    public String getMyCoverLetter() {
+        return myCoverLetter;
+    }
+
+    public void setMyCoverLetter(String myCoverLetter) {
+        this.myCoverLetter = myCoverLetter;
     }
 }
