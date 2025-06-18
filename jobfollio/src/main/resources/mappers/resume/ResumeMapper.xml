@@ -38,7 +38,11 @@
 			resume_file_pypath,
 			resume_file_lopath,
 			publication_yn,
-			create_date
+			create_date,
+			(SELECT count(*)
+			 FROM tb_resume_like l
+			 WHERE l.user_no = #{user_no}
+			   AND l.resume_no = r.resume_no)AS resume_liked
 		FROM tb_resume_info r
 		WHERE status_yn = 'N'
 		ORDER BY create_date DESC
@@ -102,6 +106,11 @@
 		FROM tb_link_info
 		WHERE resume_no = #{resume_no}
 	</select>
+
+	<insert id="likeResume" parameterType="map">
+		INSERT INTO tb_resume_like (resume_no, user_no)
+		VALUES (#{resume_no}, #{user_no})
+	</insert>
 
 	<delete id="unlikeResume"
 			parameterType="int">

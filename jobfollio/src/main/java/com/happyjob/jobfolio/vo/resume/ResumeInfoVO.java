@@ -34,6 +34,9 @@ public class ResumeInfoVO {
     /** 작성일자 */
     private String create_date;
 
+    /** 좋아요 여부 */
+    private int resume_liked;
+
     /** 사용자가 입력한 자기소개서 내용 (또는 AI 생성 전 입력될 초기값) */
     private String myCoverLetter;
 
@@ -41,6 +44,14 @@ public class ResumeInfoVO {
     private List<EduInfoVO> newEducation;
 
     private String publication_yn;
+
+    public int getResume_liked() {
+        return resume_liked;
+    }
+
+    public void setResume_liked(int resume_liked) {
+        this.resume_liked = resume_liked;
+    }
 
     public String getUser_name() {
         return user_name;

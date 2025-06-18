@@ -435,6 +435,26 @@ public class ResumeController {
         return ResponseEntity.ok(resultMap);
     }
 
+    @PostMapping("/likeResume")
+    public ResponseEntity<Map<String,Object>> likeResume(@RequestBody Map<String,Integer> requestMap) {
+        int userNo = requestMap.get("userNo");
+        int resumeNo = requestMap.get("resumeNo");
+        System.out.println(userNo+""+resumeNo+"----------------------------------------------------------------");
+        int likeResume = resumeService.likeResume(userNo, resumeNo);
+
+        if(likeResume == 1){
+            Map<String, Object> resultMap = new HashMap<>();
+            resultMap.put("message", "좋아요 완료되었습니다.");
+            return ResponseEntity.ok(resultMap);
+        } else {
+            Map<String, Object> resultMap = new HashMap<>();
+            resultMap.put("message", "좋아요 요청에 실패했습니다.");
+            return ResponseEntity.ok(resultMap);
+        }
+
+
+    }
+
     @PostMapping("/unlikeResume")
     public ResponseEntity<Map<String,Object>> unlikeResume(@RequestBody Map<String,Integer> requestMap) {
         int userNo = requestMap.get("userNo");

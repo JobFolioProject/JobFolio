@@ -19,6 +19,8 @@ public interface ResumeMapper {
 
     int unlikeResume(int user_no, int resume_no);
 
+    int likeResume(int user_no, int resume_no);
+
     int deleteResume(int resume_no);
 
     int insertResumeInfo(ResumeInfoVO resumeInfoVO);

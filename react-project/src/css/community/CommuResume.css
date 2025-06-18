@@ -78,3 +78,15 @@
   margin-bottom: 100px;
   border-top: none;
 }
+
+.template-view-wrapper {
+  position: relative;
+}
+
+.likeIcon {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  z-index: 10;
+  cursor: pointer;
+}
