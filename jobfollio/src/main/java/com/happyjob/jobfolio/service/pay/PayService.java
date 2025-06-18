@@ -1,20 +1,17 @@
 package com.happyjob.jobfolio.service.pay;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.happyjob.jobfolio.repository.pay.PayMapper;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.util.Base64;
-import java.util.HashMap;
 
+import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 
@@ -39,31 +36,43 @@ public class PayService {
 		return payMapper.cardSuccess(params);
 	}
 
-	// 결제 후 유저 테이블에서 구독 마감 날짜 갱신
+	//  결제 완료 후 유저 구독 기간 갱신
 	public void updateUserSubscription(String orderId) throws Exception {
-		// order_id로 product_no 담아오기
+		// 1. 주문 번호로 상품 번호 조회
 		Integer productNo = payMapper.selectProductNoByOrderId(orderId);
-		
-		// product_no로 sub_period 담아오기
-		Integer subPeriod = payMapper.selectSubPeriodByProductNo(productNo);
-		
-		// order_id로 user_no 담아오기
-		Integer userNo = payMapper.selectUserNoByOrderId(orderId);
+		if (productNo == null) {
+			throw new Exception("상품 번호를 찾을 수 없습니다.");
+		}
 
-		// 3. 현재 expire_days 확인
-		LocalDate currentExpireDate = payMapper.selectExpireDateByUserNo(userNo);
-		LocalDate today = LocalDate.now();
-		LocalDate baseDate = (currentExpireDate == null || today.isAfter(currentExpireDate))
-				? today
+		// 2. 상품 번호로 구독 기간 조회
+		Integer subPeriod = payMapper.selectSubPeriodByProductNo(productNo);
+		if (subPeriod == null) {
+			throw new Exception("구독 개월 수(sub_period)를 찾을 수 없습니다.");
+		}
+
+		// 3. 주문 번호로 유저 번호 조회
+		Integer userNo = payMapper.selectUserNoByOrderId(orderId);
+		if (userNo == null) {
+			throw new Exception("회원 번호를 찾을 수 없습니다.");
+		}
+
+		// 4. 유저의 기존 만료일 조회
+		Timestamp expireDateTs = payMapper.selectExpireDateByUserNo(userNo);
+		LocalDateTime currentExpireDate = (expireDateTs != null)
+				? expireDateTs.toLocalDateTime()
+				: null;
+
+		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime baseDate = (currentExpireDate == null || now.isAfter(currentExpireDate))
+				? now
 				: currentExpireDate;
 
-		LocalDate updatedExpireDate = baseDate.plusMonths(subPeriod);
+		LocalDateTime updatedExpireDate = baseDate.plusMonths(subPeriod);
 
-		// 회원 구독 날짜 갱신
-		int updated = payMapper.updateExpireDate(userNo, updatedExpireDate);
+		// subPeriod만큼 DB 업데이트
+		int updated = payMapper.updateExpireDate(userNo, Timestamp.valueOf(updatedExpireDate));
 		if (updated == 0) {
 			throw new Exception("구독 만료일 갱신 실패");
 		}
 	}
-
 }

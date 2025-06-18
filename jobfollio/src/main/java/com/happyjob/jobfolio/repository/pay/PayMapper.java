@@ -1,8 +1,11 @@
 package com.happyjob.jobfolio.repository.pay;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.Map;
 
 @Mapper
@@ -20,7 +23,9 @@ public interface PayMapper {
 
 	Integer selectUserNoByOrderId(String orderId);
 
-	LocalDate selectExpireDateByUserNo(Integer userNo);
+	Timestamp selectExpireDateByUserNo(Integer userNo);
 
-	int updateExpireDate(Integer userNo, LocalDate newExpireDate);
+	int updateExpireDate(@Param("userNo") Integer userNo,
+						 @Param("newExpireDate") Timestamp newExpireDate);
+
 }
