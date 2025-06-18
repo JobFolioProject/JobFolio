@@ -4,6 +4,8 @@ import com.happyjob.jobfolio.service.pay.PayService;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -11,11 +13,19 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/api/pay")
+@PropertySource("classpath:application-secret.properties")
 public class PayController {
 
 	// Set logger
@@ -24,10 +34,19 @@ public class PayController {
 	// Get class name for logger
 	private final String className = this.getClass().toString();
 
+	@Value("${secretKey}")
+	private String secretKey;
+
 	@Autowired
 	private PayService payService;
 
-	// 결제 정보 생성 후 데이터 초기 저장
+	// ORDER_ID용 랜덤 숫자 6자리 생성
+	private String generateOrderId() {
+		int randomNum = (int)(Math.random() * 1_000_000);
+		String padded = String.format("%06d", randomNum);
+		return "order_" + padded;
+	}
+
 	@PostMapping(value = "/insertOrder", produces = "application/json")
 	public Map<String, Object> insertOrder(
 			HttpServletRequest request,
@@ -36,38 +55,18 @@ public class PayController {
 
 		Map<String, Object> returnmap = new HashMap<>();
 		try {
-			returnmap = payService.insertOrder(params);
-			returnmap.put("resultmsg", "등록 되었습니다.");
+			String orderId = generateOrderId();
+			params.put("orderId", orderId);
 
-			System.out.println("📦 returnmap: " + returnmap);
-		} catch (Exception e) {
-			int deleted = payService.deleteOrder(params);
-			returnmap.put("resultmsg", e.getMessage());
-		}
-			return returnmap;
-	}
+			int inserted = payService.insertOrder(params);
 
-	// 결제 성공
-	@PostMapping("/cardSuccess")
-	public Map<String, Object> payToss(
-			HttpServletRequest request,
-			HttpServletResponse response,
-			@RequestBody Map<String, Object> params) throws Exception {
-
-		Map<String, Object> returnmap = new HashMap<>();
-
-//		HttpRequest request = HttpRequest.newBuilder()
-//				.uri(URI.create("https://api.tosspayments.com/v1/payments/confirm"))
-//				.header("Authorization", "Basic dGVzdF9za196WExrS0V5cE5BcldtbzUwblgzbG1lYXhZRzVSOg==")
-//				.header("Content-Type", "application/json")
-//				.method("POST", HttpRequest.BodyPublishers.ofString("{\"paymentKey\":\"{PAYMENT_KEY}\",\"amount\"{AMOUNT}\",\"orderId\":\"{ORDER_ID}\"}"))
-//				.build();
-//		HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
-//		System.out.println(response.body());
-
-		try {
-			returnmap = payService.cardSuccess(params);
-			returnmap.put("resultmsg", "결제 되었습니다.");
+			returnmap.put("orderId", orderId);
+			returnmap.put("product_no", params.get("product_no"));
+			returnmap.put("user_no", params.get("user_no"));
+			returnmap.put("order_name", params.get("order_name"));
+			returnmap.put("amount", params.get("amount"));
+			returnmap.put("result", inserted > 0 ? "success" : "fail");
+			returnmap.put("resultmsg", inserted > 0 ? "등록 되었습니다." : "DB 저장 실패");
 
 		} catch (Exception e) {
 			returnmap.put("resultmsg", e.getMessage());
@@ -76,21 +75,84 @@ public class PayController {
 		return returnmap;
 	}
 
+	// 카드 결제 승인 요청
+	@PostMapping("/cardSuccess")
+	@ResponseBody
+	public Map<String, Object> cardSuccess(@RequestBody Map<String, Object> params) throws Exception {
+		String paymentKey = (String) params.get("paymentKey");
+		String orderId = (String) params.get("orderId");
+		int amount = Integer.parseInt(params.get("amount").toString());
+
+		Map<String, Object> result = new HashMap<>();
+
+		try {
+			String encodedAuth = Base64.getEncoder().encodeToString((secretKey + ":").getBytes("UTF-8"));
+
+			URL url = new URL("https://api.tosspayments.com/v1/payments/confirm");
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+			conn.setRequestMethod("POST");
+			conn.setRequestProperty("Authorization", "Basic " + encodedAuth);
+			conn.setRequestProperty("Content-Type", "application/json");
+			conn.setDoOutput(true);
+
+			String jsonBody = String.format(
+					"{\"paymentKey\":\"%s\", \"orderId\":\"%s\", \"amount\":%d}",
+					paymentKey, orderId, amount
+			);
+
+			try (OutputStream os = conn.getOutputStream()) {
+				os.write(jsonBody.getBytes("UTF-8"));
+			}
+
+			int responseCode = conn.getResponseCode();
+
+			InputStream is = (responseCode == 200) ? conn.getInputStream() : conn.getErrorStream();
+			BufferedReader in = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+			StringBuilder responseBody = new StringBuilder();
+			String line;
+			while ((line = in.readLine()) != null) {
+				responseBody.append(line);
+			}
+			in.close();
+
+			if (responseCode != 200) {
+				result.put("status", "fail");
+				result.put("message", "결제 승인 실패: " + responseBody.toString());
+				return result;
+			}
+
+			// 2. 승인 성공 시 DB 저장
+			Map<String, Object> paramMap = new HashMap<>();
+			paramMap.put("paymentKey", paymentKey);
+			paramMap.put("orderId", orderId);
+			paramMap.put("amount", amount);
+
+			int inserted = payService.cardSuccess(paramMap);
+			if (inserted > 0) {
+				result.put("status", "success");
+			} else {
+				result.put("status", "fail");
+				result.put("message", "DB 저장 실패");
+			}
+
+		} catch (Exception e) {
+			result.put("status", "fail");
+			result.put("message", e.getMessage());
+		}
+
+		return result;
+	}
 
 	// 결제 실패 (종류에 상관없이 동일하게 처리)
 	@GetMapping("/cardFail")
 	public RedirectView cardFail(
 			HttpServletRequest request,
 			HttpServletResponse response,
-			@RequestParam(value = "code", required = true) String code,
 			@RequestParam(value = "message", required = true) String message
 	) {
 
 		return new RedirectView("/cashMain" + "?pgMessage=" + message);
 	}
-
-
-
-
 
 }
