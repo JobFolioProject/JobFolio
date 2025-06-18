@@ -417,7 +417,7 @@ const CareerHistorySection = React.memo(({ userNo, careerHistoryList, onListChan
             {(showAddForm || editingCareerNo !== null) && (
                 <div className="careerFormBox career-datepicker-theme">
                     <div>
-                        <p className="formTitle">{editingCareerNo !== null ? '경력 수정' : '새 경력 추가'}</p>
+                        <h2 className="formTitle">{editingCareerNo !== null ? '경력 수정' : '새 경력 추가'}</h2>
                     </div>
                     <div className="careerContainer">
                         <div className="careerInputArea">

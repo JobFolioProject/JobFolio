@@ -3,3 +3,56 @@
     flex-direction: row;
     width: 100%;
 }
+
+.resume-template-wrapper {
+  min-width: 900px;
+  padding: 20px 300px;
+}
+
+.resume-template-wrapper h2 {
+  margin-left: 100px;
+}
+
+.resume-template-grid{
+  display: flex;
+  flex-wrap: wrap;       /* 넘칠 경우 줄바꿈 */
+  gap: 20px;             /* 카드 간 간격 */
+  justify-content: flex-start; /* 왼쪽부터 정렬 */
+  /* justify-content: center; */
+}
+
+.resume-card-wrapper {
+  width: 280px;
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.template-slide {
+  height: 300px;
+  overflow: hidden;
+}
+
+/* info 박스 스타일 */
+.resume-info-box {
+  background-color: #f9f9f9;
+  padding: 10px;
+  font-size: 0.9rem;
+  border: 1px solid #ccc;
+  /* border-radius: 6px; */
+}
+
+.resume-template-preview-image {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.community-notice-pagination {
+  margin-bottom: 100px;
+  border-top: none;
+}

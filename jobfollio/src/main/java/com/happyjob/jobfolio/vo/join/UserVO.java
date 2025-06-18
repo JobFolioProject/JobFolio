@@ -18,6 +18,9 @@ public class UserVO {
     private String hobby;         // 취미/특기
     private String notes;         // 특이사항
     private Long user_no;          // 회원일련번호 (PK)
+    private String social_type;  // GOOGLE, KAKAO, NAVER
+    private String social_id;    // 소셜서비스 고유ID
+
 
     // 기본 생성자
     public UserVO() {}
@@ -26,7 +29,7 @@ public class UserVO {
     public UserVO(String login_id, String user_type, String user_name, String password,
                   String birthday, String sex, String hp, String reg_date,
                   String withdrawal_date, String status_yn, Date expire_days,
-                  String address, String hobby, String notes, Long user_no) {
+                  String address, String hobby, String notes, Long user_no, String social_id, String social_type) {
         this.login_id = login_id;
         this.user_type = user_type;
         this.user_name = user_name;
@@ -42,6 +45,8 @@ public class UserVO {
         this.hobby = hobby;
         this.notes = notes;
         this.user_no = user_no;
+        this.social_type = social_type;
+        this.social_id = social_id;
     }
 
     // Getter 메서드들
@@ -78,6 +83,10 @@ public class UserVO {
     public void setNotes(String notes) { this.notes = notes; }
     public void setUser_no(Long user_no) { this.user_no = user_no; }
 
+    public boolean isSocialUser() {
+        return social_type != null && social_id != null;
+    }
+
     // toString 메서드 (깔끔하게 정리)
     @Override
     public String toString() {
@@ -98,5 +107,21 @@ public class UserVO {
                 ", notes='" + notes + '\'' +
                 ", user_no=" + user_no +
                 '}';
+    }
+
+    public String getSocial_type() {
+        return social_type;
+    }
+
+    public void setSocial_type(String social_type) {
+        this.social_type = social_type;
+    }
+
+    public String getSocial_id() {
+        return social_id;
+    }
+
+    public void setSocial_id(String social_id) {
+        this.social_id = social_id;
     }
 }

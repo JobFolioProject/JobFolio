@@ -448,10 +448,6 @@ public class UserController {
         }
     }
 
-
-    /**
-     * 아이디 찾기
-     */
     /**
      * 아이디 찾기
      */

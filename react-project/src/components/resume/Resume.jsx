@@ -20,7 +20,8 @@ const Resume = () => {
     // 이력서 작성 폼을 포함하고 있으며, 사이드바를 사용하여 다른 이력서 관련 페이지로 이동할 수 있습니다.
 
     const { user, isAuthenticated } = useAuth();
-    const {filePath, setFilePath} = useState("");
+
+    const [filePath, setFilePath] = useState("");
 
     const handleSubmit = async () => {
 
@@ -74,6 +75,7 @@ const Resume = () => {
             link.click();
             link.remove();
 
+            setFilePath("");
             } catch (err) {
             console.error(err);
             alert('PDF 다운로드 중 오류가 발생했습니다.');

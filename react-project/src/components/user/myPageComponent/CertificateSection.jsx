@@ -347,7 +347,7 @@ const CertificateSection = React.memo(({ userNo, certificateList, onListChange }
             {(showAddForm || editingCertNo !== null) && (
                 <div className="certificationFormBox certification-datepicker-theme">
                     <div>
-                        <p className="formTitle">{editingCertNo !== null ? '자격증 수정' : '새 자격증 추가'}</p>
+                        <h2 className="formTitle">{editingCertNo !== null ? '자격증 수정' : '새 자격증 추가'}</h2>
                     </div>
                     <div className="certificationContainer">
                         <div className="certificationInputArea">
