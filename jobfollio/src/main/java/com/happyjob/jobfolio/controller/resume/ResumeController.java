@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.happyjob.jobfolio.repository.mypage.MypageMapper;
 import com.happyjob.jobfolio.service.join.UserService;
 import com.happyjob.jobfolio.service.resume.ResumeService;
+import com.happyjob.jobfolio.vo.community.CommunityBoardVo;
 import com.happyjob.jobfolio.vo.join.UserVO;
 import com.happyjob.jobfolio.vo.mypage.CertificateVO;
 import com.happyjob.jobfolio.vo.resume.ResumeInfoVO;
@@ -15,8 +16,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -170,6 +175,7 @@ public class ResumeController {
             resumeInfoVO.setTitle(paramMap.get("title").toString());
             resumeInfoVO.setDesired_position(paramMap.get("desired_position").toString());
             resumeInfoVO.setTemplate_no(Integer.parseInt(paramMap.get("template_no").toString()));
+            resumeInfoVO.setPublication_yn(paramMap.get("publication_yn").toString());
             // 파일명
             resumeInfoVO.setResume_file_name(fileName);
             // 물리경로 (Physical Path)
@@ -397,6 +403,43 @@ public class ResumeController {
                 return ResponseEntity.ok(resultMap);
             }
 
+    }
+
+    // 이력서 게시판 데이터 불러오기
+    @GetMapping("/selectResume")
+    public Map<String, Object> communityResumeList(Model model, @RequestParam Map<String, Object> paramMap,
+                                                   HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
+
+        Map<String, Object> resultMap = new HashMap<>();
+
+        String search = (String) paramMap.get("search");
+        paramMap.put("search", search);
+
+        int page = 1;
+        int pageSize = 12;
+
+        try {
+            String pageStr = (String) paramMap.get("page");
+            String pageSizeStr = (String) paramMap.get("pageSize");
+            if (pageStr != null && !pageStr.isEmpty()) page = Integer.parseInt(pageStr);
+            if (pageSizeStr != null && !pageSizeStr.isEmpty()) pageSize = Integer.parseInt(pageSizeStr);
+        } catch (NumberFormatException e) {
+            resultMap.put("error", "잘못된 요청입니다.");
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST); // 400
+            return resultMap;
+        }
+
+        int offset = (page - 1) * pageSize;
+        paramMap.put("offset", offset);
+        paramMap.put("limit", pageSize);
+
+        List<ResumeInfoVO> boardList = resumeService.getPagedNormalBoardList(paramMap);
+        int totalCount = resumeService.getNormalBoardTotalCount(paramMap);
+
+        resultMap.put("boardList", boardList);
+        resultMap.put("totalCount", totalCount);
+
+        return resultMap;
     }
 
 

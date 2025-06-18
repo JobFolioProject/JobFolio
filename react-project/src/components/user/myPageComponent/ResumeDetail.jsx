@@ -1,16 +1,22 @@
 import '../../../css/user/myPageComponent/ResumeDetail.css';
 import FavoriteIcon from '@mui/icons-material/FavoriteBorder';
+import { ResumeEditContext } from '../../../context/ResumeEditContext';
 import axios from '../../../utils/axiosConfig';
-import { useEffect, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { useAuth } from '../../../context/AuthContext';
+import { Navigate } from 'react-router-dom';
 
 const ResumeDetail = () => {
 
     const [resumeList, setResumeList] = useState([]);
 
     const { user, isAuthenticated } = useAuth();
+    const { setEditResumeData } = useContext(ResumeEditContext);
+    const [redirect, setRedirect] = useState(false);
     
-
+    useEffect(() => {
+        axiosResumeInfo();
+    }, []);
     // 팝업 열기 유틸
   const openResumePopup = (physicalPath) => {
   // "X:/resume_output/..." → "/resumes/..."
@@ -44,9 +50,13 @@ const ResumeDetail = () => {
         }
     };
 
-    const modifyResume = async (resume_no)=>{
+    const modifyResume = (path, title, publication) => {
+    setEditResumeData({ path, title, publication });
+    setRedirect(true);
+  };
 
-
+    if (redirect) {
+    return <Navigate to="/resume/edit" replace />;
     }
 
     const deleteResume = async (resume_no)=>{
@@ -77,9 +87,7 @@ const ResumeDetail = () => {
         
     }
 
-    useEffect(() => {
-        axiosResumeInfo();
-    }, []);
+    
 
     return (
         <div className="resumeDetail">
@@ -90,7 +98,7 @@ const ResumeDetail = () => {
             <div className="resumeItemCon">
               <div className="resumeItemHeader">
                 <h3 onClick={() => openResumePopup(item.resume_file_pypath)}>{item.title || '제목 없음'}</h3>
-                <button onClick={() => modifyResume(item.resume_no)}>수정</button>
+                <button onClick={() => modifyResume(item.resume_file_pypath, item.title, item.publication_yn)}>수정</button>
                 <button onClick={() => deleteResume(item.resume_no)}>삭제</button>
               </div>
               <div className="resumeItemDetail">

@@ -4,7 +4,7 @@ package com.happyjob.jobfolio.vo.mypage;
 // 학력 사항 엔터티
 public class EduInfoVO {
 
-    private Integer edu_no;  // 일련번호(PK)
+    private Long edu_no;  // 일련번호(PK)
     private Long user_no; // 유저번호
     private String school_name; //학교명
     private String enroll_date; //입학날짜
@@ -31,11 +31,11 @@ public class EduInfoVO {
                 '}';
     }
 
-    public Integer getEdu_no() {
+    public Long getEdu_no() {
         return edu_no;
     }
 
-    public void setEdu_no(Integer edu_no) {
+    public void setEdu_no(Long edu_no) {
         this.edu_no = edu_no;
     }
 
