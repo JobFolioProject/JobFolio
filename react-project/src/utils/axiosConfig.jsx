@@ -15,7 +15,7 @@ export const setAuthContextRef = (authContext) => {
 // 기본 axios 인스턴스 생성 (일반 사용자용)
 const axiosInstance = axios.create({
   baseURL: "/", // proxy 사용하므로 상대경로
-  timeout: 10000,
+  timeout: 100000,
   withCredentials: true, // Refresh Token 쿠키를 위해 유지
 });
 

@@ -82,7 +82,7 @@ public class ResumeController {
             root.put("name",  userVO.getUser_name());      // name ← userName
             root.put("email", userVO.getLogin_id());       // email ← loginId
             root.put("phone", userVO.getHp());            // phone ← hp
-            root.put("website", paramMap.get("link_url").toString());
+            root.put("website", paramMap.getOrDefault("link_url","").toString());
 
             // skillList 배열
             @SuppressWarnings("unchecked")
@@ -195,7 +195,10 @@ public class ResumeController {
             resumeInfoVO.setTitle(paramMap.get("title").toString());
             resumeInfoVO.setDesired_position(paramMap.get("desired_position").toString());
             resumeInfoVO.setTemplate_no(Integer.parseInt(paramMap.get("template_no").toString()));
-            resumeInfoVO.setPublication_yn(paramMap.get("publication_yn").toString());
+            String publicationYn = Optional.ofNullable(paramMap.get("publication_yn"))
+                    .map(Object::toString)
+                    .orElse("N");  // 기본값 N
+            resumeInfoVO.setPublication_yn(publicationYn);
             // 파일명
             resumeInfoVO.setResume_file_name(fileName);
             // 물리경로 (Physical Path)
@@ -222,10 +225,8 @@ public class ResumeController {
      */
     @PostMapping("/exportPdf")
     public ResponseEntity<byte[]> exportPdf(@RequestBody Map<String,Object> requestMap) throws Exception {
-        //String physicalPath = requestMap.get("physicalPath").toString();
-        // 1) HTML 파일 읽기
-        String filePath = "X:\\resume_output\\resume_made\\resume_5_20250618_143306.html";
-        Path path = Paths.get(filePath);
+        String physicalPath = requestMap.get("filePath").toString();
+        Path path = Paths.get(physicalPath);
         byte[] bytes = Files.readAllBytes(path);
         String html = new String(bytes, StandardCharsets.UTF_8);
 
@@ -234,11 +235,15 @@ public class ResumeController {
                 .replaceAll("(?i)<hr>", "<hr/>")
                 // 필요하다면 <img>, <input> 등도
                 ;
-
+        System.out.println(xhtml);
         // 2) PDF로 변환
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         PdfRendererBuilder builder = new PdfRendererBuilder();
-        builder.withHtmlContent(xhtml, null);
+        builder.useFont(
+                () -> this.getClass().getResourceAsStream("/fonts/NotoSansKR-Regular.ttf"),
+                "Noto Sans KR"
+        );
+        builder.withHtmlContent(xhtml, path.getParent().toUri().toString());
         builder.toStream(os);
         builder.run();
         byte[] pdfBytes = os.toByteArray();
