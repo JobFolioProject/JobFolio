@@ -1,0 +1,309 @@
+.skill-add-form-container {
+    padding: 15px;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-top: 3px solid rgb(47, 130, 255);
+}
+
+/* 폼 제목 */
+.skill-add-form-container h2 {
+    font-size: 1.6em;
+    color: #343a40;
+    margin-top: 0;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+/* 검색 입력 필드 그룹 */
+.search-input-group {
+    position: relative;
+}
+
+.skill-search-input {
+    width: 100%;
+    padding: 12px 40px 12px 15px; /* X 버튼 공간 확보 */
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    font-size: 1em;
+    box-sizing: border-box; /* 패딩이 너비에 포함되도록 */
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.skill-search-input::placeholder {
+    color: #adb5bd;
+}
+
+.skill-search-input:focus {
+    border-color: #80bdff;
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.clear-search-button {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #6c757d;
+    font-size: 1.2em;
+    cursor: pointer;
+    padding: 5px;
+    transition: color 0.2s ease;
+}
+
+.clear-search-button:hover {
+    color: #495057;
+}
+
+/* 메시지 스타일 (ValidationMessage 및 로딩) */
+.loading-message {
+    color: #6c757d;
+    text-align: center;
+    padding: 10px 0;
+}
+
+/* 경고/안내 메시지 (이전 답변에서 제공) */
+.guidance-message {
+    color: #d32f2f; /* 빨간색 계열 */
+    font-weight: bold;
+    display: flex;
+    align-items: center; /* 아이콘과 텍스트 상단 정렬 */
+    margin-bottom: 15px;
+    padding: 12px 18px;
+    background-color: #ffebee; /* 연한 빨간색 배경 */
+    border-left: 5px solid #d32f2f;
+    border-radius: 4px;
+    line-height: 1.4; /* 줄 간격 */
+}
+
+.guidance-message .warning-icon {
+    margin-right: 10px;
+    font-size: 22px !important; /* Material-UI 아이콘 크기 조정 */
+    color: #d32f2f;
+    flex-shrink: 0; /* 아이콘이 줄어들지 않도록 */
+    margin-top: 2px; /* 텍스트와 세로 정렬 미세 조정 */
+}
+
+/* 검색 결과 영역 */
+.skill-results-area {
+    max-height: 250px; /* 최대 높이 설정 */
+    overflow-y: auto; /* 내용이 넘치면 스크롤 */
+    border: 1px solid #e9ecef;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    background-color: #ffffff;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05); /* 내부 그림자 */
+}
+
+.skill-results-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.skill-result-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 10px;
+    border-bottom: 1px solid #f0f2f5; /* 항목 구분선 */
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.skill-result-item:last-child {
+    border-bottom: none; /* 마지막 항목은 선 없음 */
+}
+
+.skill-result-item:hover {
+    background-color: #e2f0ff; /* 호버 시 배경색 */
+}
+
+.skill-result-item.selected {
+    background-color: #d0e8ff; /* 선택된 항목 배경색 */
+    font-weight: bold;
+    color: #004085;
+}
+
+.skill-result-item input[type='checkbox'] {
+    margin-right: 10px;
+    accent-color: #007bff; /* 체크박스 색상 */
+    transform: scale(1.1); /* 체크박스 살짝 확대 */
+}
+
+.skill-result-text {
+    font-size: 1em;
+    color: #343a40;
+}
+
+.no-results-message {
+    text-align: center;
+    color: #6c757d;
+    padding: 20px;
+}
+
+/* 현재 선택/관리 중인 스킬 태그 섹션 */
+.temporary-skill-tags {
+    margin-top: 5px;
+    padding: 10px;
+    border: 2px dashed #a0d9ff; /* 파란색 점선 테두리 */
+    border-radius: 10px;
+    background-color: #eaf6ff; /* 연한 파란색 배경 */
+}
+
+.temporary-skill-tags h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #0056b3;
+    font-size: 1em;
+    border-bottom: 1px solid #cce5ff;
+    padding-bottom: 10px;
+    padding-left: 5px;
+}
+
+.tags-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+/* 개별 선택된 스킬 태그 */
+.temp-skill-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 12px;
+    border: 1px solid #e9ecef;
+    border-radius: 20px;
+    background-color: white;
+    font-size: 0.7em;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    white-space: nowrap;
+}
+
+.temp-skill-tag:hover {
+    background-color: #e9ecef;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.temp-skill-tag span:first-child {
+    display: flex;
+    align-items: center;
+}
+
+/* --- 경고 아이콘 및 애니메이션 관련 스타일은 그대로 유지합니다 --- */
+.temp-skill-tag .incomplete-icon {
+    margin-left: 6px;
+    font-size: 20px !important;
+    color: #fdd835; /* 밝은 노란색 경고 아이콘 */
+    animation: blink-warning 1s infinite alternate;
+    transform-origin: center;
+}
+
+@keyframes blink-warning {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.5;
+        transform: scale(1.05);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* 미입력 스킬 태그 스타일 (경고 색상) */
+.temp-skill-tag.incomplete {
+    background-color: #ffc107; /* 노란색 배경 */
+    border-color: #e0a800; /* 노란색 테두리 */
+    color: #343a40; /* 어두운 글자색 */
+}
+
+.temp-skill-tag.incomplete:hover {
+    background-color: #e0a800;
+}
+
+.temp-skill-tag-remove {
+    margin-left: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    color: rgba(255, 255, 255, 0.8); /* 흰색 글자에 투명도 */
+    transition: color 0.2s ease;
+}
+
+.temp-skill-tag.incomplete .temp-skill-tag-remove {
+    color: rgba(52, 58, 64, 0.7); /* 불완전 태그의 X 버튼 색상 */
+}
+
+.temp-skill-tag-remove:hover {
+    color: white; /* 호버 시 완전 흰색 */
+    transform: scale(1.1); /* X 버튼 확대 효과 */
+}
+
+.temp-skill-tag.incomplete .temp-skill-tag-remove:hover {
+    color: #dc3545; /* 불완전 태그의 X 버튼 호버 시 빨간색 */
+}
+
+.skillFormButtons {
+    /* 클래스명 변경 */
+    display: flex;
+    justify-content: flex-end; /* 버튼을 오른쪽으로 정렬 */
+    gap: 15px; /* 버튼 간 간격 */
+    margin-top: 15px;
+    padding: 0 15px;
+}
+
+.skillFormButtons button {
+    padding: 13px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.skillFormButtons button:first-child {
+    /* 클래스명 변경 */
+    background-color: #dcdcdc;
+    color: #333;
+}
+
+.skillFormButtons button:first-child:hover {
+    /* 클래스명 변경 */
+    background-color: #c0c0c0;
+    transform: translateY(-1px);
+}
+
+.skillFormButtons button:last-child {
+    /* 클래스명 변경 */
+    background-color: #007bff;
+    color: white;
+}
+
+.skillFormButtons button:last-child:hover {
+    /* 클래스명 변경 */
+    background-color: #0056b3;
+    transform: translateY(-1px);
+}
+
+/* 애니메이션 */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1.05);
+        opacity: 0.8;
+    }
+}

@@ -1,101 +1,102 @@
 .edu-line-item {
-  display: flex;
-  align-items: baseline;
-  flex-wrap: wrap;
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
 }
 .edu-display-header {
-  margin-bottom: 5px;
-  gap: 0;
+    margin-bottom: 5px;
+    gap: 0;
 }
 .edu-school-name {
-  font-weight: bold;
-  font-size: 1.2em !important;
-  color: #333;
-  margin-right: 0;
-  flex-shrink: 0;
+    font-weight: bold;
+    font-size: 1.2em !important;
+    color: #333;
+    margin-right: 0;
+    flex-shrink: 0;
 }
 .edu-period {
-  font-size: 0.95em;
-  color: #777;
-  margin-left: 10px;
+    font-size: 0.95em;
+    color: #777;
+    margin-left: 10px;
 }
 .edu-status-display {
-  font-weight: bold;
-  color: #007bff;
-  margin-left: 5px;
+    font-weight: bold;
+    color: #007bff;
+    margin-left: 5px;
 }
 .edu-major-name {
-  font-size: 1em;
-  color: #555;
-  font-weight: 500;
-  margin: 0;
+    font-size: 1em;
+    color: #555;
+    font-weight: 500;
+    margin: 0;
 }
 .edu-sub-major {
-  font-size: 0.9em;
-  color: #888;
-  margin-left: 5px;
+    font-size: 0.9em;
+    color: #888;
+    margin-left: 5px;
 }
 .edu-details-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  margin-top: 10px;
-  padding-top: 10px;
-  border-top: 1px dashed #eee;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed #eee;
 }
 .edu-detail-item {
-  display: flex;
-  align-items: baseline;
-  font-size: 0.9em;
+    display: flex;
+    align-items: baseline;
+    font-size: 0.9em;
 }
 .detail-label {
-  font-weight: 500;
-  color: #666;
-  margin-right: 5px;
-  flex-shrink: 0;
+    font-weight: 500;
+    color: #666;
+    margin-right: 5px;
+    flex-shrink: 0;
 }
 .detail-value {
-  color: #333;
+    color: #333;
 }
 
 /* --- 학력 추가/수정 폼 박스 디자인 --- */
 .educationFormBox {
-  padding: 15px;
-  border-bottom-left-radius: 8px;
-  border-bottom-right-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  align-items: baseline;
-  border-top: 3px solid rgb(47, 130, 255);
+    padding: 15px;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    align-items: baseline;
+    border-top: 3px solid rgb(47, 130, 255);
 }
 .educationFormBox .formTitle {
-  font-weight: bold;
-  color: rgb(47, 130, 255);
-  font-size: 1.3em;
-  text-align: center;
+    font-weight: bold;
+    color: #333;
+    font-size: 1.6em;
+    text-align: center;
+    margin-top: 0;
 }
 
 .educationContainer {
-  display: flex;
-  justify-content: center;
-  padding: 0 15px;
+    display: flex;
+    justify-content: center;
+    padding: 0 15px;
 }
 .educationInputArea {
-  display: grid;
-  grid-template-columns: repeat(6, minmax(120px, 1fr));
-  gap: 10px;
-  width: 100%;
-  max-width: 900px;
+    display: grid;
+    grid-template-columns: repeat(6, minmax(120px, 1fr));
+    gap: 10px;
+    width: 100%;
+    max-width: 900px;
 }
 .formCol,
 .formColFull {
-  display: flex;
-  flex-direction: column;
+    display: flex;
+    flex-direction: column;
 }
 .formCol.school-name-field {
-  grid-column: span 2;
+    grid-column: span 2;
 }
 .formColFull {
-  grid-column: 1 / -1;
+    grid-column: 1 / -1;
 }
 
 /* --- 모든 폼 입력 필드의 공통 기본 스타일 (input, select, textarea, DatePicker input) --- */
@@ -103,51 +104,51 @@
 .educationFormBox input,
 .educationFormBox select,
 .educationFormBox textarea {
-  padding: 15px;
-  border: 1px solid #a0cbed;
-  border-radius: 6px;
-  box-sizing: border-box;
-  font-size: 13px;
-  background-color: #ffffff;
-  color: #555;
-  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-  margin-bottom: 5px;
-  width: 100%; /* 부모 formCol에 꽉 차도록 */
-  font-weight: normal;
+    padding: 15px;
+    border: 1px solid #a0cbed;
+    border-radius: 6px;
+    box-sizing: border-box;
+    font-size: 13px;
+    background-color: #ffffff;
+    color: #555;
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    margin-bottom: 5px;
+    width: 100%; /* 부모 formCol에 꽉 차도록 */
+    font-weight: normal;
 }
 
 /* DatePicker의 input 필드만 별도로 스타일 정의 (우선순위 높임) */
 /* .educationInputArea .custom-datepicker-input 이 더 구체적임 */
 .educationFormBox .custom-datepicker-input {
-  padding: 15px;
-  border: 1px solid #a0cbed;
-  border-radius: 6px;
-  box-sizing: border-box;
-  background-color: #ffffff;
-  color: #555;
-  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-  margin-bottom: 5px;
-  width: 100%;
-  font-size: 13px;
-  font-weight: normal; /* DatePicker 입력 필드 폰트 두께 */
+    padding: 15px;
+    border: 1px solid #a0cbed;
+    border-radius: 6px;
+    box-sizing: border-box;
+    background-color: #ffffff;
+    color: #555;
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    margin-bottom: 5px;
+    width: 100%;
+    font-size: 13px;
+    font-weight: normal; /* DatePicker 입력 필드 폰트 두께 */
 }
 
 /* DatePicker input을 감싸는 컨테이너 (width 100% 필수) */
 .educationFormBox .react-datepicker__input-container {
-  width: 100%;
+    width: 100%;
 }
 
 /* 플레이스홀더 스타일 공통화 */
 .educationFormBox input::placeholder,
 .educationFormBox .custom-datepicker-input::placeholder {
-  color: #999;
-  opacity: 1;
-  font-weight: normal;
+    color: #999;
+    opacity: 1;
+    font-weight: normal;
 }
 .educationFormBox textarea::placeholder {
-  /* <-- textarea에 대한 선택자를 분리 */
-  color: #999;
-  opacity: 1;
+    /* <-- textarea에 대한 선택자를 분리 */
+    color: #999;
+    opacity: 1;
 }
 
 /* focus 시 스타일 공통화 */
@@ -155,9 +156,9 @@
 .educationFormBox select:focus,
 .educationFormBox textarea:focus,
 .educationFormBox .custom-datepicker-input:focus {
-  outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
 }
 
 /* --- 필수 입력 필드에 에러 시 빨간 테두리 스타일 --- */
@@ -165,195 +166,195 @@
 .educationFormBox select.error-field,
 .educationFormBox textarea.error-field,
 .educationFormBox .custom-datepicker-input.error-field {
-  border-color: #dc3545; /* 빨간색 테두리 */
-  box-shadow: 0 0 0 0.15rem rgba(220, 53, 69, 0.25); /* 빨간색 그림자 효과 */
+    border-color: #dc3545; /* 빨간색 테두리 */
+    box-shadow: 0 0 0 0.15rem rgba(220, 53, 69, 0.25); /* 빨간색 그림자 효과 */
 }
 
 /* select 드롭다운 화살표 및 글자색 */
 .educationFormBox select {
-  appearance: none;
-  -moz-appearance: none;
-  -webkit-appearance: none;
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0V0z"/><path d="M7 10l5 5 5-5H7z" fill="%23888"/></svg>');
-  background-repeat: no-repeat;
-  background-position: right 8px center;
-  background-size: 16px;
-  color: #555;
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0V0z"/><path d="M7 10l5 5 5-5H7z" fill="%23888"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 16px;
+    color: #555;
 }
 
 /* textarea 스타일 */
 .educationFormBox textarea {
-  min-height: 120px;
-  resize: vertical;
-  padding: 12px;
-  box-sizing: border-box; /* 추가: padding이 width에 포함되도록 */
-  font-size: 13px; /* 다른 input과 동일하게 */
-  font-weight: normal; /* 원하시는 두께로 설정 (normal 또는 bold 등) */
-  color: #555; /* 글자색 */
-  border: 1px solid #a0cbed; /* 테두리 */
-  border-radius: 6px; /* 테두리 둥글게 */
-  background-color: #ffffff; /* 배경색 */
-  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* 전환 효과 */
-  margin-bottom: 5px;
-  width: 100%;
+    min-height: 120px;
+    resize: vertical;
+    padding: 12px;
+    box-sizing: border-box; /* 추가: padding이 width에 포함되도록 */
+    font-size: 13px; /* 다른 input과 동일하게 */
+    font-weight: normal; /* 원하시는 두께로 설정 (normal 또는 bold 등) */
+    color: #555; /* 글자색 */
+    border: 1px solid #a0cbed; /* 테두리 */
+    border-radius: 6px; /* 테두리 둥글게 */
+    background-color: #ffffff; /* 배경색 */
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* 전환 효과 */
+    margin-bottom: 5px;
+    width: 100%;
 
-  /* --- 여기에 폰트 패밀리를 추가합니다. --- */
-  font-family: Arial, sans-serif; /* <-- textarea에 적용할 폰트 */
+    /* --- 여기에 폰트 패밀리를 추가합니다. --- */
+    font-family: Arial, sans-serif; /* <-- textarea에 적용할 폰트 */
 }
 
 /* 폼 버튼 컨테이너 */
 .educationFormBox .formButtons {
-  display: flex;
-  justify-content: flex-end;
-  gap: 15px;
-  margin-top: 15px;
-  margin-bottom: 15px;
-  padding: 0 15px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    padding: 0 15px;
 }
 
 /* 폼 버튼 공통 스타일 */
 .educationFormBox .formButtons button {
-  padding: 13px 20px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: bold;
-  font-size: 15px;
-  transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+    padding: 13px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 15px;
+    transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
 }
 .educationFormBox .formButtons button:first-child {
-  background-color: #dcdcdc;
-  color: #333;
+    background-color: #dcdcdc;
+    color: #333;
 }
 .educationFormBox .formButtons button:first-child:hover {
-  background-color: #c0c0c0;
-  transform: translateY(-1px);
+    background-color: #c0c0c0;
+    transform: translateY(-1px);
 }
 .educationFormBox .formButtons button:last-child {
-  background-color: #007bff;
-  color: white;
+    background-color: #007bff;
+    color: white;
 }
 .educationFormBox .formButtons button:last-child:hover {
-  background-color: #0056b3;
-  transform: translateY(-1px);
+    background-color: #0056b3;
+    transform: translateY(-1px);
 }
 
 /* --- DatePicker readOnly 상태 스타일 --- */
 /* educationFormBox 내부의 custom-datepicker-input이 readOnly 속성을 가질 때 */
 .educationFormBox .custom-datepicker-input[readOnly] {
-  background-color: #ffffff; /* 배경색을 확실히 하얀색으로 유지 */
-  color: #555; /* 글자색 유지 */
-  border-color: #e0e0e0; /* 테두리색을 약간 다르게 하여 readOnly임을 나타낼 수 있습니다 */
-  cursor: default; /* 마우스 커서를 기본으로 변경 */
-  opacity: 1; /* 투명도 변경 없음 */
-  box-shadow: none; /* 그림자 효과 제거 */
+    background-color: #ffffff; /* 배경색을 확실히 하얀색으로 유지 */
+    color: #555; /* 글자색 유지 */
+    border-color: #e0e0e0; /* 테두리색을 약간 다르게 하여 readOnly임을 나타낼 수 있습니다 */
+    cursor: default; /* 마우스 커서를 기본으로 변경 */
+    opacity: 1; /* 투명도 변경 없음 */
+    box-shadow: none; /* 그림자 효과 제거 */
 }
 /* readOnly 상태일 때는 포커스 스타일 적용 안되게 (더 구체적인 선택자로) */
 .educationFormBox .custom-datepicker-input[readOnly]:focus {
-  outline: none;
-  border-color: #e0e0e0; /* readOnly 상태의 테두리 색상 유지 */
-  box-shadow: none;
+    outline: none;
+    border-color: #e0e0e0; /* readOnly 상태의 테두리 색상 유지 */
+    box-shadow: none;
 }
 
 /* --- DatePicker 달력 UI 커스터마이징 (education-datepicker-theme 내부에 종속) --- */
 /* educationFormBox와 education-datepicker-theme 클래스를 모두 가진 요소 내부의 DatePicker */
 .educationFormBox.education-datepicker-theme .react-datepicker {
-  font-family: 'Noto Sans KR', sans-serif;
-  border: 1px solid #dcdcdc;
-  border-radius: 10px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-  padding: 12px;
-  background-color: #fff;
-  z-index: 999;
-  position: absolute;
+    font-family: 'Noto Sans KR', sans-serif;
+    border: 1px solid #dcdcdc;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    padding: 12px;
+    background-color: #fff;
+    z-index: 999;
+    position: absolute;
 }
 .educationFormBox.education-datepicker-theme .react-datepicker__header {
-  background-color: #f0f2f5;
-  border-bottom: 1px solid #e2e4e8;
-  padding: 12px 0;
-  border-top-left-radius: 8px;
-  border-top-right-radius: 8px;
-  position: relative;
-  text-align: center;
+    background-color: #f0f2f5;
+    border-bottom: 1px solid #e2e4e8;
+    padding: 12px 0;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    position: relative;
+    text-align: center;
 }
 .educationFormBox.education-datepicker-theme .react-datepicker__current-month,
 .educationFormBox.education-datepicker-theme .react-datepicker-time__header,
 .educationFormBox.education-datepicker-theme .react-datepicker-year-header {
-  font-weight: 700;
-  color: #333;
-  margin-bottom: 5px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 5px;
 }
 .educationFormBox.education-datepicker-theme .react-datepicker__navigation {
-  top: 15px;
-  line-height: 1.7em;
-  border: none;
-  background: none;
-  font-size: 1.3em;
-  width: 25px;
-  height: 25px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  transition: background-color 0.2s ease;
+    top: 15px;
+    line-height: 1.7em;
+    border: none;
+    background: none;
+    font-size: 1.3em;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.2s ease;
 }
 .educationFormBox.education-datepicker-theme .react-datepicker__navigation:hover {
-  background-color: #e5e5e5;
+    background-color: #e5e5e5;
 }
 .educationFormBox.education-datepicker-theme .react-datepicker__navigation--previous {
-  left: 5px;
+    left: 5px;
 }
 .educationFormBox.education-datepicker-theme .react-datepicker__navigation--next {
-  right: 5px;
+    right: 5px;
 }
 .educationFormBox.education-datepicker-theme .react-datepicker__navigation-icon::before {
-  border-color: #666;
-  border-width: 1.5px 1.5px 0 0;
+    border-color: #666;
+    border-width: 1.5px 1.5px 0 0;
 }
 .educationFormBox.education-datepicker-theme .react-datepicker__day-names {
-  background-color: #e9ecef;
-  margin-bottom: 8px;
-  padding: 8px 0;
-  border-radius: 6px;
+    background-color: #e9ecef;
+    margin-bottom: 8px;
+    padding: 8px 0;
+    border-radius: 6px;
 }
 .educationFormBox.education-datepicker-theme .react-datepicker__day-name {
-  color: #555;
-  font-size: 0.9em;
-  font-weight: 600;
-  width: 2.5em;
+    color: #555;
+    font-size: 0.9em;
+    font-weight: 600;
+    width: 2.5em;
 }
 .educationFormBox.education-datepicker-theme .react-datepicker__day-name:first-child {
-  color: #e74c3c;
+    color: #e74c3c;
 }
 .educationFormBox.education-datepicker-theme .react-datepicker__day-name:last-child {
-  color: #3498db;
+    color: #3498db;
 }
 .educationFormBox.education-datepicker-theme .react-datepicker__month {
-  margin-top: 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 .educationFormBox.education-datepicker-theme .react-datepicker__week {
-  display: flex;
-  justify-content: center;
+    display: flex;
+    justify-content: center;
 }
 .educationFormBox.education-datepicker-theme .react-datepicker__day,
 .educationFormBox.education-datepicker-theme .react-datepicker__time-name {
-  width: 2.5em;
-  line-height: 2.5em;
-  margin: 3px;
-  border-radius: 50%;
-  color: #444;
-  font-weight: normal;
-  transition: background-color 0.2s ease, color 0.2s ease, transform 0.1s ease;
-  cursor: pointer;
+    width: 2.5em;
+    line-height: 2.5em;
+    margin: 3px;
+    border-radius: 50%;
+    color: #444;
+    font-weight: normal;
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.1s ease;
+    cursor: pointer;
 }
 .educationFormBox.education-datepicker-theme .react-datepicker__day:hover,
 .educationFormBox.education-datepicker-theme .react-datepicker__time-name:hover {
-  background-color: #e0f2fe;
-  color: #007bff;
-  transform: translateY(-1px);
+    background-color: #e0f2fe;
+    color: #007bff;
+    transform: translateY(-1px);
 }
 .educationFormBox.education-datepicker-theme .react-datepicker__day--selected,
 .educationFormBox.education-datepicker-theme .react-datepicker__day--in-selecting-range,
@@ -361,72 +362,72 @@
 .educationFormBox.education-datepicker-theme .react-datepicker__time-name--selected,
 .educationFormBox.education-datepicker-theme .react-datepicker__time-name--in-selecting-range,
 .educationFormBox.education-datepicker-theme .react-datepicker__time-name--in-range {
-  background-color: #007bff;
-  color: #fff;
-  font-weight: bold;
-  border-radius: 50%;
-  box-shadow: 0 2px 5px rgba(0, 123, 255, 0.2);
+    background-color: #007bff;
+    color: #fff;
+    font-weight: bold;
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0, 123, 255, 0.2);
 }
 .educationFormBox.education-datepicker-theme .react-datepicker__day--today {
-  font-weight: bold;
-  color: #0056b3;
-  border: 1px solid #007bff;
-  background-color: #f8f9fa;
+    font-weight: bold;
+    color: #0056b3;
+    border: 1px solid #007bff;
+    background-color: #f8f9fa;
 }
 .educationFormBox.education-datepicker-theme .react-datepicker__day--today.react-datepicker__day--selected {
-  background-color: #007bff;
-  color: #fff;
-  border: none;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
 }
 .educationFormBox.education-datepicker-theme .react-datepicker__day--outside-month {
-  color: #bbb;
-  pointer-events: none;
+    color: #bbb;
+    pointer-events: none;
 }
 .educationFormBox.education-datepicker-theme .react-datepicker__day--disabled {
-  color: #d1d7de;
-  cursor: not-allowed;
-  background-color: transparent;
+    color: #d1d7de;
+    cursor: not-allowed;
+    background-color: transparent;
 }
 .educationFormBox.education-datepicker-theme .react-datepicker__day--disabled:hover {
-  background-color: transparent;
-  color: #d1d7de;
-  transform: none;
+    background-color: transparent;
+    color: #d1d7de;
+    transform: none;
 }
 .educationFormBox.education-datepicker-theme .react-datepicker__monthPicker,
 .educationFormBox.education-datepicker-theme .react-datepicker__yearPicker {
-  padding: 10px;
+    padding: 10px;
 }
 .educationFormBox.education-datepicker-theme .react-datepicker__month-text,
 .educationFormBox.education-datepicker-theme .react-datepicker__year-text {
-  width: 4em;
-  height: 3em;
-  line-height: 3em;
-  margin: 5px;
-  border-radius: 4px;
+    width: 4em;
+    height: 3em;
+    line-height: 3em;
+    margin: 5px;
+    border-radius: 4px;
 }
 .educationFormBox.education-datepicker-theme .react-datepicker__month-option,
 .educationFormBox.education-datepicker-theme .react-datepicker__year-option {
-  padding: 8px 15px;
-  font-size: 0.9em;
-  color: #333;
-  transition: background-color 0.2s ease;
+    padding: 8px 15px;
+    font-size: 0.9em;
+    color: #333;
+    transition: background-color 0.2s ease;
 }
 .educationFormBox.education-datepicker-theme .react-datepicker__month-option:hover,
 .educationFormBox.education-datepicker-theme .react-datepicker__year-option:hover {
-  background-color: #f0f0f0;
+    background-color: #f0f0f0;
 }
 .educationFormBox.education-datepicker-theme .react-datepicker__month-option--selected,
 .educationFormBox.education-datepicker-theme .react-datepicker__year-option--selected {
-  background-color: #007bff;
-  color: white;
-  font-weight: bold;
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
 }
 .educationFormBox.education-datepicker-theme .react-datepicker__week-number {
-  color: #888;
-  font-size: 0.8em;
-  width: 2.2em;
-  line-height: 2.2em;
-  margin: 2px;
-  text-align: center;
-  border-right: 1px solid #eee;
+    color: #888;
+    font-size: 0.8em;
+    width: 2.2em;
+    line-height: 2.2em;
+    margin: 2px;
+    text-align: center;
+    border-right: 1px solid #eee;
 }
