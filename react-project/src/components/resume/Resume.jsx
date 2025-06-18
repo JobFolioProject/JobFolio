@@ -190,7 +190,7 @@ const Resume = () => {
    
 
 //==============================공통 함수로 필드 관리==========================================
-// 학력, 경력 입력 변경 핸들러 (몇 번째 학력,경력인지, 필드 이름, 값)
+//(공통)학력, 경력 입력 변경 핸들러 (몇 번째 학력,경력인지, 필드 이름, 값)
     //최대 1개의 객체만 존재하도록 관리
 
    const handleFieldChange = (e, type) => {
@@ -206,7 +206,7 @@ const Resume = () => {
     }));
   };
 
-  //학력, 경력 입력 날짜 변경 핸들러(Calendar 컴포넌트의 onChangeStartDate, onChangeEndDate prop에 연결)
+//(공통)학력, 경력 입력 날짜 변경 핸들러(Calendar 컴포넌트의 onChangeStartDate, onChangeEndDate prop에 연결)
   const handleFieldDateChange = (type,field, date) => {
     setFormData((prev)=>({
         ...prev,
@@ -217,16 +217,11 @@ const Resume = () => {
             }
         ]
     }))
-} ;
+} 
 
 
 
-
-//============================공통함수 끝 ==============================================
-
-
-
-   //학력 추가 버튼 클릭 시 새 학력 항목 추가 ! 근데 기존 학력과 별도로, 새로운 학력 배열에 추가
+//학력 추가 버튼 클릭 시 새 학력 항목 추가 ! 근데 기존 학력과 별도로, 새로운 학력 배열에 추가
   const addEducation = () => {
 // 이미 새로운 학력 입력 중이거나, 총 학력이 4개 이상이면 추가하지 않음
     if (formData.newEducation.length > 0 || (formData.education.length + formData.newEducation.length) >= 4) {
@@ -248,7 +243,7 @@ const Resume = () => {
   };
 
 
-  // 새로 추가한 학력 '저장' 버튼 클릭 시 호출
+//(공통) 새로 추가한 항목 '저장' 버튼 클릭 시 호출
 const saveFieldData = (type) => {
     if (!['newEducation', 'newExperience'].includes(type)) return;
 
@@ -286,7 +281,7 @@ const saveFieldData = (type) => {
 }
 
 
-  // 새로 추가하는 칸의 '취소' 버튼 클릭 시 호출 (저장 안 하고 버림)
+  //(공통) 새로 추가하는 칸의 '취소' 버튼 클릭 시 호출 (저장 안 하고 버림)
     const removeNewField = (e, type) => {
         setFormData((prev) => ({
             ...prev,
@@ -296,35 +291,12 @@ const saveFieldData = (type) => {
 
 
     // --- ⭐⭐⭐ 핵심 디버깅 추가된 부분 ⭐⭐⭐ ---
-    // 목록에 올라간 학력 항목 삭제 핸들러
-
-    // const removeStoredEducation = (eduNoToRemove) => {
-    //     console.log(`removeStoredEducation 호출됨. 삭제하려는 ID: ${eduNoToRemove}`); // 디버깅
-
-    //     setFormData((prev) => {
-    //         // 필터링 전의 education 배열 상태
-    //         console.log("Filter 전 education 배열:", prev.education); // 디버깅
-
-    //         const updatedEducation = prev.education.filter(edu => {
-    //             const isMatch = edu.edu_no === eduNoToRemove;
-    //             console.log(`  항목 ID: ${edu.edu_no}, 삭제 타겟 ID: ${eduNoToRemove}, 일치 여부: ${isMatch}`); // 디버깅: 각 항목별 비교
-    //             return !isMatch; // 일치하지 않는 항목만 새로운 배열에 포함 (즉, 일치하는 항목은 제외)
-    //         });
-
-    //         // 필터링 후의 education 배열 상태
-    //         console.log("Filter 후 updatedEducation 배열:", updatedEducation); // 디버깅
-
-    //         return {
-    //             ...prev,
-    //             education: updatedEducation,
-    //         };
-    //     });
-    // };
-
+    //(공통) 목록에 올라간 학력 항목 삭제 핸들러
     const removeStagedField = (type, idToRemove) => {
         const fieldMap = {
             education: 'edu_no',
             experience: 'career_no',
+            skillList: 'skill_code',
         };
 
         const idKey = fieldMap[type];
@@ -371,19 +343,6 @@ const saveFieldData = (type) => {
         ]
     }));
   }
-
-  // 경력 사항 삭제 핸들러 (인덱스)
-  const removeExperience = (index) => {
-    setFormData((prev) => {
-      const newExpEntries = [...prev.newExperience];
-      newExpEntries.splice(index, 1); // 해당 인덱스의 경력 항목 삭제
-      return {
-        ...prev,
-        newExperience: newExpEntries, // 업데이트된 경력 배열로 설정
-      };
-    });
-  };
-
 
 
 
@@ -468,21 +427,46 @@ const saveFieldData = (type) => {
                                 />
                                 {/* 드롭다운 컴포넌트 사용 */}
                                 {/* 스킬 목록을 렌더링하는 부분. ul 태그로 감싸는 것이 일반적입니다. */}
-                            {formData.skillList.length > 0 && (
-                                <ul className="skill-list"> {/* ul 태그 추가 */}
-                                    {formData.skillList.map((skill, index) => (
-                                        <li key={index}>
-                                            <span>
-                                                {skill.skill_code}
-                                            </span>
-                                            {/* 숙련도를 표시하고 싶다면: <span> ({skill.exp_level})</span> */}
-                                            {/* 삭제 버튼 추가 예시: <button type="button" onClick={() => removeSkill(index)}>삭제</button> */}
-                                        </li>
-                                    ))}
-                                </ul>
+
+                        <label>
+                            <div><span>기술부분수정</span></div>
+                        </label>
+                            {formData.skillList.length > 0 ?(
+                                <div className="skill-list"> 
+                                    {formData.skillList.map((skill, index) =>{
+                                        return (
+                                            <div key={`skill-${skill.skill_code}`} className='skill-row-display'>
+                                                <PrettyBtn 
+                                            type="button" 
+                                            size="sm" 
+                                            onClick={() => removeStagedField('skillList', skill.skill_code)} // id를 전달하여 해당 항목 삭제
+                                            style={{ marginLeft: '10px' }} // 버튼 간격 조절
+                                        >
+                                            <img
+                                                src="/resources/img/minus_circle.png" // ⭐ 로컬에 저장된 이미지 파일 경로 ⭐
+                                                alt="기술 삭제" // ⭐ 접근성을 위한 alt 텍스트 필수 ⭐
+                                                style={{
+                                                    width: '20px', // 아이콘의 너비 (필요에 따라 조절)
+                                                    height: '20px', // 아이콘의 높이 (필요에 따라 조절)
+                                                    border: 'none', // 이미지에 기본적으로 생길 수 있는 테두리 제거
+                                                    backgroundColor: 'transparent'
+                                                }}
+                                            />
+                                        </PrettyBtn>
+                                        <p><strong>분야:</strong>{skill.group_code}</p>
+                                        {skill.group_code && <p><strong>기술:</strong>{skill.skill_code}</p>}
+                                        {skill.skill_code && <p><strong>숙련도:</strong>{skill.exp_level}</p>}
+                                        </div>
+                                        )
+                                    })}
+                                </div>
+                            ):(
+                                <p>등록된 기존 기술 정보가 없습니다</p>
                             )}
 
                             </label> {/* DropDown 컴포넌트와 스킬 목록을 감싸는 label 태그의 닫힘 */}
+                            {/* 신규 학력 입력 버튼 */}
+                            
 
                         <br />
                     <label>
