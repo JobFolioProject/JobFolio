@@ -3,27 +3,47 @@
         PUBLIC '-//mybatis.org//DTD Mapper 3.0//EN'
         'http://mybatis.org/dtd/mybatis-3-mapper.dtd'>
 <mapper namespace='com.happyjob.jobfolio.repository.community.CommunityMapper'>
-    <!-- 고정글만 조회 -->
+    <!-- 고정글 조회 -->
     <select id="selectPriorityBoardList" parameterType="map" resultType="com.happyjob.jobfolio.vo.community.CommunityBoardVo">
-        SELECT b.board_no AS boardNo, b.board_type AS boardType, b.title, b.content,
-               b.write_date AS writeDate, b.author, u.user_name AS authorName, b.priority, b.status_yn  AS statusYn
-        FROM tb_board b
-                 JOIN tb_userinfo u ON b.author = u.user_no
-        WHERE b.board_type = #{boardType}
-          AND b.priority != 0
-        ORDER BY b.priority DESC, b.write_date DESC
-    </select>
-
-    <!-- 일반글 페이징 조회 -->
-    <select id="selectNormalBoardPaged" parameterType="map" resultType="com.happyjob.jobfolio.vo.community.CommunityBoardVo">
-        SELECT b.board_no AS boardNo, b.board_type AS boardType, b.title, b.content,
-        b.write_date AS writeDate, b.author, u.user_name AS authorName, b.priority, b.status_yn  AS statusYn
+        SELECT b.board_no    AS boardNo
+        , b.board_type  AS boardType
+        , b.title
+        , b.content
+        , b.write_date  AS writeDate
+        , b.author
+        , u.user_name   AS authorName
+        , b.priority
+        , b.status_yn   AS statusYn
         FROM tb_board b
         JOIN tb_userinfo u ON b.author = u.user_no
         WHERE b.board_type = #{boardType}
-        AND b.priority = 0
+        AND b.priority   != 0
+        <if test="statusYn != null and statusYn != ''">
+            AND b.status_yn = #{statusYn}
+        </if>
+        ORDER BY b.priority DESC, b.write_date DESC
+    </select>
+
+    <!-- 일반글 조회 -->
+    <select id="selectNormalBoardPaged" parameterType="map" resultType="com.happyjob.jobfolio.vo.community.CommunityBoardVo">
+        SELECT b.board_no    AS boardNo
+        , b.board_type  AS boardType
+        , b.title
+        , b.content
+        , b.write_date  AS writeDate
+        , b.author
+        , u.user_name   AS authorName
+        , b.priority
+        , b.status_yn   AS statusYn
+        FROM tb_board b
+        JOIN tb_userinfo u ON b.author = u.user_no
+        WHERE b.board_type = #{boardType}
+        AND b.priority   = 0
         <if test="search != null and search != ''">
             AND b.title LIKE CONCAT('%', #{search}, '%')
+        </if>
+        <if test="statusYn != null and statusYn != ''">
+            AND b.status_yn = #{statusYn}
         </if>
         ORDER BY b.write_date DESC
         LIMIT #{offset}, #{limit}
@@ -31,11 +51,15 @@
 
     <!-- 일반글 총 개수 -->
     <select id="countNormalBoardList" parameterType="map" resultType="int">
-        SELECT COUNT(*) FROM tb_board
+        SELECT COUNT(*)
+        FROM tb_board
         WHERE board_type = #{boardType}
-        AND priority = 0
+        AND priority   = 0
         <if test="search != null and search != ''">
             AND title LIKE CONCAT('%', #{search}, '%')
+        </if>
+        <if test="statusYn != null and statusYn != ''">
+            AND status_yn = #{statusYn}
         </if>
     </select>
 
@@ -57,7 +81,9 @@
     </select>
 
     <!-- 이전 글 조회 -->
-    <select id="selectPreviousPost" parameterType="int" resultType="com.happyjob.jobfolio.vo.community.CommunityBoardVo">
+    <select id="selectPreviousPost"
+            parameterType="map"
+            resultType="com.happyjob.jobfolio.vo.community.CommunityBoardVo">
         SELECT
         b.board_no AS boardNo,
         b.board_type AS boardType,
@@ -73,27 +99,36 @@
         WHERE b.board_type = 'N'
         AND b.priority = 0
         AND b.board_no &lt; #{boardNo}
+        <if test="statusYn != null">
+            AND b.status_yn = #{statusYn}
+        </if>
         ORDER BY b.board_no DESC
         LIMIT 1
     </select>
-    <!--  다음 글 조회  -->
-    <select id="selectNextPost" parameterType="int" resultType="com.happyjob.jobfolio.vo.community.CommunityBoardVo">
+
+    <!-- 다음 글 조회 -->
+    <select id="selectNextPost"
+            parameterType="map"
+            resultType="com.happyjob.jobfolio.vo.community.CommunityBoardVo">
         SELECT
-            b.board_no AS boardNo,
-            b.board_type AS boardType,
-            b.title,
-            b.content,
-            b.write_date AS writeDate,
-            b.author,
-            u.user_name AS authorName,
-            b.priority,
-            b.status_yn AS statusYn
+        b.board_no AS boardNo,
+        b.board_type AS boardType,
+        b.title,
+        b.content,
+        b.write_date AS writeDate,
+        b.author,
+        u.user_name AS authorName,
+        b.priority,
+        b.status_yn AS statusYn
         FROM tb_board b
-                 JOIN tb_userinfo u ON b.author = u.user_no
+        JOIN tb_userinfo u ON b.author = u.user_no
         WHERE b.board_type = 'N'
-          AND b.priority = 0
-          AND b.board_no &gt; #{boardNo}
+        AND b.priority = 0
+        AND b.board_no &gt; #{boardNo}
+        <if test="statusYn != null">
+            AND b.status_yn = #{statusYn}
+        </if>
         ORDER BY b.board_no ASC
-            LIMIT 1
+        LIMIT 1
     </select>
 </mapper>
