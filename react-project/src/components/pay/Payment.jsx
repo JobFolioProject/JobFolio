@@ -1,7 +1,7 @@
 import '../../css/pay/Payment.css';
 
 import axios from '../../utils/axiosConfig';
-import { loadTossPayments } from '@tosspayments/tosspayments-sdk';
+import { loadTossPayments } from '@tosspayments/sdk';
 import { useEffect, useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 
@@ -29,18 +29,12 @@ const Payment = () => {
 
   // TossPayments 초기화
   useEffect(() => {
-    async function fetchPayment() {
-      try {
-        const tossPayments = await loadTossPayments(clientKey);
-        const payment = tossPayments.payment({ customerKey });
-        setPayment(payment);
-      } catch (error) {
-        console.error("Error initializing TossPayments:", error);
-      }
+    async function initToss() {
+      const tossPayments = await loadTossPayments(clientKey);
+      setPayment(tossPayments);
     }
-
-    fetchPayment();
-  }, [clientKey, customerKey]);
+    initToss();
+  }, []);
 
   // 결제 요청 함수
   const requestPayment = async (product) => {
@@ -51,38 +45,32 @@ const Payment = () => {
         amount: Number(product.price),
         user_no: user.userNo,
       });
-      
+  
       const { orderId, amount, order_name: orderName } = res;
-      
-      console.log("orderId:", orderId);
-      console.log("amount 타입:", typeof amount);
-      console.log("amount 값:", amount);
-      
-      if (!orderId || !orderName || typeof amount !== 'number' || isNaN(amount)) {
-        console.error("❌ 결제 정보가 누락되었거나 형식이 잘못됨");
+  
+      const parsedAmount = parseInt(amount, 10);
+  
+      if (!orderId || !orderName || isNaN(parsedAmount) || parsedAmount <= 0) {
+        console.error("❌ 결제 정보 오류", orderId, orderName, parsedAmount);
         return;
       }
-      
-      await payment.requestPayment({
-        method: "CARD",
-        amount: amount,
+
+      const tossPayments = await loadTossPayments(clientKey);
+  
+      await tossPayments.requestPayment('CARD', {
+        amount: parsedAmount,
         orderId: orderId,
         orderName: orderName + "개월",
         successUrl: window.location.origin + "/pay/cardSuccess",
         failUrl: window.location.origin + "/pay/cardFail",
-        card: {
-          useEscrow: false,
-          flowMode: "DEFAULT",
-          useCardPoint: false,
-          useAppCardOnly: false,
-        },
       });
-      
+  
     } catch (err) {
       console.error("결제 요청 실패:", err);
       alert("결제 중 오류가 발생했습니다.");
     }
   };
+  
   
   
   return (
