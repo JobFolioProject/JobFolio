@@ -5,67 +5,123 @@
   <title>이력서 - 템플릿</title>
   <style>
     body {
-      font-family: 'Noto Sans KR', sans-serif;
-      margin: 0;
-      padding: 40px;
-      color: #000;
-      background: #fff;
-    }
-    .container {
-      max-width: 800px;
-      margin: auto;
-      padding: 40px;
-      border: 1px solid #ddd;
-      box-shadow: 0 0 5px rgba(0,0,0,0.05);
-    }
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-    }
-    .title {
-      line-height: 1.2;
-    }
-    .title h1 {
-      font-size: 20px;
-      color: #888;
-      margin: 0;
-    }
-    .title h2 {
-      font-size: 28px;
-      font-weight: bold;
-      margin: 0;
-    }
-    .photo {
-      width: 100px;
-      height: 120px;
-      object-fit: cover;
-    }
-    .section {
-      margin-top: 40px;
-    }
-    .section-title {
-      font-weight: bold;
-      border-bottom: 2px solid #000;
-      padding-bottom: 5px;
-      margin-bottom: 10px;
-      font-size: 16px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    td {
-      padding: 8px;
-      vertical-align: top;
-      border-bottom: 1px solid #eee;
-    }
-    .footer {
-      font-size: 12px;
-      color: #666;
-      text-align: right;
-      margin-top: 30px;
-    }
+        font-family: "Noto Sans KR", sans-serif;
+        margin: 0; /* 이력서 전체의 기본 마진 제거 */
+        padding: 0; /* 이력서 전체의 기본 패딩 제거 */
+        color: #000;
+        background: #fff;
+        /* 아래 두 줄은 iframe에서 높이 측정 시 중요합니다. */
+        display: flex;
+        flex-direction: column;
+        box-sizing: border-box; /* 패딩, 보더가 너비/높이에 포함되도록 */
+      }
+      .container {
+        max-width: 800px;
+        margin: auto;
+        padding: 40px;
+        border: 1px solid #ddd;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
+        box-sizing: border-box; /* 패딩이 너비에 포함되도록 */
+      }
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+      }
+      .title {
+        line-height: 1.2;
+      }
+      .title h1 {
+        font-size: 20px;
+        color: #888;
+        margin: 0;
+      }
+      .title h2 {
+        font-size: 28px;
+        font-weight: bold;
+        margin: 0;
+      }
+      .photo {
+        width: 100px;
+        height: 120px;
+        object-fit: cover;
+      }
+      .section {
+        margin-top: 40px;
+      }
+      .section-title {
+        font-weight: bold;
+        border-bottom: 2px solid #000;
+        padding-bottom: 5px;
+        margin-bottom: 10px;
+        font-size: 16px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      td {
+        padding: 8px;
+        vertical-align: top;
+        border-bottom: 1px solid #eee;
+      }
+      .footer {
+        font-size: 12px;
+        color: #666;
+        text-align: right;
+        margin-top: 30px;
+      }
+
+      /* iframe 적용시 실행되는 css*/
+      body.in-iframe {
+        transform: scale(0.85);
+        transform-origin: top center;
+        width: 100%; /* 1 / 0.85 = 약 117.65% */
+        font-size: 4px;
+        overflow: hidden; 
+      }
+
+      body.in-iframe .title {
+        line-height: 0.9;
+      }
+      body.in-iframe .title h1 {
+        font-size: 5px;
+        color: #888;
+        margin: 0;
+      }
+      body.in-iframe .title h2 {
+        font-size: 6px;
+        font-weight: bold;
+        margin: 0;
+      }
+
+      body.in-iframe .photo {
+        width: 10px;
+        height: 12px;
+        object-fit: cover;
+      }
+
+      body.in-iframe .container {
+        width: 100%;
+        max-width: 700px;
+        padding: 20px;
+      }
+
+      body.in-iframe td {
+        font-size: 3px;
+      }
+      body.in-iframe .section {
+        margin-top: 10px;
+      }
+      body.in-iframe .section-title {
+        font-size: 3px;
+      }
+      body.in-iframe .footer {
+        font-size: 3px;
+        color: #666;
+        text-align: right;
+        margin-top: 30px;
+      }
   </style>
 </head>
 <body>
@@ -135,61 +191,8 @@
     </div>
   </div>
 <script>
-      function sendIframeHeight() {
-        // 'container' 요소의 높이를 측정하는 것이 가장 정확합니다.
-        // body의 margin과 padding을 0으로 설정했기 때문에 container의 높이가 곧 콘텐츠의 실제 높이가 됩니다.
-        const containerElement = document.querySelector('.container');
-        let height = 0;
-        if (containerElement) {
-            height = containerElement.offsetHeight;
-        } else {
-            // container가 없다면 fallback으로 body 높이를 사용합니다.
-            height = Math.max(
-                document.body.scrollHeight,
-                document.body.offsetHeight,
-                document.documentElement.clientHeight,
-                document.documentElement.scrollHeight,
-                document.documentElement.offsetHeight
-            );
-        }
-
-        // 부모 윈도우로 메시지 전송
-        if (window.parent) {
-          window.parent.postMessage({
-            type: 'iframeHeight',
-            height: height + 'px', // 단위를 붙여서 보냅니다.
-            tempNo: new URLSearchParams(window.location.search).get('tempNo') // 템플릿 번호도 함께 보냅니다.
-          }, '*'); // 🚨 중요: 실제 배포 시에는 '*' 대신 부모 컴포넌트의 도메인을 명시하세요!
-        }
-      }
-
-      // 1. DOMContentLoaded: HTML 문서가 완전히 로드되고 파싱되었을 때 (가장 빠름)
-      document.addEventListener('DOMContentLoaded', sendIframeHeight);
-      // 2. load: 모든 리소스(이미지 등)까지 완전히 로드되었을 때 (더 정확할 수 있음)
-      window.addEventListener('load', sendIframeHeight);
-      // 3. 리사이즈 시에도 높이 다시 측정하여 부모에 알림 (반응형 대응)
-      window.addEventListener('resize', sendIframeHeight);
-
-      // 4. 추가: 이미지 등 동적으로 로드되는 요소가 있다면, 해당 요소의 로드가 완료된 후 다시 높이를 측정합니다.
-      // 현재 이력서 템플릿에는 외부 이미지가 있으므로 이 부분이 특히 중요합니다.
-      const images = document.querySelectorAll('img');
-      if (images.length > 0) {
-        let loadedCount = 0;
-        images.forEach(img => {
-          if (img.complete) { // 이미 로드 완료된 이미지
-            loadedCount++;
-          } else { // 아직 로드되지 않은 이미지
-            img.addEventListener('load', () => {
-              loadedCount++;
-              if (loadedCount === images.length) {
-                sendIframeHeight(); // 모든 이미지가 로드되면 높이 다시 전송
-              }
-            });
-          }
-        });
-        if (loadedCount === images.length) { // 이미지가 없거나 모두 로드된 경우에도 초기 높이 전송
-          sendIframeHeight();
-        }
+      if (window !== window.parent) {
+        document.body.classList.add("in-iframe");
       }
     </script>
 </body>
