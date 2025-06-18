@@ -33,4 +33,11 @@
 		WHERE 		order_Id	 	 =  #{orderId}
 	</update>
 
+	<!-- 결제 후 유저 테이블에서 구독 마감 날짜 갱신 -->
+	<update id="updateDate" parameterType="com.happyjob.jobfolio.vo.usermgr.UserModel">
+		UPDATE 		tb_userinfo
+		SET 		expire_days		 = 	#{expire_days}
+		WHERE 		user_no	 	 	 =  #{user_no}
+	</update>
+
 </mapper>

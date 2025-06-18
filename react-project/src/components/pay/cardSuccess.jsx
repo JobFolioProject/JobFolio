@@ -18,11 +18,12 @@ const CardSuccess = () => {
           paymentKey,
           amount,
         });
-        console.log('✅ 결제 성공', res);
+          console.log('✅ 결제 성공', res);
+          navigate('/pay'); 
       } catch (err) {
         console.error('❌ 결제 승인 처리 실패', err);
         alert('결제 승인 처리에 실패했습니다.');
-        navigate('/'); // 실패 시 홈으로 이동
+        navigate('/pay'); 
       }
     };
 

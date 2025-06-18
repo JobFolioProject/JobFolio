@@ -38,4 +38,9 @@ public class PayService {
 		return payMapper.cardSuccess(params);
 	}
 
+	// 결제 후 유저 테이블에서 구독 마감 날짜 갱신
+	public int updateDate(Map<String, Object> params) throws Exception {
+		return payMapper.updateDate(params);
+	}
+
 }

@@ -13,4 +13,6 @@ public interface PayMapper {
 	// 토스 api 결제 승인시
 	int cardSuccess(Map<String, Object> params);
 
+	// 토스 api 결제 승인시
+	int updateDate(Map<String, Object> params);
 }
