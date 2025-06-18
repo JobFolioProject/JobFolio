@@ -32,4 +32,8 @@ public interface AdminCommunityMapper {
 
     // 공지 고정 해제
     void unpinBoardList(@Param("boardNos") List<Integer> boardNos);
+
+    // 공개/비공개 토글
+    void updateStatusYn(@Param("boardNo") int boardNo, @Param("statusYn") String statusYn);
+
 }

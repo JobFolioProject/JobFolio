@@ -235,3 +235,66 @@
   color: #fff;
   font-size: 1.2rem;
 }
+
+.publication_title {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.publication_ratio_area {
+  display: flex;
+  gap: 16px;
+  justify-content: flex-end;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.custom-radio {
+  display: none;
+}
+
+.radio-label {
+  position: relative;
+  padding-left: 28px;
+  cursor: pointer;
+  font-size: 16px;
+  color: #333;
+  user-select: none;
+  transition: color 0.2s;
+}
+
+.radio-label:before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  border: 2px solid #007bff;
+  border-radius: 50%;
+  background: #fff;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.custom-radio:checked + .radio-label:after {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 8px;
+  background: #007bff;
+  border-radius: 50%;
+}
+
+.radio-label:hover {
+  color: #007bff;
+}
+
+.custom-radio:focus + .radio-label:before {
+  outline: 2px solid #0056b3;
+  outline-offset: 2px;
+}

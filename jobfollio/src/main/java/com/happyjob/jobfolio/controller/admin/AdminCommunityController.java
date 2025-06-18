@@ -1,13 +1,13 @@
 package com.happyjob.jobfolio.controller.admin;
 
+import com.happyjob.jobfolio.security.UserPrincipal;
 import com.happyjob.jobfolio.service.admin.AdminCommunityService;
 import com.happyjob.jobfolio.vo.community.CommunityBoardVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
-import org.springframework.http.MediaType;
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -42,9 +42,11 @@ public class AdminCommunityController {
 
     //     공지사항 등록
     @PostMapping("/create")
-    public ResponseEntity<CommunityBoardVo> createNotice(@RequestBody CommunityBoardVo vo) {
-        // 일단 하드코딩, security 설정 되면 변경 필요
-        vo.setAuthor(1);
+    public ResponseEntity<CommunityBoardVo> createNotice(
+            @RequestBody CommunityBoardVo vo,
+            @AuthenticationPrincipal UserPrincipal userPrincipal
+    ) {
+        vo.setAuthor(userPrincipal.getUser_no().intValue());
         CommunityBoardVo created = adminCommunityService.createNotice(vo);
         return ResponseEntity.ok(created);
     }
@@ -110,26 +112,6 @@ public class AdminCommunityController {
         return ResponseEntity.ok(body);
     }
 
-    //      업로드된 공지 이미지 반환
-    @GetMapping("/image/{filename:.+}")
-    public ResponseEntity<Resource> serveImage(@PathVariable String filename) throws IOException {
-        Path file = Paths.get(rootPath, noticePath).resolve(filename).normalize();
-        Resource resource = new UrlResource(file.toUri());
-        if (!resource.exists() || !resource.isReadable()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        // MIME 타입을 유추해서 설정할 수도 있습니다.
-        String contentType = Files.probeContentType(file);
-        if (contentType == null) {
-            contentType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
-        }
-
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(contentType))
-                .body(resource);
-    }
-
     @PostMapping("/updatePriority")
     public ResponseEntity<Void> updatePriority(@RequestBody CommunityBoardVo vo) {
         adminCommunityService.updatePriority(vo.getBoardNo(), vo.getPriority());
@@ -158,6 +140,18 @@ public class AdminCommunityController {
         int boardNo2 = payload.get("boardNo2");
 
         adminCommunityService.swapPriority(boardNo1, boardNo2);
+        return ResponseEntity.ok().build();
+    }
+
+    // 공개/비공개 토글
+    @PostMapping("/toggleStatus")
+    public ResponseEntity<Void> toggleStatus(@RequestBody CommunityBoardVo vo) {
+        if (vo.getBoardNo() == 0 || vo.getStatusYn() == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        adminCommunityService.updateStatusYn(vo.getBoardNo(), vo.getStatusYn());
+        System.out.println(vo.getBoardNo()+" "+vo.getStatusYn());
         return ResponseEntity.ok().build();
     }
 }

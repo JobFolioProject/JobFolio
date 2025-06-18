@@ -202,7 +202,25 @@ public class UserController {
                 }
             }
 
-            int registerResult = userService.registerUser(paramMap);
+            // 전화번호에서 하이픈 제거 후 DB 저장용 맵에 추가
+            String originalHp = (String) paramMap.get("hp");
+            String cleanHp = originalHp.replaceAll("[^0-9]", "");
+
+            // 생년월일에서 하이픈 제거
+            String originalBirthday = (String) paramMap.get("birthday");
+            String cleanBirthday = originalBirthday != null ? originalBirthday.replaceAll("[^0-9]", "") : null;
+
+            logger.info("   - 원본 전화번호: " + originalHp + ", 정제된 전화번호: " + cleanHp);
+            logger.info("   - 원본 생년월일: " + originalBirthday + ", 정제된 생년월일: " + cleanBirthday);
+
+            // DB 저장용 맵 생성 (하이픈 제거된 값들로)
+            Map<String, Object> dbParamMap = new HashMap<>(paramMap);
+            dbParamMap.put("hp", cleanHp);
+            if (cleanBirthday != null) {
+                dbParamMap.put("birthday", cleanBirthday);
+            }
+
+            int registerResult = userService.registerUser(dbParamMap);
 
             if (registerResult > 0) {
                 session.removeAttribute("verifiedEmail");
@@ -430,8 +448,12 @@ public class UserController {
         }
     }
 
+
     /**
-     * 아이디 찾기 (DB 컬럼명 통일)
+     * 아이디 찾기
+     */
+    /**
+     * 아이디 찾기
      */
     @PostMapping("/find-id")
     public ResponseEntity<Map<String, Object>> findUserId(
@@ -446,25 +468,37 @@ public class UserController {
         try {
             String user_name = (String) paramMap.get("user_name");
             String hp = (String) paramMap.get("hp");
-            String email = (String) paramMap.get("email");
 
-            if (user_name == null || hp == null || email == null) {
+            if (user_name == null || hp == null || user_name.trim().isEmpty() || hp.trim().isEmpty()) {
                 resultMap.put("result", "N");
-                resultMap.put("message", "이름, 연락처, 이메일을 모두 입력해주세요.");
+                resultMap.put("message", "이름과 연락처를 모두 입력해주세요.");
                 return ResponseEntity.badRequest().body(resultMap);
             }
 
-            // DB 컬럼명 통일
+            // 전화번호에서 하이픈 제거 (숫자만 추출)
+            String cleanHp = hp.replaceAll("[^0-9]", "");
+
+            logger.info("   - 원본 전화번호: " + hp + ", 정제된 전화번호: " + cleanHp);
+
             Map<String, Object> serviceMap = new HashMap<>();
-            serviceMap.put("user_name", user_name);
-            serviceMap.put("hp", hp);
-            serviceMap.put("email", email);
+            serviceMap.put("user_name", user_name.trim());
+            serviceMap.put("hp", cleanHp); // 숫자만 DB 조회
 
-            boolean emailSent = userService.sendFoundIdByEmail(serviceMap);
+            UserVO user = userService.findUserByNameAndHp(serviceMap);
 
-            if (emailSent) {
+            if (user != null) {
+                String fullEmail = user.getLogin_id();
+                String regDate = user.getReg_date();
+
+                // 날짜 형식 변환 (yyyy-MM-dd HH:mm:ss → yyyy-MM-dd)
+                if (regDate != null && regDate.length() >= 10) {
+                    regDate = regDate.substring(0, 10); // 앞의 10자리만 (yyyy-MM-dd)
+                }
+
                 resultMap.put("result", "Y");
-                resultMap.put("message", "입력하신 이메일로 아이디를 발송했습니다.");
+                resultMap.put("found_id", fullEmail);
+                resultMap.put("reg_date", regDate);
+                resultMap.put("message", "등록된 아이디를 확인해 주세요");
                 return ResponseEntity.ok(resultMap);
             } else {
                 resultMap.put("result", "N");
@@ -477,6 +511,25 @@ public class UserController {
             resultMap.put("result", "N");
             resultMap.put("message", "아이디 찾기 중 오류가 발생했습니다.");
             return ResponseEntity.internalServerError().body(resultMap);
+        }
+    }
+
+    // 이메일 마스킹 헬퍼 함수 추후 사용
+    private String maskEmail(String email) {
+        if (email == null || email.length() <= 3) {
+            return "***@***";
+        }
+
+        String[] parts = email.split("@");
+        if (parts.length != 2) return "***@***";
+
+        String localPart = parts[0];
+        String domain = parts[1];
+
+        if (localPart.length() <= 3) {
+            return localPart.charAt(0) + "**@" + domain;
+        } else {
+            return localPart.substring(0, 3) + "***@" + domain;
         }
     }
 
@@ -494,38 +547,84 @@ public class UserController {
         Map<String, Object> resultMap = new HashMap<>();
 
         try {
-            String login_id = (String) paramMap.get("login_id");
-            String user_name = (String) paramMap.get("user_name");
-            String hp = (String) paramMap.get("hp");
+            String email = (String) paramMap.get("email");
 
-            if (login_id == null || user_name == null || hp == null) {
+            if (email == null || email.trim().isEmpty()) {
                 resultMap.put("result", "N");
-                resultMap.put("message", "아이디, 이름, 연락처를 모두 입력해주세요.");
+                resultMap.put("message", "이메일을 입력해주세요.");
                 return ResponseEntity.badRequest().body(resultMap);
             }
 
-            // DB 컬럼명 통일
-            Map<String, Object> serviceMap = new HashMap<>();
-            serviceMap.put("login_id", login_id);
-            serviceMap.put("user_name", user_name);
-            serviceMap.put("hp", hp);
+            // 이메일이 DB에 존재하는지 확인
+            boolean emailExists = userService.checkEmailExists(email);
 
-            boolean emailSent = userService.sendPasswordResetEmailVerification(serviceMap);
+            if (!emailExists) {
+                resultMap.put("result", "N");
+                resultMap.put("message", "등록되지 않은 이메일입니다.");
+                return ResponseEntity.badRequest().body(resultMap);
+            }
+
+            // 인증번호 발송
+            boolean emailSent = userService.sendPasswordResetVerification(email);
 
             if (emailSent) {
                 resultMap.put("result", "Y");
-                resultMap.put("message", "비밀번호 재설정 토큰이 이메일로 발송되었습니다.");
+                resultMap.put("message", "인증번호가 이메일로 발송되었습니다.");
                 return ResponseEntity.ok(resultMap);
             } else {
                 resultMap.put("result", "N");
-                resultMap.put("message", "입력하신 정보와 일치하는 계정을 찾을 수 없습니다.");
+                resultMap.put("message", "이메일 발송에 실패했습니다.");
                 return ResponseEntity.badRequest().body(resultMap);
             }
 
         } catch (Exception e) {
-            logger.error("Error in sendPasswordResetToken: ", e);
+            logger.error("Error in sendPasswordResetEmail: ", e);
             resultMap.put("result", "N");
-            resultMap.put("message", "토큰 발송 중 오류가 발생했습니다.");
+            resultMap.put("message", "이메일 발송 중 오류가 발생했습니다.");
+            return ResponseEntity.internalServerError().body(resultMap);
+        }
+    }
+
+    /**
+     * 비밀번호 찾기
+     */
+    @PostMapping("/verify-password-reset-and-send-new")
+    public ResponseEntity<Map<String, Object>> verifyPasswordResetAndSendNew(
+            @RequestBody Map<String, Object> paramMap,
+            HttpServletRequest request) {
+
+        logger.info("+ Start UserController.verifyPasswordResetAndSendNew");
+        logger.info("   - ParamMap : " + paramMap);
+
+        Map<String, Object> resultMap = new HashMap<>();
+
+        try {
+            String email = (String) paramMap.get("email");
+            String verificationCode = (String) paramMap.get("verification_code");
+
+            if (email == null || verificationCode == null) {
+                resultMap.put("result", "N");
+                resultMap.put("message", "이메일과 인증번호를 모두 입력해주세요.");
+                return ResponseEntity.badRequest().body(resultMap);
+            }
+
+            // 인증번호 확인 및 새 비밀번호 생성/발송
+            boolean success = userService.verifyCodeAndResetPassword(email, verificationCode);
+
+            if (success) {
+                resultMap.put("result", "Y");
+                resultMap.put("message", "새로운 비밀번호가 이메일로 발송되었습니다.");
+                return ResponseEntity.ok(resultMap);
+            } else {
+                resultMap.put("result", "N");
+                resultMap.put("message", "인증번호가 올바르지 않거나 만료되었습니다.");
+                return ResponseEntity.badRequest().body(resultMap);
+            }
+
+        } catch (Exception e) {
+            logger.error("Error in verifyPasswordResetAndSendNew: ", e);
+            resultMap.put("result", "N");
+            resultMap.put("message", "비밀번호 재설정 중 오류가 발생했습니다.");
             return ResponseEntity.internalServerError().body(resultMap);
         }
     }
@@ -629,53 +728,100 @@ public class UserController {
         }
     }
 
-        // 회원탈퇴기능 비밀번호 인증
-        @PostMapping("/userInfoCheck")
-        public ResponseEntity<Map<String, Object>> userInfoCheck(
-                @RequestBody Map<String, Object> paramMap,
-                HttpServletRequest request,
-                HttpSession session) {
-    
-            logger.info("+ Start UserController.userInfoCheck");
-            logger.info("   - ParamMap : " + paramMap);
-    
-            Map<String, Object> resultMap = new HashMap<>();
-    
-            try {
-                String loginId = (String) paramMap.get("login_id");
-                String password = (String) paramMap.get("password");
-    
-                if (loginId == null || password == null) {
-                    resultMap.put("result", "N");
-                    resultMap.put("message", "아이디와 비밀번호를 입력해주세요.");
-                    return ResponseEntity.ok(resultMap);
-                }
-    
-                // UserService에 전달할 paramMap 준비
-                Map<String, Object> serviceMap = new HashMap<>();
-                serviceMap.put("loginId", loginId);
-    
-                UserVO user = userService.loginUser(serviceMap); // DB에서 login_id로 사용자 정보 조회
-    
-                BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-    
-                if (user != null && passwordEncoder.matches(password, user.getPassword())) {
-                    resultMap.put("result", "Y");
-                    resultMap.put("userInfo", user);
-                    return ResponseEntity.ok(resultMap);
-                } else {
-                    resultMap.put("result", "N");
-                    resultMap.put("message", "아이디 또는 비밀번호가 올바르지 않습니다.");
-                    return ResponseEntity.ok(resultMap);
-                }
-    
-            } catch (Exception e) {
-                logger.error("Error in loginUser: ", e);
-                resultMap.put("result", "N");
-                resultMap.put("message", "정보 확인 중 오류가 발생했습니다.");
-                return ResponseEntity.internalServerError().body(resultMap);
-            }
-        }
+    @PostMapping("/userInfoCheck")
+    public ResponseEntity<Map<String, Object>> userInfoCheck(
+            @RequestBody Map<String, Object> paramMap,
+            HttpServletRequest request,
+            HttpServletResponse response) {
 
+        logger.info("+ Start UserController.userInfoCheck");
+        logger.info("   - ParamMap : " + paramMap);
+
+        Map<String, Object> resultMap = new HashMap<>();
+
+        try {
+            // 현재 로그인된 사용자 정보 가져오기 (Spring Security)
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+            if (authentication == null || !authentication.isAuthenticated() ||
+                    !(authentication.getPrincipal() instanceof UserPrincipal)) {
+
+                resultMap.put("result", "N");
+                resultMap.put("message", "로그인이 필요합니다.");
+                return ResponseEntity.ok(resultMap);
+            }
+
+            UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+            String currentLoginId = userPrincipal.getLogin_id();
+            Long currentUserNo = userPrincipal.getUser_no();
+
+            // 입력받은 비밀번호
+            String inputPassword = (String) paramMap.get("password");
+
+            if (inputPassword == null || inputPassword.trim().isEmpty()) {
+                resultMap.put("result", "N");
+                resultMap.put("message", "비밀번호를 입력해주세요.");
+                return ResponseEntity.ok(resultMap);
+            }
+
+            // 1단계: 비밀번호 확인
+            Map<String, Object> userCheckMap = new HashMap<>();
+            userCheckMap.put("login_id", currentLoginId);
+
+            UserVO user = userService.getUserByLoginId(userCheckMap);
+
+            if (user == null) {
+                resultMap.put("result", "N");
+                resultMap.put("message", "사용자 정보를 찾을 수 없습니다.");
+                return ResponseEntity.ok(resultMap);
+            }
+
+            // BCrypt 비밀번호 검증
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            if (!passwordEncoder.matches(inputPassword, user.getPassword())) {
+                resultMap.put("result", "N");
+                resultMap.put("message", "비밀번호가 올바르지 않습니다.");
+                return ResponseEntity.ok(resultMap);
+            }
+
+            // 2단계: 탈퇴 처리
+            Map<String, Object> withdrawMap = new HashMap<>();
+            withdrawMap.put("user_no", currentUserNo);
+            withdrawMap.put("login_id", currentLoginId);
+
+            int withdrawResult = userService.withdrawUser(withdrawMap);
+
+            if (withdrawResult > 0) {
+                // 3단계: 자동 로그아웃 처리
+                try {
+                    // Long → Integer 변환
+                    userService.invalidateUserTokens(currentUserNo.intValue(), "USER_WITHDRAWAL");
+
+                    // 쿠키 삭제
+                    cookieUtil.deleteAllAuthCookies(response);
+
+                    logger.info("회원 탈퇴 완료 및 로그아웃 처리: " + currentLoginId);
+
+                } catch (Exception logoutError) {
+                    logger.error("탈퇴 후 로그아웃 처리 중 오류: ", logoutError);
+                }
+
+                resultMap.put("result", "Y");
+                resultMap.put("message", "회원 탈퇴가 완료되었습니다.");
+                return ResponseEntity.ok(resultMap);
+
+            } else {
+                resultMap.put("result", "N");
+                resultMap.put("message", "회원 탈퇴 처리 중 오류가 발생했습니다.");
+                return ResponseEntity.ok(resultMap);
+            }
+
+        } catch (Exception e) {
+            logger.error("Error in userInfoCheck: ", e);
+            resultMap.put("result", "N");
+            resultMap.put("message", "회원 탈퇴 중 오류가 발생했습니다.");
+            return ResponseEntity.internalServerError().body(resultMap);
+        }
+    }
 
 }

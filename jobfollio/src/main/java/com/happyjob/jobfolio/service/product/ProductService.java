@@ -22,12 +22,12 @@ public class ProductService {
 	@Autowired
 	private ProductMapper productMapper;
 
-	// 메인 페이지 - 이용권 리스트
+	// 메인 페이지 - 이용권 리스트 조회
 	public List<ProductModel> mainProductList(Map<String, Object> paramMap) throws Exception {
 		return productMapper.mainProductList(paramMap);
 	}
 
-	// 관리자 페이지 - 이용권 리스트
+	// 관리자 페이지 - 이용권 리스트 조회
 	public List<ProductModel> productList(Map<String, Object> paramMap) throws Exception {
 		return productMapper.productList(paramMap);
 	}
@@ -35,7 +35,6 @@ public class ProductService {
 	public int productCnt(Map<String, Object> paramMap) throws Exception {
 		return productMapper.productCnt(paramMap);
 	}
-
 
 	public void insertProduct(Map<String, Object> paramMap) throws Exception {
 		productMapper.insertProduct(paramMap);
@@ -46,6 +45,7 @@ public class ProductService {
 	}
 
 	public void deleteProduct(Map<String, Object> paramMap) throws Exception {
-		productMapper.deleteProduct(paramMap);
+		List<Integer> productNos = (List<Integer>) paramMap.get("product_no");
+		productMapper.deleteProduct(productNos);
 	}
 }

@@ -51,7 +51,8 @@ public interface MypageMapper {
     // 유저 회원 탈퇴
     int deleteByUserId(Long user_no);
 
-    // 상세코드 조회
-    public void searchByDetailCoad(@Param("user_no")Long userNo, @Param("skill_code")String skillCode,@Param("group_code")String groupCode);
+
+    // 모든 공통 스킬 조회
+    public List<CommSkillDto> selectAllCommonSkills();
 
 }

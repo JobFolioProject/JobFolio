@@ -7,17 +7,26 @@ import EduSectionModify from "./EduSectionModify";
 import SkillSectionModify from "./SkillSectionModify";
 import LanguageSectionModify from "./LanguageSectionModify";
 import CertSectionModify from "./CertSectionModify";
-import axios from "axios";
+import axios from "../../utils/axiosConfig";
 import Loading from "../common/Loading";
+import { useAuth } from "../../context/AuthContext";
 
-const ResumeEditModal = ({ open, onClose, props, htmlString }) => {
+const ResumeEditModal = ({
+  open,
+  onClose,
+  resumeTitle,
+  htmlString,
+  publication,
+}) => {
   const [initHtmlcontent, setInitHtmlContent] = useState("");
+  const { user, isAuthenticated } = useAuth();
   const [htmlContent, setHtmlContent] = useState("");
   const [initalResumeInfo, setInitialResumeInfo] = useState(null);
   const [aiComment, setAiComment] = useState(null);
   const [loading, setLoading] = useState(false);
   const [resumeInfo, setResumeInfo] = useState({
     name: "",
+    title: "",
     address: "",
     email: "",
     hp: "",
@@ -26,6 +35,7 @@ const ResumeEditModal = ({ open, onClose, props, htmlString }) => {
     resumeNo: "",
     templateNo: "",
     coverLetter: "",
+    publication_yn: "",
     education: [
       {
         school_name: "",
@@ -78,7 +88,7 @@ const ResumeEditModal = ({ open, onClose, props, htmlString }) => {
   useEffect(() => {
     setHtmlContent(htmlString);
     setInitHtmlContent(htmlString);
-  }, [htmlString]);
+  }, [htmlString, resumeTitle]);
 
   // htmlContent에 있는 특정 class별로 변수 set
   useEffect(() => {
@@ -217,6 +227,7 @@ const ResumeEditModal = ({ open, onClose, props, htmlString }) => {
       }));
 
       const parsedResumeInfo = {
+        title: resumeTitle,
         name: nameDiv ? nameDiv.innerText : "",
         desired_position: posDiv ? posDiv.innerText : "",
         address: addressDiv ? addressDiv.innerText : "",
@@ -229,6 +240,7 @@ const ResumeEditModal = ({ open, onClose, props, htmlString }) => {
         certifications: certificationList,
         languages: languageList,
         coverLetter: coverLetterDiv ? coverLetterDiv.innerText : "",
+        publication_yn: publication,
       };
 
       setResumeInfo(parsedResumeInfo);
@@ -480,11 +492,23 @@ const ResumeEditModal = ({ open, onClose, props, htmlString }) => {
     setSelectedRadio(event.target.id);
   };
 
+  const publicationToggle = (event) => {
+    setResumeInfo((prev) => ({
+      ...prev,
+      publication_yn: event.target.value,
+    }));
+  };
+
   // 이력서 수정 버튼 클릭 이벤트
   const saveModify = async () => {
-    // const updatedHtml = getPreviewHtml();
+    const updatedHtml = getPreviewHtml();
     await axios
-      .post("/resume/saveModifiedResume", { resumeInfo: resumeInfo })
+      .post("/api/resume/saveModifiedResume", {
+        userNo: user.userNo,
+        resumeInfo: resumeInfo,
+        templateNo: 2,
+        html: updatedHtml,
+      })
       .then((res) => {
         console.log(res);
       })
@@ -505,12 +529,11 @@ const ResumeEditModal = ({ open, onClose, props, htmlString }) => {
   };
 
   const getAiComment = async () => {
-    console.log(resumeInfo);
     setLoading(true);
     await axios
-      .post("/resume/getAiComment", { resumeInfo: resumeInfo })
+      .post("/api/resume/getAiComment", { resumeInfo: resumeInfo })
       .then((res) => {
-        const parsedAnswer = JSON.parse(res.data.response);
+        const parsedAnswer = JSON.parse(res.response);
         setAiComment(parsedAnswer.choices[0].message.content);
       })
       .catch((err) => {
@@ -621,7 +644,37 @@ const ResumeEditModal = ({ open, onClose, props, htmlString }) => {
             AI comment
           </button>
         </div>
-        <Loading loading={loading}></Loading>
+        <div className="publication_title">
+          <h3> 이력서 공개 여부 </h3>
+        </div>
+
+        <div className="publication_ratio_area">
+          <input
+            type="radio"
+            name="publication_yn"
+            id="public"
+            value="Y"
+            onChange={publicationToggle}
+            checked={resumeInfo.publication_yn === "Y"}
+            className="custom-radio"
+          />
+          <label htmlFor="public" className="radio-label">
+            공개
+          </label>
+
+          <input
+            type="radio"
+            name="publication_yn"
+            id="private"
+            value="N"
+            onChange={publicationToggle}
+            checked={resumeInfo.publication_yn === "N"}
+            className="custom-radio"
+          />
+          <label htmlFor="private" className="radio-label">
+            비공개
+          </label>
+        </div>
 
         <div className="buttonRow">
           <button className="secondaryBtn" onClick={saveModify}>
@@ -632,6 +685,7 @@ const ResumeEditModal = ({ open, onClose, props, htmlString }) => {
           </button>
         </div>
       </div>
+      <Loading loading={loading}></Loading>
     </div>
   );
 };

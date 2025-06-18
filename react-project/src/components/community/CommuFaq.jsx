@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from "../../utils/axiosConfig";
 import '../../css/community/CommuFaq.css';
 import CommuMenuBar from './CommuMenuBar';
 import { useState, useEffect } from 'react';
@@ -9,14 +9,14 @@ const CommuFaq = () => {
     const [ openItem, setOpenItem ] = useState(null);
 
     useEffect(() => {
-        axios.get('/api/board/list', {
+        axios.get('/api/board/user/faq/list', {
             params : {
                 board_type : "F"
             }
         })
           .then((res) => {
-            console.log('받은 데이터 : ', res.data);
-            setFaqList(res.data);
+            console.log('받은 데이터 : ', res);
+            setFaqList(res);
           })  
           .catch((err) => {
             console.error('FAQ 불러오기 실패 : ', err);

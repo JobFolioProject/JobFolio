@@ -72,4 +72,9 @@ public class AdminCommunityService {
         adminCommunityMapper.updatePriority(boardNo1, priority2);
         adminCommunityMapper.updatePriority(boardNo2, priority1);
     }
+
+    // 공개/비공개 토글
+    public void updateStatusYn(int boardNo, String statusYn) {
+        adminCommunityMapper.updateStatusYn(boardNo, statusYn);
+    }
 }

@@ -28,12 +28,14 @@ public class ResumeInfoVO {
     /** 이력서 파일 논리경로 */
     private String resume_file_lopath;
 
+
     /** 사용자가 입력한 자기소개서 내용 (또는 AI 생성 전 입력될 초기값) */
     private String myCoverLetter;
 
     /** 학력 정보 리스트 (사용자 DB 저장용 아님, AI 프롬프트 생성 시 사용) */
     private List<EduInfoVO> newEducation;
     
+    private String publication_yn;
 
     public int getResume_no() {
         return resume_no;
@@ -99,6 +101,7 @@ public class ResumeInfoVO {
         this.resume_file_lopath = resume_file_lopath;
     }
 
+
     public List<EduInfoVO> getNewEducation() {
         return newEducation;
     }
@@ -113,5 +116,13 @@ public class ResumeInfoVO {
 
     public void setMyCoverLetter(String myCoverLetter) {
         this.myCoverLetter = myCoverLetter;
+
+    public String getPublication_yn() {
+        return publication_yn;
+    }
+
+    public void setPublication_yn(String publication_yn) {
+        this.publication_yn = publication_yn;
+
     }
 }

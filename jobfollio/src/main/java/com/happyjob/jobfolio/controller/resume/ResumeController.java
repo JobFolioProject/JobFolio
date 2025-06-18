@@ -12,6 +12,7 @@ import com.happyjob.jobfolio.vo.mypage.CertificateVO;
 import com.happyjob.jobfolio.vo.resume.ResumeInfoVO;
 import com.happyjob.jobfolio.vo.resume.TemplateVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -169,6 +170,7 @@ public class ResumeController {
             resumeInfoVO.setTitle(paramMap.get("title").toString());
             resumeInfoVO.setDesired_position(paramMap.get("desired_position").toString());
             resumeInfoVO.setTemplate_no(Integer.parseInt(paramMap.get("template_no").toString()));
+            resumeInfoVO.setPublication_yn(paramMap.get("publication_yn").toString());
             // 파일명
             resumeInfoVO.setResume_file_name(fileName);
             // 물리경로 (Physical Path)
@@ -208,11 +210,43 @@ public class ResumeController {
     }
 
     @RequestMapping("/saveModifiedResume")
-    public Map<String,Object> saveModifiedResume(@RequestBody Map<String,Object> paramMap){
+    public Map<String,Object> saveModifiedResume(@RequestBody Map<String,Object> paramMap) throws IOException {
         Map<String,Object> resultMap = new HashMap<>();
+        ResumeInfoVO resumeInfoVO = new ResumeInfoVO();
+        Map<String, Object> resumeInfo = (Map<String, Object>) paramMap.get("resumeInfo");
+        Long user_no = Long.valueOf(paramMap.get("userNo").toString());
+
+
 
         String htmlContent = paramMap.get("html").toString();
 
+        String outputDir = "X:/resume_output/resume_made";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
+        String timestamp = LocalDateTime.now().format(formatter);
+        String fileName = "modifiedResume_" + user_no + "_" + timestamp + ".html";
+        Path dirPath = Paths.get(outputDir);
+        Path filePath = dirPath.resolve(fileName);
+
+        if (Files.notExists(dirPath)) {
+            Files.createDirectories(dirPath);
+        }
+
+        byte[] bytes = htmlContent.getBytes(StandardCharsets.UTF_8);
+        Files.write(filePath, bytes);
+
+        resumeInfoVO.setUser_no(Integer.parseInt(paramMap.get("userNo").toString()));
+        resumeInfoVO.setTemplate_no(Integer.parseInt(paramMap.get("templateNo").toString()));
+        resumeInfoVO.setTitle(resumeInfo.get("title").toString());
+        resumeInfoVO.setDesired_position(resumeInfo.get("desired_position").toString());
+        resumeInfoVO.setResume_file_name(fileName);
+        resumeInfoVO.setResume_file_pypath(filePath.toString());
+        resumeInfoVO.setPublication_yn(resumeInfo.get("publication_yn").toString());
+
+
+        String logicalBase = "/resume_output/resume_made/";
+        resumeInfoVO.setResume_file_lopath(logicalBase + fileName);
+        int result = resumeService.insertResumeInfo(resumeInfoVO);
+        resultMap.put("result", result);
 
         return resultMap;
 
@@ -306,7 +340,6 @@ public class ResumeController {
 
         Path path = Paths.get(resume_file_path);
         String html = new String(Files.readAllBytes(path), StandardCharsets.UTF_8);
-//        Map<String,Object> resultMap = new HashMap<>();
 
         return ResponseEntity.ok().body(html);
     }
@@ -354,12 +387,17 @@ public class ResumeController {
 
     @PostMapping("/deleteResume")
     public ResponseEntity<Map<String,Object>> deleteResume(@RequestBody Map<String,Integer> requestMap) {
-        int resume_no = requestMap.get("resume_no");
-        int result = resumeService.deleteResume(resume_no);
-
         Map<String, Object> resultMap = new HashMap<>();
-        resultMap.put("result", result);
-        return ResponseEntity.ok(resultMap);
+            int resume_no = requestMap.get("resume_no");
+            int result = resumeService.deleteResume(resume_no);
+            if (result == 1) {
+                resultMap.put("message", "Y");
+                return ResponseEntity.ok(resultMap);
+            } else {
+                resultMap.put("message", "N");
+                return ResponseEntity.ok(resultMap);
+            }
+
     }
 
 
