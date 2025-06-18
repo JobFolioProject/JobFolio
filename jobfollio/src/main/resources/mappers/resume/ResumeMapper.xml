@@ -15,7 +15,8 @@
 			resume_file_name,
 			resume_file_pypath,
 			resume_file_lopath,
-			publication_yn
+			publication_yn,
+			create_date
 		FROM tb_resume_info
 		WHERE user_no = #{user_no}
 		  and status_yn = 'N'
@@ -75,7 +76,8 @@
 			resume_file_pypath,
 			resume_file_lopath,
 		    status_yn,
-		    publication_yn
+		    publication_yn,
+			create_date
 		) VALUES (
 					 #{user_no},
 					 #{title},
@@ -85,7 +87,8 @@
 					 #{resume_file_pypath},
 					 #{resume_file_lopath},
 		             'N',
-		          	 #{publication_yn}
+		          	 #{publication_yn},
+					 NOW()
 				 )
 	</insert>
 
