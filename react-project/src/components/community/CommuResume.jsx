@@ -19,7 +19,7 @@ const CommuResume = () => {
   const { user, isAuthenticated } = useAuth();
 
    
-    
+    // 이력서 불러오기
     const fetchResumes = async () => {
       try {
         const userNo = user.userNo        
@@ -61,6 +61,7 @@ const CommuResume = () => {
       
     }, [currentPage, user]);
 
+    // 이력서 좋아요
     const resumeLike = async(resume_no) =>{
         try {
         const userNo = user.userNo        
@@ -77,6 +78,7 @@ const CommuResume = () => {
         fetchResumes();
     }
 
+    // 이력서 좋아요 취소
     const resumeUnLike = async(resume_no) =>{
         try {
         const userNo = user.userNo        
@@ -92,6 +94,15 @@ const CommuResume = () => {
         }
         fetchResumes();
     }
+
+     // 팝업 열기 유틸
+    const openResumePopup = (physicalPath) => {
+        const path = physicalPath
+            .replace(/^.*?resume_output/, '/resumes')
+            .replace(/\\/g,'/');
+        const url = `http://localhost:80${path}`;
+        window.open(url, '_blank', 'width=900,height=700');
+    };
 
   return (
     <>
@@ -119,7 +130,7 @@ const CommuResume = () => {
                     color={template.resume_liked === 1 ? 'error' : 'inherit'}
                     onClick={template.resume_liked === 0 ? ()=>resumeLike(template.resume_no) : ()=>resumeUnLike(template.resume_no)}
                 />
-                <div className="template-slide">
+                <div className="template-slide" onClick={() => openResumePopup(template.resume_file_pypath)}>
                     <iframe
                     srcDoc={template.html}
                     title={`템플릿 미리보기 ${template.title}`}
