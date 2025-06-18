@@ -21,7 +21,6 @@ const axiosInstance = axios.create({
 
 // 관리자용 axios 인스턴스 생성
 const instanceAdmin = axios.create({
-  headers: { "Content-Type": "application/json" },
   timeout: 5000,
   withCredentials: true,
 });
@@ -29,20 +28,26 @@ const instanceAdmin = axios.create({
 // 공통 요청 인터셉터 함수
 const createRequestInterceptor = (isAdmin = false) => {
   return (config) => {
-    // 기본 헤더 설정
-    config.headers["Content-Type"] = "application/json";
+    // 1) headers 객체 보장
+    config.headers = config.headers || {};
 
-    // Bearer Token 추가 (일반 사용자용)
-    if (authContextRef?.accessToken) {
-      config.headers.Authorization = `Bearer ${authContextRef.accessToken}`;
-      // 중요한 API 요청에만 로그 출력
-      if (config.url.includes("check-login-status")) {
-        // console.log(" Bearer Token으로 인증 요청:", config.url);
-      }
+    // 2) JSON 헤더가 없고, FormData가 아닐 때만 JSON 설정
+    if (
+      config.headers["Content-Type"] === undefined &&
+      !(config.data instanceof FormData)
+    ) {
+      config.headers["Content-Type"] = "application/json";
     }
 
-    // 관리자 권한 체크를 인터셉터에서 제거 (초기화 타이밍 문제 해결)
-    // 대신 컴포넌트 레벨에서 권한 체크하거나 백엔드에서 403 에러로 처리
+    // 3) 토큰 추가
+    if (authContextRef?.accessToken) {
+      config.headers.Authorization = `Bearer ${authContextRef.accessToken}`;
+    }
+
+    // 4) Admin 플래그
+    if (isAdmin) {
+      config._isAdmin = true;
+    }
 
     return config;
   };

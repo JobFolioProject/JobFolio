@@ -181,6 +181,24 @@
 		  AND withdrawal_date IS NULL
 	</select>
 
+	<!-- 목록 조회 (페이징) -->
+	<select id="selectPagedNormalBoardList" resultType="com.happyjob.jobfolio.vo.resume.ResumeInfoVO" parameterType="map">
+		SELECT *
+		FROM
+		tb_resume_info
+		WHERE
+		status_yn = 'N'
+		AND
+		publication_yn = 'Y'
+	</select>
+
+	<!-- 총 개수 조회 -->
+	<select id="selectNormalBoardTotalCount" resultType="int" parameterType="map">
+		SELECT COUNT(*)
+		FROM tb_resume_info
+		WHERE status_yn = 'N'
+	</select>
+
 
 
 <!--	<select id="selectSkillInfoList"-->

@@ -42,10 +42,10 @@ const CommuInfo = () => {
         <ul className="info-list">
         {infoList.map((item) => (
           <li key={item.id} className={`info-item ${openItem === item.id ? 'open' : ''}`}>
-            <div className="question" onClick={() => toggleItem(item.id)}>
+            <div className="question-info" onClick={() => toggleItem(item.id)}>
               <div className='question-left'>
               <span className="info-Q">Q.</span>
-              <span> {item.question}</span>
+              <span className={`info-question ${openItem === item.id ? 'active' : 'inactive'}`}> {item.question}</span>
               </div>
               <KeyboardArrowDownIcon className="iconA" />
             </div>

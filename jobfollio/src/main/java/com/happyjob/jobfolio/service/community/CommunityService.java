@@ -34,11 +34,11 @@ public class CommunityService {
         return communityMapper.selectBoardDetail(boardNo);
     }
 
-    public CommunityBoardVo getPreviousPost(int boardNo) {
-        return communityMapper.selectPreviousPost(boardNo);
+    public CommunityBoardVo getPreviousPost(Map<String, Object> criteria) {
+        return communityMapper.selectPreviousPost(criteria);
     }
 
-    public CommunityBoardVo getNextPost(int boardNo) {
-        return communityMapper.selectNextPost(boardNo);
+    public CommunityBoardVo getNextPost(Map<String, Object> criteria) {
+        return communityMapper.selectNextPost(criteria);
     }
 }

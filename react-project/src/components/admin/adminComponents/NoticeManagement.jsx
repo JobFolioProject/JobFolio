@@ -76,11 +76,13 @@ const NoticeManagement = () => {
     if (!confirmed) return;
 
     try {
-      await axios.post('/api/admin/community/delete', selectedIds, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      await axios.delete(
+        '/api/admin/community/deleteBatch',
+        {
+          data: selectedIds,  
+          headers: { 'Content-Type': 'application/json' }
+        }
+      );
       alert('삭제가 완료되었습니다.');
       setSelectedIds([]);
       fetchNotices();
@@ -299,7 +301,7 @@ const NoticeManagement = () => {
                     <th className="col-date">작성일</th>
                     <th className="col-writer">작성자</th>
                     <th className="col-priority">우선순위</th>
-                    <th className="col-visible">공개여부</th>
+                    <th className="col-visible">표시여부</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -335,11 +337,11 @@ const NoticeManagement = () => {
                               <span className="spinner" />
                             ) : item.statusYn === 'Y' ? (
                               <>
-                                <VisibilityIcon className="visiblity-icon" /> 공개
+                                <VisibilityIcon className="visiblity-icon" /> 노출
                               </>
                             ) : (
                               <>
-                                <InvisibilityIcon className="visiblity-icon" /> 비공개
+                                <InvisibilityIcon className="visiblity-icon" /> 숨김
                               </>
                             )}
                           </button>
@@ -400,7 +402,7 @@ const NoticeManagement = () => {
                   <th className="col-title">제목</th>
                   <th className="col-date">작성일</th>
                   <th className="col-writer">작성자</th>
-                  <th className="col-visible">공개여부</th>
+                  <th className="col-visible">표시여부</th>
                 </tr>
               </thead>
               <tbody>
@@ -431,11 +433,11 @@ const NoticeManagement = () => {
                               <span className="spinner" />
                             ) : item.statusYn === 'Y' ? (
                               <>
-                                <VisibilityIcon className="visiblity-icon" /> 공개
+                                <VisibilityIcon className="visiblity-icon" /> 노출
                               </>
                             ) : (
                               <>
-                                <InvisibilityIcon className="visiblity-icon" /> 비공개
+                                <InvisibilityIcon className="visiblity-icon" /> 숨김
                               </>
                             )}
                           </button>
