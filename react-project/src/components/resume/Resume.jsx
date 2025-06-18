@@ -53,6 +53,7 @@ const Resume = () => {
         title: '',
         desired_position: '',
         skillList: [],
+        newSkillList:[],
         link_url: '',
         //API로 불러온 기존데이터(DB에서 조회해온)
         experience: [],
@@ -95,9 +96,9 @@ const Resume = () => {
                 ...prev, //기존의 FormData 값 유지.
                 title:response.title|| '', //db에 없음. input하는 값(db에 저장x)
                 desired_position : response.desired_position|| '', //db에 없음. input하는 값(db에 저장x)
-                skillList : response.skillList || '',
+                skillList : response.skillList || [],
                 link_url : response.link_url || '', //db에 없음. input하는 값(db에 저장x)
-                experience : response.creerHistoryList || [], // API로 불러온 경력
+                experience : response.careerHistoryList || [], // API로 불러온 경력
                 education : response.educationList || [], //API로 불러온 학력
                 coverLetter : response.coverLetter || '', //db에 없음. input하는 값(db에 저장x)
                 template_no : response.template_no || null, //mypage에서 조회하는 것 아님. 즉 `/api/myPage/${userNo}/career` api 사용x
@@ -188,34 +189,42 @@ const Resume = () => {
     // }, [formData]);
    
 
-
-    // 학력 입력 변경 핸들러 (몇 번째 학력인지, 필드 이름, 값)
+//==============================공통 함수로 필드 관리==========================================
+// 학력, 경력 입력 변경 핸들러 (몇 번째 학력,경력인지, 필드 이름, 값)
     //최대 1개의 객체만 존재하도록 관리
-  const handleEducationChange = (e) => {
+
+   const handleFieldChange = (e, type) => {
     const { name, value } = e.target;
     setFormData((prev) =>({
         ...prev,
-        newEducation : [ // newEducation은 항상 1개 항목만 있을 것이므로 직접 업데이트
+        [type] : [ // newEducation은 항상 1개 항목만 있을 것이므로 직접 업데이트
             {
-                ...prev.newEducation[0], // 현재 입력 중인 첫 번째 (유일한) 항목
+                ...prev[type][0], // 현재 입력 중인 첫 번째 (유일한) 항목
                 [name]: value,
             }
         ]
     }));
   };
 
-  //학력 입력 날짜 변경 핸들러(Calendar 컴포넌트의 onChangeStartDate, onChangeEndDate prop에 연결)
-  const handleEducationDateChange = (field, date) => {
+  //학력, 경력 입력 날짜 변경 핸들러(Calendar 컴포넌트의 onChangeStartDate, onChangeEndDate prop에 연결)
+  const handleFieldDateChange = (type,field, date) => {
     setFormData((prev)=>({
         ...prev,
-        newEducation: [
+        [type]: [
             {
-                ...prev.newEducation[0],
+                ...prev[type][0],
                 [field]: date,
             }
         ]
     }))
-  }
+} ;
+
+
+
+
+//============================공통함수 끝 ==============================================
+
+
 
    //학력 추가 버튼 클릭 시 새 학력 항목 추가 ! 근데 기존 학력과 별도로, 새로운 학력 배열에 추가
   const addEducation = () => {
@@ -238,92 +247,106 @@ const Resume = () => {
     }));
   };
 
-   // 새로 추가한 학력 '저장' 버튼 클릭 시 호출
-   const saveEducation = () => {
-    if (formData.newEducation.length === 0) return; //저장할 내용이 없으면 리턴
 
-    const newEduEntry = formData.newEducation[0];
+  // 새로 추가한 학력 '저장' 버튼 클릭 시 호출
+const saveFieldData = (type) => {
+    if (!['newEducation', 'newExperience'].includes(type)) return;
 
-    //필수 필드 유효성 검사(예시)
-    if (!newEduEntry.school_name || !newEduEntry.major || !newEduEntry.enroll_date || !newEduEntry.grad_date){
-        alert('학교명, 전공, 입학일, 졸업일은 필수 입력 사항입니다.')
+    const fieldMap = {
+        newEducation: {
+            targetKey: 'education',
+            requiredFields: [ 'edu_no', 'enroll_date', 'gpa', 'grad_date', 'major', 'sub_major'],
+            idKey: 'edu_no' 
+        },
+        newExperience: {
+            targetKey: 'experience',
+            requiredFields: ['company_name', 'position', 'start_date', 'end_date', 'notes'],
+            idKey: 'career_no'
+        }
+    };
+    
+    const {targetKey, requiredFields, idKey} = fieldMap[type];
+    const newEntry = formData[type][0];
+
+    const missingField = requiredFields.find((field)=> !newEntry?.[field]);
+    if (missingField){
+        alert(`${missingField}은 필수 입력 항목입니다`);
         return;
     }
+
+    // 저장
     setFormData((prev)=>({
         ...prev,
-        education:[
-            ...prev.education,
-            {...newEduEntry, edu_no: Date.now()} //⭐ 저장 시에도 고유 edu_no 부여 ⭐
+        [targetKey]: [
+            ...prev[targetKey],
+            {...newEntry, [idKey]:Date.now()},
         ],
-        newEducation: [] // 임시 학력 데이터 비우기 ...
-    }))
-   }
-   //취소 버튼으로 바꿔야 함. 
- // 새로 추가한 학력 '삭제' 버튼 클릭 시 호출 (저장 안 하고 버림)
-    // const removeNewEducation = () => {
-    //     setFormData((prev) => ({
-    //         ...prev,
-    //         newEducation: [], // 임시 학력 데이터 비우기
-    //     }));
-    // };
+        [type]:[], //임시 입력 데이터 비우기
+    }));
+}
 
 
-  // 새로 추가한 학력 '취소' 버튼 클릭 시 호출 (저장 안 하고 버림)
-    const removeNewEducation = () => {
+  // 새로 추가하는 칸의 '취소' 버튼 클릭 시 호출 (저장 안 하고 버림)
+    const removeNewField = (e, type) => {
         setFormData((prev) => ({
             ...prev,
-            newEducation: [], // 임시 학력 데이터 비우기
+            [type]: [], // 임시 학력 데이터 비우기
         }));
     };
 
 
-  //학력 삭제 핸들러 (인덱스)
-    // const removeEducation = (index) => {
-    //     setFormData((prev) => {
-    //         const newEduEntries = [...prev.newEducation];
-    //         newEduEntries.splice(index,1); // 해당 인덱스의 학력 항목 삭제
-    //         return {
-    //             ...prev,
-    //             newEducation: newEduEntries, // 업데이트된 학력 배열로 설정
-    //         }
-    //     })
-    // }
-
-
-
-    // const removeStoredEducation = (eduNoToRemove) => {
-    //     setFormData((prev) => ({
-    //         ...prev,
-    //         education: prev.education.filter(edu => edu.edu_no !== eduNoToRemove),
-    //     }));
-    // };
-    //edu.edu_no !== idToRemove가 true인 항목만 필터링 undefined면 
-    //undefined !== undefined가 false이므로 true를 걸러내지 못함.
-
     // --- ⭐⭐⭐ 핵심 디버깅 추가된 부분 ⭐⭐⭐ ---
     // 목록에 올라간 학력 항목 삭제 핸들러
-    const removeStoredEducation = (eduNoToRemove) => {
-        console.log(`removeStoredEducation 호출됨. 삭제하려는 ID: ${eduNoToRemove}`); // 디버깅
 
-        setFormData((prev) => {
-            // 필터링 전의 education 배열 상태
-            console.log("Filter 전 education 배열:", prev.education); // 디버깅
+    // const removeStoredEducation = (eduNoToRemove) => {
+    //     console.log(`removeStoredEducation 호출됨. 삭제하려는 ID: ${eduNoToRemove}`); // 디버깅
 
-            const updatedEducation = prev.education.filter(edu => {
-                const isMatch = edu.edu_no === eduNoToRemove;
-                console.log(`  항목 ID: ${edu.edu_no}, 삭제 타겟 ID: ${eduNoToRemove}, 일치 여부: ${isMatch}`); // 디버깅: 각 항목별 비교
-                return !isMatch; // 일치하지 않는 항목만 새로운 배열에 포함 (즉, 일치하는 항목은 제외)
-            });
+    //     setFormData((prev) => {
+    //         // 필터링 전의 education 배열 상태
+    //         console.log("Filter 전 education 배열:", prev.education); // 디버깅
 
-            // 필터링 후의 education 배열 상태
-            console.log("Filter 후 updatedEducation 배열:", updatedEducation); // 디버깅
+    //         const updatedEducation = prev.education.filter(edu => {
+    //             const isMatch = edu.edu_no === eduNoToRemove;
+    //             console.log(`  항목 ID: ${edu.edu_no}, 삭제 타겟 ID: ${eduNoToRemove}, 일치 여부: ${isMatch}`); // 디버깅: 각 항목별 비교
+    //             return !isMatch; // 일치하지 않는 항목만 새로운 배열에 포함 (즉, 일치하는 항목은 제외)
+    //         });
 
-            return {
-                ...prev,
-                education: updatedEducation,
-            };
+    //         // 필터링 후의 education 배열 상태
+    //         console.log("Filter 후 updatedEducation 배열:", updatedEducation); // 디버깅
+
+    //         return {
+    //             ...prev,
+    //             education: updatedEducation,
+    //         };
+    //     });
+    // };
+
+    const removeStagedField = (type, idToRemove) => {
+        const fieldMap = {
+            education: 'edu_no',
+            experience: 'career_no',
+        };
+
+        const idKey = fieldMap[type];
+        if (!idKey){
+            console.error('삭제불가함');
+            return;
+        }
+
+        setFormData((prev)=>{
+            const originalList = prev[type];
+            const updatedList = originalList.filter((item)=>item[idKey] !== idToRemove);
+
+                    console.log(`[${type}] 삭제 전 목록:`, originalList);
+        console.log(`[${type}] 삭제할 ID:`, idToRemove);
+        console.log(`[${type}] 삭제 후 목록:`, updatedList);
+
+        return {
+            ...prev,
+            [type] : updatedList,
+        };
         });
-    };
+    }
     // --- ⭐⭐⭐ 핵심 디버깅 추가 끝 ⭐⭐⭐ ---
 
     
@@ -361,36 +384,7 @@ const Resume = () => {
     });
   };
 
-  /// 경력 입력 변경 핸들러 (newExperience 배열에 적용)
-  const handleExperienceChange = (index, e) => {
-    const {name, value} = e.target;
-    setFormData((prev) => {
-        const newExpEntries = [...prev.newExperience]; // 기존 experience 배열 복사
-        newExpEntries[index] = { // 해당 인덱스의 항목만 업데이트
-            ...newExpEntries[index],
-            [name]: value,
-        };
-        return {
-            ...prev,
-            newExperience: newExpEntries, // 업데이트된 experience 배열로 설정
-        };
-    });
-  }
 
-   //경력 입력 날짜 변경 핸들러
-  const handleExperienceDateChange = (index, field, date) => {
-    setFormData((prev) => {
-        const newExpEntries = [...prev.newExperience];
-        newExpEntries[index] = {
-            ...newExpEntries[index],
-            [field]: date,
-        };
-        return {
-            ...prev,
-            newExperience: newExpEntries, // 업데이트된 experience 배열로 설정
-        }
-    })
-  }
 
 
  
@@ -508,6 +502,23 @@ const Resume = () => {
                             console.log(`렌더링 중인 학력 항목: ID=${edu.edu_no}, 학교명=${edu.school_name}`);
                             return (
                                       <div key={`edu-${edu.edu_no}`} className="education-row-display">
+                                        <PrettyBtn 
+                                            type="button" 
+                                            size="sm" 
+                                            onClick={() => removeStagedField('education', edu.edu_no)} // id를 전달하여 해당 항목 삭제
+                                            style={{ marginLeft: '10px' }} // 버튼 간격 조절
+                                        >
+                                            <img
+                                                src="/resources/img/minus_circle.png" // ⭐ 로컬에 저장된 이미지 파일 경로 ⭐
+                                                alt="경력 삭제" // ⭐ 접근성을 위한 alt 텍스트 필수 ⭐
+                                                style={{
+                                                    width: '20px', // 아이콘의 너비 (필요에 따라 조절)
+                                                    height: '20px', // 아이콘의 높이 (필요에 따라 조절)
+                                                    border: 'none', // 이미지에 기본적으로 생길 수 있는 테두리 제거
+                                                    backgroundColor: 'transparent'
+                                                }}
+                                            />
+                                        </PrettyBtn>
                                         <p><strong>학교명:</strong> {edu.school_name}</p>
                                         <p><strong>입학일:</strong> {edu.enroll_date ? new Date(edu.enroll_date).toLocaleDateString() : 'N/A'}
                                             {" "}
@@ -516,14 +527,6 @@ const Resume = () => {
                                         <p><strong>전공:</strong> {edu.major}</p>
                                         {edu.sub_major && <p><strong>복수전공:</strong> {edu.sub_major}</p>}
                                         {edu.gpa && <p><strong>학점:</strong> {edu.gpa}</p>}
-                                    <PrettyBtn 
-                                            type="button" 
-                                            size="sm" 
-                                            onClick={() => removeStoredEducation(edu.edu_no)} // id를 전달하여 해당 항목 삭제
-                                            style={{ marginLeft: '10px' }} // 버튼 간격 조절
-                                        >
-                                            삭제
-                                        </PrettyBtn>
                                     </div>
                                 );
                 })}
@@ -542,26 +545,27 @@ const Resume = () => {
                     )}
                          {formData.newEducation.length > 0 && (// newEducation 배열을 맵핑하여 입력 필드 생성
                             <div className="education-row-input">
-                                <input type="text" name="school_name" placeholder="학교명" onChange={handleEducationChange} value={formData.newEducation[0]?.school_name || ''}/>
+                                <input type="text" name="school_name" placeholder="학교명" onChange={(e)=>handleFieldChange(e, 'newEducation')} value={formData.newEducation[0]?.school_name || ''}/>
                                 <Calendar
                                     selectedStartDate={formData.newEducation[0]?.enroll_date}
                                     startplaceholder="입학일"
-                                    onChangeStartDate={(date) => handleEducationDateChange('enroll_date', date)}
+                                    onChangeStartDate={(date) => handleFieldDateChange('newEducation','enroll_date', date)}
                                     selectedEndDate={formData.newEducation[0]?.grad_date}
                                     endplaceholder="졸업일"
-                                    onChangeEndDate={(date) => handleEducationDateChange('grad_date', date)}
+                                    onChangeEndDate={(date) => handleFieldDateChange('newEducation','grad_date', date)}
                                 />
-                                        <input type="text" name="major" placeholder="전공" onChange={handleEducationChange} value={formData.newEducation[0]?.major || ''} />
-                                <input type="text" name="sub_major" placeholder="복수전공" onChange={handleEducationChange} value={formData.newEducation[0]?.sub_major || ''}/>
-                                <input type="text" name="gpa" placeholder="학점" onChange={handleEducationChange} value={formData.newEducation[0]?.gpa || ''}/>
-                                <PrettyBtn type="button" size="sm" onClick={saveEducation}>추가</PrettyBtn>
-                                <PrettyBtn type="button" size="sm" onClick={removeNewEducation}>취소</PrettyBtn>
+                                        <input type="text" name="major" placeholder="전공" onChange={(e)=>handleFieldChange(e, 'newEducation')} value={formData.newEducation[0]?.major || ''} />
+                                <input type="text" name="sub_major" placeholder="복수전공" onChange={(e)=>handleFieldChange(e, 'newEducation')} value={formData.newEducation[0]?.sub_major || ''}/>
+                                <input type="text" name="gpa" placeholder="학점" onChange={(e)=>handleFieldChange(e, 'newEducation')} value={formData.newEducation[0]?.gpa || ''}/>
+                                <PrettyBtn type="button" size="sm" onClick={()=>saveFieldData('newEducation')}>저장</PrettyBtn>
+                                <PrettyBtn type="button" size="sm" onClick={(e)=>removeNewField(e, 'newEducation')}>취소</PrettyBtn>
                             </div>
                         )}
                         <br />
 
 
                     {/* --- 경력 섹션 --- */}
+                    {/* exp.career_no를 key로 사용하도록 코드를 업데이트. 만약 career_no가 null 또는 undefined일 경우를 대비하여 index를 **비상용(fallback)**으로 남겨둠 */}
                 <label>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <span>경력</span>
@@ -571,7 +575,26 @@ const Resume = () => {
                             <div className="experience-display-section">
                                 <h4>기존 경력 정보</h4>
                                 {formData.experience.map((exp, index) => (
-                                    <div key={index} className="experience-row-display">
+                                    <div key={exp.career_no || index} className="experience-row-display">
+                                        <PrettyBtn
+                                            type="button"
+                                            size="sm"
+                                            // exp.career_no가 있다면 그걸 사용하고, 없다면 index를 fallback으로 사용합니다.
+                                            // removeStagedField 함수는 학력(education)과 경력(experience) 모두에 사용될 수 있도록 일반화된 이름입니다.
+                                            onClick={() => removeStagedField('experience', exp.career_no || index)}
+                                            style={{ marginRight: '10px' }} // 버튼과 텍스트 사이 간격 조절
+                                        >
+                                            <img
+                                                src="/resources/img/minus_circle.png" // ⭐ 로컬에 저장된 이미지 파일 경로 ⭐
+                                                alt="경력 삭제" // ⭐ 접근성을 위한 alt 텍스트 필수 ⭐
+                                                style={{
+                                                    width: '20px', // 아이콘의 너비 (필요에 따라 조절)
+                                                    height: '20px', // 아이콘의 높이 (필요에 따라 조절)
+                                                    border: 'none', // 이미지에 기본적으로 생길 수 있는 테두리 제거
+                                                    backgroundColor: 'transparent'
+                                                }}
+                                            />
+                                        </PrettyBtn>
                                         <p><strong>회사명:</strong> {exp.company_name}</p>
                                         <p><strong>직무:</strong> {exp.position}</p>
                                         <p>
@@ -581,6 +604,7 @@ const Resume = () => {
                                         </p>
                                         <p><strong>상세내용:</strong> {exp.notes}</p>
                                     </div>
+                                    
                                 ))}
                             </div>
                         ) : (
@@ -597,30 +621,34 @@ const Resume = () => {
                         <label>
                             <div style={{ display:'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                                 <span>새 경력 추가</span>
-                                <PrettyBtn type='button' size='sm' onClick={addExperience} disabled={(formData.experience.length + formData.newExperience.length) >= 4}>새 경력 추가</PrettyBtn>
+                                <PrettyBtn type='button' size='sm' onClick={addExperience}>새 경력 추가</PrettyBtn>
                             </div>
                         </label>
                         )}
-                        {formData.newExperience.map((exp, index)=> (// newExperience 배열을 맵핑하여 입력 필드 생성
-                            <div key={`new-exp-${index}`} className='experience-row-input'>
+                        {formData.newExperience.length > 0 && (// newEducation 배열을 맵핑하여 입력 필드 생성
+                            <div className='experience-row-input'>
                                 <div className='experience-row-input-group'>
                                 <Calendar
-                                    selectedStartDate={exp.start_date}
+                                    selectedStartDate={formData.newExperience[0]?.start_date}
                                     startplaceholder="입사일"
-                                    onChangeStartDate={(date)=>handleExperienceDateChange(index, 'start_date', date)}
-                                    selectedEndDate={exp.end_date}
+                                    onChangeStartDate={(date)=>handleFieldDateChange('newExperience', 'start_date', date)}
+                                    selectedEndDate={formData.newExperience[0]?.end_date}
                                     endplaceholder="퇴사일"
-                                    onChangeEndDate={(date) => handleExperienceDateChange(index, 'end-date', date)}
+                                    onChangeEndDate={(date) => handleFieldDateChange('newExperience', 'end_date', date)}
                                 />
-                                    <input type='text' name='company_name' placeholder='회사명' onChange={(e)=>handleExperienceChange(index, e)} value={exp.company_name||''}/>
+                                    <input type='text' name='company_name' placeholder='회사명' onChange={(e)=>handleFieldChange(e, 'newExperience')} value={formData.newExperience[0]?.company_name || ''}/>
                                 </div>
-                                <input type = 'text' name='position' placeholder='직무' onChange={(e) => handleExperienceChange(index, e)} value={exp.position||''}/>
+                                <input type = 'text' name='position' placeholder='직무' onChange={(e) => handleFieldChange(e, 'newExperience')} value={formData.newExperience[0]?.position||''}/>
                              <textarea  name='notes' placeholder='상세내용 (주요 업무 및 성과를 구체적으로 기재)'
-                                onChange={(e) => handleExperienceChange(index, e)} value={exp.notes || ''}
+                                onChange={(e) => handleFieldChange(e, 'newExperience')} value={formData.newExperience[0]?.notes || ''}
                                 rows="3"/>
-                            <PrettyBtn type="button" size="sm" onClick={() => removeExperience(index)} disabled={formData.newExperience.length <= 0}>삭제</PrettyBtn>
+                            {/* <PrettyBtn type="button" size="sm" onClick={() => removeExperience(index)} disabled={formData.newExperience.length <= 0}>삭제</PrettyBtn> */}
+                            <PrettyBtn type="button" size="sm" onClick={()=>saveFieldData('newExperience')}>저장</PrettyBtn>
+                            <PrettyBtn type="button" size="sm" onClick={(e)=>removeNewField(e, 'newExperience')}>취소</PrettyBtn>
+
+
                         </div>
-                    ))}
+                    )}
 
 
                         <label>
