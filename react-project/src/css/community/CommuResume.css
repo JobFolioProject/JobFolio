@@ -90,3 +90,7 @@
   z-index: 10;
   cursor: pointer;
 }
+
+.resume-template-preview-image {
+  pointer-events: none;
+}
