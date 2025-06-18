@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Date;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -45,11 +46,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 Long user_no = jwtTokenProvider.getUserNoFromToken(accessToken);
                 String user_name = jwtTokenProvider.getUserNameFromToken(accessToken);
                 String user_type = jwtTokenProvider.getUserTypeFromToken(accessToken);
+                Date expire_days = jwtTokenProvider.getUserExpireDaysFromToken(accessToken);
 
                 if (login_id != null && user_type != null) {
                     // UserPrincipal 생성 (user_type 포함)
-                    UserPrincipal userPrincipal = new UserPrincipal(user_no, login_id, user_name, user_type);
-
+                    UserPrincipal userPrincipal = new UserPrincipal(user_no, login_id, user_name, user_type, expire_days);
                     // 동적 권한 생성: DB의 user_type(A,B,C) → ROLE_A, ROLE_B, ROLE_C
                     String authority = "ROLE_" + user_type;  // "ROLE_A", "ROLE_B", "ROLE_C"
                     SimpleGrantedAuthority grantedAuthority = new SimpleGrantedAuthority(authority);

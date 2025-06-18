@@ -101,7 +101,7 @@ public class MypageController {
     }
     // 학력 수정
     @PutMapping("/{user_no}/educations/{edu_no}")
-    public ResponseEntity<String> updateEducation(@PathVariable(name = "user_no") Long userNo, @PathVariable(name = "edu_no") Integer eduNo,  @RequestBody EduInfoVO eduInfoVO){
+    public ResponseEntity<String> updateEducation(@PathVariable(name = "user_no") Long userNo, @PathVariable(name = "edu_no") Long eduNo,  @RequestBody EduInfoVO eduInfoVO){
         eduInfoVO.setUser_no(userNo);
         eduInfoVO.setEdu_no(eduNo);
         mypageService.updateByUserNoAndEduNo(eduInfoVO);

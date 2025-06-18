@@ -1,6 +1,6 @@
 // src/components/common/PrivateRoute.jsx
 import { useAuth } from "../../context/AuthContext";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 
 const PrivateRoute = ({
   children,
@@ -8,6 +8,15 @@ const PrivateRoute = ({
   loginRequired = false,
 }) => {
   const { isAuthenticated, user, isLoading } = useAuth();
+  const location = useLocation();
+
+  //결제기간 만료 체크
+  const isExpired = (expire_days) => {
+    if (!expire_days) return true;
+    const today = new Date();
+    const expireDate = new Date(expire_days);
+    return expireDate < new Date(today.toISOString().slice(0, 10));
+  };
 
   // 로딩 중
   if (isLoading) return <div>로딩 중...</div>;
@@ -28,6 +37,18 @@ const PrivateRoute = ({
   // 권한이 없는데 특정 권한이 필요한 페이지에 접근하려는 경우
   if (requiredRoles && !isAuthenticated) {
     return <Navigate to="/" replace />;
+  }
+
+  //결제만료시 /pay로 이동시킬 url 설정
+  const restrictedPaths = ["/resume/write", "/resume/edit"];
+
+  //결제 만료시 /pay로 이동
+  if (
+    isAuthenticated &&
+    restrictedPaths.includes(location.pathname) &&
+    isExpired(user?.expire_days)
+  ) {
+    return <Navigate to="/pay" replace />;
   }
 
   return children;

@@ -8,6 +8,7 @@ public class SkillVO {
     private Long user_no; // 유저번호
     private String exp_level; // 숙련도
     private String skill_tool; // 툴
+
     private String skill_code;  // detail_code 테이블의 detail_code 와 연결
     private String group_code; // group_code 테이블의 group_code 와 연결
 
@@ -20,6 +21,7 @@ public class SkillVO {
         this.skill_tool = skill_tool;
         this.skill_code = skill_code;
         this.group_code = group_code;
+
     }
 
     public Long getUser_no() {
@@ -45,6 +47,7 @@ public class SkillVO {
     public void setSkill_tool(String skill_tool) {
         this.skill_tool = skill_tool;
     }
+
 
     public String getSkill_code() {
         return skill_code;

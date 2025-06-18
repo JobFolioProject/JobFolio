@@ -13,3 +13,68 @@
   font-size: 2.5rem;
   font-weight: 900;
 }
+
+.resume-template-wrapper {
+  min-width: 900px;
+  padding: 20px 300px;
+}
+
+.resume-template-wrapper h2 {
+  margin-left: 100px;
+}
+
+.resume-template-grid {
+  display: flex;
+  flex-wrap: wrap;       /* 넘칠 경우 줄바꿈 */
+  gap: 20px;             /* 카드 간 간격 */
+  justify-content: flex-start; /* 왼쪽부터 정렬 */
+  justify-content: center;
+}
+.template-slide {
+  flex: 0 0 auto;
+  width: 280px;          /* ✅ 고정 너비 */
+  height: 300px;         /* ✅ 고정 높이 */
+  border: 1px solid #ccc;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  background: #fff;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.resume-template-data {
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  background: #fff;
+  border: 1px solid #ccc;
+  width: 278px;
+}
+
+.resume-template-data table {
+  width: 100%;
+  line-height: 0px;
+  font-size: smaller;
+}
+
+.resume-template-data table thead {
+  font-weight: bold;
+}
+
+.resume-template-data table td {
+  border: none;
+}
+.resume-template-data table .right {
+  text-align: end;
+  width: 104px;
+}
+
+.resume-template-preview-image {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.community-notice-pagination {
+  margin-bottom: 100px;
+  border-top: none;
+}

@@ -27,6 +27,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ResumeService {
@@ -330,6 +331,9 @@ public class ResumeService {
     public UserVO getUserByUserNo(Long userNo) {
         return resumeMapper.getUserByUserNo(userNo);
     }
+
+    // 이력서 목록 조회
+    public List<ResumeInfoVO> communityResumeList(Map<String, Object> paramMap){return resumeMapper.communityResumeList(paramMap); };
 
 //    public ResumeInfoVO selectResumeInfoByResumeNo(int resumeNo) {
 //        return  resumeMapper.selectResumeInfoByResumeNo(resumeNo);

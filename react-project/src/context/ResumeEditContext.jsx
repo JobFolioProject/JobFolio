@@ -4,9 +4,13 @@ export const ResumeEditContext = createContext();
 
 export const ResumeEditProvider = ({ children }) => {
   // 이전: editResumeNo
-  const [editResumePath, setEditResumePath] = useState(null);
+  const [editResumeData, setEditResumeData] = useState({
+    path: null,
+    title: '',
+    publication: ''
+  });
   return (
-    <ResumeEditContext.Provider value={{ editResumePath, setEditResumePath }}>
+    <ResumeEditContext.Provider value={{ editResumeData, setEditResumeData }}>
       {children}
     </ResumeEditContext.Provider>
   );
