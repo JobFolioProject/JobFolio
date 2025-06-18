@@ -101,7 +101,7 @@ public class MypageController {
     }
     // 학력 수정
     @PutMapping("/{user_no}/educations/{edu_no}")
-    public ResponseEntity<String> updateEducation(@PathVariable(name = "user_no") Long userNo, @PathVariable(name = "edu_no") Integer eduNo,  @RequestBody EduInfoVO eduInfoVO){
+    public ResponseEntity<String> updateEducation(@PathVariable(name = "user_no") Long userNo, @PathVariable(name = "edu_no") Long eduNo,  @RequestBody EduInfoVO eduInfoVO){
         eduInfoVO.setUser_no(userNo);
         eduInfoVO.setEdu_no(eduNo);
         mypageService.updateByUserNoAndEduNo(eduInfoVO);
@@ -182,9 +182,10 @@ public class MypageController {
     // 기술(스킬)
     // 스킬 공통 목록
     @GetMapping("/skills/all")
-    public ResponseEntity<CommSkillDto> getCareerSkillList() {
-        mypageService.getAllCommonSkills();
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    public ResponseEntity<List<CommSkillDto>> getCareerSkillList() {
+        List<CommSkillDto> commSkillDto = mypageService.getAllCommonSkills();
+
+        return ResponseEntity.ok(commSkillDto);
     }
     // 사용자 스킬 목록
     @GetMapping("/{user_no}/skills")
@@ -204,7 +205,7 @@ public class MypageController {
     public ResponseEntity<String> updateSkill(@PathVariable(name = "user_no") Long userNo,
                                               @PathVariable(name = "skill_code") String skill_code,
                                               @PathVariable(name = "group_code") String group_code,
-                                              @RequestParam SkillVO skillVO) {
+                                              @RequestBody  SkillVO skillVO) {
         mypageService.updateSkill(skillVO);
         return new ResponseEntity<>("기술 사항이 정상적으로 수정되었습니다.", HttpStatus.CREATED);
     }

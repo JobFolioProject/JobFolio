@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useContext, useState } from "react";
 import "../../css/resume/ResumeModify.css";
 import ResumeSidebar from "./ResumeSidebar";
 import ResumeEditModal from "./ResumeEditModal";
 import axios from "../../utils/axiosConfig";
 import { useAuth } from "../../context/AuthContext";
+import { ResumeEditContext } from '../../context/ResumeEditContext';
 
 const ResumeModify = () => {
   const [resumeList, setResumeList] = useState([]);
@@ -12,9 +13,28 @@ const ResumeModify = () => {
   const [htmlString, setHtmlString] = useState("");
   const [showDetailResume, setShowDetailResume] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const { editResumeData, setEditResumeData } = useContext(ResumeEditContext);
 
   const iframeRef = useRef(null);
   const { user, isAuthenticated } = useAuth();
+
+  useEffect(() => {
+    if (!editResumeData.path) return;
+
+    const fetchAndClear = async () => {
+      try {
+        await openResumeDetail(
+          editResumeData.path,
+          editResumeData.title,
+          editResumeData.publication
+        );
+      } finally {
+        setEditResumeData({ path: null, title: '', publication: '' });
+      }
+    };
+    fetchAndClear();
+  }, [editResumeData, setEditResumeData]);
+
   //이력서 리스트 출력
   const getResumeList = async () => {
     const userNo = user.userNo;

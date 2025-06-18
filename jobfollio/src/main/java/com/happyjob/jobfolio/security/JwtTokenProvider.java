@@ -34,11 +34,12 @@ public class JwtTokenProvider {
     /**
      * Access Token 생성
      */
-    public String generateAccessToken(String login_id, Long user_no, String user_name, String user_type) {
+    public String generateAccessToken(String login_id, Long user_no, String user_name, String user_type, Date expire_days) {
         Map<String, Object> claims = new HashMap<String, Object>();
         claims.put("user_no", user_no);
         claims.put("user_name", user_name);
         claims.put("user_type", user_type);
+        claims.put("expire_days", expire_days);
         claims.put("tokenType", "ACCESS");
 
         return createToken(claims, login_id, accessTokenExpiration);
@@ -237,5 +238,27 @@ public class JwtTokenProvider {
 
         String tokenType = getTokenTypeFromToken(token);
         return "REFRESH".equals(tokenType);
+    }
+
+//    사용자 결제 만료일 추출
+    public Date getUserExpireDaysFromToken(String token) {
+        try {
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(getSigningKey())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+            Object expireObj = claims.get("expire_days");
+            if (expireObj instanceof Long) {
+                return new Date((Long) expireObj);
+            } else if (expireObj instanceof Integer) {
+                return new Date(((Integer) expireObj).longValue());
+            };
+
+            return null;
+        } catch (Exception e) {
+            logger.error("Error extracting user type from token", e);
+            return null;
+        }
     }
 }

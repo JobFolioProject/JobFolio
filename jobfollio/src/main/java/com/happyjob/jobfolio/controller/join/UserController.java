@@ -306,6 +306,7 @@ public class UserController {
                 safeUser.put("login_id", userVO.getLogin_id());
                 safeUser.put("user_name", userVO.getUser_name());
                 safeUser.put("user_type", userVO.getUser_type());
+                safeUser.put("expire_days", userVO.getExpire_days());
 
                 resultMap.put("user", safeUser);
 
@@ -426,12 +427,12 @@ public class UserController {
                     authentication.getPrincipal() instanceof UserPrincipal) {
 
                 UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-
                 resultMap.put("result", "Y");
                 resultMap.put("user_no", userPrincipal.getUser_no());
                 resultMap.put("login_id", userPrincipal.getLogin_id());
                 resultMap.put("user_name", userPrincipal.getUser_name());
                 resultMap.put("user_type", userPrincipal.getUser_type());
+                resultMap.put("expire_days", userPrincipal.getExpire_days());
 
                 return ResponseEntity.ok(resultMap);
             } else {

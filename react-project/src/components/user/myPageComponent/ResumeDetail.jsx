@@ -11,7 +11,7 @@ const ResumeDetail = () => {
     const [resumeList, setResumeList] = useState([]);
 
     const { user, isAuthenticated } = useAuth();
-    const { setEditResumePath } = useContext(ResumeEditContext);
+    const { setEditResumeData } = useContext(ResumeEditContext);
     const [redirect, setRedirect] = useState(false);
     
     useEffect(() => {
@@ -50,12 +50,10 @@ const ResumeDetail = () => {
         }
     };
 
-    const modifyResume = async (filePath)=>{
-
-      setEditResumePath(filePath);  // 파일 경로를 전역 상태에 저장
-      setRedirect(true);            // 리다이렉트 트리거
-
-    }
+    const modifyResume = (path, title, publication) => {
+    setEditResumeData({ path, title, publication });
+    setRedirect(true);
+  };
 
     if (redirect) {
     return <Navigate to="/resume/edit" replace />;
@@ -100,7 +98,7 @@ const ResumeDetail = () => {
             <div className="resumeItemCon">
               <div className="resumeItemHeader">
                 <h3 onClick={() => openResumePopup(item.resume_file_pypath)}>{item.title || '제목 없음'}</h3>
-                <button onClick={() => modifyResume(item.resume_file_pypath)}>수정</button>
+                <button onClick={() => modifyResume(item.resume_file_pypath, item.title, item.publication_yn)}>수정</button>
                 <button onClick={() => deleteResume(item.resume_no)}>삭제</button>
               </div>
               <div className="resumeItemDetail">
