@@ -235,7 +235,7 @@ public class ResumeController {
                 .replaceAll("(?i)<hr>", "<hr/>")
                 // 필요하다면 <img>, <input> 등도
                 ;
-        System.out.println(xhtml);
+
         // 2) PDF로 변환
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         PdfRendererBuilder builder = new PdfRendererBuilder();

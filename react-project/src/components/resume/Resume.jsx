@@ -13,6 +13,7 @@ import { useAuth } from "../../context/AuthContext";
 import MyCareer from '../user/myPageComponent/MyCareer';
 import { major } from '@mui/system';
 import axios from "../../utils/axiosConfig";
+import Loading from "../common/Loading";
 
 
 const Resume = () => {
@@ -22,9 +23,12 @@ const Resume = () => {
     const { user, isAuthenticated } = useAuth();
 
     const [filePath, setFilePath] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [download, setDownload] = useState(false);
 
     const handleSubmit = async () => {
-
+        setLoading(true);
+        setDownload(true);
         const dataToSend = {
             ...formData,
             education: [...formData.education, ...formData.newEducation], // 기존 + 신규 학력
@@ -48,8 +52,9 @@ const Resume = () => {
             .catch((err)=>{
                 console.log(err);
             })
-           
-
+            .finally(() => {
+                setLoading(false);
+            });
           
     }
 
@@ -58,7 +63,10 @@ const Resume = () => {
             // 1) 서버에 저장 및 물리경로 리턴
             // 2) PDF 변환 API 호출 (blob으로 받기)
            // 2) PDF 변환 요청 (ArrayBuffer 로 받기)
-           console.log(filePath)
+            if(!download){
+                await handleSubmit();
+            }
+
             const pdfResponse = await axios.post(
                 '/api/resume/exportPdf',
                 { filePath },
@@ -75,6 +83,7 @@ const Resume = () => {
             link.remove();
 
             setFilePath("");
+            setDownload(false);
             } catch (err) {
             console.error(err);
             alert('PDF 다운로드 중 오류가 발생했습니다.');
@@ -704,12 +713,20 @@ const saveFieldData = (type) => {
                             </div>
                         <br/>
                         <div style={{ display: 'flex', justifyContent: 'center' }}>
-                            <PrettyBtn onClick={handleSubmit}>이력서 저장</PrettyBtn>
-                            <PrettyBtn onClick={pdfDownload}>이력서 저장 및 PDF 다운로드</PrettyBtn>
+                            {download ? (
+                                <PrettyBtn onClick={pdfDownload}>PDF 다운로드</PrettyBtn>
+                            ) : (
+                                <>
+                                    <PrettyBtn onClick={handleSubmit}>이력서 저장</PrettyBtn>
+                                    <PrettyBtn onClick={pdfDownload}>이력서 저장 및 PDF 다운로드</PrettyBtn>
+                                </>
+                            )}
+                            
                         </div>
                     </form>
                 </div>
                 </div>
+                <Loading loading={loading}></Loading>
         </div>
     </>
     );
