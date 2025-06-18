@@ -7,16 +7,23 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.happyjob.jobfolio.repository.mypage.MypageMapper;
 import com.happyjob.jobfolio.service.join.UserService;
 import com.happyjob.jobfolio.service.resume.ResumeService;
+import com.happyjob.jobfolio.vo.community.CommunityBoardVo;
 import com.happyjob.jobfolio.vo.join.UserVO;
 import com.happyjob.jobfolio.vo.mypage.CertificateVO;
 import com.happyjob.jobfolio.vo.resume.ResumeInfoVO;
 import com.happyjob.jobfolio.vo.resume.TemplateVO;
+import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+
+import java.io.ByteArrayOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -24,9 +31,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/resume")
@@ -77,21 +82,40 @@ public class ResumeController {
             root.put("name",  userVO.getUser_name());      // name ← userName
             root.put("email", userVO.getLogin_id());       // email ← loginId
             root.put("phone", userVO.getHp());            // phone ← hp
-            root.put("website", paramMap.get("link_url").toString());
+            root.put("website", paramMap.getOrDefault("link_url","").toString());
+
+            // skillList 배열
+            @SuppressWarnings("unchecked")
+            List<Map<String,String>> skillLists = Optional.ofNullable((List<Map<String,String>>) paramMap.get("skillList"))
+                    .orElse(Collections.emptyList());
+            ArrayNode skillArray = mapper.createArrayNode();
+            for (Map<String,String> skill : skillLists) {
+                ObjectNode node = mapper.createObjectNode();
+                node.put("exp_level", skill.getOrDefault("exp_level",""));
+                node.put("skill_tool", skill.getOrDefault("skill_tool",""));
+                node.put("skill_name", skill.getOrDefault("skill_name",""));
+                node.put("skill_code",  skill.getOrDefault("skill_code",""));
+                node.put("group_code", skill.getOrDefault("group_code",""));
+                node.put("group_name", skill.getOrDefault("group_name",""));
+
+                skillArray.add(node);
+            }
+            root.set("skillList", skillArray);
 
             // education 배열
             @SuppressWarnings("unchecked")
-            List<Map<String,String>> educations = (List<Map<String,String>>) paramMap.get("education");
+            List<Map<String,String>> educations = Optional.ofNullable((List<Map<String,String>>) paramMap.get("education"))
+                    .orElse(Collections.emptyList());
             ArrayNode eduArray = mapper.createArrayNode();
             for (Map<String,String> edu : educations) {
                 ObjectNode node = mapper.createObjectNode();
-                node.put("school_name", edu.get("school_name"));
-                node.put("enroll_date", edu.get("enroll_date"));
-                node.put("grad_date", edu.get("grad_date"));
-                node.put("major",  edu.get("major"));
-                node.put("sub_major", edu.get("sub_major"));
-                node.put("gpa", edu.get("gpa"));
-                String period = edu.get("enroll_date") + " ~ " + edu.get("grad_date");
+                node.put("school_name", edu.getOrDefault("school_name",""));
+                node.put("enroll_date", edu.getOrDefault("enroll_date",""));
+                node.put("grad_date", edu.getOrDefault("grad_date",""));
+                node.put("major",  edu.getOrDefault("major",""));
+                node.put("sub_major", edu.getOrDefault("sub_major",""));
+                node.put("gpa", edu.getOrDefault("gpa",""));
+                String period = edu.getOrDefault("enroll_date","") + " ~ " + edu.getOrDefault("grad_date","");
                 node.put("period", period);
                 eduArray.add(node);
             }
@@ -99,16 +123,17 @@ public class ResumeController {
 
             // experience 배열
             @SuppressWarnings("unchecked")
-            List<Map<String,String>> experiences = (List<Map<String,String>>) paramMap.get("experience");
+            List<Map<String,String>> experiences = Optional.ofNullable((List<Map<String,String>>) paramMap.get("experience"))
+                    .orElse(Collections.emptyList());
             ArrayNode expArray = mapper.createArrayNode();
             for (Map<String,String> exp : experiences) {
                 ObjectNode node = mapper.createObjectNode();
-                node.put("company",  exp.get("company_name"));
+                node.put("company",  exp.getOrDefault("company_name",""));
                 node.put("dept",     exp.getOrDefault("department",""));     // 부서명이 paramMap에 있다면
                 node.put("position", exp.getOrDefault("position",""));       // 직위가 paramMap에 있다면
                 node.put("start_date", exp.getOrDefault("start_date",""));
                 node.put("end_date", exp.getOrDefault("end_date",""));
-                String period = exp.get("start_date") + " ~ " + exp.get("end_date");
+                String period = exp.getOrDefault("start_date","") + " ~ " + exp.getOrDefault("end_date","");
                 node.put("period", period);
                 expArray.add(node);
             }
@@ -157,6 +182,8 @@ public class ResumeController {
             Path dirPath = Paths.get(outputDir);
             Path filePath = dirPath.resolve(fileName);
 
+            resultMap.put("filePath", filePath.toString());
+
             if (Files.notExists(dirPath)) {
                 Files.createDirectories(dirPath);
             }
@@ -164,13 +191,14 @@ public class ResumeController {
             byte[] bytes = htmlContent.getBytes(StandardCharsets.UTF_8);
             Files.write(filePath, bytes);
 
-            resultMap.put("html", apiJson);
-
             resumeInfoVO.setUser_no(Integer.parseInt(user_no.toString()));
             resumeInfoVO.setTitle(paramMap.get("title").toString());
             resumeInfoVO.setDesired_position(paramMap.get("desired_position").toString());
             resumeInfoVO.setTemplate_no(Integer.parseInt(paramMap.get("template_no").toString()));
-            resumeInfoVO.setPublication_yn(paramMap.get("publication_yn").toString());
+            String publicationYn = Optional.ofNullable(paramMap.get("publication_yn"))
+                    .map(Object::toString)
+                    .orElse("N");  // 기본값 N
+            resumeInfoVO.setPublication_yn(publicationYn);
             // 파일명
             resumeInfoVO.setResume_file_name(fileName);
             // 물리경로 (Physical Path)
@@ -190,6 +218,47 @@ public class ResumeController {
 
         return resultMap;
 
+    }
+
+    /**
+     * HTML 파일 경로를 받아 PDF로 변환 후 다운로드 응답
+     */
+    @PostMapping("/exportPdf")
+    public ResponseEntity<byte[]> exportPdf(@RequestBody Map<String,Object> requestMap) throws Exception {
+        String physicalPath = requestMap.get("filePath").toString();
+        Path path = Paths.get(physicalPath);
+        byte[] bytes = Files.readAllBytes(path);
+        String html = new String(bytes, StandardCharsets.UTF_8);
+
+        String xhtml = html
+                .replaceAll("(?i)<br>", "<br/>")
+                .replaceAll("(?i)<hr>", "<hr/>")
+                // 필요하다면 <img>, <input> 등도
+                ;
+        System.out.println(xhtml);
+        // 2) PDF로 변환
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        PdfRendererBuilder builder = new PdfRendererBuilder();
+        builder.useFont(
+                () -> this.getClass().getResourceAsStream("/fonts/NotoSansKR-Regular.ttf"),
+                "Noto Sans KR"
+        );
+        builder.withHtmlContent(xhtml, path.getParent().toUri().toString());
+        builder.toStream(os);
+        builder.run();
+        byte[] pdfBytes = os.toByteArray();
+
+        // 3) HTTP 응답 헤더 세팅
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDisposition(
+                ContentDisposition
+                        .attachment()
+                        .filename("resume.pdf")
+                        .build()
+        );
+
+        return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
     }
 
     @RequestMapping("/generateCoverLetter")
@@ -366,6 +435,26 @@ public class ResumeController {
         return ResponseEntity.ok(resultMap);
     }
 
+    @PostMapping("/likeResume")
+    public ResponseEntity<Map<String,Object>> likeResume(@RequestBody Map<String,Integer> requestMap) {
+        int userNo = requestMap.get("userNo");
+        int resumeNo = requestMap.get("resumeNo");
+        System.out.println(userNo+""+resumeNo+"----------------------------------------------------------------");
+        int likeResume = resumeService.likeResume(userNo, resumeNo);
+
+        if(likeResume == 1){
+            Map<String, Object> resultMap = new HashMap<>();
+            resultMap.put("message", "좋아요 완료되었습니다.");
+            return ResponseEntity.ok(resultMap);
+        } else {
+            Map<String, Object> resultMap = new HashMap<>();
+            resultMap.put("message", "좋아요 요청에 실패했습니다.");
+            return ResponseEntity.ok(resultMap);
+        }
+
+
+    }
+
     @PostMapping("/unlikeResume")
     public ResponseEntity<Map<String,Object>> unlikeResume(@RequestBody Map<String,Integer> requestMap) {
         int userNo = requestMap.get("userNo");
@@ -398,6 +487,43 @@ public class ResumeController {
                 return ResponseEntity.ok(resultMap);
             }
 
+    }
+
+    // 이력서 게시판 데이터 불러오기
+    @GetMapping("/selectResume")
+    public Map<String, Object> communityResumeList(Model model, @RequestParam Map<String, Object> paramMap,
+                                                   HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
+
+        Map<String, Object> resultMap = new HashMap<>();
+
+        String search = (String) paramMap.get("search");
+        paramMap.put("search", search);
+
+        int page = 1;
+        int pageSize = 12;
+
+        try {
+            String pageStr = (String) paramMap.get("page");
+            String pageSizeStr = (String) paramMap.get("pageSize");
+            if (pageStr != null && !pageStr.isEmpty()) page = Integer.parseInt(pageStr);
+            if (pageSizeStr != null && !pageSizeStr.isEmpty()) pageSize = Integer.parseInt(pageSizeStr);
+        } catch (NumberFormatException e) {
+            resultMap.put("error", "잘못된 요청입니다.");
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST); // 400
+            return resultMap;
+        }
+
+        int offset = (page - 1) * pageSize;
+        paramMap.put("offset", offset);
+        paramMap.put("limit", pageSize);
+
+        List<ResumeInfoVO> boardList = resumeService.communityResumeList(paramMap);
+
+        resultMap.put("boardList", boardList);
+
+        System.out.println(resultMap);
+
+        return resultMap;
     }
 
 

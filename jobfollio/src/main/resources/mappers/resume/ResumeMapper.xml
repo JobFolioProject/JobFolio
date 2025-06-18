@@ -18,7 +18,34 @@
 			publication_yn
 		FROM tb_resume_info
 		WHERE user_no = #{user_no}
-		and status_yn = 'N'
+		  and status_yn = 'N'
+	</select>
+
+	<select id="communityResumeList"
+			parameterType="map"
+			resultType="com.happyjob.jobfolio.vo.resume.ResumeInfoVO">
+		SELECT
+			resume_no,
+			user_no,
+			(SELECT user_name
+			 FROM tb_userinfo u
+			 WHERE u.user_no = r.user_no
+			   AND u.status_yn = 'N')AS user_name,
+			title,
+			desired_position,
+			template_no,
+			resume_file_name,
+			resume_file_pypath,
+			resume_file_lopath,
+			publication_yn,
+			create_date,
+			(SELECT count(*)
+			 FROM tb_resume_like l
+			 WHERE l.user_no = #{user_no}
+			   AND l.resume_no = r.resume_no)AS resume_liked
+		FROM tb_resume_info r
+		WHERE status_yn = 'N'
+		ORDER BY create_date DESC
 	</select>
 
 	<select id="resumeLikedList"
@@ -79,6 +106,11 @@
 		FROM tb_link_info
 		WHERE resume_no = #{resume_no}
 	</select>
+
+	<insert id="likeResume" parameterType="map">
+		INSERT INTO tb_resume_like (resume_no, user_no)
+		VALUES (#{resume_no}, #{user_no})
+	</insert>
 
 	<delete id="unlikeResume"
 			parameterType="int">
@@ -179,6 +211,24 @@
 		WHERE user_no = #{user_no}
 		  AND status_yn = 'N'
 		  AND withdrawal_date IS NULL
+	</select>
+
+	<!-- 목록 조회 (페이징) -->
+	<select id="selectPagedNormalBoardList" resultType="com.happyjob.jobfolio.vo.resume.ResumeInfoVO" parameterType="map">
+		SELECT *
+		FROM
+		tb_resume_info
+		WHERE
+		status_yn = 'N'
+		AND
+		publication_yn = 'Y'
+	</select>
+
+	<!-- 총 개수 조회 -->
+	<select id="selectNormalBoardTotalCount" resultType="int" parameterType="map">
+		SELECT COUNT(*)
+		FROM tb_resume_info
+		WHERE status_yn = 'N'
 	</select>
 
 

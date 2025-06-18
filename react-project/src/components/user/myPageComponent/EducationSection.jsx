@@ -25,21 +25,21 @@ const formEduData = {
 
 // DatePicker의 input 필드를 커스터마이징하고 ref를 연결
 const CustomDataPickerInput = forwardRef((props, ref) => {
-  const { value, onClick, placeholder, className, readOnly, disabled, onChange } = props;
-  
-  return (
-    <input
-      type="text"
-      className={className}
-      onClick={onClick}
-      value={value || ''}
-      placeholder={placeholder}
-      readOnly={readOnly}
-      disabled={disabled}
-      ref={ref}
-      onChange={onChange}
-    />
-  );
+    const { value, onClick, placeholder, className, readOnly, disabled, onChange } = props;
+
+    return (
+        <input
+            type="text"
+            className={className}
+            onClick={onClick}
+            value={value || ''}
+            placeholder={placeholder}
+            readOnly={readOnly}
+            disabled={disabled}
+            ref={ref}
+            onChange={onChange}
+        />
+    );
 });
 
 // React.memo로 감싸서 props가 변경되지 않으면 불필요한 리렌더링 방지
@@ -464,7 +464,7 @@ const EducationSection = React.memo(({ userNo, educationList, onListChange }) =>
             {(showAddForm || editingEduNo !== null) && (
                 <div className="educationFormBox education-datepicker-theme">
                     <div>
-                        <p className="formTitle">{editingEduNo !== null ? '학력 수정' : '새 학력 추가'}</p>
+                        <h2 className="formTitle">{editingEduNo !== null ? '학력 수정' : '새 학력 추가'}</h2>
                     </div>
                     <div className="educationContainer">
                         <div className="educationInputArea">
@@ -607,4 +607,3 @@ const EducationSection = React.memo(({ userNo, educationList, onListChange }) =>
 });
 
 export default EducationSection;
-  

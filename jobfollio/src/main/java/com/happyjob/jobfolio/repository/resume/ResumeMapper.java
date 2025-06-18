@@ -8,6 +8,7 @@ import com.happyjob.jobfolio.vo.resume.TemplateVO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface ResumeMapper {
@@ -17,6 +18,8 @@ public interface ResumeMapper {
     List<ResumeInfoVO> resumeLikedList(int user_no);
 
     int unlikeResume(int user_no, int resume_no);
+
+    int likeResume(int user_no, int resume_no);
 
     int deleteResume(int resume_no);
 
@@ -37,6 +40,9 @@ public interface ResumeMapper {
     int insertTemplate(TemplateVO templateVO);
 
     UserVO getUserByUserNo(Long userNo);
+
+    // 이력서 목록 조회
+    List<ResumeInfoVO> communityResumeList(Map<String, Object> paramMap);
 
 //    ResumeInfoVO selectResumeInfoByResumeNo(int resumeNo);
 

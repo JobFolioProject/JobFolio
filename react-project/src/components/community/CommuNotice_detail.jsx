@@ -69,7 +69,7 @@ const CommuNoticeDetail = () => {
           <div className="notice-detail-page-control">
             {prevPost && (
               <div className="notice-detail-previous">
-                <span>이전</span>
+                <span>이전글</span>
                 <Link to={`/community/detail/${prevPost.boardNo}`} className="notice-detail-previous-title">
                   {prevPost.title}
                 </Link>
@@ -77,7 +77,7 @@ const CommuNoticeDetail = () => {
             )}
             {nextPost && (
               <div className="notice-detail-next">
-                <span>다음</span>
+                <span>다음글</span>
                 <Link to={`/community/detail/${nextPost.boardNo}`} className="notice-detail-next-title">
                   {nextPost.title}
                 </Link>
@@ -86,7 +86,7 @@ const CommuNoticeDetail = () => {
           </div>
 
           <div className="notice-detail-btn-group">
-            <Link to="/community/notice" className="notice-detail-back-btn">목록</Link>
+            <Link to="/community/notice" className="notice-detail-list-btn">목록</Link>
           </div>
         </div>
       </div>

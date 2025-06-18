@@ -123,7 +123,8 @@ public class UserService {
                     user.getLogin_id(),
                     user.getUser_no().longValue(),
                     user.getUser_name(),
-                    user.getUser_type()
+                    user.getUser_type(),
+                    user.getExpire_days()
             );
             String refreshToken = jwtTokenProvider.generateRefreshToken(user.getLogin_id());
 
@@ -240,7 +241,8 @@ public class UserService {
                     user.getLogin_id(),
                     user.getUser_no().longValue(),
                     user.getUser_name(),
-                    user.getUser_type()
+                    user.getUser_type(),
+                    user.getExpire_days()
             );
 
             // 토큰 사용 시간 업데이트

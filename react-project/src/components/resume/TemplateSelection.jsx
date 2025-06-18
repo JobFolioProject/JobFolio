@@ -70,7 +70,7 @@ const TemplateSelection = () => {
             {error && <p className="error-message">{error}</p>}
             {!isLoading && !error && !tempList.length===0 && (
                 <p>선택 가능한 템플릿이 없습니다.</p>)}
-            <TemplateSlider tempList={tempList} />
+            <TemplateSlider tempList={tempList} className="TemplateSlider" />
              {/* 템플릿 리스트가 있고, 로딩 중이 아니고 에러도 없을 때만 슬라이더 렌더링
             {!isLoading && !error && tempList.length > 0 && (
                 <TemplateSlider tempList={tempList} />

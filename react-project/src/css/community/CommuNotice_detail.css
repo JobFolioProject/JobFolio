@@ -55,6 +55,7 @@
 .notice-detail-wrapper
 .notice-detail-page-control div span{
   margin: 0 10px;
+  color: rgb(48, 106, 214);
 }
 .notice-detail-container
 .notice-detail-wrapper
@@ -72,7 +73,7 @@
 }
 .notice-detail-container
 .notice-detail-wrapper
-.notice-detail-btn-group button{
+.notice-detail-btn-group a{
   font-size: 14px;
   height: 36px;
   padding: 0 12px;

@@ -1,14 +1,27 @@
 .resume-sidebar {
   width: 200px;
-  height: 50vh; /* 전체 높이 ... 이거 빠지면 너무 단촐해짐.*/
-  background-color: #f7f7f7;
-  padding: 20px;
-  box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+  min-height: calc(100vh - 100px);
+  /* height: 50vh; 전체 높이 ... 이거 빠지면 너무 단촐해짐. */
+   background-color: #ffffff; /* 이력서 폼과 통일 */
+  padding: 30px 20px; 
+  /* → 상하 30px, 좌우 20px */
+  box-shadow: 2px 0 15px rgba(0,0,0,0.05);
+  border-radius: 20px;
   /* position: fixed; */
   position: sticky;
+  top: 30px; /* sticky 동작 위치 */
+  margin: 50px 0 50px 30px; /* 콘텐츠와 간격 조절 */
+  flex-shrink: 0; 
+  transition: all 0.3s ease-in-out;
+  /* 호버 효과 줄 때나 반응형 대응시 부드럽게 전환됨 */
+}
 
-  flex-shrink: 0;
-  
+/* 입체감과 인터랙션 효과 */
+.resume-sidebar:hover {
+    box-shadow: 4px 0 25px rgba(0, 0, 0, 0.08);
+    /* [x-이동] [y-이동] [blur-흐림 정도] [색상] */
+    transform: translateY(-2px);
+    /* hover(마우스 오버) 시에 같이 쓰여서 요소가 ‘살짝 튀어나오는’ 느낌 */
 }
 
 .sidebar-title {
