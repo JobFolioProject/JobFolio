@@ -56,4 +56,19 @@ public interface UserMapper {
      */
     UserVO selectUserForPasswordReset(Map<String, Object> paramMap) throws Exception;
 
+    /**
+     * 소셜 타입과 소셜 ID로 사용자 조회
+     */
+    UserVO selectBySocialTypeAndSocialId(Map<String, Object> paramMap) throws Exception;
+
+    /**
+     * 소셜 사용자 신규 등록
+     */
+    int insertSocialUser(Map<String, Object> paramMap) throws Exception;
+
+    /**
+     * 이메일로 기존 일반 사용자 확인
+     */
+    UserVO selectByLoginId(Map<String, Object> paramMap) throws Exception;
+
 }
