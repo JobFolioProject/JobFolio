@@ -79,10 +79,10 @@ public class ResumeController {
             ObjectNode root = mapper.createObjectNode();
 
             // 사용자 정보 매핑
-            root.put("name",  userVO.getUser_name());      // name ← userName
+            root.put("userName",  userVO.getUser_name());      // name ← userName
             root.put("email", userVO.getLogin_id());       // email ← loginId
             root.put("phone", userVO.getHp());            // phone ← hp
-            root.put("website", paramMap.getOrDefault("link_url","").toString());
+            root.put("link", paramMap.getOrDefault("link_url","").toString());
 
             // skillList 배열
             @SuppressWarnings("unchecked")
@@ -150,7 +150,7 @@ public class ResumeController {
                 node.put("date", cert.getAcquired_date());
                 certArray.add(node);
             }
-            root.set("certifications", certArray);
+            root.set("certification", certArray);
 
 
             // coverLetter(또는 introduction) 기본값 처리

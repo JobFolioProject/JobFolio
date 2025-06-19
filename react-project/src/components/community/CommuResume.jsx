@@ -158,11 +158,13 @@ const CommuResume = () => {
                 <div className='resume-template-data'>
                     <table>
                         <thead>
+                          <tr>
                             <td>{template.title.length > 8
                                 ? template.title.slice(0, 7) + '...'
                                 : template.title}
                             </td>
                             <td className='right'>{template.user_name}</td>
+                          </tr>
                         </thead>
                         <tbody>
                             <tr>
