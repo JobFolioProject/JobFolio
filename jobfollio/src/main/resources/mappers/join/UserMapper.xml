@@ -60,7 +60,7 @@
         SELECT COUNT(*)
         FROM tb_userinfo
         WHERE login_id = #{login_id}
-        <!-- 🔥 수정: 조건부로 탈퇴한 계정 제외 -->
+        <!-- 조건부로 탈퇴한 계정 제외 -->
         <if test="exclude_withdrawn != null and exclude_withdrawn == 'Y'">
             AND status_yn = 'N'
             AND withdrawal_date IS NULL
@@ -191,7 +191,8 @@
         FROM tb_userinfo
         WHERE social_type = #{social_type}
           AND social_id = #{social_id}
-          AND status_yn = 'N'
+        ORDER BY reg_date DESC
+            LIMIT 1
     </select>
 
     <!-- 소셜 사용자 신규 등록 -->
@@ -222,7 +223,8 @@
             social_type, social_id, status_yn
         FROM tb_userinfo
         WHERE login_id = #{login_id}
-          AND status_yn = 'N'
+        ORDER BY reg_date DESC
+            LIMIT 1
     </select>
 
 </mapper>

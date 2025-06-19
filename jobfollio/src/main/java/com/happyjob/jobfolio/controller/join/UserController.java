@@ -208,17 +208,13 @@ public class UserController {
 
             // 생년월일에서 하이픈 제거
             String originalBirthday = (String) paramMap.get("birthday");
-            String cleanBirthday = originalBirthday != null ? originalBirthday.replaceAll("[^0-9]", "") : null;
 
             logger.info("   - 원본 전화번호: " + originalHp + ", 정제된 전화번호: " + cleanHp);
-            logger.info("   - 원본 생년월일: " + originalBirthday + ", 정제된 생년월일: " + cleanBirthday);
+            logger.info("   - 원본 생년월일: " + originalBirthday + ", 정제된 생년월일: ");
 
-            // DB 저장용 맵 생성 (하이픈 제거된 값들로)
             Map<String, Object> dbParamMap = new HashMap<>(paramMap);
             dbParamMap.put("hp", cleanHp);
-            if (cleanBirthday != null) {
-                dbParamMap.put("birthday", cleanBirthday);
-            }
+
 
             int registerResult = userService.registerUser(dbParamMap);
 
