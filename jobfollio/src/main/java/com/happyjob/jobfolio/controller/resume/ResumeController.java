@@ -10,6 +10,7 @@ import com.happyjob.jobfolio.service.resume.ResumeService;
 import com.happyjob.jobfolio.vo.community.CommunityBoardVo;
 import com.happyjob.jobfolio.vo.join.UserVO;
 import com.happyjob.jobfolio.vo.mypage.CertificateVO;
+import com.happyjob.jobfolio.vo.mypage.CommSkillDto;
 import com.happyjob.jobfolio.vo.resume.AiResumeGenerateVO;
 import com.happyjob.jobfolio.vo.resume.ResumeInfoVO;
 import com.happyjob.jobfolio.vo.resume.TemplateVO;
@@ -595,6 +596,25 @@ public class ResumeController {
 
         return resultMap;
     }
+
+    //스킬 그룹 코드 가져오기
+    @GetMapping("/selectSkillGroupCode")
+    public ResponseEntity<List<String>> selectSkillGroupCodeList(){
+        List<String> skillGroupCodeList = new ArrayList<>();
+        skillGroupCodeList = resumeService.getSkillGroupCode();
+        return ResponseEntity.ok(skillGroupCodeList);
+    }
+
+    //해당 detail_code의 그룹코드 가져오기
+    @GetMapping("/selectedOneGroupCode")
+    public ResponseEntity<String> selectedOneGroupCode(@RequestParam String detail_code){
+        String getGroupCode = "";
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("detail_code", detail_code);
+        getGroupCode = resumeService.getGroupCodeByDetailCode(paramMap);
+        return ResponseEntity.ok(getGroupCode);
+    }
+
 
 
 

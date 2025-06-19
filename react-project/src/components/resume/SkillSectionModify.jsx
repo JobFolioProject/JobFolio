@@ -1,4 +1,49 @@
+import { useEffect, useState } from "react";
+import axios from "../../utils/axiosConfig";
+import DropDown from "./ResumeDropdown";
 const SkillSectionModify = ({ resumeInfo, setResumeInfo }) => {
+  const [groupCodeList, setGroupCodeList] = useState([]);
+  const [selectedGroupCode, setSelectedGroupCode] = useState("");
+
+  useEffect(() => {
+    const selectedByDetailCode = async () => {
+      const newGroupCode = {};
+      for (const skill of resumeInfo.skills) {
+        axios
+          .get("/api/resume/selectedOneGroupCode", {
+            params: {
+              detail_code: skill.skill_code,
+            },
+          })
+          .then((res) => {
+            console.log(skill.skill_code);
+            newGroupCode[skill.skill_code] = res;
+            console.log(newGroupCode[skill.skill_code]);
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+
+        setSelectedGroupCode(newGroupCode);
+      }
+    };
+    selectedByDetailCode();
+  }, []);
+
+  useEffect(() => {
+    const getGroupCode = async () => {
+      await axios
+        .get("/api/resume/selectSkillGroupCode")
+        .then((res) => {
+          setGroupCodeList(res);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    };
+
+    getGroupCode();
+  }, []);
   return (
     <>
       <button
@@ -23,8 +68,13 @@ const SkillSectionModify = ({ resumeInfo, setResumeInfo }) => {
       </button>
       {resumeInfo.skills.map((skill, index) => (
         <div className="toggleInput" key={index}>
-          <label>
-            <div>스킬명</div>
+          <div>
+            <label>스킬명</label>
+            <DropDown
+              options={groupCodeList}
+              placeholder={"직무 선택"}
+              selected={selectedGroupCode[skill.skill_code] || ""}
+            />
             <input
               type="text"
               value={skill.skill_code}
@@ -39,10 +89,10 @@ const SkillSectionModify = ({ resumeInfo, setResumeInfo }) => {
                 });
               }}
             />
-          </label>
+          </div>
 
-          <label>
-            <div>숙련도</div>
+          <div>
+            <label>숙련도</label>
             <input
               type="text"
               value={skill.exp_level}
@@ -57,9 +107,9 @@ const SkillSectionModify = ({ resumeInfo, setResumeInfo }) => {
                 });
               }}
             />
-          </label>
-          <label>
-            <div>툴</div>
+          </div>
+          <div>
+            <label>툴</label>
             <input
               type="text"
               value={skill.skill_tool}
@@ -74,7 +124,7 @@ const SkillSectionModify = ({ resumeInfo, setResumeInfo }) => {
                 });
               }}
             />
-          </label>
+          </div>
           <button
             className="deleteCareerBtn"
             onClick={() => {

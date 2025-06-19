@@ -391,4 +391,12 @@ public class ResumeService {
         }
 
     }
+
+    public List<String> getSkillGroupCode() {
+        return resumeMapper.getSkillGroupCode();
+    }
+
+    public String getGroupCodeByDetailCode(Map<String,Object> paramMap) {
+        return resumeMapper.getGroupCodeByDetailCode(paramMap);
+    }
 }
