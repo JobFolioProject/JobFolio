@@ -1,7 +1,8 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import "../../../css/user/join/JoinForm.css";
 import axios from "../../../utils/axiosConfig";
 import { useNavigate } from "react-router-dom";
+import SocialLogin from "./SocialLogin";
 
 const JoinForm = () => {
   // 상태 정의
@@ -14,11 +15,17 @@ const JoinForm = () => {
   const [hp, setHp] = useState("");
   const [birthday, setBirthday] = useState("");
   const [address, setAddress] = useState("");
-  const [detailAddress, setDetailAddress] = useState(""); // 상세주소 추가
+  const [detailAddress, setDetailAddress] = useState(""); 
   const [emailMsg, setEmailMsg] = useState("");
   const [tokenMsg, setTokenMsg] = useState("");
   const [joinMsg, setJoinMsg] = useState("");
   const [joinError, setJoinError] = useState("");
+  
+  // 이메일 발송 관련 상태 추가
+  const [isEmailSent, setIsEmailSent] = useState(false);
+  const [remainingTime, setRemainingTime] = useState(0);
+  const [isEmailSending, setIsEmailSending] = useState(false);
+  
   const navigate = useNavigate();
 
   // 검증 에러 메시지
@@ -49,6 +56,30 @@ const JoinForm = () => {
   const birthdayRef = useRef();
   const hpRef = useRef();
   const addressRef = useRef();
+
+  // 타이머 효과
+  useEffect(() => {
+    let timer;
+    if (remainingTime > 0) {
+      timer = setInterval(() => {
+        setRemainingTime((prev) => {
+          if (prev <= 1) {
+            setIsEmailSent(false);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    return () => clearInterval(timer);
+  }, [remainingTime]);
+
+  // 시간 포맷팅 함수
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
 
   // 검증 함수
   const validateEmail = (value) => {
@@ -140,6 +171,15 @@ const JoinForm = () => {
     if (inputDate > now) return "올바른 날짜를 입력해주세요.";
     return "";
   };
+  
+  // 새로운 함수 추가: YYYYMMDD → YYYY-MM-DD 변환
+  const formatBirthdayForServer = (birthday) => {
+    const numbers = birthday.replace(/[^0-9]/g, "");
+    if (numbers.length === 8) {
+      return `${numbers.slice(0, 4)}-${numbers.slice(4, 6)}-${numbers.slice(6, 8)}`;
+    }
+    return birthday;
+  };
   const validateAddress = (value) => {
     if (!value) return "주소를 입력해주세요.";
     if (value.length > 500) return "주소는 500자 이하로 입력해주세요.";
@@ -179,6 +219,19 @@ const JoinForm = () => {
       const error = validateEmail(value);
       setEmailError(error === "이메일을 입력해주세요." ? "" : error);
     }
+    // 이메일이 변경되면 인증 상태 초기화
+    if (isEmailVerified) {
+      setIsEmailVerified(false);
+      setTokenMsg("");
+    }
+    if (isEmailSent) {
+      setIsEmailSent(false);
+      setRemainingTime(0);
+      setEmailMsg("");
+    }
+    if (isEmailSending) {
+      setIsEmailSending(false);
+    }
   };
   const handleTokenChange = (e) => {
     const value = e.target.value.toUpperCase();
@@ -215,6 +268,9 @@ const JoinForm = () => {
       setHpError(error === "휴대폰번호를 입력해주세요." ? "" : error);
     }
   };
+  const formatPhoneForServer = (phone) => {
+    return phone.replace(/[^0-9]/g, "");
+  };
   const handleBirthdayChange = (e) => {
     const formatted = formatBirthday(e.target.value);
     setBirthday(formatted);
@@ -231,25 +287,48 @@ const JoinForm = () => {
 
   // 이메일 인증번호 발송
   const handleSendEmail = async () => {
-    // 이메일이 비어있으면 아무 메시지도 띄우지 않음
+    // 1. 이메일이 비어있으면 바로 리턴
     if (!email) return;
+    
+    // 2. 이메일 형식 검증
     const error = validateEmail(email);
-    if (error && error !== "이메일을 입력해주세요.") {
+    if (error) {
       setEmailError(error);
       return;
     }
-    if (error === "이메일을 입력해주세요.") return;
+    
+    // 3. 발송 상태 설정
+    setIsEmailSending(true); 
+    setEmailMsg(""); 
+    setEmailError(""); 
+    
     try {
-      await axios.post("http://localhost:80/api/join/send-email-verification", {
+      const response = await axios.post("http://localhost:80/api/join/send-email-verification", {
         email,
       });
-      alert("인증이메일을 발송했습니다");
-      setEmailMsg("");
-      setEmailError("");
+      
+      // 4. 응답 처리 (axios config에서 data를 자동 반환하도록 설정했다고 가정)
+      if (response.result === "Y") {
+        setEmailMsg("인증이메일을 발송했습니다");
+        setEmailError("");
+        setIsEmailSent(true);
+        setRemainingTime(300); // 5분 = 300초
+      } else {
+        setEmailMsg("");
+        setEmailError(response.message || "이메일 발송에 실패했습니다.");
+      }
     } catch (err) {
-      setEmailMsg("이메일 발송에 실패했습니다.");
+      // 5. 서버 에러 응답 처리
+      const errorMessage = err.response?.data?.message || 
+                          err.response?.message || 
+                          "이메일 발송에 실패했습니다.";
+      setEmailError("");
+      setEmailMsg(errorMessage);
+    } finally {
+      setIsEmailSending(false);
     }
   };
+
   // 이메일 인증번호 확인
   const handleVerifyToken = async () => {
     const tokenErr = validateToken(emailToken);
@@ -265,10 +344,13 @@ const JoinForm = () => {
       setIsEmailVerified(true);
       setTokenMsg("이메일 인증이 완료되었습니다.");
       setTokenError("");
+      setIsEmailSent(false);
+      setRemainingTime(0);
     } catch (err) {
       setTokenMsg("인증번호가 올바르지 않습니다.");
     }
   };
+
   // 회원가입 처리 
   const handleJoin = async (e) => {
     e.preventDefault();
@@ -358,8 +440,8 @@ const JoinForm = () => {
         user_name: userName, 
         password,
         sex,
-        hp,
-        birthday,
+        hp: formatPhoneForServer(hp),
+        birthday: formatBirthdayForServer(birthday),
         address: fullAddress, 
       });
       setJoinMsg("회원가입이 완료되었습니다. 로그인 후 이용해주세요.");
@@ -374,6 +456,12 @@ const JoinForm = () => {
       <h2 className="jf-joinform-title">
         회원가입하고 다양한 혜택을 누리세요!
       </h2>
+    <SocialLogin 
+      title="소셜로 간편하게 로그인하세요"
+      providers={['naver', 'kakao', 'google']}
+      size="large"
+      showDivider={true}
+    />
       <form className="jf-joinform-form" onSubmit={handleJoin}>
         {/* 이메일 + 인증번호 발송 */}
         <div className="jf-joinform-field-group email-row">
@@ -406,9 +494,14 @@ const JoinForm = () => {
             type="button"
             className="jf-joinform-btn email-btn"
             onClick={handleSendEmail}
-            disabled={isEmailVerified || !!emailError}
+            disabled={isEmailVerified || !!emailError || isEmailSending}
           >
-            인증번호 발송
+            {isEmailSending 
+              ? "발송중..." 
+              : (isEmailSent && remainingTime > 0 && !isEmailSending)
+              ? `재발송(${formatTime(remainingTime)})` 
+              : "인증번호 발송"
+            }
           </button>
         </div>
         {emailMsg && <div className="jf-joinform-msg">{emailMsg}</div>}
@@ -449,7 +542,6 @@ const JoinForm = () => {
           </button>
         </div>
         {tokenMsg && <div className="jf-joinform-msg">{tokenMsg}</div>}
-        {/* 이름 */}
         <div className="jf-joinform-field-group">
           <div className="floating-input-wrap">
             <input
@@ -476,7 +568,6 @@ const JoinForm = () => {
             )}
           </div>
         </div>
-        {/* 비밀번호 */}
         <div className="jf-joinform-field-group">
           <div className="floating-input-wrap">
             <input
@@ -503,7 +594,6 @@ const JoinForm = () => {
             )}
           </div>
         </div>
-        {/* 생년월일 + 성별 한 줄 배치 */}
         <div className="jf-joinform-field-group flex-row">
           <div className="floating-input-wrap" style={{ flex: 2 }}>
             <input
@@ -550,7 +640,6 @@ const JoinForm = () => {
         {joinError === "성별을 선택해주세요." && (
           <div className="jf-joinform-tooltip-error">성별을 선택해주세요.</div>
         )}
-        {/* 휴대폰번호 */}
         <div className="jf-joinform-field-group">
           <div className="floating-input-wrap">
             <input
@@ -576,7 +665,6 @@ const JoinForm = () => {
             )}
           </div>
         </div>
-        {/* 주소 검색 */}
         <div className="jf-joinform-field-group email-row">
           <div className="floating-input-wrap">
             <input
@@ -588,8 +676,8 @@ const JoinForm = () => {
               onFocus={() => setFocus((f) => ({ ...f, address: true }))}
               onBlur={() => setFocus((f) => ({ ...f, address: false }))}
               placeholder=""
-              readOnly // 직접 입력 방지
-              onClick={handleAddressSearch} // 클릭 시 주소 검색
+              readOnly 
+              onClick={handleAddressSearch} 
               autoComplete="off"
               ref={addressRef}
             />

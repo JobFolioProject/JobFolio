@@ -45,7 +45,7 @@ const Payment = () => {
         user_no: user.userNo,
       });
 
-      console.log("🔥 insertOrder 응답:", res);
+      console.log("insertOrder 응답:", res);
   
       const { orderId, amount, order_name: orderName } = res;
   

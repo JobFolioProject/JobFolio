@@ -6,8 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,7 +43,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         } catch (Exception e) {
             System.err.println("CustomOAuth2UserService 에러: " + e.getMessage());
             e.printStackTrace();
-            throw new OAuth2AuthenticationException("소셜 로그인 처리 중 오류가 발생했습니다: " + e.getMessage());
+            throw new OAuth2AuthenticationException(
+                new OAuth2Error("LOGIN_ERROR", e.getMessage(), null),
+                e.getMessage()
+            );
         }
     }
 
@@ -167,6 +172,12 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         UserVO existingSocialUser = userMapper.selectBySocialTypeAndSocialId(socialParamMap);
 
         if (existingSocialUser != null) {
+            if ("Y".equals(existingSocialUser.getStatus_yn())) {
+                throw new OAuth2AuthenticationException(
+                        new OAuth2Error("DEACTIVATED_USER", "탈퇴한 계정입니다. 관리자에게 문의하세요.", null),
+                        "탈퇴한 계정입니다. 관리자에게 문의하세요."
+                );
+            }
             return existingSocialUser;
         }
 
@@ -175,10 +186,19 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         UserVO existingEmailUser = userMapper.selectByLoginId(emailParamMap);
 
-        if (existingEmailUser != null && !existingEmailUser.isSocialUser()) {
-            throw new OAuth2AuthenticationException(
-                    "해당 이메일로 이미 가입된 계정이 있습니다. 일반 로그인을 사용해주세요."
-            );
+        if (existingEmailUser != null) {
+            if ("Y".equals(existingEmailUser.getStatus_yn())) {
+                throw new OAuth2AuthenticationException(
+                        new OAuth2Error("DEACTIVATED_USER", "탈퇴한 계정입니다. 관리자에게 문의하세요.", null),
+                        "탈퇴한 계정입니다. 관리자에게 문의하세요."
+                );
+            }
+
+            if (!existingEmailUser.isSocialUser()) {
+                throw new OAuth2AuthenticationException(
+                        "해당 이메일로 이미 가입된 계정이 있습니다. 일반 로그인을 사용해주세요."
+                );
+            }
         }
 
         return createNewSocialUser(socialUserInfo);

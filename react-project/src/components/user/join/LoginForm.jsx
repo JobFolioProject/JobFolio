@@ -1,12 +1,12 @@
 import "../../../css/user/join/LoginForm.css";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import FindAccountForm from "./FindAccountForm"; // 🔥 수정: FindPasswordForm → FindAccountForm
+import FindAccountForm from "./FindAccountForm"; 
 import { useAuth } from "../../../context/AuthContext";
 
 const LoginForm = ({ onClose }) => {
   const navigate = useNavigate();
-  const { login } = useAuth(); // AuthContext의 login 함수 사용
+  const { login } = useAuth();
   const [loginId, setLoginId] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -32,7 +32,6 @@ const LoginForm = ({ onClose }) => {
       });
 
       if (result.success) {
-        alert(result.data.message || "로그인이 완료되었습니다.");
         onClose();
         navigate("/");
       } else {
