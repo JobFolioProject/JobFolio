@@ -30,8 +30,7 @@ const MenuBar = () => {
       <div className="toggle-button" onClick={toggleMenu}></div>
       
       <div className="logo">
-        <img src="/resources/logo/logo.png" alt="로고" className="logoImg" />
-        <Link to="/">JOBFOLIO</Link>
+        <Link to="/"><img src="/resources/logo/logo.png" alt="로고" className="logoImg" /></Link>
       </div>
       
       <ul>
