@@ -151,3 +151,13 @@
   position: relative;
   text-align: center;
 }
+
+.login-title .logoImg {
+  width: 230px;
+  margin: 0px;
+}
+
+.login-form-title .logoImg {
+  width: 230px;
+  margin: 0px;
+}

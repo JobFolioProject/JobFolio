@@ -73,8 +73,8 @@ const Login = ({ onClose, onLoginClick }) => {
         <div className="login-form-modal-overlay">
           <div className="login-form-modal">
             <div className="login-container">
-              <h1 className="login-title">jobfolio</h1> 
-              <h3 className="login-subtitle">AI기반의 자기소개서 생성서비스</h3>
+              <h1 className="login-title"><img src="/resources/logo/logo.png" alt="로고" className="logoImg" /><h3 className="login-subtitle">AI기반의 자기소개서 생성서비스</h3></h1> 
+              
               <div className="login-buttons">
                 <button className="login-btn user-login" onClick={userLogin}>
                   <img

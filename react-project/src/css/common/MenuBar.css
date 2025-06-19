@@ -34,18 +34,19 @@
   color: #00ffff;
 }
 
-.logo {
+.navbar .logo {
   display: flex;
   flex-direction: row;
   align-items: center;
   font-size: large;
   font-weight: 650;
   letter-spacing: 0.1em;
+  height: 70px;
 }
 
-.logoImg {
-  margin: 15px 10px;
-  width: 30px;
+.navbar .logoImg {
+  width: 80px;
+  margin-top: 10px;
 }
 
 .user-options {
