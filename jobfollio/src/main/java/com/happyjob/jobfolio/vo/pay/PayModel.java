@@ -52,10 +52,45 @@ public class PayModel {
 		this.paid_date = paid_date;
 	}
 
+	public String getDay_sale_date() {
+		return day_sale_date;
+	}
+
+	public void getDay_sale_date(String day_sale_date) {
+		this.day_sale_date = day_sale_date;
+	}
+
+	public String getMonth_sale_date() {
+		return month_sale_date;
+	}
+
+	public void setMonth_sale_date(String month_sale_date) {
+		this.month_sale_date = month_sale_date;
+	}
+
+	public int getTotal_count() {
+		return total_count;
+	}
+
+	public void setTotal_count(int total_count) {
+		this.total_count = total_count;
+	}
+
+	public int getTotal_sales() {
+		return total_sales;
+	}
+
+	public void setTotal_sales(int total_sales) {
+		this.total_sales = total_sales;
+	}
+
 	private String payment_key;
 	private int user_no;
 	private int product_no;
 	private int amount;
 	private String paid_date;
-
+	private String day_sale_date;
+	private String month_sale_date;
+	private int total_count;
+	private int total_sales;
 }
