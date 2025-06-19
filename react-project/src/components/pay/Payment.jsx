@@ -45,7 +45,7 @@ const Payment = () => {
         user_no: user.userNo,
       });
 
-      console.log("🔥 insertOrder 응답:", res);
+      console.log("insertOrder 응답:", res);
   
       const { orderId, amount, order_name: orderName } = res;
   
@@ -118,7 +118,7 @@ const Payment = () => {
         </div>
 
         <div className='paymentDescSection'>
-          <h2>사용권 활용 및 환불안내</h2>
+          <h1>사용권 활용 및 환불안내</h1>
 
           <section className='accordion'>
             <details>

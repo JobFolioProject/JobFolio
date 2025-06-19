@@ -1,51 +1,58 @@
-/* 공지사항 관리 메인 컨테이너 */
+/* ============================================
+   1. 메인 레이아웃
+   ============================================ */
 .noticeManagement {
   display: flex;
   flex-direction: row;
   width: 100%;
 }
 
-/* 콘텐츠 영역 */
 .noticeManagement .notice-content {
   flex: 1;
   padding: 40px;
   background-color: #f5f5f5;
 }
 
-/* 제목 박스 */
-.noticeManagement .notice-section-title-box {
-  background-color: #ffffff;
-  border-radius: 10px;
-  box-sizing: border-box;
-}
-
-/* 콘텐츠 박스 */
+/* ============================================
+   2. 섹션 박스 공통
+   ============================================ */
+.noticeManagement .notice-section-title-box,
 .noticeManagement .notice-section-content-box {
   background-color: #ffffff;
   border-radius: 20px;
+  box-sizing: border-box;
+  margin-bottom: 12px;
 }
 
-/* 내부 공통 박스 */
-.noticeManagement .notice-inner-box {
+.noticeManagement .notice-section-title-box {
+    border-radius: 10px;
+    background-color: #ffffff;
+    padding: 16px 24px;
+    margin-bottom: 24px;
+}
+
+.noticeManagement .notice-section-content-box .notice-inner-box {
+  overflow-x: visible;
+  overflow-y: hidden;
   padding: 16px 24px;
   border-radius: 10px;
   box-sizing: border-box;
   margin: 12px;
 }
 
-/* 제목 텍스트 */
+/* ============================================
+   3. 타이포그래피
+   ============================================ */
 .noticeManagement .notice-inner-box h2 {
   font-size: 20px;
   font-weight: bold;
   margin-bottom: 24px;
 }
 
-/* 섹션 제목 및 안내문 */
 .noticeManagement .notice-header h3 {
   font-size: 18px;
   font-weight: bold;
-  margin-top: 0;
-  margin-bottom: 10px;
+  margin: 0 0 10px;
 }
 
 .noticeManagement .notice-warning {
@@ -54,7 +61,9 @@
   margin-bottom: 10px;
 }
 
-/* 버튼 컨트롤 */
+/* ============================================
+   4. 컨트롤 영역
+   ============================================ */
 .noticeManagement .notice-controls {
   display: flex;
   justify-content: space-between;
@@ -63,23 +72,34 @@
   margin-bottom: 16px;
 }
 
-.noticeManagement .notice-left-controls {
+.noticeManagement .notice-left-controls,
+.noticeManagement .notice-right-controls {
   display: flex;
   gap: 10px;
+  align-items: center;
 }
 
 .noticeManagement .notice-right-controls {
-  display: flex;
-  align-items: center;
   flex-wrap: nowrap;
   overflow-x: auto;
-  gap: 10px;
 }
 
-/* 공통 버튼 */
+.noticeManagement .notice-search-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* 버튼 공통 */
+.noticeManagement .notice-button,
+.noticeManagement .community-notice-search-input {
+  height: 36px;
+  box-sizing: border-box;
+  vertical-align: middle;
+}
+
 .noticeManagement .notice-button {
   font-size: 14px;
-  height: 36px;
   padding: 0 12px;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -88,45 +108,28 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-sizing: border-box;
+  transition: border-color 0.2s ease;
 }
 
 .noticeManagement .notice-button:hover {
   border-color: #222;
 }
 
-/* 검색 그룹 */
-.noticeManagement .notice-search-group {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-/* 검색 input */
 .noticeManagement .community-notice-search-input {
   padding: 6px 12px;
   font-size: 14px;
-  height: 36px;
   line-height: 1.5;
   border: 1px solid #ccc;
   border-radius: 4px;
-  box-sizing: border-box;
 }
 
-/* 공통 높이 맞춤 */
-.noticeManagement .community-notice-search-input,
-.noticeManagement .notice-button {
-  height: 36px;
-  vertical-align: middle;
-  box-sizing: border-box;
-}
-
-/* 테이블 */
+/* ============================================
+   5. 테이블 레이아웃
+   ============================================ */
 .noticeManagement .notice-table {
-  display: table;                 
-  width: 100%;                    
-  min-width: 100%;                
-  table-layout: fixed;            
+  display: table;
+  width: 100%;
+  table-layout: fixed;
   border-collapse: collapse;
   background-color: #fff;
   font-size: 14px;
@@ -145,24 +148,19 @@
   background-color: #f2f2f2;
 }
 
-/* 테이블 hover 효과 */
 .noticeManagement .notice-table tbody tr:hover {
   background-color: #f9f9f9;
 }
 
-/* 열 비율 */
+/* 컬럼 너비 비율 */
 .noticeManagement .notice-table th.col-checkbox,
-.noticeManagement .notice-table td.col-checkbox {
-  width: 5%;
-}
+.noticeManagement .notice-table td.col-checkbox { width: 5%; }
 
 .noticeManagement .notice-table th.col-number,
-.noticeManagement .notice-table td.col-number {
-  width: 10%;
-}
+.noticeManagement .notice-table td.col-number   { width: 10%; }
 
 .noticeManagement .notice-table th.col-title,
-.noticeManagement .notice-table td.col-title {
+.noticeManagement .notice-table td.col-title     {
   width: 45%;
   white-space: nowrap;
   overflow: hidden;
@@ -170,25 +168,20 @@
 }
 
 .noticeManagement .notice-table th.col-date,
-.noticeManagement .notice-table td.col-date {
-  width: 10%;
-}
+.noticeManagement .notice-table td.col-date       { width: 10%; }
 
 .noticeManagement .notice-table th.col-priority,
-.noticeManagement .notice-table td.col-priority {
-  width: 10%;
-}
+.noticeManagement .notice-table td.col-priority   { width: 10%; }
 
 .noticeManagement .notice-table th.col-writer,
-.noticeManagement .notice-table td.col-writer {
-  width: 10%;
-}
-.noticeManagement .notice-table th.col-visible,
-.noticeManagement .notice-table td.col-visible {
-  width: 10%;
-}
+.noticeManagement .notice-table td.col-writer     { width: 10%; }
 
-/* 제목 hover */
+.noticeManagement .notice-table th.col-visible,
+.noticeManagement .notice-table td.col-visible    { width: 10%; }
+
+/* ============================================
+   6. 공지 제목 툴팁
+   ============================================ */
 .noticeManagement .notice-title {
   cursor: pointer;
   position: relative;
@@ -199,7 +192,6 @@
   text-decoration: underline;
 }
 
-/* 제목 툴팁 효과 */
 .noticeManagement .notice-title:hover::after {
   content: attr(data-title);
   position: absolute;
@@ -215,7 +207,9 @@
   border-radius: 4px;
 }
 
-/* 페이징 */
+/* ============================================
+   7. 페이징
+   ============================================ */
 .noticeManagement .pagination {
   display: flex;
   justify-content: center;
@@ -243,7 +237,96 @@
   height: 28px;
 }
 
-/* 반응형 */
+/* ============================================
+   8. 우선순위 변경 버튼
+   ============================================ */
+.noticeManagement .notice-table .col-priority .priority-control {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.noticeManagement .notice-table .col-priority .priority-control button {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 2px 6px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: background-color 0.2s ease;
+}
+
+.noticeManagement .notice-table .col-priority .priority-control button:hover {
+  background-color: #f0f0f0;
+}
+
+.noticeManagement .notice-table .col-priority .priority-control button:disabled {
+  background-color: #f9f9f9;
+  color: #bbb;
+  border-color: #ddd;
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* ============================================
+   9. 공개/비공개 버튼
+   ============================================ */
+.noticeManagement .notice-table .col-visible {
+  align-items: center;
+  justify-content: center;
+  padding: 6px 4px;
+  box-sizing: border-box;
+}
+
+.noticeManagement .notice-table .col-visible button {
+  height: 36px;
+  padding: 6px 10px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+  box-sizing: border-box;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.noticeManagement .notice-table .col-visible button:hover {
+  background-color: #f9f9f9;
+}
+
+.noticeManagement .notice-table .col-visible .visiblity-icon {
+  font-size: 18px;
+  margin-right: 2px;
+}
+
+/* ============================================
+   10. 스피너
+   ============================================ */
+.noticeManagement .spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #ccc;
+  border-top: 2px solid #444;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  box-sizing: border-box;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ============================================
+   11. 반응형 (모바일)
+   ============================================ */
 @media (max-width: 768px) {
   .noticeManagement .notice-controls {
     flex-direction: column;
@@ -261,83 +344,15 @@
     width: 100%;
     max-width: 100%;
   }
-  
 }
 
-/* 우선순위 변경 버튼 */
-.notice-table .col-priority .priority-control {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-}
-
-.notice-table .col-priority .priority-control button {
-  background-color: #ffffff;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  padding: 2px 6px;
-  cursor: pointer;
-  font-size: 12px;
-  transition: background-color 0.2s ease;
-}
-
-.notice-table .col-priority .priority-control button:hover {
-  background-color: #f0f0f0;
-}
-
-.notice-table .col-priority .priority-control button:disabled {
-  background-color: #f9f9f9;
-  color: #bbb;
-  border-color: #ddd;
-  cursor: not-allowed;
-  opacity: 0.5;
-}
-
-/* 공개 비공개 버튼 */
-.noticeManagement .notice-table .col-visible button {
-  min-width: 100px;              /* 버튼 너비 고정 */
-  height: 36px;
-  padding: 6px 10px;
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background-color: #ffffff;
-  box-sizing: border-box;
-  white-space: nowrap;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.noticeManagement .notice-table .col-visible button:hover {
-  background-color: #f9f9f9;
-}
-
-/* 스피너 스타일 */
-.spinner {
-  width: 18px;
-  height: 18px;
-  border: 2px solid #ccc;
-  border-top: 2px solid #444;
-  border-radius: 50%;
-  animation: spin 0.6s linear infinite;
-  box-sizing: border-box;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
+@media (max-width: 480px) {
+  .noticeManagement .notice-table .col-visible button {
+    font-size: 12px;
+    padding: 4px 6px;
   }
-}
 
-/* 아이콘 스타일 */
-.noticeManagement .notice-table .col-visible .visiblity-icon {
-  font-size: 18px;
-  display: inline-block;
-  vertical-align: middle;
-  margin-right: 2px;
+  .noticeManagement .notice-table .col-visible button span {
+    display: none;
+  }
 }

@@ -48,50 +48,72 @@
   width: 100%;
 }
 
+/* 모든 로그인 버튼 공통 스타일 - 크기 통일 */
 .login-btn {
   width: 100%;
-  height: 50px;
+  height: 50px; /* 모든 버튼 동일한 높이 */
   border: none;
   border-radius: 5px;
   cursor: pointer;
   display: flex;
   align-items: center;
+  justify-content: center; /* 중앙 정렬 */
   padding: 0 20px;
   margin-bottom: 10px;
   font-size: 16px;
   position: relative;
+  box-sizing: border-box; /* 패딩 포함한 크기 계산 */
+  transition: all 0.2s ease;
 }
 
 .login-btn img {
-  width: 32px;
-  height: 32px;
-  margin-right: 10px;
-  position: absolute;
-  left: 16px;
+  width: 24px; /* 아이콘 크기 통일 */
+  height: 24px;
+  margin-right: 12px;
+  flex-shrink: 0; /* 아이콘 크기 고정 */
 }
 
 .login-text {
-  width: 100%;
+  flex: 1;
   text-align: center;
   font-weight: bold;
 }
 
+/* 카카오 로그인 버튼 */
 .kakao-login {
   background-color: #ffea29;
   color: #000000;
+  border: 1px solid #ffea29;
 }
 
+.kakao-login:hover {
+  background-color: #ffe812;
+  transform: translateY(-2px);
+}
+
+/* 네이버 로그인 버튼 */
 .naver-login {
   background-color: #1ccc6a;
   color: #ffffff;
+  border: 1px solid #1ccc6a;
 }
 
+.naver-login:hover {
+  background-color: #17b85d;
+  transform: translateY(-2px);
+}
+
+/* 로컬 로그인 버튼 */
 .user-login {
   background-color: #f2f3f377;
   color: #000000;
-  justify-content: center;
   border: 1px solid #e0e0e0;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.user-login:hover {
+  background-color: #e8e9ea;
+  transform: translateY(-2px);
 }
 
 .user-login img {
@@ -100,11 +122,48 @@
   margin-right: 8px;
 }
 
-.login-btn:hover {
-  opacity: 0.9;
-  transform: translateY(-2px);
+/* 구글 로그인 버튼 - 다른 버튼과 크기 맞춤, 독립 스타일 */
+.login-btn.login-google-btn {
+  width: 100%;
+  height: 50px;
+  background-color: #fff;
+  border: 1px solid #dadce0;
+  border-radius: 5px;
+  color: #3c4043;
+  font-family: 'Roboto', arial, sans-serif;
+  font-size: 16px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 20px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
 }
 
+.login-btn.login-google-btn img {
+  width: 24px;
+  height: 24px;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.login-btn.login-google-btn .login-text {
+  flex: 1;
+  text-align: center;
+  font-weight: bold;
+  color: #3c4043;
+}
+
+.login-btn.login-google-btn:hover {
+  background-color: #f8f9fa;
+  border-color: #dadce0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* 로그인 링크 */
 .login-links {
   display: flex;
   gap: 1rem;
@@ -126,6 +185,7 @@
   cursor: default;
 }
 
+/* 닫기 버튼 */
 .close-button {
   position: absolute;
   top: 1rem;
@@ -141,6 +201,7 @@
   color: #333;
 }
 
+/* 로그인 폼 모달 */
 .login-form-modal {
   background: #fff;
   border-radius: 16px;
@@ -160,4 +221,97 @@
 .login-form-title .logoImg {
   width: 230px;
   margin: 0px;
+}
+
+/* join.css 파일에 추가 */
+.error-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 10001; /* 로그인 모달보다 높게 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.error-popup {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  max-width: 300px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.error-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.error-body {
+  margin-bottom: 20px;
+}
+
+.error-icon {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+.error-footer button {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.login-btn.gsi-material-button {
+  width: 100% !important;
+  height: 50px !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  padding: 0 20px !important;
+  margin-bottom: 10px !important;
+  border-radius: 5px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+  font-size: 16px !important;
+  font-weight: bold !important;
+  background-color: #f5f6fa !important;
+  border: 1px solid #dadce0 !important;
+  transition: all 0.2s;
+}
+
+.login-btn.gsi-material-button .gsi-material-button-icon {
+  width: 24px !important;
+  height: 24px !important;
+  margin-right: 12px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.login-btn.gsi-material-button .gsi-material-button-contents {
+  flex: 1 !important;
+  text-align: center !important;
+  font-weight: bold !important;
+  font-size: 16px !important;
+  color: #3c4043 !important;
+  letter-spacing: 0 !important;
+  padding: 0 !important;
+}
+
+.login-btn.gsi-material-button:hover {
+  background-color: #e8e9ea !important;
+  border-color: #dadce0 !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.10) !important;
 }

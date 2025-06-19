@@ -106,25 +106,14 @@ const UserInfo = () => {
     const userInfoCheck = async () => {
         try {
             const response = await axios.post(`/api/join/userInfoCheck`, {
-                login_id: userInfo.login_id,
-                password: password
+                password: password  
             });
-
-            if (response!== null) {
-                try {
-                    const deleteResponse = await axios.get(`/api/myPage/userInfo/${user.userNo}/delete`);
-                    if (deleteResponse !== null) {
-                        alert("탈퇴가 완료되었습니다.");
-                        logout(); // AuthContext의 logout 사용 (자동으로 상태 정리 및 리다이렉트)
-                    } else {
-                        alert("탈퇴 요청에 실패했습니다.");
-                    }
-                } catch (error) {
-                    console.error("탈퇴 요청 실패:", error);
-                    alert("탈퇴 중 오류가 발생했습니다.");
-                }
+    
+            if (response?.result === "Y") {
+                alert("탈퇴가 완료되었습니다.");
+                logout();
             } else {
-                alert(response.message || "비밀번호가 일치하지 않습니다.");
+                alert(response?.message || "비밀번호가 일치하지 않습니다.");
             }
         } catch (error) {
             console.error("탈퇴 요청 실패:", error);
