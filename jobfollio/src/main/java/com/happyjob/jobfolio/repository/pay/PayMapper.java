@@ -17,6 +17,7 @@ public interface PayMapper {
 	// 토스 api 결제 승인시
 	int cardSuccess(Map<String, Object> params);
 
+	// 아래부터 구독 기간 갱신 기능
 	Integer selectProductNoByOrderId(String orderId);
 
 	Integer selectSubPeriodByProductNo(Integer productNo);

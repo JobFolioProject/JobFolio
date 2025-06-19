@@ -69,7 +69,7 @@ public class PayService {
 
 		LocalDateTime updatedExpireDate = baseDate.plusMonths(subPeriod);
 
-		// subPeriod만큼 DB 업데이트
+		// 상품 구독 기간 만큼 DB 업데이트
 		int updated = payMapper.updateExpireDate(userNo, Timestamp.valueOf(updatedExpireDate));
 		if (updated == 0) {
 			throw new Exception("구독 만료일 갱신 실패");
