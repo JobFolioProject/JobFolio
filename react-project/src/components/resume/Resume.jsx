@@ -598,7 +598,7 @@ const saveFieldData = (type) => {
                         {(formData.experience.length + formData.newExperience.length) < 4 && formData.newExperience.length === 0 && (
                         <div>
                             <div style={{ display:'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                                <span>새 경력 추가</span>
+                                <span>.</span>
                                 <PrettyBtn type='button' size='sm' onClick={addExperience}>새 경력 추가</PrettyBtn>
                             </div>
                         </div>

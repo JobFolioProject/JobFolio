@@ -31,11 +31,11 @@ const handleGenerateResume = async() => {
             // 경력 데이터: 기존 경력(experience)과 새로 추가된 경력(newExperience)을 합쳐서
             // 백엔드 CareerAllDto의 'careerHistoryList' 필드명에 맞춰 전송합니다.
             careerHistoryList: [...formData.experience, ...(formData.newExperience || [])],
-
             // CareerAllDto에 있는 다른 필드들도 formData에서 가져와서 매핑합니다.
             // formData의 skill_tool은 문자열이므로, CareerAllDto의 List<SkillVO> skillList에 맞게 변환이 필요할 수 있습니다.
             // 여기서는 임시로 문자열 하나를 가진 리스트로 보낼 수 있습니다.
-            skillList: formData.skill_tool ? [{ skill_name: formData.skill_tool }] : [], // SkillVO 구조에 맞춰야 함
+            // skillList: formData.skill_tool ? [{ skill_name: formData.skill_tool }] : [], // SkillVO 구조에 맞춰야 함
+            skillList: [...formData.skillList, ...(formData.newSkillList || [])],
             link_url: formData.link_url, // CareerAllDto에 이 필드가 있다면 추가
 
             // formData에 hobby, notes 필드가 있다면 CareerAllDto에 맞게 추가
@@ -62,19 +62,14 @@ const handleGenerateResume = async() => {
     //     // }));
     // })
     .then(res => {
-                // API 응답에서 'generatedCoverLetter' 필드를 사용한다고 가정
-                // const generatedText = res.generatedCoverLetter;
-                // console.log(res);
-                // console.log(generatedText);
-                // setAiCoverLetter(generatedText); // AI가 생성한 자기소개서를 표시
-                // setMyCoverLetter(generatedText); // AI가 생성한 내용을 상위 formData.coverLetter에 반영
-                 const rawResponse = res;
-        const parsed = JSON.parse(rawResponse); // 문자열 → 객체
-        const content = parsed.choices[0].message.content;
-
-        console.log(content);
-        setAiCoverLetter(content);
-        setMyCoverLetter(content);
+                console.log(typeof res); //object
+                console.log(typeof res.data);//object
+                const parsedAnswerno = res.data.response;
+                console.log(typeof parsedAnswerno); //string 
+                const parsedAnswer = JSON.parse(res.data.response);
+                const content = parsedAnswer.choices[0].message.content;
+                console.log('restext는:' ,content);
+         setMyCoverLetter(content);
             })
     .catch(err => {
         console.error('자기소개서 생성 실패:', err);
