@@ -18,10 +18,19 @@ public class AiResumeGenerateVO {
     private List<CareerHistoryVO> experience; // 기존 CareerHistoryVO 사용
     private List<Object> newExperience;     // 임시 데이터. 실제 사용하지 않을 경우 List<Object>로 충분
     private List<Object> newEducation;      // 임시 데이터. 실제 사용하지 않을 경우 List<Object>로 충분
-    private String myCoverLetter;           // 클라이언트에서 별도로 보내는 자기소개서
+    private String myCoverLetter;           // 클라이언트에서 별도로 보내는 내가 작성한 자기소개서
 
+    private String aiCoverLetter;      //aiCoverLetter로 ai자소서
 
     private Integer template_no;            // 클라이언트 formData의 template_no
+
+    public String getAiCoverLetter() {
+        return aiCoverLetter;
+    }
+
+    public void setAiCoverLetter(String aiCoverLetter) {
+        this.aiCoverLetter = aiCoverLetter;
+    }
 
     //skill 정보를 단순화된 DTO리스트로 받기.
 

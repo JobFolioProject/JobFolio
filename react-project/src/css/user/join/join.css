@@ -48,50 +48,72 @@
   width: 100%;
 }
 
+/* 🔥 모든 로그인 버튼 공통 스타일 - 크기 통일 */
 .login-btn {
   width: 100%;
-  height: 50px;
+  height: 50px; /* 모든 버튼 동일한 높이 */
   border: none;
   border-radius: 5px;
   cursor: pointer;
   display: flex;
   align-items: center;
+  justify-content: center; /* 중앙 정렬 */
   padding: 0 20px;
   margin-bottom: 10px;
   font-size: 16px;
   position: relative;
+  box-sizing: border-box; /* 패딩 포함한 크기 계산 */
+  transition: all 0.2s ease;
 }
 
 .login-btn img {
-  width: 32px;
-  height: 32px;
-  margin-right: 10px;
-  position: absolute;
-  left: 16px;
+  width: 24px; /* 아이콘 크기 통일 */
+  height: 24px;
+  margin-right: 12px;
+  flex-shrink: 0; /* 아이콘 크기 고정 */
 }
 
 .login-text {
-  width: 100%;
+  flex: 1;
   text-align: center;
   font-weight: bold;
 }
 
+/* 카카오 로그인 버튼 */
 .kakao-login {
   background-color: #ffea29;
   color: #000000;
+  border: 1px solid #ffea29;
 }
 
+.kakao-login:hover {
+  background-color: #ffe812;
+  transform: translateY(-2px);
+}
+
+/* 네이버 로그인 버튼 */
 .naver-login {
   background-color: #1ccc6a;
   color: #ffffff;
+  border: 1px solid #1ccc6a;
 }
 
+.naver-login:hover {
+  background-color: #17b85d;
+  transform: translateY(-2px);
+}
+
+/* 로컬 로그인 버튼 */
 .user-login {
   background-color: #f2f3f377;
   color: #000000;
-  justify-content: center;
   border: 1px solid #e0e0e0;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.user-login:hover {
+  background-color: #e8e9ea;
+  transform: translateY(-2px);
 }
 
 .user-login img {
@@ -100,11 +122,124 @@
   margin-right: 8px;
 }
 
-.login-btn:hover {
-  opacity: 0.9;
-  transform: translateY(-2px);
+/* 🔥 구글 로그인 버튼 - 다른 버튼과 크기 맞춤 */
+.login-btn.gsi-material-button {
+  /* 기본 login-btn 스타일 상속하면서 구글 스타일 적용 */
+  width: 100% !important;
+  height: 50px !important; /* 다른 버튼과 동일한 높이 */
+  padding: 0 20px !important;
+  margin-bottom: 10px !important;
+  box-sizing: border-box !important;
+  
+  /* 구글 공식 스타일 */
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  -webkit-appearance: none;
+  background-color: white !important;
+  background-image: none;
+  border: 1px solid #dadce0 !important;
+  border-radius: 5px !important; /* 다른 버튼과 동일한 border-radius */
+  color: #3c4043 !important;
+  cursor: pointer;
+  font-family: 'Roboto', arial, sans-serif !important;
+  font-size: 16px !important; /* 다른 버튼과 동일한 폰트 크기 */
+  font-weight: bold !important; /* 다른 버튼과 동일한 폰트 굵기 */
+  letter-spacing: 0.25px;
+  outline: none;
+  overflow: hidden;
+  position: relative;
+  text-align: center;
+  transition: all 0.2s ease !important;
+  vertical-align: middle;
+  white-space: nowrap;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 
+/* 구글 버튼 내부 컨테이너 */
+.login-btn.gsi-material-button .gsi-material-button-content-wrapper {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  height: 100% !important;
+  width: 100% !important;
+  position: relative;
+}
+
+/* 구글 아이콘 */
+.login-btn.gsi-material-button .gsi-material-button-icon {
+  height: 24px !important; /* 다른 버튼 아이콘과 동일한 크기 */
+  width: 24px !important;
+  min-width: 24px !important;
+  margin-right: 12px !important;
+  flex-shrink: 0;
+}
+
+/* 구글 버튼 텍스트 */
+.login-btn.gsi-material-button .gsi-material-button-contents {
+  flex: 1;
+  text-align: center;
+  font-family: 'Roboto', arial, sans-serif !important;
+  font-weight: bold !important; /* 다른 버튼과 동일한 굵기 */
+  font-size: 16px !important; /* 다른 버튼과 동일한 크기 */
+  color: #3c4043 !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: top;
+}
+
+/* 구글 버튼 상태 레이어 */
+.login-btn.gsi-material-button .gsi-material-button-state {
+  transition: opacity .218s;
+  bottom: 0;
+  left: 0;
+  opacity: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  border-radius: 5px;
+}
+
+/* 구글 버튼 hover 효과 - 다른 버튼과 통일 */
+.login-btn.gsi-material-button:not(:disabled):hover {
+  background-color: #f8f9fa !important;
+  border-color: #dadce0 !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+}
+
+.login-btn.gsi-material-button:not(:disabled):hover .gsi-material-button-state {
+  background-color: #303030;
+  opacity: 8%;
+}
+
+/* 구글 버튼 active/focus 상태 */
+.login-btn.gsi-material-button:not(:disabled):active .gsi-material-button-state,
+.login-btn.gsi-material-button:not(:disabled):focus .gsi-material-button-state {
+  background-color: #303030;
+  opacity: 12%;
+}
+
+/* 비활성화 상태 */
+.login-btn.gsi-material-button:disabled {
+  cursor: default;
+  background-color: #ffffff61 !important;
+  border-color: #1f1f1f1f !important;
+}
+
+.login-btn.gsi-material-button:disabled .gsi-material-button-contents {
+  opacity: 38%;
+}
+
+.login-btn.gsi-material-button:disabled .gsi-material-button-icon {
+  opacity: 38%;
+}
+
+/* 로그인 링크 */
 .login-links {
   display: flex;
   gap: 1rem;
@@ -126,6 +261,7 @@
   cursor: default;
 }
 
+/* 닫기 버튼 */
 .close-button {
   position: absolute;
   top: 1rem;
@@ -141,6 +277,7 @@
   color: #333;
 }
 
+/* 로그인 폼 모달 */
 .login-form-modal {
   background: #fff;
   border-radius: 16px;
@@ -150,4 +287,14 @@
   padding: 60px 40px;
   position: relative;
   text-align: center;
+}
+
+.login-title .logoImg {
+  width: 230px;
+  margin: 0px;
+}
+
+.login-form-title .logoImg {
+  width: 230px;
+  margin: 0px;
 }

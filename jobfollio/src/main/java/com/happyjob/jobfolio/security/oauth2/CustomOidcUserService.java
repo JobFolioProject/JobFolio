@@ -35,18 +35,14 @@ public class CustomOidcUserService extends OidcUserService {
     public OidcUser loadUser(OidcUserRequest userRequest) throws OAuth2AuthenticationException {
 
         try {
-            // 기본 OIDC 사용자 정보 로드
             OidcUser oidcUser = super.loadUser(userRequest);
 
             String registrationId = userRequest.getClientRegistration().getRegistrationId();
 
-            // 구글 사용자 정보 추출 (People API 포함)
             SocialUserInfo socialUserInfo = extractGoogleInfoWithPeopleAPI(oidcUser, userRequest);
 
-            // DB 처리
             UserVO user = processOAuth2User(socialUserInfo);
 
-            // CustomOAuth2User로 래핑해서 반환
             return new CustomOAuth2User(user, oidcUser.getAttributes());
 
         } catch (Exception e) {
@@ -57,13 +53,12 @@ public class CustomOidcUserService extends OidcUserService {
     }
 
     /**
-     * 구글 사용자 정보 추출 - People API 연동
+     * 구글 사용자 정보 추출
      */
     private SocialUserInfo extractGoogleInfoWithPeopleAPI(OidcUser oidcUser, OidcUserRequest userRequest) {
         String originalEmail = oidcUser.getAttribute("email");
         String prefixedEmail = originalEmail != null ? "GOOGLE_" + originalEmail : null;
 
-        // People API로 추가 정보 가져오기
         GooglePeopleInfo peopleInfo = fetchGooglePeopleInfo(userRequest);
 
         return SocialUserInfo.builder()
@@ -105,7 +100,7 @@ public class CustomOidcUserService extends OidcUserService {
 
         } catch (Exception e) {
             e.printStackTrace();
-            return new GooglePeopleInfo(); // 빈 객체 반환
+            return new GooglePeopleInfo();
         }
     }
 
@@ -119,7 +114,6 @@ public class CustomOidcUserService extends OidcUserService {
 
             GooglePeopleInfo info = new GooglePeopleInfo();
 
-            // 생년월일 파싱
             JsonNode birthdays = root.path("birthdays");
             if (birthdays.isArray() && birthdays.size() > 0) {
                 for (JsonNode birthday : birthdays) {
@@ -132,13 +126,13 @@ public class CustomOidcUserService extends OidcUserService {
                         if (year > 0 && month > 0 && day > 0) {
                             info.setBirthyear(String.valueOf(year));
                             info.setBirthday(String.format("%02d-%02d", month, day));
-                            break; // 첫 번째 유효한 생년월일 사용
+                            break;
                         }
                     }
                 }
             }
 
-            // 성별 파싱
+
             JsonNode genders = root.path("genders");
             if (genders.isArray() && genders.size() > 0) {
                 String gender = genders.get(0).path("value").asText();
@@ -149,7 +143,7 @@ public class CustomOidcUserService extends OidcUserService {
                 }
             }
 
-            // 전화번호 파싱
+
             JsonNode phoneNumbers = root.path("phoneNumbers");
             if (phoneNumbers.isArray() && phoneNumbers.size() > 0) {
                 String phoneNumber = phoneNumbers.get(0).path("value").asText();
@@ -165,7 +159,7 @@ public class CustomOidcUserService extends OidcUserService {
     }
 
     /**
-     * Google People API 응답 데이터 클래스
+     * Google People API
      */
     private static class GooglePeopleInfo {
         private String birthday;
@@ -188,7 +182,7 @@ public class CustomOidcUserService extends OidcUserService {
         public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
     }
 
-    // 기존 메서드들 유지 (processOAuth2User, createNewSocialUser 등)
+
     private UserVO processOAuth2User(SocialUserInfo socialUserInfo) throws Exception {
         Map<String, Object> socialParamMap = new HashMap<>();
         socialParamMap.put("social_type", socialUserInfo.getSocial_type());

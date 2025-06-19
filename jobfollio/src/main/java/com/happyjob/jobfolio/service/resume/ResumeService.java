@@ -6,10 +6,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.happyjob.jobfolio.repository.resume.ResumeMapper;
 import com.happyjob.jobfolio.vo.join.UserVO;
-import com.happyjob.jobfolio.vo.resume.LinkInfoVO;
-import com.happyjob.jobfolio.vo.resume.ResumeInfoVO;
-import com.happyjob.jobfolio.vo.resume.ResumeLikeVO;
-import com.happyjob.jobfolio.vo.resume.TemplateVO;
+import com.happyjob.jobfolio.vo.resume.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -184,67 +181,67 @@ public class ResumeService {
                 }
                 System.out.println(sb.toString());
                 template = sb.toString();
-                }
-
-                // 1) JSON Body 생성
-                ObjectMapper om = new ObjectMapper();
-                ObjectNode body = om.createObjectNode();
-                body.put("model", "gpt-3.5-turbo");
-                ArrayNode messages = body.putArray("messages");
-
-                String userDataJson = om.writerWithDefaultPrettyPrinter()
-                        .writeValueAsString(root);
-
-                String userInput = "";
-
-                // system 메시지: 지시 + template
-                ObjectNode sysMsg = messages.addObject();
-                sysMsg.put("role", "system");
-                sysMsg.put("content",
-                        "You are to respond **only** with a fully filled HTML resume template.  \n"
-                                + "The template uses CSS class names that exactly match the keys in the user data JSON.  \n"
-                                + "- Replace each element’s inner HTML for classes:  \n"
-                                + "  • name, email, phone, website  \n"
-                                + "  • education (an array you should render as table rows)  \n"
-                                + "  • experience (array → table rows)  \n"
-                                + "  • certifications (array → table rows)  \n"
-                                + "  • projects (array → table rows)  \n"
-                                + "Output only the complete HTML document, without any additional explanation.  \n\n"
-                                + "User Data JSON:\n" + userDataJson + "\n\n"
-                                + "Polish and refine the introduction text for professionalism, make introduction fully enough at least 10 sentences.  \n"
-                                + "If data in introduction is not enough, make any data to appeal your self and please fill 10 sentences.  \n"
-                                + "Here is the HTML template:\n" + template + "\n\n"
-                                + "Ensure that all text content inside HTML tags is written in Korean."
-                );
-
-
-                // user 메시지: 실제 이력 정보
-                ObjectNode userMsg = messages.addObject();
-                userMsg.put("role", "user");
-                userMsg.put("content", userInput);
-
-                String jsonPayload = om.writeValueAsString(body);
-                HttpEntity<String> request = new HttpEntity<>(jsonPayload, headers);
-
-                // 2) API 호출
-                ResponseEntity<String> response = restTemplate.postForEntity(
-                        chatGptApiUrl, request, String.class);
-
-
-                return response.getBody();
-
-            } catch (HttpClientErrorException e) {
-
-                return "{\"error\":\"ChatGPT API 오류 발생: " + e.getStatusCode() + "\"}";
-            } catch (JsonProcessingException e) {
-                return "{\"error\":\"서버 JSON 처리 오류\"}";
-            } catch (Exception e) {
-                return "{\"error\":\"서버 내부 오류\"}";
             }
+
+            // 1) JSON Body 생성
+            ObjectMapper om = new ObjectMapper();
+            ObjectNode body = om.createObjectNode();
+            body.put("model", "gpt-3.5-turbo");
+            ArrayNode messages = body.putArray("messages");
+
+            String userDataJson = om.writerWithDefaultPrettyPrinter()
+                    .writeValueAsString(root);
+
+            String userInput = "";
+
+            // system 메시지: 지시 + template
+            ObjectNode sysMsg = messages.addObject();
+            sysMsg.put("role", "system");
+            sysMsg.put("content",
+                    "You are to respond **only** with a fully filled HTML resume template.  \n"
+                            + "The template uses CSS class names that exactly match the keys in the user data JSON.  \n"
+                            + "- Replace each element’s inner HTML for classes:  \n"
+                            + "  • name, email, phone, website  \n"
+                            + "  • education (an array you should render as table rows)  \n"
+                            + "  • experience (array → table rows)  \n"
+                            + "  • certifications (array → table rows)  \n"
+                            + "  • projects (array → table rows)  \n"
+                            + "Output only the complete HTML document, without any additional explanation.  \n\n"
+                            + "User Data JSON:\n" + userDataJson + "\n\n"
+                            + "Polish and refine the introduction text for professionalism, make introduction fully enough at least 10 sentences.  \n"
+                            + "If data in introduction is not enough, make any data to appeal your self and please fill 10 sentences.  \n"
+                            + "Here is the HTML template:\n" + template + "\n\n"
+                            + "Ensure that all text content inside HTML tags is written in Korean."
+            );
+
+
+            // user 메시지: 실제 이력 정보
+            ObjectNode userMsg = messages.addObject();
+            userMsg.put("role", "user");
+            userMsg.put("content", userInput);
+
+            String jsonPayload = om.writeValueAsString(body);
+            HttpEntity<String> request = new HttpEntity<>(jsonPayload, headers);
+
+            // 2) API 호출
+            ResponseEntity<String> response = restTemplate.postForEntity(
+                    chatGptApiUrl, request, String.class);
+
+
+            return response.getBody();
+
+        } catch (HttpClientErrorException e) {
+
+            return "{\"error\":\"ChatGPT API 오류 발생: " + e.getStatusCode() + "\"}";
+        } catch (JsonProcessingException e) {
+            return "{\"error\":\"서버 JSON 처리 오류\"}";
+        } catch (Exception e) {
+            return "{\"error\":\"서버 내부 오류\"}";
         }
+    }
 
 
-    public String getAiComment(ObjectNode root){
+    public String getAiComment(ObjectNode root) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(api_key);
@@ -262,9 +259,9 @@ public class ResumeService {
             ObjectNode sysMsg = messages.addObject();
             sysMsg.put("role", "system");
             sysMsg.put("content",
-                 "Please provide only specific advice on the strengths, weaknesses, and areas for improvement in this resume in Korean\n"
-                         + "You do not have to mention the introduction  \n\n"
-                    + resumeDataJson
+                    "Please provide only specific advice on the strengths, weaknesses, and areas for improvement in this resume in Korean\n"
+                            + "You do not have to mention the introduction  \n\n"
+                            + resumeDataJson
             );
 
             ObjectNode userMsg = messages.addObject();
@@ -275,60 +272,65 @@ public class ResumeService {
 
             ResponseEntity<String> response = restTemplate.postForEntity(chatGptApiUrl, request, String.class);
             return response.getBody();
-        } catch (Exception e){
+        } catch (Exception e) {
             return "{\"error\":\"서버 내부 오류\"}";
         }
 
     }
-    public List<ResumeInfoVO> selectResumeInfo(int user_no){
+
+    public List<ResumeInfoVO> selectResumeInfo(int user_no) {
         return resumeMapper.selectResumeInfo(user_no);
     }
 
-    public List<ResumeInfoVO> resumeLikedList(int user_no){
+    public List<ResumeInfoVO> resumeLikedList(int user_no) {
         return resumeMapper.resumeLikedList(user_no);
     }
 
-    public int unlikeResume(int user_no, int resume_no){
+    public int unlikeResume(int user_no, int resume_no) {
         return resumeMapper.unlikeResume(user_no, resume_no);
     }
 
-    public int likeResume(int user_no, int resume_no){
+    public int likeResume(int user_no, int resume_no) {
         return resumeMapper.likeResume(user_no, resume_no);
     }
 
-    public int deleteResume(int resume_no){
+    public int deleteResume(int resume_no) {
         return resumeMapper.deleteResume(resume_no);
     }
 
-    public int insertResumeInfo(ResumeInfoVO resumeInfoVO){
+    public int deleteSelectedResume(List<Integer> resume_nos) {
+        return resumeMapper.deleteSelectedResume(resume_nos);
+    }
+
+    public int insertResumeInfo(ResumeInfoVO resumeInfoVO) {
         return resumeMapper.insertResumeInfo(resumeInfoVO);
     }
 
-    public List<LinkInfoVO> selectLinkInfoByResume(int resume_no){
+    public List<LinkInfoVO> selectLinkInfoByResume(int resume_no) {
         return resumeMapper.selectLinkInfoByResume(resume_no);
     }
 
-    public int insertLinkInfo(LinkInfoVO linkInfoVO){
+    public int insertLinkInfo(LinkInfoVO linkInfoVO) {
         return resumeMapper.insertLinkInfo(linkInfoVO);
     }
 
-    public int selectResumeLikeByResume(int resume_no){
+    public int selectResumeLikeByResume(int resume_no) {
         return resumeMapper.selectResumeLikeByResume(resume_no);
     }
 
-    public int insertResumeLike(ResumeLikeVO resumeLikeVO){
+    public int insertResumeLike(ResumeLikeVO resumeLikeVO) {
         return resumeMapper.insertResumeLike(resumeLikeVO);
     }
 
-    public List<TemplateVO> selectAllTemplates(){
+    public List<TemplateVO> selectAllTemplates() {
         return resumeMapper.selectAllTemplates();
     }
 
-    public TemplateVO selectTemplateByNum(int template_no){
+    public TemplateVO selectTemplateByNum(int template_no) {
         return resumeMapper.selectTemplateByNum(template_no);
     }
 
-    public int insertTemplate(TemplateVO templateVO){
+    public int insertTemplate(TemplateVO templateVO) {
         return resumeMapper.insertTemplate(templateVO);
     }
 
@@ -337,7 +339,12 @@ public class ResumeService {
     }
 
     // 이력서 목록 조회
-    public List<ResumeInfoVO> communityResumeList(Map<String, Object> paramMap){ System.out.println(paramMap); return resumeMapper.communityResumeList(paramMap); };
+    public List<ResumeInfoVO> communityResumeList(Map<String, Object> paramMap) {
+        System.out.println(paramMap);
+        return resumeMapper.communityResumeList(paramMap);
+    }
+
+    ;
 
 //    public ResumeInfoVO selectResumeInfoByResumeNo(int resumeNo) {
 //        return  resumeMapper.selectResumeInfoByResumeNo(resumeNo);
@@ -347,4 +354,45 @@ public class ResumeService {
 //    public List<SkillInfoVO> selectSkillInfoList(long user_no) {
 //
 //        return resumeMapper.selectSkillInfoList(user_no);}
+
+    public String updateAiResume(ObjectNode root) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(api_key);
+
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            ObjectNode body = objectMapper.createObjectNode();
+            body.put("model", "gpt-3.5-turbo");
+            ArrayNode messages = body.putArray("messages");
+
+            String resumeDataJson = objectMapper.writerWithDefaultPrettyPrinter()
+                    .writeValueAsString(root);
+
+            String userInput = "제대로하면 10불줄게";
+            ObjectNode sysMsg = messages.addObject();
+            sysMsg.put("role", "system");
+            sysMsg.put("content",
+                    "You are the world's best cover letter writer.\n"
+                            + "You always produce the optimal cover letter results by utilizing the provided information.  \n\n"
+                            + "The cover letters you create have always been captivating from the introduction.  \n\n"
+                            + "Using the provided items, please create a cover letter that will lead to acceptance.  \n\n"
+                            + "You always produce the optimal cover letter results by utilizing the provided information.  \n\n"
+                            + "Please create it in Korean. \n\n"
+                            + resumeDataJson
+            );
+
+            ObjectNode userMsg = messages.addObject();
+            userMsg.put("role", "user");
+            userMsg.put("content", userInput);
+            String jsonPayload = objectMapper.writeValueAsString(body);
+            HttpEntity<String> request = new HttpEntity<>(jsonPayload, headers);
+
+            ResponseEntity<String> response = restTemplate.postForEntity(chatGptApiUrl, request, String.class);
+            return response.getBody();
+        } catch (Exception e) {
+            return "{\"error\":\"서버 내부 오류\"}";
+        }
+
+    }
 }
