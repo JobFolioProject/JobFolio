@@ -15,6 +15,7 @@ const CardSuccess = () => {
     const amount = searchParams.get('amount');
 
     const confirmPayment = async () => {
+      try {
         const res = await axios.post('/api/pay/cardSuccess', {
           paymentKey,
           orderId,
@@ -23,18 +24,17 @@ const CardSuccess = () => {
           user_no,
           order_name,
         });
-
-        if (res.data.status === 'success') {
-          console.log('결제 성공', res.data);
-          navigate('/pay');
-        }
+          console.log('결제 성공', res);
+          navigate('/pay'); 
+      } catch (err) {
+        console.error('결제 승인 처리 실패', err);
+        alert('결제 승인 처리에 실패했습니다.');
+        navigate('/pay'); 
+      }
     };
 
     if (orderId && paymentKey && amount) {
       confirmPayment();
-    } else {
-      alert('결제 필수 정보 누락');
-      navigate('/pay/cardFail');
     }
   }, [searchParams, navigate]);
 

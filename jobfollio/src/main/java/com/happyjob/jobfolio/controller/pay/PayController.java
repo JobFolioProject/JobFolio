@@ -125,19 +125,16 @@ public class PayController {
 
 			int inserted = payService.cardSuccess(paramMap);
 			if (inserted > 0) {
-				result.put("status", "success");
+				result.put("resultmsg", "DB 저장 성공");
 
 				postUpdateProcess(orderId);
 			} else {
-				result.put("status", "fail");
-				result.put("message", "DB 저장 실패");
+				result.put("resultmsg", "DB 저장 실패");
 			}
 
 		} catch (Exception e) {
-			result.put("status", "fail");
 			result.put("message", e.getMessage());
 		}
-
 		return result;
 	}
 
