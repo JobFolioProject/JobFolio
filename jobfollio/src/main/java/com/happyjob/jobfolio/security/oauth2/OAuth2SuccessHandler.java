@@ -17,12 +17,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.security.MessageDigest;
 import java.util.Date;
 
 /**
  * OAuth2 로그인 성공 후 JWT 토큰 생성 및 리다이렉트 처리
- * 일반 로그인과 동일한 토큰 관리 방식 적용
+ * 탈퇴 계정의 경우 팝업 알림으로 처리
  */
 @Component
 public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
@@ -44,16 +45,39 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
                                         HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
 
+        logger.info("=== OAuth2SuccessHandler 시작 ===");
+
         try {
             CustomOAuth2User oauth2User = (CustomOAuth2User) authentication.getPrincipal();
             UserVO user = oauth2User.getUserVO();
 
-            logger.info("OAuth2 로그인 성공 - 사용자: " + user.getLogin_id());
+            logger.info("사용자 정보 - ID: " + user.getLogin_id());
+            logger.info("사용자 정보 - 상태: " + user.getStatus_yn());
 
-            // 🔥 JWT 토큰 생성 (일반 로그인과 동일한 방식)
+            // 🚨 탈퇴한 계정 체크 - 팝업 알림 방식으로 처리
+            if ("Y".equals(user.getStatus_yn())) {
+                logger.warn("🚨 탈퇴한 계정으로 소셜 로그인 시도: " + user.getLogin_id());
+
+                response.setContentType("text/html; charset=UTF-8");
+                PrintWriter out = response.getWriter();
+
+                String html = "<html><body><script>" +
+                        "alert('탈퇴한 계정입니다. 관리자에게 문의하세요.');" +
+                        "window.location.href = 'http://localhost:3000/';" +
+                        "</script></body></html>";
+
+                out.print(html);
+                out.flush();
+                logger.warn("탈퇴 계정 팝업 HTML 응답 완료");
+                return;
+            }
+
+            logger.info("정상 계정 확인 - 토큰 생성 시작");
+
+            // JWT 토큰 생성
             String accessToken = jwtTokenProvider.generateAccessToken(
                     user.getLogin_id(),
-                    user.getUser_no().longValue(),  // ✅ Long으로 변환
+                    user.getUser_no().longValue(),
                     user.getUser_name(),
                     user.getUser_type(),
                     user.getExpire_days()
@@ -61,32 +85,25 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
             String refreshToken = jwtTokenProvider.generateRefreshToken(user.getLogin_id());
 
-            // 🔥 RefreshToken을 DB에 저장 (일반 로그인과 동일한 방식)
+            // RefreshToken을 DB에 저장
             try {
                 String tokenHash = generateTokenHash(refreshToken);
 
                 RefreshTokenVO refreshTokenVO = new RefreshTokenVO();
                 refreshTokenVO.setUser_no(user.getUser_no());
                 refreshTokenVO.setToken_hash(tokenHash);
-                refreshTokenVO.setExpires_at(new Date(System.currentTimeMillis() + (14L * 24 * 60 * 60 * 1000))); // 14일
+                refreshTokenVO.setExpires_at(new Date(System.currentTimeMillis() + (14L * 24 * 60 * 60 * 1000)));
                 refreshTokenVO.setUser_agent(request.getHeader("User-Agent"));
 
                 int insertResult = refreshTokenMapper.insertRefreshToken(refreshTokenVO);
 
                 if (insertResult > 0) {
-                    // 🔥 RefreshToken을 HttpOnly 쿠키로 설정
                     cookieUtil.createRefreshTokenCookie(response, refreshToken);
-
-                    // 🔥 AccessToken을 URL 파라미터로 전달
                     String redirectUrl = "http://localhost:3000/oauth/callback?token=" + accessToken;
 
                     logger.info("OAuth2 로그인 완료 + DB 토큰 저장 성공 - User: " + user.getLogin_id());
-                    logger.info("AccessToken 생성: " + accessToken.substring(0, 20) + "...");
-                    logger.info("RefreshToken DB 저장: OK");
-
                     response.sendRedirect(redirectUrl);
                 } else {
-                    // DB 저장 실패 시 에러 페이지로 리다이렉트
                     throw new Exception("RefreshToken DB 저장 실패");
                 }
 
@@ -98,10 +115,17 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         } catch (Exception e) {
             logger.error("OAuth2 로그인 처리 중 오류", e);
 
-            String errorMessage = "로그인 처리 중 오류가 발생했습니다.";
-            String errorUrl = "http://localhost:3000/oauth/error?message=" +
-                    java.net.URLEncoder.encode(errorMessage, "UTF-8");
-            response.sendRedirect(errorUrl);
+            // 🚨 일반 에러도 팝업 방식으로 처리
+            response.setContentType("text/html; charset=UTF-8");
+            PrintWriter out = response.getWriter();
+
+            String html = "<html><body><script>" +
+                    "alert('로그인 처리 중 오류가 발생했습니다.');" +
+                    "window.location.href = 'http://localhost:3000/';" +
+                    "</script></body></html>";
+
+            out.print(html);
+            out.flush();
         }
     }
 

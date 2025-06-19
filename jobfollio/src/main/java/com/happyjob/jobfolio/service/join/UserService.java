@@ -55,7 +55,7 @@ public class UserService {
     // 검증용 정규식 패턴
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
     private static final Pattern NAME_PATTERN = Pattern.compile("^[a-zA-Z가-힣\\s]+$");
-    private static final Pattern PHONE_PATTERN = Pattern.compile("^010-\\d{4}-\\d{4}$");
+    private static final Pattern PHONE_PATTERN = Pattern.compile("^010\\d{8}$");
     private static final Pattern BIRTHDAY_PATTERN = Pattern.compile("^\\d{4}-\\d{2}-\\d{2}$");
 
     /**
@@ -111,7 +111,6 @@ public class UserService {
         UserVO user = userMapper.selectUserByLoginId(userMap);
 
         if (user != null && passwordEncoder.matches(rawPassword, user.getPassword())) {
-            // 🔥 수정: 탈퇴 여부 확인 (status_yn = "Y"이면 탈퇴한 상태)
             if ("Y".equals(user.getStatus_yn())) {
                 result.put("success", false);
                 result.put("message", "탈퇴한 계정입니다. 관리자에게 문의하세요.");
@@ -317,7 +316,7 @@ public class UserService {
     }
 
     /**
-     * 🔥 특정 토큰 무효화
+     * 특정 토큰 무효화
      */
     @Transactional
     public boolean invalidateToken(Long tokenId, String reason) throws Exception {
@@ -334,7 +333,7 @@ public class UserService {
     }
 
     /**
-     * 🔥 토큰 해시 생성 (보안을 위해 원본 토큰 대신 해시 저장)
+     * 토큰 해시 생성 (보안을 위해 원본 토큰 대신 해시 저장)
      */
     private String generateTokenHash(String token) throws Exception {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -444,7 +443,7 @@ public class UserService {
     }
 
     /**
-     * 사용자 정보 조회 (로그인ID로) - DB 컬럼명 통일
+     * 사용자 정보 조회 (로그인ID로)
      */
     public UserVO getUserByLoginId(Map<String, Object> paramMap) throws Exception {
         logger.info("+ Start UserService.getUserByLoginId");
@@ -453,7 +452,7 @@ public class UserService {
     }
 
     /**
-     * 사용자 정보 조회 (사용자번호로) - DB 컬럼명 통일
+     * 사용자 정보 조회 (사용자번호로)
      */
     public UserVO getUserByUserNo(Map<String, Object> paramMap) throws Exception {
         logger.info("+ Start UserService.getUserByUserNo");
@@ -503,7 +502,7 @@ public class UserService {
             throw new IllegalArgumentException("휴대폰번호를 입력해주세요.");
         }
         if (!PHONE_PATTERN.matcher(hp).matches()) {
-            throw new IllegalArgumentException("올바른 휴대폰번호 형식이 아닙니다. (010-XXXX-XXXX)");
+            throw new IllegalArgumentException("올바른 휴대폰번호 형식이 아닙니다.");
         }
 
         // 생년월일 검증
@@ -511,7 +510,7 @@ public class UserService {
             throw new IllegalArgumentException("생년월일을 입력해주세요.");
         }
         if (!BIRTHDAY_PATTERN.matcher(birthday).matches()) {
-            throw new IllegalArgumentException("올바른 생년월일 형식이 아닙니다. (YYYY-MM-DD)");
+            throw new IllegalArgumentException("올바른 생년월일 형식이 아닙니다.");
         }
 
         // 주소 검증
@@ -546,10 +545,10 @@ public class UserService {
         }
     }
 
-    // ================= 기존 메서드들 (DB 컬럼명 통일) =================
+    // ================= 기존 메서드들 =================
 
     /**
-     * 로그인 (기존 호환성 유지)
+     * 로그인
      */
     public UserVO loginUser(Map<String, Object> paramMap) throws Exception {
         logger.info("+ Start UserService.loginUser");

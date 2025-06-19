@@ -48,7 +48,7 @@
   width: 100%;
 }
 
-/* 🔥 모든 로그인 버튼 공통 스타일 - 크기 통일 */
+/* 모든 로그인 버튼 공통 스타일 - 크기 통일 */
 .login-btn {
   width: 100%;
   height: 50px; /* 모든 버튼 동일한 높이 */
@@ -122,7 +122,7 @@
   margin-right: 8px;
 }
 
-/* 🔥 구글 로그인 버튼 - 다른 버튼과 크기 맞춤 */
+/* 구글 로그인 버튼 - 다른 버튼과 크기 맞춤 */
 .login-btn.gsi-material-button {
   /* 기본 login-btn 스타일 상속하면서 구글 스타일 적용 */
   width: 100% !important;
@@ -297,4 +297,52 @@
 .login-form-title .logoImg {
   width: 230px;
   margin: 0px;
+}
+
+/* join.css 파일에 추가 */
+.error-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 10001; /* 로그인 모달보다 높게 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.error-popup {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  max-width: 300px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.error-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.error-body {
+  margin-bottom: 20px;
+}
+
+.error-icon {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+.error-footer button {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 4px;
+  cursor: pointer;
 }
