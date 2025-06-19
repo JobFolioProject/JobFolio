@@ -161,7 +161,7 @@ const LoginForm = ({ onClose }) => {
                   아이디 찾기
                 </span>
                 <span className="login-form-divider">|</span>
-                <span onClick={goToJoin} className="login-form-linㅈㅈk">
+                <span onClick={goToJoin} className="login-form-link">
                   회원가입
                 </span>
               </div>
