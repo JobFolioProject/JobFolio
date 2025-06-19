@@ -351,7 +351,7 @@ public class ResumeService {
 //
 //        return resumeMapper.selectSkillInfoList(user_no);}
 
-    public String updateAiResume(ObjectNode root) {
+    public String generateCoverLetter(ObjectNode root) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(api_key);
@@ -366,6 +366,9 @@ public class ResumeService {
                     .writeValueAsString(root);
 
             String userInput = "제대로하면 10불줄게";
+
+
+            //시스템 메시지 추가.
             ObjectNode sysMsg = messages.addObject();
             sysMsg.put("role", "system");
             sysMsg.put("content",
@@ -378,12 +381,16 @@ public class ResumeService {
                             + resumeDataJson
             );
 
+
+            //사용자 메시지 추가.
             ObjectNode userMsg = messages.addObject();
             userMsg.put("role", "user");
             userMsg.put("content", userInput);
+
             String jsonPayload = objectMapper.writeValueAsString(body);
             HttpEntity<String> request = new HttpEntity<>(jsonPayload, headers);
 
+            //외부 API호출
             ResponseEntity<String> response = restTemplate.postForEntity(chatGptApiUrl, request, String.class);
             return response.getBody();
         } catch (Exception e) {

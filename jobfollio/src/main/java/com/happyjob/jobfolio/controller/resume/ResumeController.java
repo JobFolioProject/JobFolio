@@ -271,6 +271,7 @@ public class ResumeController {
         try {
             ObjectMapper mapper = new ObjectMapper();
             ObjectNode root = mapper.createObjectNode();
+            root.put("title", resumeInfo.get("title").toString()); //추가
             root.put("myCoverLetter", resumeInfo.get("myCoverLetter").toString());
             root.put("desired_position", resumeInfo.get("desired_position").toString());
 
@@ -283,7 +284,13 @@ public class ResumeController {
                 node.put("major", education.get("major"));
                 node.put("sub_major", education.get("sub_major"));
                 node.put("gpa", education.get("gpa"));
-                node.put("edu_status", education.get("edu_status"));
+                //education 데이터에는 edu_status있지만 프론트에서 현재 사용하고 있진 않다.
+                //node.put("edu_status", education.get("edu_status"));
+                //null이 맞는지 확인ㄴ해보겠다.
+                if (education.get("edu_status") != null)
+                    node.put("edu_status", education.get("edu_status"));
+                System.out.println("edu_status: " + education.get("edu_status"));
+                //이 부분은 프론트에서 사용하지 않기 때문에 빼고 싶으면 아예 여기에서 빼버리면 됨.
                 educationArray.add(node);
             }
             root.set("educations", educationArray);
@@ -294,12 +301,16 @@ public class ResumeController {
             for (Map<String, String> career : careers) {
                 ObjectNode node = mapper.createObjectNode();
                 node.put("company_name", career.get("company_name"));
+                System.out.println("회사명: " + career.get("company_name"));
                 node.put("position", career.get("position"));
                 node.put("start_date", career.get("start_date"));
                 node.put("end_date", career.get("end_date"));
+                node.put("notes", career.get("notes"));
+                System.out.println("notes: " + career.get("notes"));
                 careerArray.add(node);
             }
             root.set("career", careerArray);
+            System.out.println("careerArray:" + root.get("career"));
 
 //            // 자격증 정보
 //            List<Map<String,String>> certificates = (List<Map<String,String>>) resumeInfo.get("certifications");
@@ -333,14 +344,17 @@ public class ResumeController {
                 skillArray.add(node);
             }
             root.set("skills", skillArray);
+            System.out.println("skillArray: " + root.get("skills"));
+//skills에 아무것도 안들어가네.? 프론트쪽 고치니까 들어와짐.
 
-            response = resumeService.updateAiResume(root);
+            response = resumeService.generateCoverLetter(root);
 
 
         } catch (Exception e){
             throw new RuntimeException(e);
         }
         resultMap.put("response", response);
+        System.out.println("response:" + response);
 
 
         return resultMap;
@@ -589,6 +603,7 @@ public class ResumeController {
         List<ResumeInfoVO> boardList = resumeService.communityResumeList(paramMap);
 
         resultMap.put("boardList", boardList);
+
 
         System.out.println(resultMap);
 
