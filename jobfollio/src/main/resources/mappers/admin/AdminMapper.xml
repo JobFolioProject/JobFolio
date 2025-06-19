@@ -87,4 +87,53 @@
         FROM tb_resume_info
     </select>
 
+    
+    <select id="selectFillterAndPageCustomers" parameterType="map" resultType="com.happyjob.jobfolio.vo.usermgr.UserModel">
+        SELECT
+            user_no,
+            login_id,
+            user_type,
+            user_name,
+            reg_date,
+            status_yn,
+            expire_days
+        FROM tb_userinfo
+        <where>
+            <if test="search != null and search != ''">
+                AND (login_id LIKE CONCAT('%', #{search}, '%')
+                OR user_name LIKE CONCAT('%', #{search}, '%'))
+            </if>
+        <if test="type != null and type != '' and type != null">
+            <choose>
+                <when test="type == 'ADMIN_GROUP'">
+                    AND user_type IN ('A', 'B') </when>
+                <otherwise>
+                    AND user_type = #{type} </otherwise>
+            </choose>
+        </if>
+        </where>
+            LIMIT #{limit} OFFSET #{offset}
+    </select>
+    <select id="selectTotalCustomerCount" resultType="int">
+        SELECT COUNT(*)
+        FROM tb_userinfo
+        <where>
+            <if test="search != null and search != ''">
+                AND (login_id LIKE CONCAT('%', #{search}, '%')
+                OR user_name LIKE CONCAT('%', #{search}, '%'))
+            </if>
+
+            <if test="type != null and type != '' and type != null">
+                <choose>
+                    <when test="type == 'ADMIN_GROUP'">
+                        AND user_type IN ('A', 'B')
+                    </when>
+                    <otherwise>
+                        AND user_type = #{type}
+                    </otherwise>
+                </choose>
+            </if>
+        </where>
+    </select>
+
 </mapper>

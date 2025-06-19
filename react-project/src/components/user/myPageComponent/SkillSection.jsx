@@ -236,7 +236,7 @@ const SkillSection = React.memo(({ userNo, skillList, onListChange }) => {
             {/* 보유 스킬 태그 목록 표시 (메인 UI) - SkillAddForm이 열려있지 않을 때만 표시 */}
             {!showAddForm && (
                 <div className="skill-tags-container">
-                    {Array.isArray(skillList) && skillList.length > 0 ? ( // <-- 여기에 Array.isArray(skillList) 추가!
+                    {Array.isArray(skillList) && skillList.length > 0 ? (
                         skillList.map((skill) => (
                             <div key={`${skill.user_no}-${skill.skill_code}-${skill.group_code}`} className="skill-tag">
                                 <span className="skill-tag-name">{skill.skill_code}</span>
@@ -254,7 +254,7 @@ const SkillSection = React.memo(({ userNo, skillList, onListChange }) => {
             {showSkillDetailModal && editingSkillDetail && (
                 <SkillDetailModal
                     userNo={userNo}
-                    skillData={editingSkillDetail} // SkillVO 형태의 스킬 데이터 + 콜백들
+                    skillData={editingSkillDetail} // SkillVO 형태의 스킬 데이터
                     onClose={cancelSkillDetailForm} // 모달 취소 시 호출될 콜백
                     isOpen={showSkillDetailModal}
                     onDetailSave={(updatedSkill) => {
