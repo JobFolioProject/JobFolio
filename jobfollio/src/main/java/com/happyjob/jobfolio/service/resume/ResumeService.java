@@ -298,6 +298,10 @@ public class ResumeService {
         return resumeMapper.deleteResume(resume_no);
     }
 
+    public int deleteSelectedResume(List<Integer> resume_nos) {
+        return resumeMapper.deleteSelectedResume(resume_nos);
+    }
+
     public int insertResumeInfo(ResumeInfoVO resumeInfoVO) {
         return resumeMapper.insertResumeInfo(resumeInfoVO);
     }

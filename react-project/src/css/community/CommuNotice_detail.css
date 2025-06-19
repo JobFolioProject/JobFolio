@@ -94,3 +94,10 @@
   text-decoration: none;
   cursor: default;
 }
+
+/* notice detail 페이지 이미지가 영역을 벗어나지 않도록 */
+.notice-detail-content img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
