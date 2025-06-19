@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE mapper
+        PUBLIC '-//mybatis.org//DTD Mapper 3.0//EN'
+        'http://mybatis.org/dtd/mybatis-3-mapper.dtd'>
+<mapper namespace='com.happyjob.jobfolio.repository.admin.AdminSalesMapper'>
+
+    <!-- 일일 매출 조회 -->
+    <select id="daySalesCnt" parameterType="map" resultType="int">
+        SELECT 	COUNT(*)
+        FROM 	(
+                    SELECT      DATE(paid_date) AS day_sale_date,
+                                COUNT(*) AS total_count,
+                                SUM(amount) AS total_sales
+                    FROM        tb_payment_his
+                    WHERE       pay_status = '2'
+                    GROUP BY    DATE(paid_date)
+                )   tb_payment_his
+    </select>
+
+    <!-- 일일 매출 조회 -->
+    <select id="daySalesList" parameterType="java.util.Map" resultType ="com.happyjob.jobfolio.vo.pay.PayModel">
+        /*com.happyjob.jobfolio.repository.admin.AdminSalesMapper.daySalesList*/
+        SELECT      DATE(paid_date) AS day_sale_date,
+                    COUNT(*) AS total_count,
+                    SUM(amount) AS total_sales
+        FROM        tb_payment_his
+        WHERE       pay_status = '2'
+        GROUP BY    DATE(paid_date)
+        ORDER BY    day_sale_date DESC
+        LIMIT 		#{pageIndex}, #{pageSize}
+    </select>
+
+    <!-- 월별 매출 조회 -->
+    <select id="monthSalesCnt" parameterType="map" resultType="int">
+        SELECT 	COUNT(*)
+        FROM 	(
+                    SELECT      DATE(paid_date) AS month_sale_date,
+                                COUNT(*) AS total_count,
+                                SUM(amount) AS total_sales
+                    FROM        tb_payment_his
+                    WHERE       pay_status = '2'
+                    GROUP BY    DATE(paid_date)
+                    ORDER BY    month_sale_date
+                )   tb_payment_his
+    </select>
+
+    <!-- 월별 매출 조회 -->
+    <select id="monthSalesList" parameterType="java.util.Map" resultType ="com.happyjob.jobfolio.vo.pay.PayModel">
+        /*com.happyjob.jobfolio.repository.admin.AdminSalesMapper.monthSalesList*/
+        SELECT      DATE_FORMAT(paid_date, '%Y-%m') AS month_sale_date,
+                    COUNT(*) AS total_count,
+                    SUM(amount) AS total_sales
+        FROM        tb_payment_his
+        WHERE       pay_status = '2'
+        GROUP BY DATE_FORMAT(paid_date, '%Y-%m')
+        ORDER BY    month_sale_date DESC
+        LIMIT 		#{pageIndex}, #{pageSize}
+    </select>
+
+    <!-- 일일 매출 조회 - 차트 -->
+    <select id="daySalesChart" parameterType="java.util.Map" resultType ="com.happyjob.jobfolio.vo.pay.PayModel">
+        /*com.happyjob.jobfolio.repository.admin.AdminSalesMapper.daySalesChart*/
+        SELECT      DATE(paid_date) AS day_sale_date,
+            COUNT(*) AS total_count,
+            SUM(amount) AS total_sales
+        FROM        tb_payment_his
+        WHERE       pay_status = '2'
+        GROUP BY    DATE(paid_date)
+        ORDER BY    day_sale_date ASC
+    </select>
+
+    <!-- 월별 매출 조회 - 차트 -->
+    <select id="monthSalesChart" parameterType="java.util.Map" resultType ="com.happyjob.jobfolio.vo.pay.PayModel">
+        /*com.happyjob.jobfolio.repository.admin.AdminSalesMapper.monthSalesChart*/
+        SELECT      DATE_FORMAT(paid_date, '%Y-%m') AS month_sale_date,
+                    COUNT(*) AS total_count,
+                    SUM(amount) AS total_sales
+        FROM        tb_payment_his
+        WHERE       pay_status = '2'
+        GROUP BY DATE_FORMAT(paid_date, '%Y-%m')
+        ORDER BY    month_sale_date ASC
+    </select>
+
+</mapper>
