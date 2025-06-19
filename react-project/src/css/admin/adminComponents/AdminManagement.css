@@ -1,5 +1,17 @@
-.adminManagement{
+.adminManagement {
     display: flex;
     flex-direction: row;
     width: 100%;
+}
+
+.search-right-contorls {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.search-right-contorls {
+    height: 36px;
+    vertical-align: middle;
+    box-sizing: border-box;
 }
