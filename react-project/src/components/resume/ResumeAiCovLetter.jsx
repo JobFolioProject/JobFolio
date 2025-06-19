@@ -49,7 +49,7 @@ const handleGenerateResume = async() => {
      // 개발 중 확인용: 백엔드로 보내질 최종 데이터 구조
     console.log('AI 자기소개서 생성 요청 데이터:', dataToSendToBackend);
 
-    await axios.post('/api/resume/generateCoverLetter', dataToSendToBackend)
+    await axios.post('/api/resume/generateCoverLetter', {dataToSendToBackend : dataToSendToBackend})
     // .then(res => {
     //     setAiCoverLetter(res.data.result); //  이 상태는 AI가 생성한 자기소개서를 **"표시"**
     //     //API 응답에서 result 필드에 생성된 자기소개서 내용이 있다고 가정
@@ -63,9 +63,18 @@ const handleGenerateResume = async() => {
     // })
     .then(res => {
                 // API 응답에서 'generatedCoverLetter' 필드를 사용한다고 가정
-                const generatedText = res.generatedCoverLetter;
-                setAiCoverLetter(generatedText); // AI가 생성한 자기소개서를 표시
-                setMyCoverLetter(generatedText); // AI가 생성한 내용을 상위 formData.coverLetter에 반영
+                // const generatedText = res.generatedCoverLetter;
+                // console.log(res);
+                // console.log(generatedText);
+                // setAiCoverLetter(generatedText); // AI가 생성한 자기소개서를 표시
+                // setMyCoverLetter(generatedText); // AI가 생성한 내용을 상위 formData.coverLetter에 반영
+                 const rawResponse = res;
+        const parsed = JSON.parse(rawResponse); // 문자열 → 객체
+        const content = parsed.choices[0].message.content;
+
+        console.log(content);
+        setAiCoverLetter(content);
+        setMyCoverLetter(content);
             })
     .catch(err => {
         console.error('자기소개서 생성 실패:', err);

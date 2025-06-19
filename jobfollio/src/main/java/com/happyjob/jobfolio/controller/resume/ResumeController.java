@@ -10,6 +10,7 @@ import com.happyjob.jobfolio.service.resume.ResumeService;
 import com.happyjob.jobfolio.vo.community.CommunityBoardVo;
 import com.happyjob.jobfolio.vo.join.UserVO;
 import com.happyjob.jobfolio.vo.mypage.CertificateVO;
+import com.happyjob.jobfolio.vo.resume.AiResumeGenerateVO;
 import com.happyjob.jobfolio.vo.resume.ResumeInfoVO;
 import com.happyjob.jobfolio.vo.resume.TemplateVO;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
@@ -261,22 +262,90 @@ public class ResumeController {
         return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
     }
 
+
     @RequestMapping("/generateCoverLetter")
-    public Map<String,Object> generateCoverLetter(@RequestParam Map<String,Object> paramMap){
+    public Map<String,Object> generateCoverLetter(@RequestBody Map<String,Object> paramMap){
+        Map<String,Object> resumeInfo = (Map<String, Object>) paramMap.get("dataToSendToBackend");
         Map<String,Object> resultMap = new HashMap<>();
+        String response = "";
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            ObjectNode root = mapper.createObjectNode();
+            root.put("myCoverLetter", resumeInfo.get("myCoverLetter").toString());
+            root.put("desired_position", resumeInfo.get("desired_position").toString());
 
-        ResumeInfoVO resumeInfoVO = new ResumeInfoVO();
+            //학력사항 정보
+            List<Map<String, String>> educations = (List<Map<String,String>>) resumeInfo.get("educationList");
+            ArrayNode educationArray = mapper.createArrayNode();
+            for (Map<String, String> education : educations) {
+                ObjectNode node = mapper.createObjectNode();
+                node.put("school_name", education.get("school_name"));
+                node.put("major", education.get("major"));
+                node.put("sub_major", education.get("sub_major"));
+                node.put("gpa", education.get("gpa"));
+                node.put("edu_status", education.get("edu_status"));
+                educationArray.add(node);
+            }
+            root.set("educations", educationArray);
 
-        resumeInfoVO.setTitle(paramMap.get("title").toString());
-        resumeInfoVO.setDesired_position(paramMap.get("desired_position").toString());
+            //경력사항 정보
+            List<Map<String, String>> careers  = (List<Map<String, String>>) resumeInfo.get("careerHistoryList");
+            ArrayNode careerArray = mapper.createArrayNode();
+            for (Map<String, String> career : careers) {
+                ObjectNode node = mapper.createObjectNode();
+                node.put("company_name", career.get("company_name"));
+                node.put("position", career.get("position"));
+                node.put("start_date", career.get("start_date"));
+                node.put("end_date", career.get("end_date"));
+                careerArray.add(node);
+            }
+            root.set("career", careerArray);
 
-        int result = resumeService.insertResumeInfo(resumeInfoVO);
+//            // 자격증 정보
+//            List<Map<String,String>> certificates = (List<Map<String,String>>) resumeInfo.get("certifications");
+//            ArrayNode certificateArray = mapper.createArrayNode();
+//            for (Map<String, String> certificate : certificates) {
+//                ObjectNode node = mapper.createObjectNode();
+//                node.put("certificate_name", certificate.get("certificate_name"));
+//                certificateArray.add(node);
+//            }
+//            root.set("certifications", certificateArray);
+//
+//            // 언어 정보
+//            List<Map<String,String>> languages = (List<Map<String,String>>) resumeInfo.get("languages");
+//            ArrayNode languageArray = mapper.createArrayNode();
+//            for (Map<String, String> language : languages) {
+//                ObjectNode node = mapper.createObjectNode();
+//                node.put("language", language.get("language"));
+//                node.put("level", language.get("level"));
+//                languageArray.add(node);
+//            }
+//            root.set("languages", languageArray);
 
-        resultMap.put("result", result);
+            //주요 스킬 정보
+            List<Map<String,String>> skills = (List<Map<String,String>>) resumeInfo.get("skillList");
+            ArrayNode skillArray = mapper.createArrayNode();
+            for (Map<String, String> skill : skills) {
+                ObjectNode node = mapper.createObjectNode();
+                node.put("skill_code", skill.get("skill_code"));
+                node.put("exp_level", skill.get("exp_level"));
+                node.put("skill_tool", skill.get("skill_tool"));
+                skillArray.add(node);
+            }
+            root.set("skills", skillArray);
+
+            response = resumeService.updateAiResume(root);
+
+
+        } catch (Exception e){
+            throw new RuntimeException(e);
+        }
+        resultMap.put("response", response);
+
 
         return resultMap;
-
     }
+
 
     @RequestMapping("/saveModifiedResume")
     public Map<String,Object> saveModifiedResume(@RequestBody Map<String,Object> paramMap) throws IOException {
