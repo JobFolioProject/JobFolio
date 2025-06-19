@@ -203,6 +203,7 @@ export const AuthProvider = ({ children }) => {
         checkLoginStatus,
         setAccessToken,
         setUser,
+        setIsAuthenticated,
       }}
     >
       {children}
