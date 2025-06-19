@@ -45,5 +45,8 @@ public interface AdminMapper {
     // 사용 기록 총 카운트 반환
     int countTotalTasks();
 
-
+    // 유저 목록 페이지 및 필터
+    List<UserModel> selectFillterAndPageCustomers(Map<String, Object> paramMap);
+    // 유저 총 카운트
+    int selectTotalCustomerCount(Map<String, Object> paramMap);
 }
