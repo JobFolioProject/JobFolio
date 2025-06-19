@@ -514,12 +514,12 @@ const saveFieldData = (type) => {
                         )}
                     {/* 신규 학력 입력 버튼 */}
                     {(formData.education.length + formData.newEducation.length) < 4 && formData.newEducation.length === 0 && (
-                        <label>
+                        <div>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <span>새 학력 추가</span>
                                 <PrettyBtn type="button" size="sm" onClick={addEducation} >새 학력 추가</PrettyBtn>
                             </div>
-                        </label>
+                        </div>
                     )}
                          {formData.newEducation.length > 0 && (// newEducation 배열을 맵핑하여 입력 필드 생성
                             <div className="education-row-input">
@@ -596,12 +596,12 @@ const saveFieldData = (type) => {
                         <br />
                         {/* 경력 추가 버튼*/}
                         {(formData.experience.length + formData.newExperience.length) < 4 && formData.newExperience.length === 0 && (
-                        <label>
+                        <div>
                             <div style={{ display:'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                                 <span>새 경력 추가</span>
                                 <PrettyBtn type='button' size='sm' onClick={addExperience}>새 경력 추가</PrettyBtn>
                             </div>
-                        </label>
+                        </div>
                         )}
                         {formData.newExperience.length > 0 && (// newEducation 배열을 맵핑하여 입력 필드 생성
                             <div className='experience-row-input'>
