@@ -316,6 +316,7 @@ public class ResumeController {
         resumeInfoVO.setResume_file_lopath(logicalBase + fileName);
         int result = resumeService.insertResumeInfo(resumeInfoVO);
         resultMap.put("result", result);
+        resultMap.put("filePath", filePath.toString());
 
         return resultMap;
 

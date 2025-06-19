@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import Calendar from "../common/Calendar";
 
 const EduSectionModify = ({ resumeInfo, setResumeInfo }) => {
@@ -5,13 +6,15 @@ const EduSectionModify = ({ resumeInfo, setResumeInfo }) => {
     setResumeInfo({
       ...resumeInfo,
       education: resumeInfo.education.map((item, idx) =>
-        idx === index
-          ? { ...item, [field]: date.toISOString().slice(0, 10) }
-          : item
+        idx === index ? { ...item, [field]: date ? date : null } : item
       ),
     });
+    console.log(resumeInfo.education[index].enroll_date);
+    console.log(resumeInfo.education[index].grad_date);
   };
-
+  useEffect(() => {
+    console.log(resumeInfo);
+  }, []);
   return (
     <>
       <button
@@ -73,7 +76,7 @@ const EduSectionModify = ({ resumeInfo, setResumeInfo }) => {
               onChangeEndDate={(date) =>
                 handleEducationDateChange(index, "grad_date", date)
               }
-            ></Calendar>
+            />
           </label>
           <label>
             <div>학력상태</div>
