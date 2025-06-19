@@ -115,4 +115,11 @@ public class AdminService {
         return adminMapper.countTotalTasks();
     }
 
+    public List<UserModel> getFillterAndPageCustomers(Map<String, Object> paramMap) {
+        return adminMapper.selectFillterAndPageCustomers(paramMap);
+    }
+
+    public int getTotalCustomerCount(Map<String, Object> paramMap) {
+        return adminMapper.selectTotalCustomerCount(paramMap);
+    }
 }

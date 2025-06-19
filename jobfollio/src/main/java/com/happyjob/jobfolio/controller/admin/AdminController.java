@@ -5,18 +5,12 @@ import java.util.List;
 import java.util.Map;
 
 import com.happyjob.jobfolio.service.admin.AdminService;
+import com.happyjob.jobfolio.vo.admin.CustomerListDto;
 import com.happyjob.jobfolio.vo.usermgr.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = "*")
 @RequestMapping("/api/admin")
@@ -172,5 +166,30 @@ public class AdminController {
         }
     }
 
+    // 모든 사용자 수, 모든 사용자 목록 조회 ( 필터 )
+    @GetMapping("/customers/list")
+    public ResponseEntity<CustomerListDto> getAllCustomers(@RequestParam(required = false) String search,
+                                                           @RequestParam(required = false) String type,
+                                                           @RequestParam(defaultValue = "1") int page,
+                                                           @RequestParam(defaultValue  = "10") int limit) {
+        try {
+            Map<String, Object> paramMap = new HashMap<>();
+            paramMap.put("search", search);
+            paramMap.put("type", type);
+            int offset = (page - 1) * limit;
+            paramMap.put("offset", offset);
+            paramMap.put("limit", limit);
+            paramMap.put("page", page);
 
+            // 서비스 계층
+            List<UserModel> customers = adminService.getFillterAndPageCustomers(paramMap);
+            int totalCount = adminService.getTotalCustomerCount(paramMap);
+
+            return ResponseEntity.ok(new CustomerListDto(customers,totalCount));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
 }
