@@ -307,7 +307,6 @@ public class UserController {
                 safeUser.put("user_name", userVO.getUser_name());
                 safeUser.put("user_type", userVO.getUser_type());
                 safeUser.put("expire_days", userVO.getExpire_days());
-
                 resultMap.put("user", safeUser);
 
                 logger.info("JWT 로그인 성공 (Bearer Token 방식): " + login_id);
@@ -449,10 +448,6 @@ public class UserController {
         }
     }
 
-
-    /**
-     * 아이디 찾기
-     */
     /**
      * 아이디 찾기
      */

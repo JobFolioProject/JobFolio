@@ -1,5 +1,6 @@
 package com.happyjob.jobfolio.config;
 
+import com.happyjob.jobfolio.security.oauth2.CustomOidcUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +14,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import com.happyjob.jobfolio.security.oauth2.CustomOAuth2UserService;
+import com.happyjob.jobfolio.security.oauth2.OAuth2SuccessHandler;
 
 import com.happyjob.jobfolio.security.JwtAuthenticationFilter;
 import com.happyjob.jobfolio.security.handler.CustomAccessDeniedHandler;
@@ -28,6 +31,15 @@ public class SecurityConfig {
 
     @Autowired
     private CustomAccessDeniedHandler customAccessDeniedHandler;
+
+    @Autowired
+    private CustomOAuth2UserService customOAuth2UserService;
+
+    @Autowired
+    private OAuth2SuccessHandler oAuth2SuccessHandler;
+
+    @Autowired
+    private CustomOidcUserService customOidcUserService;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -72,6 +84,9 @@ public class SecurityConfig {
                         "/api/board/user/faq/list",    // faq 페이지
                         "/resumes/**",
                         "/api/community/**",
+                        "/oauth2/**",
+                        "/login/oauth2/**",
+                        "/api/oauth/**",
                         "/error"                  // 에러 페이지
                 ).permitAll()
 
@@ -81,9 +96,6 @@ public class SecurityConfig {
                 // 모든관리자(A, B) 전용 경로
                 .antMatchers("/api/admin/**").hasAnyAuthority("ROLE_A", "ROLE_B")
 
-                // OAuth2 관련 경로 (추후 소셜 로그인용)
-                .antMatchers("/oauth2/**", "/login/oauth2/**").permitAll()
-
                 // 그 외 모든 요청은 인증 필요 (기본적으로 모든 권한 허용)
                 .anyRequest().authenticated()
 
@@ -92,9 +104,15 @@ public class SecurityConfig {
                 // JWT 필터 추가
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
 
-                // OAuth2 로그인 설정 (추후 활성화)
+                // OAuth2 로그인 설정
                 .oauth2Login()
-                .disable(); // 현재는 비활성화, 추후 소셜 로그인 구현 시 활성화
+                .loginPage("/login")
+                .successHandler(oAuth2SuccessHandler)
+                .failureUrl("http://localhost:3000/login?error=oauth2")
+                .userInfoEndpoint()
+                .userService(customOAuth2UserService)
+                .oidcUserService(customOidcUserService);
+
 
         return http.build();
     }

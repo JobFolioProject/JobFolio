@@ -316,7 +316,10 @@
         FROM tb_detail_code tdc
         JOIN tb_group_code tgc
              ON tdc.group_code = tgc.group_code
-        WHERE tgc.category_code IN ('SKILL_CAT', 'INDUSTRY') ORDER BY tdc.detail_name;
+
+
+        WHERE tgc.category_code IN ('INDUSTRY') ORDER BY tdc.detail_name;
+
     </select>
 
     <insert id="insertSkill" parameterType="com.happyjob.jobfolio.vo.mypage.SkillVO">

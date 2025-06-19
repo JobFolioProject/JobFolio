@@ -6,7 +6,6 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 
 const clientKey = "test_ck_D5GePWvyJnrK0W0k6q8gLzN97Eoq";
-const customerKey = "syN4ED8k8qZuTmIXjuZMR";
 
 const Payment = () => {
   const [productList, setProductList] = useState([]);
@@ -45,6 +44,8 @@ const Payment = () => {
         amount: Number(product.price),
         user_no: user.userNo,
       });
+
+      console.log("🔥 insertOrder 응답:", res);
   
       const { orderId, amount, order_name: orderName } = res;
   
@@ -53,16 +54,16 @@ const Payment = () => {
       if (!orderId || !orderName || isNaN(parsedAmount) || parsedAmount <= 0) {
         console.error("❌ 결제 정보 오류", orderId, orderName, parsedAmount);
         return;
-      }
-
+      } 
+  
       const tossPayments = await loadTossPayments(clientKey);
   
-      await tossPayments.requestPayment('CARD', {
+      await tossPayments.requestPayment("CARD", {
         amount: parsedAmount,
         orderId: orderId,
-        orderName: orderName + "개월",
+        orderName: orderName,
         successUrl: window.location.origin + "/pay/cardSuccess",
-        failUrl: window.location.origin + "/pay/cardFail",
+        failUrl: window.location.origin + "/api/pay/cardFail",
       });
   
     } catch (err) {
@@ -70,7 +71,6 @@ const Payment = () => {
       alert("결제 중 오류가 발생했습니다.");
     }
   };
-  
   
   
   return (

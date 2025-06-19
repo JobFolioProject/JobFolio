@@ -1,10 +1,11 @@
 package com.happyjob.jobfolio.repository.pay;
 
-import com.happyjob.jobfolio.vo.pay.PayModel;
 import org.apache.ibatis.annotations.Mapper;
-import org.springframework.data.repository.query.Param;
+import org.apache.ibatis.annotations.Param;
 
-import java.util.List;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.Map;
 
 @Mapper
@@ -13,11 +14,19 @@ public interface PayMapper {
 	// 결제 정보 생성
 	int insertOrder(Map<String, Object> paramMap);
 
-	// 결제 실패시 미리 생성한 결제 정보 삭제
-	int deleteOrder(Map<String, Object> params);
+	// 토스 api 결제 승인시
+	int cardSuccess(Map<String, Object> params);
 
-	// 카드 결제 성공시
-	public Map<String, Object> cardSuccess(Map<String, Object> paramMap);
-	
+	// 아래부터 구독 기간 갱신 기능
+	Integer selectProductNoByOrderId(String orderId);
+
+	Integer selectSubPeriodByProductNo(Integer productNo);
+
+	Integer selectUserNoByOrderId(String orderId);
+
+	Timestamp selectExpireDateByUserNo(Integer userNo);
+
+	int updateExpireDate(@Param("userNo") Integer userNo,
+						 @Param("newExpireDate") Timestamp newExpireDate);
 
 }

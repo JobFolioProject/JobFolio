@@ -19,7 +19,6 @@ const LoginForm = ({ onClose }) => {
     setError("");
     setIsLoading(true);
 
-    // 입력값 검증
     if (!loginId.trim() || !password.trim()) {
       setError("이메일과 비밀번호를 입력해주세요.");
       setIsLoading(false);
@@ -27,28 +26,16 @@ const LoginForm = ({ onClose }) => {
     }
 
     try {
-      // AuthContext의 login 함수 사용 (Memory 방식)
       const result = await login({
         login_id: loginId,
         password: password,
       });
 
       if (result.success) {
-        // 로그인 성공
-        // console.log("Memory 로그인 성공:", result.data.user);
-
-        // 로그인 성공 알림
         alert(result.data.message || "로그인이 완료되었습니다.");
-
-        // 모달 닫기
         onClose();
-
-        // 메인 페이지로 이동
         navigate("/");
-
-        // AuthContext가 자동으로 상태 관리하므로 추가 작업 불필요
       } else {
-        // 🔥 탈퇴 회원 감지 및 처리
         if (result.message && result.message.includes("탈퇴한 계정")) {
           setError("탈퇴한 계정입니다. 고객센터에 문의하시거나 계정 복구를 요청해주세요.");
         } else {
@@ -95,7 +82,7 @@ const LoginForm = ({ onClose }) => {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="login-form-container">
-              <h1 className="login-form-title">jobfolio</h1> {/* 🔥 오타 수정: jobfollio → jobfolio */}
+              <h1 className="login-form-title">jobfolio</h1>
               <h3 className="login-form-subtitle">
                 AI기반의 자기소개서 생성서비스
               </h3>
@@ -174,7 +161,7 @@ const LoginForm = ({ onClose }) => {
                   아이디 찾기
                 </span>
                 <span className="login-form-divider">|</span>
-                <span onClick={goToJoin} className="login-form-link">
+                <span onClick={goToJoin} className="login-form-linㅈㅈk">
                   회원가입
                 </span>
               </div>

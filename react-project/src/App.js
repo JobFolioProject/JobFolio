@@ -6,6 +6,7 @@ import Main from "./components/Main";
 import Login from "./components/user/Login";
 import Resume from "./components/resume/Resume";
 import Payment from "./components/pay/Payment";
+import CardSuccess  from "./components/pay/cardSuccess";
 import MyPage from "./components/user/MyPage";
 import AdminPage from "./components/admin/AdminPage";
 import UserInfo from "./components/user/myPageComponent/UserInfo";
@@ -100,6 +101,14 @@ function AppContent() {
             element={
               <PrivateRoute loginRequired={true}>
                 <Payment />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/pay/cardSuccess"
+            element={
+              <PrivateRoute loginRequired={true}>
+                <CardSuccess />
               </PrivateRoute>
             }
           />
