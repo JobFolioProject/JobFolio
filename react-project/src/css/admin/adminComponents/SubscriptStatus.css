@@ -3,3 +3,11 @@
     flex-direction: row;
     width: 100%;
 }
+
+#userChartDay, #userChartMonth {
+    height: 300px !important;
+}
+
+.salesChart {
+    margin-bottom: 50px;
+}

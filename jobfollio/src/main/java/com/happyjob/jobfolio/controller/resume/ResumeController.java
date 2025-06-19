@@ -557,6 +557,16 @@ public class ResumeController {
             }
 
     }
+    // 관리자 이력서 페이지 이력서 data 삭제
+    @PostMapping("/deleteSelectedResume")
+    public ResponseEntity<Map<String,Object>> deleteSelectedResume(@RequestBody List<Integer> resumeNos) {
+        Map<String, Object> resultMap = new HashMap<>();
+        int result = resumeService.deleteSelectedResume(resumeNos);
+        resultMap.put("message", result > 0 ? "Y" : "N");
+        return ResponseEntity.ok(resultMap);
+
+
+    }
 
     // 이력서 게시판 데이터 불러오기
     @GetMapping("/selectResume")
@@ -567,6 +577,10 @@ public class ResumeController {
 
         String search = (String) paramMap.get("search");
         paramMap.put("search", search);
+
+        // 필드 추가
+        String serachField = (String) paramMap.get("serachField");
+        paramMap.put("serachField", serachField);
 
         int page = 1;
         int pageSize = 12;

@@ -3,7 +3,6 @@ package com.happyjob.jobfolio.controller.admin;
 import com.happyjob.jobfolio.security.UserPrincipal;
 import com.happyjob.jobfolio.service.admin.AdminCommunityService;
 import com.happyjob.jobfolio.vo.community.CommunityBoardVo;
-import com.happyjob.jobfolio.vo.community.FileInfoVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -19,6 +18,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,11 +31,12 @@ public class AdminCommunityController {
 
     private final AdminCommunityService adminCommunityService;
 
-    @Value("${fileUpload.rootPath}")
+    @Value("${fileUpload.JFPath}")
     private String rootPath;
 
-    @Value("${fileUpload.noticePath}")
+    @Value("${fileUpload.community.notice}")
     private String noticePath;
+
 
     @Autowired
     public AdminCommunityController(AdminCommunityService adminCommunityService) {
@@ -84,7 +86,8 @@ public class AdminCommunityController {
     public ResponseEntity<Map<String, String>> uploadImage(
             @RequestParam("image") MultipartFile file
     ) throws IOException {
-        Path uploadDir = Paths.get(rootPath, noticePath);
+        String datePath = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+        Path uploadDir = Paths.get(rootPath, noticePath, datePath);
         if (!Files.exists(uploadDir)) {
             Files.createDirectories(uploadDir);
         }
@@ -101,29 +104,10 @@ public class AdminCommunityController {
             Files.copy(is, target, StandardCopyOption.REPLACE_EXISTING);
         }
 
-        String url = "/api/community/image/" + filename;
+        String url = "/api/community/image/"+ datePath + "/" + filename;
         Map<String, String> body = new HashMap<>();
         body.put("url", url);
         return ResponseEntity.ok(body);
-    }
-
-    // 업로드한 이미지 삭제 */
-    @DeleteMapping("/delete/image")
-    public ResponseEntity<Void> deleteUploadedImage(
-            @RequestParam("filename") String filename) throws IOException {
-
-        // 1) 물리 파일 삭제
-        Path phys = Paths.get(rootPath, noticePath, filename);
-        Files.deleteIfExists(phys);
-
-        // 2) DB에 기록된 메타 삭제 (이미 saveImageFileInfo에서만 저장되기 때문에
-        //    create 직후라면 레코드가 없을 수도 있지만, 있으면 삭제)
-        FileInfoVo vo = new FileInfoVo();
-        vo.setBoardNo(0); // boardNo 모를 땐 0으로 넘기고,
-        vo.setFileName(filename);
-        adminCommunityService.deleteFileInfoByFilename(vo);
-
-        return ResponseEntity.ok().build();
     }
 
     // 우선순위 단건 변경

@@ -7,10 +7,21 @@
     <!-- 공지사항 등록 -->
     <insert id="insertBoard" parameterType="com.happyjob.jobfolio.vo.community.CommunityBoardVo">
         INSERT INTO tb_board
-        (board_type, title, content, write_date, author, priority)
+        (board_type,
+        title,
+        content,
+        write_date,
+        author,
+        priority,
+        status_yn)
         VALUES
-        (#{boardType}, #{title}, #{content}, NOW(), #{author}, #{priority})
-        <!-- selectKey로 자동 생성 키 반환 -->
+        (#{boardType},
+        #{title},
+        #{content},
+        NOW(),
+        #{author},
+        #{priority},
+        #{statusYn})
         <selectKey keyProperty="boardNo" resultType="int" order="AFTER">
             SELECT LAST_INSERT_ID()
         </selectKey>
