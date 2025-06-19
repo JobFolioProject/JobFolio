@@ -82,10 +82,12 @@ const LoginForm = ({ onClose }) => {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="login-form-container">
-              <h1 className="login-form-title">jobfolio</h1>
-              <h3 className="login-form-subtitle">
-                AI기반의 자기소개서 생성서비스
-              </h3>
+              <h1 className="login-form-title">
+                <img src="/resources/logo/logo.png" alt="로고" className="logoImg" />
+                <h3 className="login-form-subtitle">
+                  AI기반의 자기소개서 생성서비스
+                </h3>
+              </h1>
 
               <form onSubmit={handleLogin} className="login-form">
                 {error && (

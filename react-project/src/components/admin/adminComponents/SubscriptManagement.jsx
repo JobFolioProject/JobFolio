@@ -17,7 +17,7 @@ const SubscriptManagement = () => {
   const [modalMode, setModalMode] = useState('edit');
   const [totalCount, setTotalCount] = useState(0);
 
-  useEffect(() => {
+  useEffect(() => { 
     const fetchData = async () => {
       try {
         const res = await axios.get('/api/admin/product/productList', {

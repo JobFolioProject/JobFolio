@@ -54,7 +54,7 @@ const Payment = () => {
       if (!orderId || !orderName || isNaN(parsedAmount) || parsedAmount <= 0) {
         console.error("❌ 결제 정보 오류", orderId, orderName, parsedAmount);
         return;
-      }
+      } 
   
       const tossPayments = await loadTossPayments(clientKey);
   
