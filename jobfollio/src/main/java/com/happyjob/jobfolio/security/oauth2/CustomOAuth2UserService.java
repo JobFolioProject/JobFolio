@@ -14,7 +14,7 @@ import java.util.Map;
 
 
 /**
- * OAuth2 사용자 정보를 처리하는 핵심 서비스
+ * OAuth2 사용자 정보
  * 소셜 로그인 시 사용자 정보를 가져오고 DB에 저장/조회
  */
 @Service
@@ -62,7 +62,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     }
 
     /**
-     * 구글 사용자 정보 추출 - 누락 데이터 처리 개선
+     * 구글 사용자 정보 추출
      */
     private SocialUserInfo extractGoogleInfo(OAuth2User oauth2User) {
         String originalEmail = oauth2User.getAttribute("email");
@@ -83,12 +83,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     //    카카오
     @SuppressWarnings("unchecked")
     private SocialUserInfo extractKakaoInfo(OAuth2User oauth2User) {
-        System.out.println("=== 카카오 OAuth2User 전체 데이터 ===");
-        System.out.println("전체 속성: " + oauth2User.getAttributes());
 
         Map<String, Object> kakaoAccount = oauth2User.getAttribute("kakao_account");
-
-        System.out.println("kakao_account: " + kakaoAccount);
 
         String originalEmail = kakaoAccount != null ? (String) kakaoAccount.get("email") : null;
         String prefixedEmail = originalEmail != null ? "KAKAO_" + originalEmail : null;
@@ -107,9 +103,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             birthyear = (String) kakaoAccount.get("birthyear");
             String birthdayRaw = (String) kakaoAccount.get("birthday");
 
-            System.out.println("birthyear: " + birthyear);
-            System.out.println("birthday raw: " + birthdayRaw);
-
             if (birthdayRaw != null) {
                 if (birthdayRaw.matches("\\d{4}")) {
                     String month = birthdayRaw.substring(0, 2);
@@ -122,14 +115,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         }
 
         String gender = kakaoAccount != null ? (String) kakaoAccount.get("gender") : null;
-
-        System.out.println("=== 카카오 추출 결과 ===");
-        System.out.println("실명: " + userName);
-        System.out.println("원본 전화번호: " + phoneNumber);
-        System.out.println("성별: " + gender);
-        System.out.println("생년: " + birthyear);
-        System.out.println("생일: " + birthday);
-        System.out.println("=======================");
 
         return SocialUserInfo.builder()
                 .social_type("KAKAO")
@@ -144,7 +129,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     }
 
     /**
-     * 네이버 사용자 정보 추출 - 개선된 버전
+     * 네이버 사용자 정보 추출
      */
     @SuppressWarnings("unchecked")
     private SocialUserInfo extractNaverInfo(OAuth2User oauth2User) {
@@ -172,7 +157,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     }
 
     /**
-     * 사용자 처리 (기존 사용자 찾기 또는 신규 생성)
+     * 사용자 처리
      */
     private UserVO processOAuth2User(SocialUserInfo socialUserInfo) throws Exception {
         Map<String, Object> socialParamMap = new HashMap<>();
@@ -223,7 +208,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     }
 
     /**
-     * 개발 모드 확인 (디버깅용)
+     * 개발 모드 확인
      */
     private boolean isDebugMode() {
         return "dev".equals(System.getProperty("spring.profiles.active"));

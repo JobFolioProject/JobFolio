@@ -368,7 +368,6 @@ public class UserController {
             String refreshToken = cookieUtil.getRefreshTokenFromCookie(request);
 
             if (refreshToken == null) {
-                // 400 대신 200 OK로 응답 (현업 방식)
                 resultMap.put("result", "N");
                 resultMap.put("message", "로그아웃 상태입니다.");
                 logger.info("Refresh token이 없음 - 로그아웃 상태");
@@ -378,33 +377,29 @@ public class UserController {
             Map<String, Object> refreshResult = userService.refreshToken(refreshToken);
 
             if ((Boolean) refreshResult.get("success")) {
-                // 새로운 access token을 응답에 포함 (Bearer Token 방식)
                 String newAccessToken = (String) refreshResult.get("accessToken");
 
                 resultMap.put("result", "Y");
                 resultMap.put("message", "토큰이 갱신되었습니다.");
-                resultMap.put("accessToken", newAccessToken); // 응답에 새 토큰 포함
+                resultMap.put("accessToken", newAccessToken);
 
                 logger.info("토큰 갱신 성공");
                 return ResponseEntity.ok(resultMap);
             } else {
-                // 리프레시 토큰도 만료된 경우 모든 쿠키 삭제
                 cookieUtil.deleteAllAuthCookies(response);
 
-                // 400 대신 200 OK로 응답 (현업 방식)
                 resultMap.put("result", "N");
                 resultMap.put("message", "세션이 만료되었습니다.");
                 logger.info("Refresh token 만료 - 로그아웃 처리");
-                return ResponseEntity.ok(resultMap); // ← 200 OK
+                return ResponseEntity.ok(resultMap);
             }
 
         } catch (Exception e) {
             logger.error("Error in refreshToken: ", e);
 
-            // 에러도 200 OK로 응답 (현업 방식)
             resultMap.put("result", "N");
             resultMap.put("message", "인증 오류가 발생했습니다.");
-            return ResponseEntity.ok(resultMap); // ← 200 OK
+            return ResponseEntity.ok(resultMap);
         }
     }
 
@@ -419,7 +414,6 @@ public class UserController {
         Map<String, Object> resultMap = new HashMap<>();
 
         try {
-            // Spring Security에서 현재 인증 정보 가져오기
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
             if (authentication != null && authentication.isAuthenticated() &&
@@ -471,7 +465,7 @@ public class UserController {
                 return ResponseEntity.badRequest().body(resultMap);
             }
 
-            // 전화번호에서 하이픈 제거 (숫자만 추출)
+            // 전화번호에서 하이픈 제거
             String cleanHp = hp.replaceAll("[^0-9]", "");
 
             logger.info("   - 원본 전화번호: " + hp + ", 정제된 전화번호: " + cleanHp);
@@ -486,9 +480,8 @@ public class UserController {
                 String fullEmail = user.getLogin_id();
                 String regDate = user.getReg_date();
 
-                // 날짜 형식 변환 (yyyy-MM-dd HH:mm:ss → yyyy-MM-dd)
                 if (regDate != null && regDate.length() >= 10) {
-                    regDate = regDate.substring(0, 10); // 앞의 10자리만 (yyyy-MM-dd)
+                    regDate = regDate.substring(0, 10);
                 }
 
                 resultMap.put("result", "Y");
@@ -530,7 +523,7 @@ public class UserController {
     }
 
     /**
-     * 비밀번호 재설정 토큰 발송 (DB 컬럼명 통일)
+     * 비밀번호 재설정 토큰 발송
      */
     @PostMapping("/send-password-reset-token")
     public ResponseEntity<Map<String, Object>> sendPasswordResetToken(
@@ -551,7 +544,6 @@ public class UserController {
                 return ResponseEntity.badRequest().body(resultMap);
             }
 
-            // 이메일이 DB에 존재하는지 확인
             boolean emailExists = userService.checkEmailExists(email);
 
             if (!emailExists) {
@@ -560,7 +552,6 @@ public class UserController {
                 return ResponseEntity.badRequest().body(resultMap);
             }
 
-            // 인증번호 발송
             boolean emailSent = userService.sendPasswordResetVerification(email);
 
             if (emailSent) {
@@ -604,7 +595,6 @@ public class UserController {
                 return ResponseEntity.badRequest().body(resultMap);
             }
 
-            // 인증번호 확인 및 새 비밀번호 생성/발송
             boolean success = userService.verifyCodeAndResetPassword(email, verificationCode);
 
             if (success) {
@@ -626,7 +616,7 @@ public class UserController {
     }
 
     /**
-     * 비밀번호 재설정 (DB 컬럼명 통일)
+     * 비밀번호 재설정
      */
     @PostMapping("/reset-password")
     public ResponseEntity<Map<String, Object>> resetPassword(
@@ -649,7 +639,6 @@ public class UserController {
                 return ResponseEntity.badRequest().body(resultMap);
             }
 
-            // DB 컬럼명 통일
             Map<String, Object> serviceMap = new HashMap<>();
             serviceMap.put("login_id", login_id);
             serviceMap.put("resetToken", resetToken);
@@ -668,7 +657,6 @@ public class UserController {
             }
 
         } catch (IllegalArgumentException e) {
-            // 백엔드 검증 에러
             logger.error("Validation error in resetPassword: ", e);
             resultMap.put("result", "N");
             resultMap.put("message", e.getMessage());
@@ -736,7 +724,6 @@ public class UserController {
         Map<String, Object> resultMap = new HashMap<>();
 
         try {
-            // 현재 로그인된 사용자 정보 가져오기 (Spring Security)
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
             if (authentication == null || !authentication.isAuthenticated() ||
@@ -751,7 +738,6 @@ public class UserController {
             String currentLoginId = userPrincipal.getLogin_id();
             Long currentUserNo = userPrincipal.getUser_no();
 
-            // 입력받은 비밀번호
             String inputPassword = (String) paramMap.get("password");
 
             if (inputPassword == null || inputPassword.trim().isEmpty()) {
@@ -760,7 +746,6 @@ public class UserController {
                 return ResponseEntity.ok(resultMap);
             }
 
-            // 1단계: 비밀번호 확인
             Map<String, Object> userCheckMap = new HashMap<>();
             userCheckMap.put("login_id", currentLoginId);
 
@@ -772,7 +757,6 @@ public class UserController {
                 return ResponseEntity.ok(resultMap);
             }
 
-            // BCrypt 비밀번호 검증
             BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
             if (!passwordEncoder.matches(inputPassword, user.getPassword())) {
                 resultMap.put("result", "N");
@@ -780,7 +764,6 @@ public class UserController {
                 return ResponseEntity.ok(resultMap);
             }
 
-            // 2단계: 탈퇴 처리
             Map<String, Object> withdrawMap = new HashMap<>();
             withdrawMap.put("user_no", currentUserNo);
             withdrawMap.put("login_id", currentLoginId);
@@ -788,12 +771,9 @@ public class UserController {
             int withdrawResult = userService.withdrawUser(withdrawMap);
 
             if (withdrawResult > 0) {
-                // 3단계: 자동 로그아웃 처리
                 try {
-                    // Long → Integer 변환
                     userService.invalidateUserTokens(currentUserNo.intValue(), "USER_WITHDRAWAL");
 
-                    // 쿠키 삭제
                     cookieUtil.deleteAllAuthCookies(response);
 
                     logger.info("회원 탈퇴 완료 및 로그아웃 처리: " + currentLoginId);

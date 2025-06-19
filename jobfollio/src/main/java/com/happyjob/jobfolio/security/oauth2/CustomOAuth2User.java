@@ -13,7 +13,6 @@ import java.util.Collections;
 import java.util.Map;
 
 /**
- * Spring Security OAuth2User/OidcUser 인터페이스 구현
  * 소셜 로그인 후 생성되는 사용자 객체
  */
 public class CustomOAuth2User implements OAuth2User, OidcUser {
@@ -27,7 +26,7 @@ public class CustomOAuth2User implements OAuth2User, OidcUser {
     }
 
     /**
-     * 소셜 서비스에서 받은 원본 사용자 정보 (JSON)
+     * 소셜 서비스에서 받은 원본 사용자 정보
      */
     @Override
     public Map<String, Object> getAttributes() {
@@ -57,8 +56,7 @@ public class CustomOAuth2User implements OAuth2User, OidcUser {
     }
 
     /**
-     * 사용자 식별자 (Primary Key)
-     * Spring Security에서 사용자를 구분하는 고유값
+     * 사용자 식별자
      */
     @Override
     public String getName() {
@@ -82,7 +80,6 @@ public class CustomOAuth2User implements OAuth2User, OidcUser {
     }
 
     /**
-     * UserVO 객체 반환
      * JWT 토큰 생성이나 비즈니스 로직에서 사용
      */
     public UserVO getUserVO() {

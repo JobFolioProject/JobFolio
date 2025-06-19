@@ -84,7 +84,7 @@ public class SecurityConfig {
                         "/api/board/user/faq/list",    // faq 페이지
                         "/resumes/**",
                         "/api/community/**",
-                        "/oauth2/**",
+                        "/oauth2/**",               //소셜 로그인
                         "/login/oauth2/**",
                         "/api/oauth/**",
                         "/error"                  // 에러 페이지
