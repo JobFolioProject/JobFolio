@@ -147,7 +147,7 @@ public class PayController {
 		return result;
 	}
 
-	// 결제 승인 완료 후 유저 구독 기간 갱신
+	// 결제 승인 완료 후 결제 유저 구독 기간 갱신
 	private void postUpdateProcess(String orderId) throws Exception {
 		payService.updateUserSubscription(orderId);
 	}
