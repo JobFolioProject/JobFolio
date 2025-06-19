@@ -7,6 +7,9 @@ const CardSuccess = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    const user_no = searchParams.get('user_no');
+    const product_no = searchParams.get('product_no');
+    const order_name = searchParams.get('order_name');
     const orderId = searchParams.get('orderId');
     const paymentKey = searchParams.get('paymentKey');
     const amount = searchParams.get('amount');
@@ -14,14 +17,17 @@ const CardSuccess = () => {
     const confirmPayment = async () => {
       try {
         const res = await axios.post('/api/pay/cardSuccess', {
-          orderId,
           paymentKey,
+          orderId,
           amount,
+          product_no,
+          user_no,
+          order_name,
         });
-          console.log('✅ 결제 성공', res);
+          console.log('결제 성공', res);
           navigate('/pay'); 
       } catch (err) {
-        console.error('❌ 결제 승인 처리 실패', err);
+        console.error('결제 승인 처리 실패', err);
         alert('결제 승인 처리에 실패했습니다.');
         navigate('/pay'); 
       }

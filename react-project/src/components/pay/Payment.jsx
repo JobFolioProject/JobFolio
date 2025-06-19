@@ -44,15 +44,13 @@ const Payment = () => {
         amount: Number(product.price),
         user_no: user.userNo,
       });
-
-      console.log("🔥 insertOrder 응답:", res);
-  
-      const { orderId, amount, order_name: orderName } = res;
+ 
+      const { orderId, amount, order_name: orderName, product_no, user_no } = res;
   
       const parsedAmount = parseInt(amount, 10);
   
       if (!orderId || !orderName || isNaN(parsedAmount) || parsedAmount <= 0) {
-        console.error("❌ 결제 정보 오류", orderId, orderName, parsedAmount);
+        console.error("결제 정보 오류", orderId, orderName, parsedAmount);
         return;
       } 
   
@@ -62,9 +60,15 @@ const Payment = () => {
         amount: parsedAmount,
         orderId: orderId,
         orderName: orderName,
-        successUrl: window.location.origin + "/pay/cardSuccess",
-        failUrl: window.location.origin + "/api/pay/cardFail",
+        successUrl: `${window.location.origin}/pay/cardSuccess`,
+        failUrl: `${window.location.origin}/pay/cardFail`,
+        metadata: {
+          user_no: user_no,
+          product_no: product_no,
+          order_name: orderName,
+        },
       });
+      
   
     } catch (err) {
       console.error("결제 요청 실패:", err);
