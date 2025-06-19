@@ -22,33 +22,36 @@ public class OAuth2FailureHandler implements AuthenticationFailureHandler {
                                         HttpServletResponse response,
                                         AuthenticationException exception) throws IOException {
 
-        String alertMessage = "로그인에 실패했습니다.";
+        String errorMessage = "로그인에 실패했습니다.";
+        String errorCode = "LOGIN_ERROR";
 
         if (exception instanceof OAuth2AuthenticationException) {
             OAuth2AuthenticationException oauth2Exception = (OAuth2AuthenticationException) exception;
 
             String message = oauth2Exception.getMessage();
-            String errorCode = oauth2Exception.getError() != null ?
+            String oauthErrorCode = oauth2Exception.getError() != null ?
                     oauth2Exception.getError().getErrorCode() : null;
 
-            if ("DEACTIVATED_USER".equals(errorCode) ||
+            if ("DEACTIVATED_USER".equals(oauthErrorCode) ||
                     (message != null && message.contains("탈퇴한 계정"))) {
-                alertMessage = "탈퇴한 계정입니다. 관리자에게 문의하세요.";
+                errorMessage = "탈퇴한 계정입니다. 관리자에게 문의하세요.";
+                errorCode = "DEACTIVATED_USER";
                 logger.warn("OAuth2 실패 - 탈퇴 계정 감지: " + message);
+            } else if (message != null && message.contains("이미 가입된 계정")) {
+                errorMessage = message;
+                errorCode = "DUPLICATE_ACCOUNT";
             }
         }
 
         logger.error("OAuth2 인증 실패: " + exception.getMessage());
 
-        response.setContentType("text/html; charset=UTF-8");
-        PrintWriter out = response.getWriter();
+        // 🚨 커스텀 에러 모달을 사용하도록 리다이렉트
+        String redirectUrl = String.format(
+                "http://localhost:3000/oauth/callback?error=true&message=%s&code=%s",
+                java.net.URLEncoder.encode(errorMessage, "UTF-8"),
+                errorCode
+        );
 
-        String html = "<html><body><script>" +
-                "alert('" + alertMessage + "');" +
-                "window.location.href = 'http://localhost:3000/';" +
-                "</script></body></html>";
-
-        out.print(html);
-        out.flush();
+        response.sendRedirect(redirectUrl);
     }
 }

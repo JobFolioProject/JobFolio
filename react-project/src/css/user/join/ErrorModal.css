@@ -42,6 +42,16 @@
   color: #dc3545;
 }
 
+/* 탈퇴 계정 헤더 스타일 */
+.error-modal-header h3.deactivated {
+  color: #dc3545;
+}
+
+/* 중복 계정 헤더 스타일 */
+.error-modal-header h3.duplicate {
+  color: #fd7e14;
+}
+
 .error-modal-close {
   background: none;
   border: none;
@@ -74,11 +84,34 @@
   margin-bottom: 16px;
 }
 
+/* 탈퇴 계정 아이콘 스타일 */
+.error-icon.deactivated {
+  font-size: 52px;
+  filter: grayscale(0.3);
+}
+
+/* 중복 계정 아이콘 스타일 */
+.error-icon.duplicate {
+  font-size: 50px;
+}
+
 .error-modal-body p {
   margin: 0;
   font-size: 16px;
   color: #495057;
   line-height: 1.5;
+}
+
+/* 탈퇴 계정 메시지 스타일 */
+.error-modal-body p.deactivated {
+  color: #dc3545;
+  font-weight: 500;
+}
+
+/* 중복 계정 메시지 스타일 */
+.error-modal-body p.duplicate {
+  color: #fd7e14;
+  font-weight: 500;
 }
 
 /* 모달 푸터 */
@@ -109,6 +142,26 @@
 
 .error-modal-btn:active {
   transform: translateY(0);
+}
+
+/* 탈퇴 계정 버튼 스타일 */
+.error-modal-btn.deactivated {
+  background-color: #dc3545;
+}
+
+.error-modal-btn.deactivated:hover {
+  background-color: #c82333;
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+}
+
+/* 중복 계정 버튼 스타일 */
+.error-modal-btn.duplicate {
+  background-color: #fd7e14;
+}
+
+.error-modal-btn.duplicate:hover {
+  background-color: #e8690b;
+  box-shadow: 0 4px 12px rgba(253, 126, 20, 0.3);
 }
 
 /* 애니메이션 */

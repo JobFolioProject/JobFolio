@@ -18,6 +18,7 @@ const OAuthCallback = () => {
         const urlParams = new URLSearchParams(window.location.search);
         const error = urlParams.get('error');
         const message = urlParams.get('message');
+        const code = urlParams.get('code');
         
         if (error === 'true') {
           // 백엔드에서 온 에러 메시지를 커스텀 모달로 표시
@@ -73,6 +74,49 @@ const OAuthCallback = () => {
     navigate("/");
   };
 
+  // 에러 코드에 따른 아이콘과 스타일 결정
+  const getErrorIcon = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
+    
+    switch (code) {
+      case 'DEACTIVATED_USER':
+        return '🚫'; // 탈퇴한 계정
+      case 'DUPLICATE_ACCOUNT':
+        return '⚠️'; // 중복 계정
+      default:
+        return '❌'; // 일반 오류
+    }
+  };
+
+  const getErrorTitle = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
+    
+    switch (code) {
+      case 'DEACTIVATED_USER':
+        return '탈퇴한 계정';
+      case 'DUPLICATE_ACCOUNT':
+        return '계정 중복';
+      default:
+        return '로그인 실패';
+    }
+  };
+
+  const getErrorClass = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
+    
+    switch (code) {
+      case 'DEACTIVATED_USER':
+        return 'deactivated';
+      case 'DUPLICATE_ACCOUNT':
+        return 'duplicate';
+      default:
+        return '';
+    }
+  };
+
   if (isLoading) {
     return (
       <div style={{
@@ -112,7 +156,7 @@ const OAuthCallback = () => {
         <div className="error-modal-overlay">
           <div className="error-modal">
             <div className="error-modal-header">
-              <h3>로그인 실패</h3>
+              <h3 className={getErrorClass()}>{getErrorTitle()}</h3>
               <button 
                 className="error-modal-close"
                 onClick={handleCloseErrorModal}
@@ -121,12 +165,12 @@ const OAuthCallback = () => {
               </button>
             </div>
             <div className="error-modal-body">
-              <div className="error-icon">⚠️</div>
-              <p>{errorMessage}</p>
+              <div className={`error-icon ${getErrorClass()}`}>{getErrorIcon()}</div>
+              <p className={getErrorClass()}>{errorMessage}</p>
             </div>
             <div className="error-modal-footer">
               <button 
-                className="error-modal-btn"
+                className={`error-modal-btn ${getErrorClass()}`}
                 onClick={handleCloseErrorModal}
               >
                 확인

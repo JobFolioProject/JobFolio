@@ -54,21 +54,17 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
             logger.info("사용자 정보 - ID: " + user.getLogin_id());
             logger.info("사용자 정보 - 상태: " + user.getStatus_yn());
 
-            // 🚨 탈퇴한 계정 체크 - 팝업 알림 방식으로 처리
             if ("Y".equals(user.getStatus_yn())) {
-                logger.warn("🚨 탈퇴한 계정으로 소셜 로그인 시도: " + user.getLogin_id());
+                logger.warn(" 탈퇴한 계정으로 소셜 로그인 시도: " + user.getLogin_id());
 
-                response.setContentType("text/html; charset=UTF-8");
-                PrintWriter out = response.getWriter();
+                String redirectUrl = String.format(
+                        "http://localhost:3000/oauth/callback?error=true&message=%s&code=%s",
+                        java.net.URLEncoder.encode("탈퇴한 계정입니다. 관리자에게 문의하세요.", "UTF-8"),
+                        "DEACTIVATED_USER"
+                );
 
-                String html = "<html><body><script>" +
-                        "alert('탈퇴한 계정입니다. 관리자에게 문의하세요.');" +
-                        "window.location.href = 'http://localhost:3000/';" +
-                        "</script></body></html>";
-
-                out.print(html);
-                out.flush();
-                logger.warn("탈퇴 계정 팝업 HTML 응답 완료");
+                response.sendRedirect(redirectUrl);
+                logger.warn("탈퇴 계정 커스텀 에러 모달 리다이렉트 완료");
                 return;
             }
 
@@ -115,17 +111,13 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         } catch (Exception e) {
             logger.error("OAuth2 로그인 처리 중 오류", e);
 
-            // 🚨 일반 에러도 팝업 방식으로 처리
-            response.setContentType("text/html; charset=UTF-8");
-            PrintWriter out = response.getWriter();
+            String redirectUrl = String.format(
+                    "http://localhost:3000/oauth/callback?error=true&message=%s&code=%s",
+                    java.net.URLEncoder.encode("로그인 처리 중 오류가 발생했습니다.", "UTF-8"),
+                    "LOGIN_ERROR"
+            );
 
-            String html = "<html><body><script>" +
-                    "alert('로그인 처리 중 오류가 발생했습니다.');" +
-                    "window.location.href = 'http://localhost:3000/';" +
-                    "</script></body></html>";
-
-            out.print(html);
-            out.flush();
+            response.sendRedirect(redirectUrl);
         }
     }
 

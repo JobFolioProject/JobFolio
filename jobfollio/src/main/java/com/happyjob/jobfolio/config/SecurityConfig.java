@@ -1,7 +1,11 @@
 package com.happyjob.jobfolio.config;
 
+import com.happyjob.jobfolio.security.oauth2.CustomOAuth2UserService;
 import com.happyjob.jobfolio.security.oauth2.CustomOidcUserService;
+import com.happyjob.jobfolio.security.oauth2.OAuth2SuccessHandler;
 import com.happyjob.jobfolio.security.oauth2.OAuth2FailureHandler;
+import com.happyjob.jobfolio.security.JwtAuthenticationFilter;
+import com.happyjob.jobfolio.security.handler.CustomAccessDeniedHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,11 +19,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import com.happyjob.jobfolio.security.oauth2.CustomOAuth2UserService;
-import com.happyjob.jobfolio.security.oauth2.OAuth2SuccessHandler;
-
-import com.happyjob.jobfolio.security.JwtAuthenticationFilter;
-import com.happyjob.jobfolio.security.handler.CustomAccessDeniedHandler;
 
 import java.util.Arrays;
 

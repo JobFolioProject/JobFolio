@@ -43,7 +43,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         } catch (Exception e) {
             System.err.println("CustomOAuth2UserService 에러: " + e.getMessage());
             e.printStackTrace();
-            throw new OAuth2AuthenticationException("소셜 로그인 처리 중 오류가 발생했습니다: " + e.getMessage());
+            throw new OAuth2AuthenticationException(
+                new OAuth2Error("LOGIN_ERROR", e.getMessage(), null),
+                e.getMessage()
+            );
         }
     }
 
