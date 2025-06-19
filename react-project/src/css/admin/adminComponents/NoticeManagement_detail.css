@@ -72,7 +72,6 @@
 /* Quill 에디터 내부 패딩 및 스크롤 처리 */
 .noticeManagementDetail .modal-content .ql-editor {
   padding: 8px; /* 기본 패딩 확보 */
-  max-height: 500px; /* 필요시 조정 */
   overflow-y: auto; /* 내용 넘칠 때 스크롤바 표시 */
 }
 
@@ -240,4 +239,13 @@
     font-size: 14px;
     box-sizing: border-box;
   }
+}
+
+/* 에디터 내부 이미지가 컨테이너 너비를 넘지 않도록 */
+.ql-editor img,
+.notice-view-content img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto; /* 가운데 정렬 옵션 */
 }
