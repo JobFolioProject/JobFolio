@@ -15,7 +15,7 @@ const Interview = () => {
     const [resumeList, setResumeList] = useState([]);
     const [selectedResumeNo, setSelectedResumeNo] = useState("");
 
-    // 1) 로그인된 유저의 이력서 목록 불러오기
+    // 로그인된 유저의 이력서 목록 불러오기
     useEffect(() => {
         // user.userNo 로 체크
         if (!isAuthenticated || !user?.userNo) {
@@ -44,25 +44,48 @@ const Interview = () => {
         })();
     }, [isAuthenticated, user]);
 
+    // HTML 문자열에서 selector에 해당하는 부분만 추출
+    const extractBySelector = (htmlStr, selector) => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(htmlStr, "text/html");
+        const el = doc.querySelector(selector);
+        return el ? el.innerHTML.trim() : null;
+    };
+
     // 2) 선택된 이력서의 HTML 불러오기
     const handleLoadIntroduce = async () => {
         if (!selectedResumeNo) return;
-        // resumeList에서 선택된 항목 찾아서 물리 경로 꺼내기
+
+        // 선택된 이력서 찾기
         const resume = resumeList.find(r => String(r.resume_no) === selectedResumeNo);
         if (!resume) return;
+
         try {
-            const res = await axios.get("/api/resume/selectOneResume", {
+            // 전체 HTML 가져오기
+            const htmlStr = await axios.get("/api/resume/selectOneResume", {
                 params: { resume_file_path: resume.resume_file_pypath }
             });
-            console.log("🌐 불러온 HTML:", res);
-            setIntroduce(res);
+            console.log("전체 HTML:", htmlStr);
 
-            // applyPosition 자동 채우기
+            // .introduction 클래스 부분만 추출
+            const introHtml = extractBySelector(htmlStr, ".introduction");
+            console.log("추출된 introHtml:", introHtml);
+
+            // 없으면 기본 텍스트, 있으면 그 내용으로 설정
+            if (introHtml) {
+                setIntroduce(introHtml);
+            } else {
+                setIntroduce("자기소개가 없습니다.");
+            }
+
+            // 4) desired_position 자동 채우기
             if (resume.desired_position) {
                 setApplyPosition(resume.desired_position);
             }
+
         } catch (err) {
             console.error("자기소개 불러오기 실패:", err);
+            setIntroduce("자기소개를 불러오는 중 오류가 발생했습니다.");
         }
     };
 
@@ -117,8 +140,13 @@ const Interview = () => {
 
                             {/* 이력서 선택 + 불러오기 */}
                             <div className="resume-load-group">
-                                <div className="customInput resume-select">
-                                    <label htmlFor="resumeSelect" className="text">이력서 선택</label>
+                                <div className="label-row">
+                                    <label htmlFor="resumeSelect" className="text">
+                                        이력서 선택
+                                    </label>
+                                </div>
+
+                                <div className="controls-row">
                                     <select
                                         id="resumeSelect"
                                         className="input"
@@ -132,19 +160,15 @@ const Interview = () => {
                                             </option>
                                         ))}
                                     </select>
+                                    <button
+                                        className="get-my-introduce-button"
+                                        onClick={handleLoadIntroduce}
+                                    >
+                                        <span className="button-line">내 자기소개</span>
+                                        <span className="button-line">가져오기</span>
+                                    </button>
                                 </div>
-                                <button
-                                    className="get-my-introduce-button"
-                                    onClick={handleLoadIntroduce}
-                                >
-                                    내 자기소개 가져오기
-                                    <div className="interview-button-arrow-wrapper">
-                                        <div className="interview-button-arrow" />
-                                    </div>
-                                </button>
                             </div>
-
-                            <hr />
 
                             {/* 지원 회사/직무 */}
                             <div className="customInput">

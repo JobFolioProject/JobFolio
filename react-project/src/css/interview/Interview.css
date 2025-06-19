@@ -49,28 +49,68 @@
 
 /* ─── 왼쪽 (입력폼) ─── */
 /* 이력서 선택 + 버튼 한 줄에 배치 */
-.resume-load-group {
+.interview .resume-load-group {
   display: flex;
-  align-items: center;
-  gap: 12px;       /* 요소 사이 간격 */
+  flex-direction: column;
+  gap: 8px;             
   margin-bottom: 16px;
 }
 
-/* select 박스만 세로 중앙 정렬, 기존 customInput 스타일 유지 */
-.customInput.resume-select {
-  display: flex;
-  flex-direction: column; /* 라벨과 셀렉트는 세로 배치 */
-}
-.resume-load-group .customInput.resume-select .input {
-  min-width: 200px;       /* 원하는 최소 너비 지정 */
+/* ─── 레이블 줄 ─── */
+.interview .resume-load-group .label-row .text {
+  font-size: 1.25rem;
+  color: #818CF8;
+  font-weight: 700;
 }
 
-/* 버튼 높이를 select와 맞춤 */
-.resume-load-group .get-my-introduce-button {
-  height: 40px;           /* select 높이와 유사하게 */
-  padding: 0 1rem;
+/* ─── 컨트롤 줄 ─── */
+.interview .resume-load-group .controls-row {
   display: flex;
   align-items: center;
+  gap: 12px;
+}
+
+/* select 스타일 */
+.interview .resume-load-group .controls-row .input {
+  flex: 1 1 auto;     
+  min-width: 200px;   
+  height: 50px;
+  width: auto;  
+  border-radius: 10px;  
+}
+
+/* 버튼 스타일 (두 줄 텍스트 유지) */
+.interview .resume-load-group .controls-row .get-my-introduce-button {
+  white-space: normal;
+  text-align: center;
+  line-height: 1.2;
+  padding: 0.6em 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  --primary-color: #645bff;
+  --secondary-color: #fff;
+  --hover-color: #111;
+  --arrow-width: 10px;
+  --arrow-stroke: 2px;
+  border: 0;
+  border-radius: 20px;
+  color: var(--secondary-color);
+  background: var(--primary-color);
+  gap: 0.3em;
+  font-weight: bold;
+  transition: background 0.2s;
+}
+
+/* 버튼 내부 두 줄 텍스트를 한 줄로 유지하고 말줄임 */
+.interview .resume-load-group .controls-row .get-my-introduce-button .button-line {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 0.9rem;
 }
 
 .interview .interview-container-left-content {
@@ -91,7 +131,6 @@
 }
 .interview .customInput input.input,
 .interview .customInput textarea {
-  width: 100%;
   padding: 11px 10px;
   font-size: 1rem;
   border: 2px #818CF8 solid;
@@ -137,6 +176,7 @@
   display: flex;
   justify-content: center;
 }
+
 .interview-button button {
   --primary-color: #645bff;
   --secondary-color: #fff;
