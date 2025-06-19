@@ -84,7 +84,7 @@ public class SecurityConfig {
                         "/api/board/user/faq/list",    // faq 페이지
                         "/resumes/**",
                         "/api/community/**",
-                        "/oauth2/**",
+                        "/oauth2/**",               //소셜 로그인
                         "/login/oauth2/**",
                         "/api/oauth/**",
                         "/error"                  // 에러 페이지
@@ -96,7 +96,7 @@ public class SecurityConfig {
                 // 모든관리자(A, B) 전용 경로
                 .antMatchers("/api/admin/**").hasAnyAuthority("ROLE_A", "ROLE_B")
 
-                // 그 외 모든 요청은 인증 필요 (기본적으로 모든 권한 허용)
+                // 그 외 모든 요청은 인증 필요
                 .anyRequest().authenticated()
 
                 .and()
