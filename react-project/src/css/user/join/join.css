@@ -122,121 +122,45 @@
   margin-right: 8px;
 }
 
-/* 구글 로그인 버튼 - 다른 버튼과 크기 맞춤 */
-.login-btn.gsi-material-button {
-  /* 기본 login-btn 스타일 상속하면서 구글 스타일 적용 */
-  width: 100% !important;
-  height: 50px !important; /* 다른 버튼과 동일한 높이 */
-  padding: 0 20px !important;
-  margin-bottom: 10px !important;
-  box-sizing: border-box !important;
-  
-  /* 구글 공식 스타일 */
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
-  -webkit-appearance: none;
-  background-color: white !important;
-  background-image: none;
-  border: 1px solid #dadce0 !important;
-  border-radius: 5px !important; /* 다른 버튼과 동일한 border-radius */
-  color: #3c4043 !important;
-  cursor: pointer;
-  font-family: 'Roboto', arial, sans-serif !important;
-  font-size: 16px !important; /* 다른 버튼과 동일한 폰트 크기 */
-  font-weight: bold !important; /* 다른 버튼과 동일한 폰트 굵기 */
-  letter-spacing: 0.25px;
-  outline: none;
-  overflow: hidden;
-  position: relative;
-  text-align: center;
-  transition: all 0.2s ease !important;
-  vertical-align: middle;
-  white-space: nowrap;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
+/* 구글 로그인 버튼 - 다른 버튼과 크기 맞춤, 독립 스타일 */
+.login-btn.login-google-btn {
+  width: 100%;
+  height: 50px;
+  background-color: #fff;
+  border: 1px solid #dadce0;
+  border-radius: 5px;
+  color: #3c4043;
+  font-family: 'Roboto', arial, sans-serif;
+  font-size: 16px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 20px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
 }
 
-/* 구글 버튼 내부 컨테이너 */
-.login-btn.gsi-material-button .gsi-material-button-content-wrapper {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  flex-direction: row !important;
-  flex-wrap: nowrap !important;
-  height: 100% !important;
-  width: 100% !important;
-  position: relative;
-}
-
-/* 구글 아이콘 */
-.login-btn.gsi-material-button .gsi-material-button-icon {
-  height: 24px !important; /* 다른 버튼 아이콘과 동일한 크기 */
-  width: 24px !important;
-  min-width: 24px !important;
-  margin-right: 12px !important;
+.login-btn.login-google-btn img {
+  width: 24px;
+  height: 24px;
+  margin-right: 12px;
   flex-shrink: 0;
 }
 
-/* 구글 버튼 텍스트 */
-.login-btn.gsi-material-button .gsi-material-button-contents {
+.login-btn.login-google-btn .login-text {
   flex: 1;
   text-align: center;
-  font-family: 'Roboto', arial, sans-serif !important;
-  font-weight: bold !important; /* 다른 버튼과 동일한 굵기 */
-  font-size: 16px !important; /* 다른 버튼과 동일한 크기 */
-  color: #3c4043 !important;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  vertical-align: top;
+  font-weight: bold;
+  color: #3c4043;
 }
 
-/* 구글 버튼 상태 레이어 */
-.login-btn.gsi-material-button .gsi-material-button-state {
-  transition: opacity .218s;
-  bottom: 0;
-  left: 0;
-  opacity: 0;
-  position: absolute;
-  right: 0;
-  top: 0;
-  border-radius: 5px;
-}
-
-/* 구글 버튼 hover 효과 - 다른 버튼과 통일 */
-.login-btn.gsi-material-button:not(:disabled):hover {
-  background-color: #f8f9fa !important;
-  border-color: #dadce0 !important;
-  transform: translateY(-2px) !important;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
-}
-
-.login-btn.gsi-material-button:not(:disabled):hover .gsi-material-button-state {
-  background-color: #303030;
-  opacity: 8%;
-}
-
-/* 구글 버튼 active/focus 상태 */
-.login-btn.gsi-material-button:not(:disabled):active .gsi-material-button-state,
-.login-btn.gsi-material-button:not(:disabled):focus .gsi-material-button-state {
-  background-color: #303030;
-  opacity: 12%;
-}
-
-/* 비활성화 상태 */
-.login-btn.gsi-material-button:disabled {
-  cursor: default;
-  background-color: #ffffff61 !important;
-  border-color: #1f1f1f1f !important;
-}
-
-.login-btn.gsi-material-button:disabled .gsi-material-button-contents {
-  opacity: 38%;
-}
-
-.login-btn.gsi-material-button:disabled .gsi-material-button-icon {
-  opacity: 38%;
+.login-btn.login-google-btn:hover {
+  background-color: #f8f9fa;
+  border-color: #dadce0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 /* 로그인 링크 */
@@ -345,4 +269,49 @@
   padding: 8px 20px;
   border-radius: 4px;
   cursor: pointer;
+}
+
+.login-btn.gsi-material-button {
+  width: 100% !important;
+  height: 50px !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  padding: 0 20px !important;
+  margin-bottom: 10px !important;
+  border-radius: 5px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+  font-size: 16px !important;
+  font-weight: bold !important;
+  background-color: #f5f6fa !important;
+  border: 1px solid #dadce0 !important;
+  transition: all 0.2s;
+}
+
+.login-btn.gsi-material-button .gsi-material-button-icon {
+  width: 24px !important;
+  height: 24px !important;
+  margin-right: 12px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.login-btn.gsi-material-button .gsi-material-button-contents {
+  flex: 1 !important;
+  text-align: center !important;
+  font-weight: bold !important;
+  font-size: 16px !important;
+  color: #3c4043 !important;
+  letter-spacing: 0 !important;
+  padding: 0 !important;
+}
+
+.login-btn.gsi-material-button:hover {
+  background-color: #e8e9ea !important;
+  border-color: #dadce0 !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.10) !important;
 }
