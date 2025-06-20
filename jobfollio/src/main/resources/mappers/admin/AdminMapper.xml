@@ -15,6 +15,7 @@
     <select id='calculateTotalEarnings' resultType='int'>
         SELECT COALESCE(SUM(amount), 0)
         FROM tb_payment_his
+        WHERE pay_status = 2
     </select>
 
     <!-- 결제 내역 테이블의 구매자 수 계산 -->
@@ -29,6 +30,7 @@
             DATE_FORMAT(paid_date, '%Y-%m') AS month,
             COALESCE(SUM(amount), 0) AS earnings
         FROM tb_payment_his
+        WHERE pay_status = 2
         GROUP BY DATE_FORMAT(paid_date, '%Y-%m')
         ORDER BY month
     </select>
@@ -83,6 +85,65 @@
     <select id='countTotalTasks' resultType='int'>
         SELECT COUNT(*)
         FROM tb_resume_info
+    </select>
+
+    <!-- 회원 목록 필터링 및 페이징   -->
+    <select id="selectFillterAndPageCustomers" parameterType="map" resultType="com.happyjob.jobfolio.vo.usermgr.UserModel">
+        SELECT
+            user_no,
+            login_id,
+            user_type,
+            user_name,
+            reg_date,
+            status_yn,
+            expire_days,
+            withdrawal_date
+        FROM tb_userinfo
+        <where>
+            <if test="search != null and search != ''">
+                AND (login_id LIKE CONCAT('%', #{search}, '%')
+                OR user_name LIKE CONCAT('%', #{search}, '%'))
+            </if>
+        <if test="type != null and type != '' and type != 'all'">
+            <choose>
+                <when test="type == 'ADMIN_GROUP'">
+                    AND user_type IN ('A', 'B') </when>
+                <otherwise>
+                    AND user_type = #{type}
+                </otherwise>
+            </choose>
+        </if>
+        <if test="status != null and status != '' and status != 'all'">
+            AND status_yn = #{status}
+        </if>
+        </where>
+            LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 회원 검색별로 카운트  -->
+    <select id="selectTotalCustomerCount" resultType="int">
+        SELECT COUNT(*)
+        FROM tb_userinfo
+        <where>
+            <if test="search != null and search != ''">
+                AND (login_id LIKE CONCAT('%', #{search}, '%')
+                OR user_name LIKE CONCAT('%', #{search}, '%'))
+            </if>
+
+            <if test="type != null and type != '' and type != 'all'">
+                <choose>
+                    <when test="type == 'ADMIN_GROUP'">
+                        AND user_type IN ('A', 'B')
+                    </when>
+                    <otherwise>
+                        AND user_type = #{type}
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="status != null and status != '' and status != 'all'">
+                AND status_yn = #{status}
+            </if>
+        </where>
     </select>
 
 </mapper>

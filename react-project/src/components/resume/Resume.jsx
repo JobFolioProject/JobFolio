@@ -14,6 +14,7 @@ import MyCareer from '../user/myPageComponent/MyCareer';
 import { major } from '@mui/system';
 import axios from "../../utils/axiosConfig";
 import Loading from "../common/Loading";
+import ResumeModal from './ResumeModal';
 
 
 const Resume = () => {
@@ -26,56 +27,47 @@ const Resume = () => {
     const [loading, setLoading] = useState(false);
     const [download, setDownload] = useState(false);
 
+    //이력서 저장
     const handleSubmit = async () => {
         setLoading(true);
         setDownload(true);
         const dataToSend = {
             ...formData,
-            education: [...formData.education, ...formData.newEducation], // 기존 + 신규 학력
-            experience: [...formData.experience, ...formData.newExperience], // 기존 + 신규 경력
-            newEducation: undefined,      // 전송할 때는 필요 없으니 제거
+            education: [...formData.education, ...formData.newEducation],
+            experience: [...formData.experience, ...formData.newExperience],
+            newEducation: undefined,
             newExperience: undefined,
             skillList: [...formData.skillList, ...formData.newSkillList],
         };
-        console.log('최종 제출 이력서 데이터:', dataToSend);
-        
-        
-            await axios.post('/api/resume/insertResumeInfo', dataToSend)
-            .then((res)=>{
-                if(res.result === 1){
-                    setFilePath(res.filePath);
-                    alert("이력서 저장이 완료되었습니다")
-                }else {
-                    alert("이력서 저장에 실패했습니다.")
+            try {
+                const res = await axios.post('/api/resume/insertResumeInfo', dataToSend);
+                if (res.result === 1) {
+                const path = res.filePath;
+                setFilePath(path);
+                alert('이력서 저장이 완료되었습니다');
+                return path;       // ← 여기서 반드시 리턴!
+                } else {
+                alert('이력서 저장에 실패했습니다.');
+                throw new Error('저장 실패');
                 }
-                
-            })
-            .catch((err)=>{
-                console.log(err);
-            })
-            .finally(() => {
+            } catch (err) {
+                console.error(err);
+                throw err;
+            } finally {
                 setLoading(false);
-            });
-          
-    }
-
-    const pdfDownload = async () =>{
-        try {
-            // 1) 서버에 저장 및 물리경로 리턴
-            // 2) PDF 변환 API 호출 (blob으로 받기)
-           // 2) PDF 변환 요청 (ArrayBuffer 로 받기)
-            if(!download){
-                await handleSubmit();
             }
+    };
 
-            const pdfResponse = await axios.post(
-                '/api/resume/exportPdf',
-                { filePath },
-                { responseType: 'arraybuffer', maxBodyLength: Infinity }
-                );
-
-            // 3) Blob 생성 & 다운로드
-            const blob = new Blob([pdfResponse], { type: 'application/pdf' });
+    //이력서 PDF로 저장
+    const pdfSubmit = async(usedFilePath) =>{
+        try {
+            const pathToUse = usedFilePath || filePath;
+            const res = await axios.post(
+            '/api/resume/exportPdf',
+            { filePath: pathToUse },
+            { responseType: 'arraybuffer', maxBodyLength: Infinity }
+            );
+            const blob = new Blob([res], { type: 'application/pdf' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
             link.download = 'resume.pdf';
@@ -83,15 +75,29 @@ const Resume = () => {
             link.click();
             link.remove();
 
-            setFilePath("");
+            setFilePath('');
             setDownload(false);
-            } catch (err) {
-            console.error(err);
+        } catch (err) {
+            console.error(err.response || err);
             alert('PDF 다운로드 중 오류가 발생했습니다.');
-            }
+        }
+    };
 
-    }
-    
+    //이력서 저장 및 PDF로 저장
+    const pdfDownload = async () => {
+        try {
+            if (!download) {
+            const newPath = await handleSubmit();
+            //  await new Promise(r => setTimeout(r, 1000));
+            await pdfSubmit(newPath);
+            } else {
+            await pdfSubmit();
+            }
+        } catch (err) {
+            // 이미 내부에서 alert 처리하므로 별도 처리 생략 가능
+        }
+    };
+
 
     // test!!! 기술/툴 드롭다운 옵션 샘플데이터
     const dummySkillOptions = ['JavaScript', 'Python', 'Java', 'C++', 'React', 'Node.js', 'HTML/CSS', 'SQL', 'Git', 'Docker'];
@@ -99,6 +105,7 @@ const Resume = () => {
     // 이력서 작성 폼 데이터 상태
     // U-data
     const [formData, setFormData] = useState({
+        user_name : user.userName,
         user_no: user.userNo,
         title: '',
         desired_position: '',
@@ -113,7 +120,7 @@ const Resume = () => {
          // 새로 추가 중인 (임시) 학력 데이터
         newEducation: [], // 여기에 항상 최대 1개의 객체만 존재하도록 관리
         coverLetter: '', // 자기소개서 상태 추가
-        template_no : 1, //
+        template_no : 4, //
     });
 
 
@@ -131,7 +138,7 @@ const Resume = () => {
                 experience : response.careerHistoryList || [], // API로 불러온 경력
                 education : response.educationList || [], //API로 불러온 학력
                 coverLetter : response.coverLetter || '', //db에 없음. input하는 값(db에 저장x)
-                template_no : response.template_no || 1, //mypage에서 조회하는 것 아님. 즉 `/api/myPage/${userNo}/career` api 사용x
+                template_no : response.template_no || 4, //mypage에서 조회하는 것 아님. 즉 `/api/myPage/${userNo}/career` api 사용x
                 // newExperience와 newEducation은 그대로 빈 배열로 유지
             }));
             console.log('초기 데이터 확인', response);
@@ -151,8 +158,9 @@ const Resume = () => {
     useEffect(() => {
         if (user.userNo !== null) {
             getMyCareerInfo();
+            console.log('user:' ,user);
         }
-    }, [user.userNo]);
+    }, [user]);
 
 
     const handleChange = (e) => {
@@ -598,7 +606,7 @@ const saveFieldData = (type) => {
                         {(formData.experience.length + formData.newExperience.length) < 4 && formData.newExperience.length === 0 && (
                         <div>
                             <div style={{ display:'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                                <span>새 경력 추가</span>
+                                <span>.</span>
                                 <PrettyBtn type='button' size='sm' onClick={addExperience}>새 경력 추가</PrettyBtn>
                             </div>
                         </div>
@@ -651,6 +659,7 @@ const saveFieldData = (type) => {
                         setMyCoverLetter={(value) => setFormData({ ...formData, coverLetter: value })}
                         setFormData={setFormData} // formData 상태를 자식 컴포넌트에 전달
                         userNo={user.userNo} 
+                        userName={user.userName}
                      />
                      <br/>
                         <br/>
@@ -658,7 +667,7 @@ const saveFieldData = (type) => {
                             <div><span>Template</span></div>
                         </label>
                             <div className='templete-test'>
-                                <TemplateSelection>템플렛선택</TemplateSelection>
+                                <TemplateSelection formData={formData}>템플렛선택</TemplateSelection>
                             </div>
                         <br/>
                         <div style={{ display: 'flex', justifyContent: 'center' }}>

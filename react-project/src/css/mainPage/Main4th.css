@@ -1,0 +1,58 @@
+/* JobPositionList.css */
+.main-4th {
+  padding: 20px 15%;
+  background-image: linear-gradient(to top, #ffffff 0%, #fae6f1 100%);
+}
+
+.job-section {
+  height: auto;
+  width: 100%;
+}
+
+.job-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.job-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.job-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  cursor: pointer;
+}
+
+.job-card img {
+  width: 48px;
+  height: 48px;
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+.job-info h4 {
+  margin: 0 0 4px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.job-info p {
+  margin: 0;
+  font-size: 13px;
+  color: #555;
+}
+
+.job-info .location {
+  color: #888;
+  font-size: 12px;
+}

@@ -1,9 +1,15 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Slider from 'react-slick';
 import '../../css/resume/TemplateSlider.css'; // 스타일 따로 작성
+import axios from "../../utils/axiosConfig";
 
 
-const TemplateSlider = ({ tempList }) => {
+const TemplateSlider = ({ tempList, formData }) => {
+
+  const [open, setOpen] = useState(false);
+  const [htmlString, setHtmlString] = useState(null);
+  const [loading, setLoading] = useState(false);
+
   const settings = {
     dots: true, // 하단에 점으로 페이지네이션 표시
     infinite: true, // 무한 루프
@@ -41,6 +47,21 @@ const TemplateSlider = ({ tempList }) => {
     ]
   };
 
+  const resumePreview = async()=>{
+    setLoading(true);
+    setOpen(true);
+    try {
+      const res = await axios.get(`/api/resume/template/${tempNo}`);
+      setHtmlString(res.html);
+    } catch (err) {
+      console.error('템플릿 상세 조회 실패', err);
+      setHtmlString({ error: '상세 정보를 불러오는 데 실패했습니다.' });
+    } finally {
+      setLoading(false);
+    }
+
+  }
+
 /////높이 너비 전달을 위해 추가함.////////////////////
     useEffect(() => {
     const handleMessage = (event) => {
@@ -58,6 +79,11 @@ const TemplateSlider = ({ tempList }) => {
     return () => window.removeEventListener('message', handleMessage);
   }, []);
 
+//선택된 템플렛 정보.
+  const handelSelectTemplate = (template) => {
+    console.log('Selected template:', template);
+  }
+
 ////////////////////////////////////////////////
    return (
     <div className="template-slider-wrapper">
@@ -68,7 +94,8 @@ const TemplateSlider = ({ tempList }) => {
         <div className="template-grid">
           <Slider {...settings}>
             {tempList.map((template) => (
-              <div id={`template-slide-${template.temp_no}`} key={template.temp_no} className="template-slide">
+              <div id={`template-slide-${template.temp_no}`} key={template.temp_no} className="template-slide"
+              onClick={() => {resumePreview(formData)}}>
             {/* <div key={template.temp_no} className="template-slide"></div> */}
                {/* <img> 태그로 변경 및 이미지 경로 사용 */}
                 {/* <iframe
@@ -92,6 +119,37 @@ const TemplateSlider = ({ tempList }) => {
                 ></iframe>
                 {/* 필요하다면 여기에 템플릿 이름을 표시할 수 있습니다 */}
                 {/* <p>{template.temp_name}</p> */}
+                {/* 투명클릭레이어. 클릭 감지용 투명 오버레이 적용.
+                iframe은 다른 도메인의 콘텐츠일 수도 있어서 보안 때문에 부모가 직접 조작하거나 이벤트를 거는 게 불가능. 그래서 이런 식으로 위에 투명 div를 덮어서 "대리로" 클릭을 받는 방식이 널리 쓰임. 
+                특히 이미지 미리보기, 비디오 썸네일, 광고 클릭 등에서도 쓰임. */}
+                  <div
+                      onClick={() => handelSelectTemplate(template)}
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        cursor: 'pointer',
+                        zIndex: 10,
+                      }}
+                ></div>
+                  {/* 선택된 템플릿 강조 (예: 테두리 등) */}
+                  {selectedTemplate?.temp_no === template.temp_no && (
+                    <div
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        border: '3px solid #3b82f6',
+                        boxSizing: 'border-box',
+                        zIndex: 15,
+                        pointerEvents: 'none',
+                      }}
+                    />
+                  )}
               </div>
             ))}
           </Slider>

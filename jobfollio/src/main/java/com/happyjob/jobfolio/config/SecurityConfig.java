@@ -1,6 +1,11 @@
 package com.happyjob.jobfolio.config;
 
+import com.happyjob.jobfolio.security.oauth2.CustomOAuth2UserService;
 import com.happyjob.jobfolio.security.oauth2.CustomOidcUserService;
+import com.happyjob.jobfolio.security.oauth2.OAuth2SuccessHandler;
+import com.happyjob.jobfolio.security.oauth2.OAuth2FailureHandler;
+import com.happyjob.jobfolio.security.JwtAuthenticationFilter;
+import com.happyjob.jobfolio.security.handler.CustomAccessDeniedHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,11 +19,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import com.happyjob.jobfolio.security.oauth2.CustomOAuth2UserService;
-import com.happyjob.jobfolio.security.oauth2.OAuth2SuccessHandler;
-
-import com.happyjob.jobfolio.security.JwtAuthenticationFilter;
-import com.happyjob.jobfolio.security.handler.CustomAccessDeniedHandler;
 
 import java.util.Arrays;
 
@@ -40,6 +40,9 @@ public class SecurityConfig {
 
     @Autowired
     private CustomOidcUserService customOidcUserService;
+
+    @Autowired
+    private OAuth2FailureHandler failureHandler;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -82,9 +85,10 @@ public class SecurityConfig {
                         "/api/resume/**",             // 결제 관련
                         "/api/board/user/info/list",   // 이용안내 페이지
                         "/api/board/user/faq/list",    // faq 페이지
+                        "/chatgpt/**",
                         "/resumes/**",
                         "/api/community/**",
-                        "/oauth2/**",
+                        "/oauth2/**",               //소셜 로그인
                         "/login/oauth2/**",
                         "/api/oauth/**",
                         "/error"                  // 에러 페이지
@@ -96,7 +100,7 @@ public class SecurityConfig {
                 // 모든관리자(A, B) 전용 경로
                 .antMatchers("/api/admin/**").hasAnyAuthority("ROLE_A", "ROLE_B")
 
-                // 그 외 모든 요청은 인증 필요 (기본적으로 모든 권한 허용)
+                // 그 외 모든 요청은 인증 필요
                 .anyRequest().authenticated()
 
                 .and()
@@ -108,7 +112,7 @@ public class SecurityConfig {
                 .oauth2Login()
                 .loginPage("/login")
                 .successHandler(oAuth2SuccessHandler)
-                .failureUrl("http://localhost:3000/login?error=oauth2")
+                .failureHandler(failureHandler)
                 .userInfoEndpoint()
                 .userService(customOAuth2UserService)
                 .oidcUserService(customOidcUserService);

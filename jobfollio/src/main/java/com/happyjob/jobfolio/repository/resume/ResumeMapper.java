@@ -24,6 +24,9 @@ public interface ResumeMapper {
 
     int deleteResume(int resume_no);
 
+    // 관리자페이지에서 이력서 삭제
+    int deleteSelectedResume(List<Integer> resume_nos);
+
     int insertResumeInfo(ResumeInfoVO resumeInfoVO);
 
     List<LinkInfoVO> selectLinkInfoByResume(int resume_no);

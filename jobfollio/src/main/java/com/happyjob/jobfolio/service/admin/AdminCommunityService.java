@@ -29,10 +29,10 @@ public class AdminCommunityService {
         this.communityMapper = communityMapper;
     }
 
-    @Value("${fileUpload.rootPath}")
+    @Value("${fileUpload.JFPath}")
     private String rootPath;
 
-    @Value("${fileUpload.noticePath}")
+    @Value("${fileUpload.community.notice}")
     private String noticePath;
 
     // 공지사항 등록

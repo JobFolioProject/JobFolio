@@ -22,6 +22,7 @@
 		  and status_yn = 'N'
 	</select>
 
+	<!-- search위해 if문 추가 -->
 	<select id="communityResumeList"
 			parameterType="map"
 			resultType="com.happyjob.jobfolio.vo.resume.ResumeInfoVO">
@@ -46,6 +47,27 @@
 			   AND l.resume_no = r.resume_no)AS resume_liked
 		FROM tb_resume_info r
 		WHERE status_yn = 'N'
+
+		<if test="searchField != null and search != null and search != ''">
+			<choose>
+				<when test="searchField == 'title'">
+					AND title LIKE CONCAT('%', #{search}, '%')
+				</when>
+				<when test="searchField == 'user_name'">
+					AND EXISTS (
+					SELECT 1
+					FROM tb_userinfo u
+					WHERE u.user_no = r.user_no
+					AND u.status_yn = 'N'
+					AND u.user_name LIKE CONCAT('%', #{search}, '%')
+					)
+				</when>
+				<when test="searchField == 'resume_no'">
+					AND resume_no = #{search}
+				</when>
+			</choose>
+		</if>
+
 		ORDER BY create_date DESC
 	</select>
 
@@ -98,6 +120,15 @@
 		SET status_yn = 'Y'
 		WHERE resume_no = #{resume_no};
 	</update>
+
+	<!-- 관리자페이지 이력서 삭제 (data 삭제) -->
+	<delete id="deleteSelectedResume" parameterType="java.util.List">
+		DELETE FROM tb_resume_info
+		WHERE resume_no IN
+		<foreach item="id" collection="list" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
 
 	<select id="selectLinkInfoByResume"
 			parameterType="int"

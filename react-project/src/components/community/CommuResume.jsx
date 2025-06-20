@@ -114,14 +114,13 @@ const CommuResume = () => {
     };
 
   return (
-    <>
+    <div className='CommuResume'>
       <div className="resume-banner">
         <img src="/resources/img/banner.png" alt="Banner" />
         <h1>이력서</h1>
       </div>
 
       <CommuMenuBar />
-
       <div className="resume-template-wrapper">
         <h2>이력서 목록</h2>
 
@@ -158,11 +157,13 @@ const CommuResume = () => {
                 <div className='resume-template-data'>
                     <table>
                         <thead>
+                          <tr>
                             <td>{template.title.length > 8
                                 ? template.title.slice(0, 7) + '...'
                                 : template.title}
                             </td>
                             <td className='right'>{template.user_name}</td>
+                          </tr>
                         </thead>
                         <tbody>
                             <tr>
@@ -193,7 +194,7 @@ const CommuResume = () => {
           </div>
         )}
       </div>
-    </>
+    </div>
   );
 };
 

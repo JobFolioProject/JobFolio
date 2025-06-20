@@ -6,7 +6,8 @@ import Main from "./components/Main";
 import Login from "./components/user/Login";
 import Resume from "./components/resume/Resume";
 import Payment from "./components/pay/Payment";
-import CardSuccess  from "./components/pay/cardSuccess";
+import CardSuccess from "./components/pay/cardSuccess";
+import CardFail  from "./components/pay/cardFail";
 import MyPage from "./components/user/MyPage";
 import AdminPage from "./components/admin/AdminPage";
 import UserInfo from "./components/user/myPageComponent/UserInfo";
@@ -38,6 +39,9 @@ import { ResumeEditProvider } from './context/ResumeEditContext';
 import PrivateRoute from "./components/common/PrivateRoute";
 import Unauthorized from "./components/common/Unauthorized";
 import NotFound from "./components/common/NotFound";
+import OAuthCallback from "./components/oauth/OAuthCallback";
+import OAuthError from "./components/oauth/OAuthError";
+
 
 function App() {
   return (
@@ -70,6 +74,8 @@ function AppContent() {
           <Route path="/community/resume" element={<CommuResume />} />
           <Route path="/community/info" element={<CommuInfo />} />
           <Route path="/community/faq" element={<CommuFaq />} />
+          <Route path="/oauth/callback" element={<OAuthCallback />} />
+          <Route path="/oauth/error" element={<OAuthError />} />
           {/* ========== 모든 사용자 접근 가능 끝 ========== */}
           {/* ========== 로그인 필수 페이지 (C, B, A 타입 모두) ========== */}
           <Route
@@ -109,6 +115,14 @@ function AppContent() {
             element={
               <PrivateRoute loginRequired={true}>
                 <CardSuccess />
+              </PrivateRoute>
+            }
+          />
+           <Route
+            path="/pay/cardFail"
+            element={
+              <PrivateRoute loginRequired={true}>
+                <CardFail />
               </PrivateRoute>
             }
           />

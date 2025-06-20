@@ -11,6 +11,7 @@ import com.happyjob.jobfolio.vo.community.CommunityBoardVo;
 import com.happyjob.jobfolio.vo.join.UserVO;
 import com.happyjob.jobfolio.vo.mypage.CertificateVO;
 import com.happyjob.jobfolio.vo.mypage.CommSkillDto;
+import com.happyjob.jobfolio.vo.mypage.LanguageSkillVO;
 import com.happyjob.jobfolio.vo.resume.AiResumeGenerateVO;
 import com.happyjob.jobfolio.vo.resume.ResumeInfoVO;
 import com.happyjob.jobfolio.vo.resume.TemplateVO;
@@ -82,10 +83,11 @@ public class ResumeController {
             ObjectNode root = mapper.createObjectNode();
 
             // 사용자 정보 매핑
-            root.put("name",  userVO.getUser_name());      // name ← userName
+            root.put("userName",  userVO.getUser_name());      // name ← userName
             root.put("email", userVO.getLogin_id());       // email ← loginId
             root.put("phone", userVO.getHp());            // phone ← hp
-            root.put("website", paramMap.getOrDefault("link_url","").toString());
+            root.put("birthday", userVO.getBirthday());            // phone ← hp
+            root.put("link", paramMap.getOrDefault("link_url","").toString());
 
             // skillList 배열
             @SuppressWarnings("unchecked")
@@ -132,7 +134,6 @@ public class ResumeController {
             for (Map<String,String> exp : experiences) {
                 ObjectNode node = mapper.createObjectNode();
                 node.put("company",  exp.getOrDefault("company_name",""));
-                node.put("dept",     exp.getOrDefault("department",""));     // 부서명이 paramMap에 있다면
                 node.put("position", exp.getOrDefault("position",""));       // 직위가 paramMap에 있다면
                 node.put("start_date", exp.getOrDefault("start_date",""));
                 node.put("end_date", exp.getOrDefault("end_date",""));
@@ -148,12 +149,25 @@ public class ResumeController {
             ArrayNode certArray = mapper.createArrayNode();
             for (CertificateVO cert : certs) {
                 ObjectNode node = mapper.createObjectNode();
-                node.put("name", cert.getCertificate_name());
+                node.put("certificate_no", cert.getCertificate_no());
+                node.put("certificate_name", cert.getCertificate_name());
                 node.put("issuing_org", cert.getIssuing_org());
-                node.put("date", cert.getAcquired_date());
+                node.put("acquired_date", cert.getAcquired_date());
                 certArray.add(node);
             }
-            root.set("certifications", certArray);
+            root.set("certification", certArray);
+
+            // certifications 배열
+            @SuppressWarnings("unchecked")
+            List<LanguageSkillVO> langs = mypageMapper.getLanguageListByUserNo(user_no);
+            ArrayNode langArray = mapper.createArrayNode();
+            for (LanguageSkillVO lang : langs) {
+                ObjectNode node = mapper.createObjectNode();
+                node.put("language", lang.getLanguage());
+                node.put("level", lang.getLevel());
+                langArray.add(node);
+            }
+            root.set("language_skill", langArray);
 
 
             // coverLetter(또는 introduction) 기본값 처리
@@ -273,8 +287,11 @@ public class ResumeController {
         try {
             ObjectMapper mapper = new ObjectMapper();
             ObjectNode root = mapper.createObjectNode();
+            root.put("title", resumeInfo.get("title").toString()); //추가
             root.put("myCoverLetter", resumeInfo.get("myCoverLetter").toString());
             root.put("desired_position", resumeInfo.get("desired_position").toString());
+            root.put("user_name", resumeInfo.get("user_name").toString());
+
 
             //학력사항 정보
             List<Map<String, String>> educations = (List<Map<String,String>>) resumeInfo.get("educationList");
@@ -285,7 +302,13 @@ public class ResumeController {
                 node.put("major", education.get("major"));
                 node.put("sub_major", education.get("sub_major"));
                 node.put("gpa", education.get("gpa"));
-                node.put("edu_status", education.get("edu_status"));
+                //education 데이터에는 edu_status있지만 프론트에서 현재 사용하고 있진 않다.
+                //node.put("edu_status", education.get("edu_status"));
+                //null이 맞는지 확인ㄴ해보겠다.
+                if (education.get("edu_status") != null)
+                    node.put("edu_status", education.get("edu_status"));
+                System.out.println("edu_status: " + education.get("edu_status"));
+                //이 부분은 프론트에서 사용하지 않기 때문에 빼고 싶으면 아예 여기에서 빼버리면 됨.
                 educationArray.add(node);
             }
             root.set("educations", educationArray);
@@ -296,12 +319,16 @@ public class ResumeController {
             for (Map<String, String> career : careers) {
                 ObjectNode node = mapper.createObjectNode();
                 node.put("company_name", career.get("company_name"));
+                System.out.println("회사명: " + career.get("company_name"));
                 node.put("position", career.get("position"));
                 node.put("start_date", career.get("start_date"));
                 node.put("end_date", career.get("end_date"));
+                node.put("notes", career.get("notes"));
+                System.out.println("notes: " + career.get("notes"));
                 careerArray.add(node);
             }
             root.set("career", careerArray);
+            System.out.println("careerArray:" + root.get("career"));
 
 //            // 자격증 정보
 //            List<Map<String,String>> certificates = (List<Map<String,String>>) resumeInfo.get("certifications");
@@ -335,14 +362,17 @@ public class ResumeController {
                 skillArray.add(node);
             }
             root.set("skills", skillArray);
+            System.out.println("skillArray: " + root.get("skills"));
+//skills에 아무것도 안들어가네.? 프론트쪽 고치니까 들어와짐.
 
-            response = resumeService.updateAiResume(root);
+            response = resumeService.generateCoverLetter(root);
 
 
         } catch (Exception e){
             throw new RuntimeException(e);
         }
         resultMap.put("response", response);
+        System.out.println("response:" + response);
 
 
         return resultMap;
@@ -560,6 +590,16 @@ public class ResumeController {
             }
 
     }
+    // 관리자 이력서 페이지 이력서 data 삭제
+    @PostMapping("/deleteSelectedResume")
+    public ResponseEntity<Map<String,Object>> deleteSelectedResume(@RequestBody List<Integer> resumeNos) {
+        Map<String, Object> resultMap = new HashMap<>();
+        int result = resumeService.deleteSelectedResume(resumeNos);
+        resultMap.put("message", result > 0 ? "Y" : "N");
+        return ResponseEntity.ok(resultMap);
+
+
+    }
 
     // 이력서 게시판 데이터 불러오기
     @GetMapping("/selectResume")
@@ -570,6 +610,10 @@ public class ResumeController {
 
         String search = (String) paramMap.get("search");
         paramMap.put("search", search);
+
+        // 필드 추가
+        String serachField = (String) paramMap.get("serachField");
+        paramMap.put("serachField", serachField);
 
         int page = 1;
         int pageSize = 12;
@@ -592,6 +636,7 @@ public class ResumeController {
         List<ResumeInfoVO> boardList = resumeService.communityResumeList(paramMap);
 
         resultMap.put("boardList", boardList);
+
 
         System.out.println(resultMap);
 

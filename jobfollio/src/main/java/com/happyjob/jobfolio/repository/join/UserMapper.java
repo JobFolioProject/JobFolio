@@ -12,7 +12,7 @@ public interface UserMapper {
     // ================= 기본 CRUD =================
 
     /**
-     * 사용자 등록 (한 번만 INSERT)
+     * 사용자 등록
      */
     int insertUser(Map<String, Object> paramMap) throws Exception;
 
