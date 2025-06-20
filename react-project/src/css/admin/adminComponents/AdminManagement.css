@@ -1,174 +1,184 @@
 .adminManagement {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
 }
 
 /* 타이틀 박스 */
 .adminMag-section-title-box {
-  background-color: #ffffff;
-  padding: 16px 24px;
-  border-radius: 10px;
-  margin-bottom: 24px;
+    background-color: #ffffff;
+    padding: 16px 24px;
+    border-radius: 10px;
+    margin-bottom: 24px;
 }
 
 /* 본문 콘텐츠 배경 */
 .adminMag-section-content-box {
-  padding: 30px;
-  background-color: #ffffff;
-  border-radius: 20px;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 20px;
 }
 
 /* 본문 콘텐츠 */
 .adminManagement .adminMag-content {
-  flex: 1;
-  padding: 40px;
-  background-color: #f5f5f5;
+    flex: 1;
+    padding: 40px;
+    background-color: #f5f5f5;
 }
 
 /* 상단 타이틀 */
 .adminManagement .adminMag-content h2 {
-  font-size: 20px;
-  font-weight: bold;
-  margin-bottom: 24px;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 24px;
 }
 
 /* 안내 제목 및 경고 메시지 */
 .adminMag-header h3 {
-  font-size: 18px;
-  font-weight: bold;
-  margin-bottom: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
 }
 
 .adminMag-warning {
-  color: red;
-  font-size: 12px;
-  margin-bottom: 10px;
+    color: red;
+    font-size: 13px;
+    margin-bottom: 10px;
 }
 
 /* 버튼 영역 */
 .adminMag-controls {
-  display: flex;
-  justify-content: flex-end;
-  gap: 5px;
-  margin-bottom: 16px;
-  border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
 }
 
+.adminMag-right-content {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 16px;
+    border-radius: 4px;
+}
+.adminMag-left-content {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 16px;
+    border-radius: 4px;
+}
 .adminMag-search-button {
-  text-align: center;
-  display: flex;
-  align-items: center;
+    text-align: center;
+    display: flex;
+    align-items: center;
 }
 .adminMag-search-input {
-  display: flex;
-  align-items: center;
-  font-weight: 500;
-  padding-left: 5px;
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    padding-left: 5px;
 }
 .adminMag-filter-select {
-  border-radius: 10px;
+    border-radius: 4px;
+    padding: 3px;
 }
 
 .adminMag-controls button {
-  background-color: #fff;
-  border: 1px solid #ccc;
-  font-size: 14px;
-  padding: 6px 12px;
-  cursor: pointer;
-  border-radius: 10px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    padding: 6px 12px;
+    cursor: pointer;
+    border-radius: 4px;
 }
 
 .adminMag-controls button:hover {
-  border-color: #222;
+    border-color: #222;
 }
 
 /* title */
 .adminManagement .adminMag-title {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 .adminManagement .adminMag-title:hover {
-  color: #084298; /* 진한 블루로 전환 */
-  text-decoration: underline;
+    color: #084298; /* 진한 블루로 전환 */
+    text-decoration: underline;
 }
 
 /* 테이블 */
 .adminMag-table {
-  width: 100%;
-  border-collapse: collapse;
-  background-color: #fff;
-  font-size: 14px;
-  table-layout: fixed;
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    font-size: 14px;
+    table-layout: fixed;
 }
 
 .adminMag-table th,
 .adminMag-table td {
-  border-bottom: 1px solid #ddd;
-  padding: 12px;
-  text-align: center;
-  overflow: hidden;
-  text-overflow: ellipsis;
+    border-bottom: 1px solid #ddd;
+    padding: 12px;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .adminMag-table th {
-  background-color: #f2f2f2;
-  font-weight: 600;
+    background-color: #f2f2f2;
+    font-weight: 600;
 }
 
 .adminMag-table tr:hover {
-  background-color: #f9f9f9; /* 행 배경색 변경 (더 밝은 회색) */
-  cursor: pointer; /* 마우스 커서를 포인터로 변경하여 클릭 가능함을 암시 */
+    background-color: #f9f9f9; /* 행 배경색 변경 (더 밝은 회색) */
+    cursor: pointer; /* 마우스 커서를 포인터로 변경하여 클릭 가능함을 암시 */
 }
 /* input-priority */
 .adminManagement .input-priority {
-  width: 50px;
-  border: none;
-  text-align: center;
+    width: 50px;
+    border: none;
+    text-align: center;
 }
 
 /* 페이징 영역 */
 .pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 6px;
-  margin-top: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    margin-top: 24px;
 }
 
 .pagination button,
 .pagination span {
-  background: none;
-  border: none;
-  font-size: 14px;
-  padding: 6px 10px;
-  cursor: pointer;
-  color: #333;
+    background: none;
+    border: none;
+    font-size: 14px;
+    padding: 6px 10px;
+    cursor: pointer;
+    color: #333;
 }
 
 .pagination button.active {
-  font-weight: bold;
-  color: #fff;
-  background-color: #444;
-  border-radius: 50%;
-  width: 28px;
-  height: 28px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #444;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
 }
 
 .menu-item-content {
-  display: flex;
-  align-items: center;
-  gap: 6px; /* 아이콘과 글자 간격 */
-  font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px; /* 아이콘과 글자 간격 */
+    font-size: 14px;
 }
 
 .menu-icon {
-  font-size: 16px; /* 아이콘 작게 */
+    font-size: 16px; /* 아이콘 작게 */
 }
 
 .input-status-select {
-  height: 36px; /* 드롭다운 높이 줄임 */
-  min-width: 120px; /* 넉넉한 가로 너비 */
-  font-size: 14px;
-  padding: 4px 8px;
+    height: 36px; /* 드롭다운 높이 줄임 */
+    min-width: 120px; /* 넉넉한 가로 너비 */
+    font-size: 14px;
+    padding: 4px 8px;
 }

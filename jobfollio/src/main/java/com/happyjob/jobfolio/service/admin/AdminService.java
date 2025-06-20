@@ -115,10 +115,11 @@ public class AdminService {
         return adminMapper.countTotalTasks();
     }
 
+    // 회원 목록 필터 및 페이지
     public List<UserModel> getFillterAndPageCustomers(Map<String, Object> paramMap) {
         return adminMapper.selectFillterAndPageCustomers(paramMap);
     }
-
+    // 회원 전체 인원 수
     public int getTotalCustomerCount(Map<String, Object> paramMap) {
         return adminMapper.selectTotalCustomerCount(paramMap);
     }
