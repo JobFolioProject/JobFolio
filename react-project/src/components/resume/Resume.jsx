@@ -14,6 +14,7 @@ import MyCareer from '../user/myPageComponent/MyCareer';
 import { major } from '@mui/system';
 import axios from "../../utils/axiosConfig";
 import Loading from "../common/Loading";
+import ResumeModal from './ResumeModal';
 
 
 const Resume = () => {
