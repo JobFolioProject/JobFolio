@@ -13,7 +13,7 @@ public class UserModel {
 	private String reg_date;     // 등록일자
 	private String withdrawal_date;
 	private String status_yn;         // 지역코드 -- 공통코드   02 : 서울
-	private String expire_days;     // 지역명
+	private String expire_days;     // 구독일자
 	private String address;        // 주소
 	private String hobby;       // 우편번호
 	private String note;     // 상세주소

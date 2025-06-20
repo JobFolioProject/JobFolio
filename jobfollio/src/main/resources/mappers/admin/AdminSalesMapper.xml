@@ -81,4 +81,49 @@
         ORDER BY    month_sale_date ASC
     </select>
 
+    <!-- 일일 매출 조회 -->
+    <select id="salesHistoryCnt" parameterType="map" resultType="int">
+        SELECT          COUNT(*)
+        FROM            tb_payment_his a
+        INNER JOIN      tb_userinfo b
+        ON               a.user_no = b.user_no
+    </select>
+
+    <!-- 결제 내역 조회 -->
+    <select id="salesHistory" parameterType="java.util.Map" resultType ="com.happyjob.jobfolio.vo.pay.PayModel">
+        /*com.happyjob.jobfolio.repository.admin.AdminSalesMapper.salesHistory*/
+        SELECT       a.order_id
+             ,       a.payment_key
+             ,       a.product_no
+             ,       c.sub_period
+             ,       a.user_no
+             ,       b.login_id
+             ,       b.user_name
+             ,       a.order_name
+             ,       a.amount
+             ,       a.paid_date
+             ,  CASE
+                WHEN a.pay_status = '2' THEN '결제 완료'
+                WHEN a.pay_status = '3' THEN '환불 완료'
+                END AS pay_status
+        FROM            tb_payment_his a
+        INNER JOIN      tb_userinfo b
+        ON              a.user_no = b.user_no
+        INNER JOIN      tb_product_info c
+        ON              a.product_no = c.product_no
+        ORDER BY        a.paid_date   DESC
+        LIMIT 		    #{pageIndex}, #{pageSize}
+    </select>
+
+    <update id="refundSuccess">
+        UPDATE      tb_payment_his
+        SET         pay_status = '3'
+        WHERE       order_id = #{orderId}
+    </update>
+
+    <update id="updateUserSubscription" parameterType="map">
+        UPDATE      tb_userinfo
+        SET         expire_days = DATE_SUB(expire_days, INTERVAL #{sub_period} MONTH)
+        WHERE       user_no = #{user_no}
+    </update>
 </mapper>

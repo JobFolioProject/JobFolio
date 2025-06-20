@@ -4,6 +4,7 @@ import CommuMenuBar from './CommuMenuBar';
 import { useState , useEffect } from 'react';
 import InfoIcon from '@mui/icons-material/Info';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import Banner from "../common/Banner";
 
 
 
@@ -33,11 +34,8 @@ const CommuInfo = () => {
    
     return (
     <>
-        <div className="info-banner">
-            <img src="/resources/img/banner.png" alt="Banner" />
-            <h1>이용안내</h1>
-        </div>
-    <CommuMenuBar/>
+      <Banner pageName="이용안내" />
+      <CommuMenuBar/>
 
         <ul className="info-list">
         {infoList.map((item) => (

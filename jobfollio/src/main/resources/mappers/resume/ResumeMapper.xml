@@ -4,7 +4,7 @@
 <mapper namespace="com.happyjob.jobfolio.repository.resume.ResumeMapper">
 
 	<select id="selectResumeInfo"
-			parameterType="int"
+			parameterType="Map"
 			resultType="com.happyjob.jobfolio.vo.resume.ResumeInfoVO">
 		SELECT
 			resume_no,
@@ -17,6 +17,18 @@
 			resume_file_lopath,
 			publication_yn,
 			create_date
+		FROM tb_resume_info
+		WHERE user_no = #{user_no}
+		  and status_yn = 'N'
+		ORDER BY resume_no DESC
+			LIMIT #{offset}, #{limit}
+	</select>
+
+	<select id="selectResumeCount"
+			parameterType="Map"
+			resultType="int">
+		SELECT
+			COUNT(*)
 		FROM tb_resume_info
 		WHERE user_no = #{user_no}
 		  and status_yn = 'N'
@@ -82,7 +94,8 @@
 			template_no,
 			resume_file_name,
 			resume_file_pypath,
-			resume_file_lopath
+			resume_file_lopath,
+			create_date
 		FROM tb_resume_info
 		WHERE resume_no in (select resume_no from tb_resume_like where user_no = #{user_no})
 	</select>
@@ -263,6 +276,26 @@
 		SELECT COUNT(*)
 		FROM tb_resume_info
 		WHERE status_yn = 'N'
+	</select>
+
+<!--	전체 스킬 그룹코드 조회-->
+	<select id="getSkillGroupCode" resultType="String">
+		SELECT
+		    group_code
+		FROM
+		    tb_group_code
+		WHERE
+		    category_code = 'industry'
+	</select>
+
+
+	<select id="getSkillDetailCode" resultType="String" parameterType="map">
+		SELECT
+		    detail_name as DETAIL_CODE
+		FROM
+		    tb_detail_code
+		WHERE
+		    group_code = #{group_code}
 	</select>
 
 

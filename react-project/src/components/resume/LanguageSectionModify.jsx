@@ -1,4 +1,5 @@
 const LanguageSectionModify = ({ resumeInfo, setResumeInfo }) => {
+  const levelOptions = ["초급", "중급", "고급"];
   return (
     <>
       <button
@@ -21,8 +22,8 @@ const LanguageSectionModify = ({ resumeInfo, setResumeInfo }) => {
       </button>
       {resumeInfo.languages.map((lang, index) => (
         <div className="toggleInput" key={index}>
-          <label>
-            <div>언어</div>
+          <div>
+            <label>언어</label>
             <input
               type="text"
               value={lang.language}
@@ -35,12 +36,12 @@ const LanguageSectionModify = ({ resumeInfo, setResumeInfo }) => {
                 });
               }}
             />
-          </label>
+          </div>
 
-          <label>
-            <div>등급</div>
-            <input
-              type="text"
+          <div>
+            <label>등급</label>
+            <select
+              name="level"
               value={lang.level}
               onChange={(e) => {
                 setResumeInfo({
@@ -50,8 +51,15 @@ const LanguageSectionModify = ({ resumeInfo, setResumeInfo }) => {
                   ),
                 });
               }}
-            />
-          </label>
+            >
+              <option value="">레벨 선택</option>
+              {levelOptions.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+          </div>
 
           <button
             className="deleteCareerBtn"

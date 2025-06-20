@@ -30,17 +30,18 @@
 .userInfoRow {
     display: flex;
     align-items: center;
+    padding: 5px;
 }
 
 .userInfobuttonWrap_button {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
 }
 
 .userInfoContent p {
     width: 180px;
     font-weight: 600;
-    color: #ababab;
+    color: #999;
 }
 
 button.userInfoBackButton {
@@ -50,11 +51,11 @@ button.userInfoBackButton {
     background-color: transparent;
     border-radius: 10px;
     border: 1px solid;
-    height: 45px;
-    width: 100px;
+    width: auto;
+    height: auto;
+    padding: 12px 13px;
     color: #3183ff;
-    margin-top: 5px;
-    margin-left: 10px;
+    margin: 5px;
 }
 
 button.userInfoBackButton2 {
@@ -64,18 +65,21 @@ button.userInfoBackButton2 {
     background-color: transparent;
     border-radius: 10px;
     border: 1px solid;
-    height: 45px;
-    width: 100px;
+    padding: 12px 13px;
+    width: auto;
+    height: auto;
     background-color: red;
     color: #fff;
-    margin-top: 5px;
+    margin: 5px;
 }
 
+button.userInfoBackButton:hover {
+    background-color: #3183ff;
+    color: #fff;
+}
 button.userInfoBackButton2:hover {
     background-color: #fff;
     color: red;
-    height: 45px;
-    width: 100px;
 }
 
 button.userInfoBackButton3 {
@@ -85,10 +89,16 @@ button.userInfoBackButton3 {
     background-color: transparent;
     border-radius: 10px;
     border: 1px solid;
-    height: 45px;
-    width: 100px;
+    width: auto;
+    height: auto;
+    padding: 12px 13px;
     color: #a0a0a0;
-    margin-top: 5px;
+    margin: 5px;
+}
+
+button.userInfoBackButton3:hover {
+    background-color: #a0a0a0;
+    color: #fff;
 }
 
 input.userInfoInput {
@@ -96,6 +106,9 @@ input.userInfoInput {
     height: 45px;
     border-radius: 10px;
     border: 0px;
+    padding-left: 10px;
+    font-size: 14px;
+    font-weight: 500;
 }
 
 .userInfoInput--editable {

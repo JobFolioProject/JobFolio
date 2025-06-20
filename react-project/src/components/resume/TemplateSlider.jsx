@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import Slider from 'react-slick';
 import '../../css/resume/TemplateSlider.css'; // 스타일 따로 작성
+import axios from "../../utils/axiosConfig";
+import ResumePreviewModal from "./ResumePreviewModal"
 
 
 const TemplateSlider = ({ tempList }) => {
@@ -51,7 +53,32 @@ const TemplateSlider = ({ tempList }) => {
   //const currentTemplates = tempList.slice(startIdx, startIdx + pageSize);
   
 
-  
+  const resumePreview = async(formData,template_no)=>{
+    setLoading(true);
+    setOpen(true);
+    const dataToSend = {
+            ...formData,
+            education: [...formData.education, ...formData.newEducation],
+            experience: [...formData.experience, ...formData.newExperience],
+            template_no: 4,
+            newEducation: undefined,
+            newExperience: undefined,
+            skillList: [...formData.skillList, ...formData.newSkillList],
+        };
+
+    try {
+      const res = await axios.post("/api/resume/resumePreview", dataToSend);
+      const html = res.htmlContent
+      setHtmlString(html);
+    } catch (err) {
+      console.error('템플릿 상세 조회 실패', err);
+      setHtmlString({ error: '상세 정보를 불러오는 데 실패했습니다.' });
+    } finally {
+      setLoading(false);
+    }
+
+  }
+
 
 /////높이 너비 전달을 위해 추가함.////////////////////
 
@@ -76,6 +103,7 @@ const TemplateSlider = ({ tempList }) => {
 
 /////////////////////수정!!!!!!!! html로 읽기///////////////////////////
    return (
+    <>
     <div className="template-slider-wrapper">
       <h2>템플릿 선택</h2>
       {!tempList || tempList.length === 0 ? (
@@ -84,7 +112,9 @@ const TemplateSlider = ({ tempList }) => {
         <div className="template-grid">
           <Slider {...settings}>
             {tempList.map((template) => (
-              <div id={`template-slide-${template.template_no}`} key={template.template_no} className="template-slide">
+
+              <div id={`template-slide-${template.template_no}`} key={template.template_no} className="template-slide" onClick={() => {resumePreview(formData, template.temp_no)}}>
+
                  <iframe
                   srcDoc={template.html}
                   // src={`${template.file_pypath}?tempNo=${template.template_no}`} // tempNo 쿼리 파라미터 추가
@@ -100,6 +130,15 @@ const TemplateSlider = ({ tempList }) => {
         </div>
       )}
     </div>
+    <ResumePreviewModal
+        open={open}
+        onClose={setOpen}
+        loading={loading}
+        setLoading={setLoading}
+        htmlString={htmlString}
+        formData={formData}
+      />
+    </>
   );
 };
 

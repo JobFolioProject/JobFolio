@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import Calendar from "../common/Calendar";
 
 const EduSectionModify = ({ resumeInfo, setResumeInfo }) => {
@@ -5,13 +6,15 @@ const EduSectionModify = ({ resumeInfo, setResumeInfo }) => {
     setResumeInfo({
       ...resumeInfo,
       education: resumeInfo.education.map((item, idx) =>
-        idx === index
-          ? { ...item, [field]: date.toISOString().slice(0, 10) }
-          : item
+        idx === index ? { ...item, [field]: date ? date : null } : item
       ),
     });
+    console.log(resumeInfo.education[index].enroll_date);
+    console.log(resumeInfo.education[index].grad_date);
   };
-
+  useEffect(() => {
+    console.log(resumeInfo);
+  }, []);
   return (
     <>
       <button
@@ -40,8 +43,8 @@ const EduSectionModify = ({ resumeInfo, setResumeInfo }) => {
       </button>
       {resumeInfo.education.map((edu, index) => (
         <div className="toggleInput" key={index}>
-          <label>
-            <div>학교명</div>
+          <div>
+            <label>학교명</label>
             <input
               type="text"
               value={edu.school_name}
@@ -56,10 +59,10 @@ const EduSectionModify = ({ resumeInfo, setResumeInfo }) => {
                 });
               }}
             />
-          </label>
+          </div>
 
-          <label>
-            <div>입학/졸업 날짜</div>
+          <div>
+            <label>입학/졸업 날짜</label>
             <Calendar
               selectedStartDate={
                 edu.enroll_date ? new Date(edu.enroll_date) : null
@@ -73,10 +76,10 @@ const EduSectionModify = ({ resumeInfo, setResumeInfo }) => {
               onChangeEndDate={(date) =>
                 handleEducationDateChange(index, "grad_date", date)
               }
-            ></Calendar>
-          </label>
-          <label>
-            <div>학력상태</div>
+            />
+          </div>
+          <div>
+            <label>학력상태</label>
             <input
               type="text"
               value={edu.edu_status}
@@ -91,9 +94,9 @@ const EduSectionModify = ({ resumeInfo, setResumeInfo }) => {
                 });
               }}
             />
-          </label>
-          <label>
-            <div>전공</div>
+          </div>
+          <div>
+            <label>전공</label>
             <input
               type="text"
               value={edu.major}
@@ -106,9 +109,9 @@ const EduSectionModify = ({ resumeInfo, setResumeInfo }) => {
                 });
               }}
             />
-          </label>
-          <label>
-            <div>부전공</div>
+          </div>
+          <div>
+            <label>부전공</label>
             <input
               type="text"
               value={edu.sub_major}
@@ -123,9 +126,9 @@ const EduSectionModify = ({ resumeInfo, setResumeInfo }) => {
                 });
               }}
             />
-          </label>
-          <label>
-            <div>학점</div>
+          </div>
+          <div>
+            <label>학점</label>
             <input
               type="text"
               value={edu.gpa}
@@ -138,9 +141,9 @@ const EduSectionModify = ({ resumeInfo, setResumeInfo }) => {
                 });
               }}
             />
-          </label>
-          <label>
-            <div>특이사항</div>
+          </div>
+          <div>
+            <label>특이사항</label>
             <input
               type="text"
               value={edu.notes}
@@ -153,7 +156,7 @@ const EduSectionModify = ({ resumeInfo, setResumeInfo }) => {
                 });
               }}
             />
-          </label>
+          </div>
           <button
             className="deleteCareerBtn"
             onClick={() => {

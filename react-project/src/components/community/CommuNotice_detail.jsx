@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from "../../utils/axiosConfig";
 import '../../css/community/CommuNotice_detail.css';
+import Banner from '../common/Banner';
 
 const CommuNoticeDetail = () => {
   const { boardNo } = useParams();
@@ -41,10 +42,7 @@ const CommuNoticeDetail = () => {
 
   return (
     <>
-      <div className="notice-banner">
-        <img src="/resources/img/banner.png" alt="Banner" />
-        <h1>공지사항</h1>
-      </div>
+      <Banner pageName="공지사항" />
 
       <CommuMenuBar />
 
