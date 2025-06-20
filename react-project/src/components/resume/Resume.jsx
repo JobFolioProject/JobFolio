@@ -38,8 +38,6 @@ const Resume = () => {
             newExperience: undefined,
             skillList: [...formData.skillList, ...formData.newSkillList],
         };
-        
-        
             try {
                 const res = await axios.post('/api/resume/insertResumeInfo', dataToSend);
                 if (res.result === 1) {
@@ -106,6 +104,7 @@ const Resume = () => {
     // 이력서 작성 폼 데이터 상태
     // U-data
     const [formData, setFormData] = useState({
+        user_name : user.userName,
         user_no: user.userNo,
         title: '',
         desired_position: '',
@@ -158,8 +157,9 @@ const Resume = () => {
     useEffect(() => {
         if (user.userNo !== null) {
             getMyCareerInfo();
+            console.log('user:' ,user);
         }
-    }, [user.userNo]);
+    }, [user]);
 
 
     const handleChange = (e) => {
@@ -658,6 +658,7 @@ const saveFieldData = (type) => {
                         setMyCoverLetter={(value) => setFormData({ ...formData, coverLetter: value })}
                         setFormData={setFormData} // formData 상태를 자식 컴포넌트에 전달
                         userNo={user.userNo} 
+                        userName={user.userName}
                      />
                      <br/>
                         <br/>
@@ -665,7 +666,7 @@ const saveFieldData = (type) => {
                             <div><span>Template</span></div>
                         </label>
                             <div className='templete-test'>
-                                <TemplateSelection>템플렛선택</TemplateSelection>
+                                <TemplateSelection formData={formData}>템플렛선택</TemplateSelection>
                             </div>
                         <br/>
                         <div style={{ display: 'flex', justifyContent: 'center' }}>
@@ -673,7 +674,6 @@ const saveFieldData = (type) => {
                                 <PrettyBtn onClick={pdfDownload}>PDF 다운로드</PrettyBtn>
                             ) : (
                                 <>
-                                    <PrettyBtn onClick={handleSubmit}>미리보기</PrettyBtn>
                                     <PrettyBtn onClick={handleSubmit}>이력서 저장</PrettyBtn>
                                     <PrettyBtn onClick={pdfDownload}>이력서 저장 및 PDF 다운로드</PrettyBtn>
                                 </>
