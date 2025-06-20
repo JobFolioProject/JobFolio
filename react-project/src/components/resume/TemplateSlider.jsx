@@ -5,7 +5,11 @@ import axios from "../../utils/axiosConfig";
 import ResumePreviewModal from "./ResumePreviewModal"
 
 
-const TemplateSlider = ({ tempList }) => {
+const TemplateSlider = ({ tempList, formData }) => {
+
+  const [open, setOpen] = useState(false);
+  const [htmlString, setHtmlString] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [templateWithHtml, setTemplateWithHtml] = useState([]);
 
   const settings = {
