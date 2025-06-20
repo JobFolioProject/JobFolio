@@ -98,21 +98,6 @@ const CertSectionModify = ({ resumeInfo, setResumeInfo }) => {
               placeholder={"취득일"}
             />
           </div>
-          <div>
-            <label>특이사항</label>
-            <input
-              type="text"
-              value={cert.notes}
-              onChange={(e) => {
-                setResumeInfo({
-                  ...resumeInfo,
-                  certifications: resumeInfo.certifications.map((item, idx) =>
-                    idx === index ? { ...item, notes: e.target.value } : item
-                  ),
-                });
-              }}
-            />
-          </div>
           <button
             className="deleteCareerBtn"
             onClick={() => {

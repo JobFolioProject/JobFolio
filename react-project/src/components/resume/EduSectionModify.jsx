@@ -6,7 +6,9 @@ const EduSectionModify = ({ resumeInfo, setResumeInfo }) => {
     setResumeInfo({
       ...resumeInfo,
       education: resumeInfo.education.map((item, idx) =>
-        idx === index ? { ...item, [field]: date ? date : null } : item
+        idx === index
+          ? { ...item, [field]: date ? date.toISOString().slice(0, 10) : null }
+          : item
       ),
     });
     console.log(resumeInfo.education[index].enroll_date);
