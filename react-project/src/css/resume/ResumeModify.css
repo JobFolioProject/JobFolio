@@ -83,8 +83,8 @@
   justify-content: flex-end;
 }
 
-.resumeContent .primaryBtn,
-.resumeContent .secondaryBtn {
+.resumeContent .primaryBtn, 
+.secondaryBtn {
   padding: 10px 28px;
   border: none;
   border-radius: 8px;
