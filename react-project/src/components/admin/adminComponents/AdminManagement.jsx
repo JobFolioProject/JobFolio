@@ -1,6 +1,7 @@
 import Pagination from '../../common/Pagination.jsx';
 import '../../../css/admin/adminComponents/AdminManagement.css';
 import '../../../css/admin/adminComponents/InfoManagement.css';
+import AdminManagementDetail from './AdminManagement_detail.jsx';
 import AdminSideBar from '../AdminSideBar';
 import SearchIcon from '@mui/icons-material/Search';
 import { useEffect, useState } from 'react';
@@ -24,7 +25,9 @@ const AdminManagement = () => {
     const [filterType, setFilterType] = useState('all'); // 기본값
     const [searchData, setSearchData] = useState('');
     const [searchKeyword, setSearchKeyword] = useState(''); // 검색 입력 필드의 값
-    const status = ['정상', '탈퇴', '대기'];
+
+    const [showModal, setShowModal] = useState(false); // 모달 오픈
+    const [selectedUser, setSelectedUser] = useState(null); // 모달에 표시할 유저 정보 아이디
 
     useEffect(() => {
         const userNo = user.userNo;
@@ -79,45 +82,55 @@ const AdminManagement = () => {
     const keyPress = (e) => {
         if (e.key === 'Enter') {
             keywordSearch();
+            setSearchKeyword('');
         }
     };
+
+    const openModal = () => {
+        setShowModal(true);
+    };
     return (
-        <div className="infoManagement">
+        <div className="adminManagement">
             <AdminSideBar />
-            <div className="info-content">
-                <div className="info-section-title-box">
+            <div className="adminMag-content">
+                <div className="adminMag-section-title-box">
                     <h2>계정 관리</h2>
                 </div>
 
                 {/* 검색창 */}
-                <div className="info-section-content-box">
-                    <div className="info-header">
+                <div className="adminMag-section-content-box">
+                    <div className="adminMag-header">
                         <h3>권한 관리</h3>
-                        <p className="info-warning">삭제할 경우 복구가 어려우며, 삭제 시 신중히 선택 바랍니다.</p>
-                        <div className="info-controls"></div>
+                        <p className="adminMag-warning">
+                            삭제할 경우 복구가 어려우며, 삭제 시 신중히 선택 바랍니다. <br></br>
+                            관리자 등록 변경은 신중히 선택 바랍니다.
+                        </p>
                     </div>
-                    AdminManagement
-                    <div className="search-right-contorls">
-                        <select value={filterType} onChange={filterChange} className="filter-select">
-                            <option value={'all'}>전체</option>
-                            <option value={'ADMIN_GROUP'}>관리자</option>
-                            <option value={'C'}>일반</option>
-                        </select>
+                    <div className="adminMag-controls">
+                        <div className="adminMag-left-content">
+                            <select value={filterType} onChange={filterChange} className="adminMag-filter-select">
+                                <option value={'all'}>전체</option>
+                                <option value={'ADMIN_GROUP'}>관리자</option>
+                                <option value={'C'}>일반</option>
+                            </select>
+                        </div>
 
-                        <input
-                            className="search-input"
-                            type="text"
-                            value={searchKeyword}
-                            placeholder="검색어를 입력하세요"
-                            onChange={(e) => setSearchKeyword(e.target.value)}
-                            onKeyPress={keyPress}
-                        />
-                        <button className="adminManger-search-button">
-                            <SearchIcon className="search-icon" />
-                            검색
-                        </button>
+                        <div className="adminMag-right-content">
+                            <input
+                                className="adminMag-search-input"
+                                type="text"
+                                value={searchKeyword}
+                                placeholder="검색어를 입력하세요(Enter)"
+                                onChange={(e) => setSearchKeyword(e.target.value)}
+                                onKeyPress={keyPress}
+                            />
+                            <button className="adminMag-search-button" onClick={keywordSearch}>
+                                <SearchIcon className="search-icon" />
+                                검색
+                            </button>
+                        </div>
                     </div>
-                    <table className="info-table">
+                    <table className="adminMag-table">
                         <thead>
                             <tr>
                                 <th className="col-userNumber">회원번호</th>
@@ -125,25 +138,34 @@ const AdminManagement = () => {
                                 <th className="col-name">이름</th>
                                 <th className="col-status">상태</th>
                                 <th className="col-regDate">가입일</th>
-                                <th className="col-subScriptDate">구독기간</th>
+                                <th className="col-withdrawalDate">탈퇴날짜</th>
                                 <th className="col-grade">등급</th>
-                                <th className="col-manage">관리</th>
                             </tr>
                         </thead>
                         <tbody>
                             {data.map((item) => (
-                                <tr key={item.userNo}>
+                                <tr key={item.user_no} onClick={() => openModal(item)}>
                                     <td>{item.user_no}</td>
                                     <td>{item.login_id}</td>
                                     <td>{item.user_name}</td>
-                                    <td>
+                                    <td
+                                        style={{
+                                            color:
+                                                item.status_yn === 'N'
+                                                    ? 'green' // N일 경우 초록색
+                                                    : item.status_yn === 'Y'
+                                                    ? 'red' // Y일 경우 빨간색
+                                                    : 'inherit',
+                                        }}
+                                    >
                                         {item.status_yn === 'N' ? '정상' : item.status_yn === 'Y' ? '탈퇴' : '대기'}
                                     </td>
                                     <td>{item.reg_date}</td>
-                                    <td>{item.expire_days}</td>
+                                    <td>{item.withdrawal_date}</td>
                                     <td>
                                         {item.user_type === 'A' ? (
                                             <Chip
+                                                clickable={false}
                                                 label="슈퍼"
                                                 icon={<CrownIcon fontSize="small" />} // 아이콘 추가
                                                 size="small" // 뱃지 크기 조절
@@ -151,9 +173,9 @@ const AdminManagement = () => {
                                                 className="sparkle-badge"
                                                 sx={{
                                                     bgcolor: '#FFD700', // 더 정확한 금색 배경
-                                                    color: '#333', // 텍스트 색상
+                                                    color: '#333',
                                                     fontWeight: 'bold',
-                                                    minWidth: '80px', // 최소 너비로 통일감 주기
+                                                    minWidth: '80px',
                                                 }}
                                             />
                                         ) : item.user_type === 'B' ? (
@@ -168,6 +190,7 @@ const AdminManagement = () => {
                                                     fontWeight: 'bold',
                                                     minWidth: '80px',
                                                 }}
+                                                clickable={false}
                                             />
                                         ) : (
                                             <Chip
@@ -181,10 +204,10 @@ const AdminManagement = () => {
                                                     fontWeight: 'bold',
                                                     minWidth: '80px',
                                                 }}
+                                                clickable={false}
                                             />
                                         )}
                                     </td>
-                                    <td></td>
                                 </tr>
                             ))}
                         </tbody>
@@ -193,6 +216,8 @@ const AdminManagement = () => {
                     <Pagination currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage} />
                 </div>
             </div>
+
+            <AdminManagementDetail open={showModal} />
         </div>
     );
 };

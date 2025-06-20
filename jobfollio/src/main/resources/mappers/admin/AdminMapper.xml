@@ -87,7 +87,7 @@
         FROM tb_resume_info
     </select>
 
-    
+    <!-- 회원 목록 필터링 및 페이징   -->
     <select id="selectFillterAndPageCustomers" parameterType="map" resultType="com.happyjob.jobfolio.vo.usermgr.UserModel">
         SELECT
             user_no,
@@ -96,7 +96,8 @@
             user_name,
             reg_date,
             status_yn,
-            expire_days
+            expire_days,
+            withdrawal_date
         FROM tb_userinfo
         <where>
             <if test="search != null and search != ''">
@@ -114,6 +115,8 @@
         </where>
             LIMIT #{limit} OFFSET #{offset}
     </select>
+
+    <!-- 회원 검색별로 카운트  -->
     <select id="selectTotalCustomerCount" resultType="int">
         SELECT COUNT(*)
         FROM tb_userinfo
