@@ -229,7 +229,8 @@ public class MypageController {
     public ResponseEntity<PayResponseDto> payHistory(@PathVariable(name = "user_no") Long userNo,
                                                @RequestParam(required = false) String search,
                                                @RequestParam(defaultValue = "1") int page,
-                                               @RequestParam(defaultValue  = "10") int limit) {
+                                               @RequestParam(defaultValue  = "10") int limit,
+                                             @RequestParam(name = "status", defaultValue = "1") int pay_status) {
 
 
         Map<String, Object> paramMap = new HashMap<>();
@@ -239,6 +240,7 @@ public class MypageController {
         paramMap.put("offset", offset);
         paramMap.put("limit", limit);
         paramMap.put("page", page);
+        paramMap.put("status", pay_status);
 
         int totalCount = mypageService.getTotalPayCount(paramMap);
         List<PayHisDto> payHistoryData = mypageService.getPayHistory(paramMap);
