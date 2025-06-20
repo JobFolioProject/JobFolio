@@ -10,6 +10,7 @@ import com.happyjob.jobfolio.service.resume.ResumeService;
 import com.happyjob.jobfolio.vo.community.CommunityBoardVo;
 import com.happyjob.jobfolio.vo.join.UserVO;
 import com.happyjob.jobfolio.vo.mypage.CertificateVO;
+import com.happyjob.jobfolio.vo.mypage.LanguageSkillVO;
 import com.happyjob.jobfolio.vo.resume.AiResumeGenerateVO;
 import com.happyjob.jobfolio.vo.resume.ResumeInfoVO;
 import com.happyjob.jobfolio.vo.resume.TemplateVO;
@@ -83,6 +84,7 @@ public class ResumeController {
             root.put("userName",  userVO.getUser_name());      // name ← userName
             root.put("email", userVO.getLogin_id());       // email ← loginId
             root.put("phone", userVO.getHp());            // phone ← hp
+            root.put("birthday", userVO.getBirthday());            // phone ← hp
             root.put("link", paramMap.getOrDefault("link_url","").toString());
 
             // skillList 배열
@@ -130,7 +132,6 @@ public class ResumeController {
             for (Map<String,String> exp : experiences) {
                 ObjectNode node = mapper.createObjectNode();
                 node.put("company",  exp.getOrDefault("company_name",""));
-                node.put("dept",     exp.getOrDefault("department",""));     // 부서명이 paramMap에 있다면
                 node.put("position", exp.getOrDefault("position",""));       // 직위가 paramMap에 있다면
                 node.put("start_date", exp.getOrDefault("start_date",""));
                 node.put("end_date", exp.getOrDefault("end_date",""));
@@ -146,12 +147,25 @@ public class ResumeController {
             ArrayNode certArray = mapper.createArrayNode();
             for (CertificateVO cert : certs) {
                 ObjectNode node = mapper.createObjectNode();
-                node.put("name", cert.getCertificate_name());
+                node.put("certificate_no", cert.getCertificate_no());
+                node.put("certificate_name", cert.getCertificate_name());
                 node.put("issuing_org", cert.getIssuing_org());
-                node.put("date", cert.getAcquired_date());
+                node.put("acquired_date", cert.getAcquired_date());
                 certArray.add(node);
             }
             root.set("certification", certArray);
+
+            // certifications 배열
+            @SuppressWarnings("unchecked")
+            List<LanguageSkillVO> langs = mypageMapper.getLanguageListByUserNo(user_no);
+            ArrayNode langArray = mapper.createArrayNode();
+            for (LanguageSkillVO lang : langs) {
+                ObjectNode node = mapper.createObjectNode();
+                node.put("language", lang.getLanguage());
+                node.put("level", lang.getLevel());
+                langArray.add(node);
+            }
+            root.set("language_skill", langArray);
 
 
             // coverLetter(또는 introduction) 기본값 처리

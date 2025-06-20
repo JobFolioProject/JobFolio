@@ -1,0 +1,68 @@
+.main-email {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    background-image: linear-gradient(to bottom, #ffffff 0%, #fae6f1 100%);
+  }
+  
+  .main-email .box {
+    border: 2px solid #fff;
+    width: 70%;
+    height: 600px;
+    margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: baseline;
+    letter-spacing: 0.1em;
+    background-image: linear-gradient(to bottom left, #cce0ff 0%, #fae6f1 100%);
+  }
+
+  .main-email .box .text {
+    width: 90%;
+    text-align: left;
+    font-size: medium;
+    margin-left: 30px;
+  }
+
+  .main-email .box .text .title {
+    font-size: large;
+    font-weight: 800;
+    margin-bottom: 10px;
+  }
+
+  .main-email .box input {
+    width: 40%;
+    height: 30px;
+    margin: 10px 0px;
+    border: #888 solid 0.2px;
+    border-radius: 7px;
+    padding: 0px 10px;
+  }
+
+  .main-email .box textarea {
+    width: 40%;
+    height: 100px;
+    margin: 10px 0px;
+    border: #888 solid 0.2px;
+    border-radius: 7px;
+    resize: none;
+    font-family: Arial, sans-serif;
+    padding: 0 5px;
+  }
+  
+  .main-email .box button {
+    width: 250px;
+    height: 40px;
+    margin: 10px 0px; 
+    padding: 0 5px;
+    background-color: #111;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    font-weight: 700;
+    font-size: medium;
+  }
