@@ -163,7 +163,7 @@
             expire_days,
             address,
             hobby,
-            notes,
+            notes as note,
             social_type,
             social_id
         FROM tb_userinfo
@@ -215,7 +215,7 @@
         SELECT
             user_no, login_id, user_type, user_name, birthday, sex, hp,
             reg_date, withdrawal_date, status_yn, expire_days,
-            address, hobby, notes, social_type, social_id
+            address, hobby, notes as note, social_type, social_id
         FROM tb_userinfo
         ORDER BY reg_date DESC
     </select>

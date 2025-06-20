@@ -68,19 +68,16 @@ const AdminManagement = () => {
         setStatusFilterType(e.target.value);
         setCurrentPage(1);
     };
-    // 필터 변경
     const filterChange = (e) => {
         setFilterType(e.target.value);
         setCurrentPage(1);
     };
 
-    // 키워드 검색
     const keywordSearch = () => {
         setCurrentPage(1);
         setSearchData(searchKeyword);
     };
 
-    // 엔터키 검색
     const keyPress = (e) => {
         if (e.key === 'Enter') {
             keywordSearch();
@@ -96,13 +93,11 @@ const AdminManagement = () => {
         setShowModal(true);
     };
 
-    // 모달 닫기 함수
     const closeModal = () => {
         setShowModal(false);
         setSelectedUser(null);
     };
 
-    // 사용자 목록 새로고침 함수
     const refreshUserList = async () => {
         const params = {};
         
@@ -218,7 +213,6 @@ const AdminManagement = () => {
                                             <td>{item.reg_date}</td>
                                             <td>{item.withdrawal_date || ''}</td>
                                             
-                                            {/* 🔥 등급 셀 - 완전히 클릭 방지 */}
                                             <td 
                                                 onClick={(e) => {
                                                     e.stopPropagation();
@@ -226,7 +220,7 @@ const AdminManagement = () => {
                                                 }}
                                                 style={{ 
                                                     cursor: 'default',
-                                                    pointerEvents: 'none'  // 모든 마우스 이벤트 차단
+                                                    pointerEvents: 'none'  
                                                 }}
                                             >
                                                 {item.user_type === 'A' ? (
@@ -240,7 +234,7 @@ const AdminManagement = () => {
                                                             color: '#333',
                                                             fontWeight: 'bold',
                                                             minWidth: '80px',
-                                                            pointerEvents: 'none',  // Chip 자체도 클릭 방지
+                                                            pointerEvents: 'none', 
                                                             cursor: 'default'
                                                         }}
                                                     />
@@ -255,7 +249,7 @@ const AdminManagement = () => {
                                                             color: '#333',
                                                             fontWeight: 'bold',
                                                             minWidth: '80px',
-                                                            pointerEvents: 'none',  // Chip 자체도 클릭 방지
+                                                            pointerEvents: 'none', 
                                                             cursor: 'default'
                                                         }}
                                                     />
@@ -270,7 +264,7 @@ const AdminManagement = () => {
                                                             color: '#333',
                                                             fontWeight: 'bold',
                                                             minWidth: '80px',
-                                                            pointerEvents: 'none',  // Chip 자체도 클릭 방지
+                                                            pointerEvents: 'none', 
                                                             cursor: 'default'
                                                         }}
                                                     />
