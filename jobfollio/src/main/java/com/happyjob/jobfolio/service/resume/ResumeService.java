@@ -324,9 +324,7 @@ public class ResumeService {
         return resumeMapper.insertResumeLike(resumeLikeVO);
     }
 
-    public List<TemplateVO> selectAllTemplates() {
-        return resumeMapper.selectAllTemplates();
-    }
+
 
     public TemplateVO selectTemplateByNum(int template_no) {
         return resumeMapper.selectTemplateByNum(template_no);
@@ -419,4 +417,12 @@ public class ResumeService {
         }
 
     }
+
+    //템플렛 조회하기
+    public List<TemplateVO> selectAllTemplates() {
+        return resumeMapper.selectAllTemplates();
+    }
+
+
+
 }

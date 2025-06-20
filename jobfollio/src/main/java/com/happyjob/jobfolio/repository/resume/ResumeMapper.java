@@ -36,8 +36,6 @@ public interface ResumeMapper {
 
     int insertResumeLike(ResumeLikeVO resumeLikeVO);
 
-    List<TemplateVO> selectAllTemplates();
-
     TemplateVO selectTemplateByNum(int template_no);
 
     int insertTemplate(TemplateVO templateVO);
@@ -47,11 +45,7 @@ public interface ResumeMapper {
     // 이력서 목록 조회
     List<ResumeInfoVO> communityResumeList(Map<String, Object> paramMap);
 
-//    ResumeInfoVO selectResumeInfoByResumeNo(int resumeNo);
-
-
-//    // 스킬 목록 조회
-//    List<SkillInfoVO> selectSkillInfoList(int user_no);
+    List<TemplateVO> selectAllTemplates();
 
 
 }
