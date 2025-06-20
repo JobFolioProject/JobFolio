@@ -46,12 +46,10 @@ const MainPage = () => {
 
     const delta = e.deltaY || e.detail || e.wheelDelta;
 
-    // 🔽 슬라이드 아래로 (curSlide === 1 -> 2)
     if (delta > 0 && curSlide < 2) {
       goToSlide(curSlide + 1);
     }
 
-    // 🔼 슬라이드 위로 (Main2nd → MainPage 복귀)
     else if (delta < 0 && curSlide === 2) {
       if (window.scrollY === 0) {
         goToSlide(curSlide - 1);
@@ -70,13 +68,13 @@ const MainPage = () => {
 
 useEffect(() => {
   if (curSlide === 2 && !isAnimating) {
-    document.body.style.overflow = "auto"; // ✅ 아래로 스크롤 가능
+    document.body.style.overflow = "auto"; 
   } else {
-    document.body.style.overflow = "hidden"; // ✅ 스크롤 막기
+    document.body.style.overflow = "hidden"; 
   }
 
   return () => {
-    document.body.style.overflow = "auto"; // ✅ 컴포넌트 제거 시 복원
+    document.body.style.overflow = "auto"; 
   };
 }, [curSlide, isAnimating]);
 

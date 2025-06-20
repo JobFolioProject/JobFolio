@@ -91,7 +91,6 @@ const Main3rdImage = () => {
             infowindow.open(map, marker);
         };
 
-        // Naver Maps API가 이미 로드되었는지 확인하고, 없다면 스크립트를 추가합니다.
         if (window.naver && window.naver.maps) {
             onLoadMap(); // 스크립트가 이미 로드된 경우 바로 지도 생성
         } else {
@@ -107,7 +106,7 @@ const Main3rdImage = () => {
       
             <div className="introduce-area">
               <div className="header-container">
-                <h1>For <span className="auto-type">Programmer</span></h1>
+                <h1>For <span className="auto-type">Junior</span></h1>
             </div>
         <motion.div
                 className="introduce"

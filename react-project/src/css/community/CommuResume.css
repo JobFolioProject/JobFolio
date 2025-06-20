@@ -1,10 +1,10 @@
-.resume-banner img {
+.CommuResume .resume-banner img {
   width: 100%;
   height: 200px;
   object-fit: cover;
 }
 
-.resume-banner h1 {
+.CommuResume .resume-banner h1 {
   position: absolute;
   top: 120px;
   left: 10%;
@@ -14,26 +14,27 @@
   font-weight: 900;
 }
 
-.resume-template-wrapper {
+.CommuResume .resume-template-wrapper {
   min-width: 900px;
   padding: 20px 300px;
 }
 
-.resume-template-wrapper h2 {
+.CommuResume .resume-template-wrapper h2 {
   margin-left: 100px;
 }
 
-.resume-template-grid {
+.CommuResume .resume-template-grid {
   display: flex;
-  flex-wrap: wrap;       /* 넘칠 경우 줄바꿈 */
-  gap: 20px;             /* 카드 간 간격 */
-  justify-content: flex-start; /* 왼쪽부터 정렬 */
+  flex-wrap: wrap;
+  gap: 20px; 
+  justify-content: flex-start;
   justify-content: center;
+  min-width: 1000px;
 }
-.template-slide {
+.CommuResume .template-slide {
   flex: 0 0 auto;
-  width: 280px;          /* ✅ 고정 너비 */
-  height: 300px;         /* ✅ 고정 높이 */
+  width: 280px;      
+  height: 300px; 
   border: 1px solid #ccc;
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
@@ -42,48 +43,48 @@
   box-sizing: border-box;
 }
 
-.resume-template-data {
+.CommuResume .resume-template-data {
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
   background: #fff;
   border: 1px solid #ccc;
-  width: 278px;
+  width: 280px;
 }
 
-.resume-template-data table {
+.CommuResume .resume-template-data table {
   width: 100%;
   line-height: 0px;
   font-size: smaller;
 }
 
-.resume-template-data table thead {
+.CommuResume .resume-template-data table thead {
   font-weight: bold;
 }
 
-.resume-template-data table td {
+.CommuResume .resume-template-data table td {
   border: none;
 }
-.resume-template-data table .right {
+.CommuResume .resume-template-data table .right {
   text-align: end;
-  width: 104px;
+  width: 134px;
 }
 
-.resume-template-preview-image {
+.CommuResume .resume-template-preview-image {
   width: 100%;
   height: 100%;
   border: none;
 }
 
-.community-notice-pagination {
+.CommuResume .community-notice-pagination {
   margin-bottom: 100px;
   border-top: none;
 }
 
-.template-view-wrapper {
+.CommuResume .template-view-wrapper {
   position: relative;
 }
 
-.template-view-wrapper:hover {
+.CommuResume .template-view-wrapper:hover {
   transform: scale(1.02);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
   cursor: pointer;
@@ -92,7 +93,7 @@
 
 
 /* 아이콘에 마우스 올렸을 때는 hover 막기 */
-.template-view-wrapper.no-hover:hover {
+.CommuResume .template-view-wrapper.no-hover:hover {
   transform: none !important;
   box-shadow: none !important;
   cursor: default !important;
