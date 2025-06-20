@@ -1,41 +1,41 @@
 /* 스킬 태그 컨테이너 */
 .skill-tags-container {
-    display: flex; /* 가로 나열 */
-    flex-wrap: wrap; /* 내용이 넘치면 다음 줄로 */
-    gap: 10px; /* 태그 간 간격 */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
     padding: 10px 0;
-    min-height: 50px; /* 내용이 없을 때도 최소 높이 유지 */
-    align-items: center; /* 세로 중앙 정렬 */
+    min-height: 50px;
+    align-items: center;
 }
 
 /* 개별 스킬 태그 */
 .skill-tag {
     display: inline-flex;
-    flex-direction: column; /* 내용을 세로로 쌓도록 변경 */
+    flex-direction: column;
     justify-content: center;
-    align-items: flex-start; /* 텍스트 왼쪽 정렬 */
-    background-color: #e9ecef; /* 연한 회색 배경 */
-    color: #333; /* 글자색 */
-    padding: 7px 11px; /* 패딩 */
-    border: 1px solid #ced4da; /* 1px 솔리드 보더 */
-    border-radius: 8px; /* 둥근 모서리 */
+    align-items: flex-start;
+    background-color: #e9ecef;
+    color: #333;
+    padding: 7px 11px;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
     font-size: 0.8em;
     font-weight: 500;
-    white-space: normal; /* 태그 내용이 줄바꿈 가능하도록 */
-    cursor: pointer; /* 클릭 가능함을 나타냄 */
-    transition: all 0.2s ease-in-out; /* 부드러운 호버 효과 */
+    white-space: normal;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
 }
 
 .skill-tag:hover {
     border-color: #adb5bd;
-    transform: translateY(-1px); /* 살짝 위로 올라가는 효과 */
+    transform: translateY(-1px);
     box-shadow: 0 3px 5px rgba(0, 0, 0, 0.12);
 }
 
 .skill-name-main {
     font-weight: bold;
     color: #333;
-    margin-bottom: 4px; /* 아래 상세 정보와의 간격 */
+    margin-bottom: 4px;
 }
 
 .skill-detail-exp,
@@ -46,7 +46,7 @@
 }
 
 .skill-detail-exp {
-    margin-bottom: 2px; /* 숙련도와 툴 사이 간격 */
+    margin-bottom: 2px;
 }
 
 /* 보유 스킬이 없을 때 메시지 */

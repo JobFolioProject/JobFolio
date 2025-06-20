@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
-import "../../../css/user/myPageComponent/UserInfo.css";
-import { useAuth } from "../../../context/AuthContext";
-import axios from "../../../utils/axiosConfig";
+import { useEffect, useState } from 'react';
+import '../../../css/user/myPageComponent/UserInfo.css';
+import { useAuth } from '../../../context/AuthContext';
+import axios from '../../../utils/axiosConfig';
 
 const UserInfo = () => {
     const { user, logout } = useAuth(); // AuthContext에서 user와 logout 가져오기
@@ -20,29 +20,31 @@ const UserInfo = () => {
         try {
             // sessionStorage 대신 AuthContext 사용
             if (!user?.userNo) {
-                console.log("사용자 정보가 없습니다.");
+                console.log('사용자 정보가 없습니다.');
                 return;
             }
 
             const data = await axios.get(`/api/myPage/userInfo/${user.userNo}`);
-            console.log("사용자 상세정보:", data);
+            console.log('사용자 상세정보:', data);
 
             setUserInfo({
                 user_no: data.user_no,
                 user_name: data.user_name,
                 hp: data.hp,
                 login_id: data.login_id,
-                address: data.address ?? "",
-                expire_days: data.expire_days ? (() => {
-                    const date = new Date(data.expire_days);
-                    const year = date.getFullYear();
-                    const month = String(date.getMonth() + 1).padStart(2, '0');
-                    const day = String(date.getDate()).padStart(2, '0');
-                    return `${year}-${month}-${day}`;
-                })() : "미구독"
+                address: data.address ?? '',
+                expire_days: data.expire_days
+                    ? (() => {
+                          const date = new Date(data.expire_days);
+                          const year = date.getFullYear();
+                          const month = String(date.getMonth() + 1).padStart(2, '0');
+                          const day = String(date.getDate()).padStart(2, '0');
+                          return `${year}-${month}-${day}`;
+                      })()
+                    : '미구독',
             });
         } catch (err) {
-            console.error("Failed to fetch userInfo:", err);
+            console.error('Failed to fetch userInfo:', err);
         }
     };
 
@@ -60,30 +62,30 @@ const UserInfo = () => {
         } else {
             try {
                 if (!user?.userNo) {
-                    console.error("사용자 정보가 없습니다.");
+                    console.error('사용자 정보가 없습니다.');
                     return;
                 }
 
-                if (window.confirm("수정하시겠습니까?")) {
+                if (window.confirm('수정하시겠습니까?')) {
                     const cleanedUserInfo = {
                         ...userInfo,
                         user_no: user.userNo,
-                        address: userInfo.address === "" ? null : userInfo.address,
-                        expire_days: userInfo.expire_days === "미구독" ? null : userInfo.expire_days,
+                        address: userInfo.address === '' ? null : userInfo.address,
+                        expire_days: userInfo.expire_days === '미구독' ? null : userInfo.expire_days,
                     };
 
                     const response = await axios.post(`/api/myPage/editUserInfo`, cleanedUserInfo);
 
                     if (response !== null) {
-                        alert("수정이 완료되었습니다.");
+                        alert('수정이 완료되었습니다.');
                         setIsEditing(false);
                     } else {
-                        alert("수정 실패: " + response.statusText);
+                        alert('수정 실패: ' + response.statusText);
                     }
                 }
             } catch (err) {
-                console.error("Failed to update userInfo:", err);
-                alert("수정 중 오류 발생");
+                console.error('Failed to update userInfo:', err);
+                alert('수정 중 오류 발생');
             }
         }
     };
@@ -94,11 +96,11 @@ const UserInfo = () => {
 
     const handleDelete = async () => {
         if (!user?.userNo) {
-            console.error("사용자 정보가 없습니다.");
+            console.error('사용자 정보가 없습니다.');
             return;
         }
 
-        if (window.confirm("정말 탈퇴하시겠습니까?")) {
+        if (window.confirm('정말 탈퇴하시겠습니까?')) {
             setIsPasswordModalOpen(true);
         }
     };
@@ -106,29 +108,29 @@ const UserInfo = () => {
     const userInfoCheck = async () => {
         try {
             const response = await axios.post(`/api/join/userInfoCheck`, {
-                password: password  
+                password: password,
             });
-    
-            if (response?.result === "Y") {
-                alert("탈퇴가 완료되었습니다.");
+
+            if (response?.result === 'Y') {
+                alert('탈퇴가 완료되었습니다.');
                 logout();
             } else {
-                alert(response?.message || "비밀번호가 일치하지 않습니다.");
+                alert(response?.message || '비밀번호가 일치하지 않습니다.');
             }
         } catch (error) {
-            console.error("탈퇴 요청 실패:", error);
-            alert("탈퇴 중 오류가 발생했습니다.");
+            console.error('탈퇴 요청 실패:', error);
+            alert('탈퇴 중 오류가 발생했습니다.');
         }
     };
 
     // 📍 주소 검색 기능
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
-    const [tempBaseAddress, setTempBaseAddress] = useState("");
-    const [detailAddress, setDetailAddress] = useState("");
+    const [tempBaseAddress, setTempBaseAddress] = useState('');
+    const [detailAddress, setDetailAddress] = useState('');
 
     const handleAddressSearch = () => {
         new window.daum.Postcode({
-            oncomplete: function(data) {
+            oncomplete: function (data) {
                 let fullAddress = data.roadAddress;
                 if (data.buildingName) {
                     fullAddress += ` (${data.buildingName})`;
@@ -137,7 +139,7 @@ const UserInfo = () => {
 
                 setTempBaseAddress(fullAddress);
                 setIsDetailModalOpen(true);
-            }
+            },
         }).open();
     };
 
@@ -196,7 +198,7 @@ const UserInfo = () => {
                 </div>
                 <hr />
 
-                <div className="userInfobuttonWrap_button">
+                <div className="userInfoRow">
                     <p>이메일</p>
                     <input
                         type="text"
@@ -235,7 +237,6 @@ const UserInfo = () => {
                 <hr />
 
                 <div className="userInfobuttonWrap_button">
-                    <p>서비스 탈퇴</p>
                     <button className="userInfoBackButton2" onClick={handleDelete}>
                         탈퇴하기
                     </button>
@@ -255,19 +256,19 @@ const UserInfo = () => {
                             onChange={(e) => setDetailAddress(e.target.value)}
                             className="userInfoInput"
                         />
-                        <div style={{ marginTop: "10px" }}>
+                        <div style={{ marginTop: '10px' }}>
                             <button
                                 className="userInfoBackButton"
                                 onClick={() => {
                                     if (!detailAddress.trim()) {
-                                        alert("상세주소를 입력해주세요.");
+                                        alert('상세주소를 입력해주세요.');
                                         return;
                                     }
 
                                     const finalAddress = `${tempBaseAddress} ${detailAddress.trim()}`;
-                                    setUserInfo(prev => ({ ...prev, address: finalAddress }));
+                                    setUserInfo((prev) => ({ ...prev, address: finalAddress }));
                                     setIsDetailModalOpen(false);
-                                    setDetailAddress("");
+                                    setDetailAddress('');
                                 }}
                             >
                                 확인
@@ -276,7 +277,7 @@ const UserInfo = () => {
                                 className="userInfoBackButton3"
                                 onClick={() => {
                                     setIsDetailModalOpen(false);
-                                    setDetailAddress("");
+                                    setDetailAddress('');
                                 }}
                             >
                                 취소
@@ -298,12 +299,12 @@ const UserInfo = () => {
                             onChange={(e) => setPassword(e.target.value)}
                             className="userInfoInput"
                         />
-                        <div style={{ marginTop: "10px" }}>
+                        <div style={{ marginTop: '10px' }}>
                             <button
                                 className="userInfoBackButton"
                                 onClick={() => {
                                     if (!password) {
-                                        alert("비밀번호를 입력해주세요.");
+                                        alert('비밀번호를 입력해주세요.');
                                         return;
                                     }
                                     userInfoCheck();

@@ -1,29 +1,29 @@
 import React, { useState, useEffect } from 'react';
-import { 
-    Dialog, 
-    DialogTitle, 
-    DialogContent, 
-    DialogActions, 
-    Button, 
-    TextField, 
-    Select, 
-    MenuItem, 
-    FormControl, 
-    InputLabel, 
-    Grid, 
-    Typography, 
+import {
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    Button,
+    TextField,
+    Select,
+    MenuItem,
+    FormControl,
+    InputLabel,
+    Grid,
+    Typography,
     Chip,
     Box,
     IconButton,
     Alert,
-    CircularProgress
+    CircularProgress,
 } from '@mui/material';
-import { 
+import {
     Close as CloseIcon,
     Save as SaveIcon,
     Person as PersonIcon,
     EmojiEvents as CrownIcon,
-    Settings as SettingsIcon
+    Settings as SettingsIcon,
 } from '@mui/icons-material';
 import axios from '../../../utils/axiosConfig';
 
@@ -61,11 +61,11 @@ const AdminManagementDetail = ({ open, onClose, selectedUser, currentUser, onUse
     // 🔍 사용자 상세 정보 조회
     const fetchUserDetail = async (loginId) => {
         setIsLoading(true);
-        
+
         try {
             const userData = await axios.get(`/api/admin/customers/${loginId}`);
             setUserDetail(userData);
-            
+
             // 편집 폼 초기화
             setEditForm({
                 user_name: userData.user_name || '',
@@ -75,11 +75,10 @@ const AdminManagementDetail = ({ open, onClose, selectedUser, currentUser, onUse
                 address: userData.address || '',
                 hobby: userData.hobby || '',
                 note: userData.note || userData.notes || '',
-                expire_days: userData.expire_days || '' // 구독 마감일자 추가
+                expire_days: userData.expire_days || '', // 구독 마감일자 추가
             });
-            
+
             console.log('🔍 사용자 데이터:', userData);
-            
         } catch (error) {
             console.error('❌ 사용자 정보 조회 실패:', error);
             showAlert('사용자 정보를 불러오는데 실패했습니다.', 'error');
@@ -93,10 +92,8 @@ const AdminManagementDetail = ({ open, onClose, selectedUser, currentUser, onUse
         if (!phone) return '';
         const cleaned = phone.replace(/\D/g, '');
         if (cleaned.length <= 3) return cleaned;
-        else if (cleaned.length <= 7) 
-            return `${cleaned.slice(0, 3)}-${cleaned.slice(3)}`;
-        else if (cleaned.length <= 11) 
-            return `${cleaned.slice(0, 3)}-${cleaned.slice(3, 7)}-${cleaned.slice(7)}`;
+        else if (cleaned.length <= 7) return `${cleaned.slice(0, 3)}-${cleaned.slice(3)}`;
+        else if (cleaned.length <= 11) return `${cleaned.slice(0, 3)}-${cleaned.slice(3, 7)}-${cleaned.slice(7)}`;
         return `${cleaned.slice(0, 3)}-${cleaned.slice(3, 7)}-${cleaned.slice(7, 11)}`;
     };
 
@@ -124,16 +121,16 @@ const AdminManagementDetail = ({ open, onClose, selectedUser, currentUser, onUse
 
         try {
             const updateData = {
-                expire_days: editForm.expire_days || null
+                expire_days: editForm.expire_days || null,
             };
 
             console.log('💾 저장할 데이터:', updateData);
 
             await axios.put(`/api/admin/customers/${userDetail.login_id}`, updateData);
             showAlert('구독 마감일자가 성공적으로 저장되었습니다.', 'success');
-            
+
             await fetchUserDetail(userDetail.login_id);
-            
+
             if (onUserUpdated) {
                 onUserUpdated();
             }
@@ -156,13 +153,13 @@ const AdminManagementDetail = ({ open, onClose, selectedUser, currentUser, onUse
 
         try {
             await axios.patch(`/api/admin/customers/${userDetail.login_id}/change-authority`, {
-                user_type: newAuthority
+                user_type: newAuthority,
             });
-            
+
             showAlert(`권한이 ${newAuthority === 'B' ? '관리자' : '일반회원'}로 변경되었습니다.`, 'success');
-            
+
             await fetchUserDetail(userDetail.login_id);
-            
+
             if (onUserUpdated) {
                 onUserUpdated();
             }
@@ -181,9 +178,9 @@ const AdminManagementDetail = ({ open, onClose, selectedUser, currentUser, onUse
         try {
             await axios.patch(`/api/admin/customers/${userDetail.login_id}/withdraw`);
             showAlert('사용자가 탈퇴 처리되었습니다.', 'success');
-            
+
             await fetchUserDetail(userDetail.login_id);
-            
+
             if (onUserUpdated) {
                 onUserUpdated();
             }
@@ -202,9 +199,9 @@ const AdminManagementDetail = ({ open, onClose, selectedUser, currentUser, onUse
         try {
             await axios.patch(`/api/admin/customers/${userDetail.login_id}/restore`);
             showAlert('사용자가 복구되었습니다.', 'success');
-            
+
             await fetchUserDetail(userDetail.login_id);
-            
+
             if (onUserUpdated) {
                 onUserUpdated();
             }
@@ -217,9 +214,9 @@ const AdminManagementDetail = ({ open, onClose, selectedUser, currentUser, onUse
     // 입력 필드 변경 핸들러 (구독 마감일자만)
     const handleInputChange = (field, value) => {
         if (field === 'expire_days') {
-            setEditForm(prev => ({
+            setEditForm((prev) => ({
                 ...prev,
-                [field]: value
+                [field]: value,
             }));
         }
     };
@@ -234,26 +231,32 @@ const AdminManagementDetail = ({ open, onClose, selectedUser, currentUser, onUse
     // 권한 칩 렌더링
     const renderAuthorityChip = (userType) => {
         if (userType === 'A') {
-            return <Chip 
-                label="슈퍼관리자" 
-                icon={<CrownIcon fontSize="small" />} 
-                sx={{ bgcolor: '#FFD700', color: '#333', fontWeight: 'bold' }}
-                clickable={false}
-            />;
+            return (
+                <Chip
+                    label="슈퍼관리자"
+                    icon={<CrownIcon fontSize="small" />}
+                    sx={{ bgcolor: '#FFD700', color: '#333', fontWeight: 'bold' }}
+                    clickable={false}
+                />
+            );
         } else if (userType === 'B') {
-            return <Chip 
-                label="관리자" 
-                icon={<SettingsIcon fontSize="small" />} 
-                sx={{ bgcolor: '#90CAF9', color: '#333', fontWeight: 'bold' }}
-                clickable={false}
-            />;
+            return (
+                <Chip
+                    label="관리자"
+                    icon={<SettingsIcon fontSize="small" />}
+                    sx={{ bgcolor: '#90CAF9', color: '#333', fontWeight: 'bold' }}
+                    clickable={false}
+                />
+            );
         } else {
-            return <Chip 
-                label="일반회원" 
-                icon={<PersonIcon fontSize="small" />} 
-                sx={{ bgcolor: '#E0E0E0', color: '#333', fontWeight: 'bold' }}
-                clickable={false}
-            />;
+            return (
+                <Chip
+                    label="일반회원"
+                    icon={<PersonIcon fontSize="small" />}
+                    sx={{ bgcolor: '#E0E0E0', color: '#333', fontWeight: 'bold' }}
+                    clickable={false}
+                />
+            );
         }
     };
 
@@ -287,13 +290,31 @@ const AdminManagementDetail = ({ open, onClose, selectedUser, currentUser, onUse
                     <Grid container spacing={2}>
                         {/* 1행 - 기본 정보 */}
                         <Grid item xs={12} sm={4}>
-                            <TextField label="회원번호" value={userDetail.user_no || ''} fullWidth disabled size="small" />
+                            <TextField
+                                label="회원번호"
+                                value={userDetail.user_no || ''}
+                                fullWidth
+                                disabled
+                                size="small"
+                            />
                         </Grid>
                         <Grid item xs={12} sm={4}>
-                            <TextField label="아이디 (이메일)" value={userDetail.login_id || ''} fullWidth disabled size="small" />
+                            <TextField
+                                label="아이디 (이메일)"
+                                value={userDetail.login_id || ''}
+                                fullWidth
+                                disabled
+                                size="small"
+                            />
                         </Grid>
                         <Grid item xs={12} sm={4}>
-                            <TextField label="가입일" value={userDetail.reg_date || ''} fullWidth disabled size="small" />
+                            <TextField
+                                label="가입일"
+                                value={userDetail.reg_date || ''}
+                                fullWidth
+                                disabled
+                                size="small"
+                            />
                         </Grid>
 
                         {/* 2행 - 개인 정보 (모두 비활성화) */}
@@ -313,11 +334,11 @@ const AdminManagementDetail = ({ open, onClose, selectedUser, currentUser, onUse
                                     labelId="gender-select-label"
                                     value={getDisplaySex(editForm.sex)}
                                     label="성별"
-                                    sx={{ 
+                                    sx={{
                                         minWidth: '120px',
                                         '& .MuiSelect-select': {
-                                            paddingY: '8.5px'
-                                        }
+                                            paddingY: '8.5px',
+                                        },
                                     }}
                                 >
                                     <MenuItem value="남성">남성</MenuItem>
@@ -360,18 +381,18 @@ const AdminManagementDetail = ({ open, onClose, selectedUser, currentUser, onUse
                                 size="small"
                             />
                         </Grid>
-                        
+
                         {/* 4행 - 탈퇴일 */}
                         <Grid item xs={12}>
-                            <TextField 
-                                label="탈퇴일" 
-                                value={formatDateTime(userDetail.withdrawal_date)} 
-                                fullWidth 
-                                disabled 
-                                size="small" 
+                            <TextField
+                                label="탈퇴일"
+                                value={formatDateTime(userDetail.withdrawal_date)}
+                                fullWidth
+                                disabled
+                                size="small"
                             />
                         </Grid>
-                        
+
                         {/* 5행 - 주소 (비활성화) */}
                         <Grid item xs={12}>
                             <TextField
@@ -429,40 +450,40 @@ const AdminManagementDetail = ({ open, onClose, selectedUser, currentUser, onUse
                                 )}
 
                                 {/* 계정 상태 관리 */}
-                                <Box 
-                                    sx={{ 
-                                        display: 'flex', 
-                                        gap: 1, 
-                                        alignItems: 'center'
+                                <Box
+                                    sx={{
+                                        display: 'flex',
+                                        gap: 1,
+                                        alignItems: 'center',
                                     }}
                                 >
                                     <Typography variant="body2">계정:</Typography>
-                                    <Chip 
-                                        label={userDetail.status_yn === 'Y' ? '탈퇴' : '정상'} 
-                                        color={userDetail.status_yn === 'Y' ? 'error' : 'success'} 
+                                    <Chip
+                                        label={userDetail.status_yn === 'Y' ? '탈퇴' : '정상'}
+                                        color={userDetail.status_yn === 'Y' ? 'error' : 'success'}
                                         size="small"
                                         clickable={false}
-                                        sx={{ 
+                                        sx={{
                                             cursor: 'default',
-                                            pointerEvents: 'none'
+                                            pointerEvents: 'none',
                                         }}
                                     />
                                     {canManageStatus() && (
                                         <>
                                             {userDetail.status_yn === 'Y' ? (
-                                                <Button 
-                                                    variant="contained" 
-                                                    color="success" 
-                                                    onClick={restoreUser} 
+                                                <Button
+                                                    variant="contained"
+                                                    color="success"
+                                                    onClick={restoreUser}
                                                     size="small"
                                                 >
                                                     복구
                                                 </Button>
                                             ) : (
-                                                <Button 
-                                                    variant="outlined" 
-                                                    color="error" 
-                                                    onClick={withdrawUser} 
+                                                <Button
+                                                    variant="outlined"
+                                                    color="error"
+                                                    onClick={withdrawUser}
                                                     size="small"
                                                 >
                                                     탈퇴
@@ -483,13 +504,13 @@ const AdminManagementDetail = ({ open, onClose, selectedUser, currentUser, onUse
 
             <DialogActions sx={{ p: 2 }}>
                 {canEditSubscription() && (
-                    <Button 
-                        onClick={saveSubscriptionExpiry} 
+                    <Button
+                        onClick={saveSubscriptionExpiry}
                         variant="contained"
                         startIcon={<SaveIcon />}
                         color="primary"
                     >
-                    저장
+                        저장
                     </Button>
                 )}
                 <Button onClick={onClose} variant="outlined">

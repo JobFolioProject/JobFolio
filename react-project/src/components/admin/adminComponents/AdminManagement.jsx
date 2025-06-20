@@ -61,9 +61,9 @@ const AdminManagement = () => {
                 setTotalCount(0);
             }
         };
-        
+
         fetchUserData();
-    }, [currentPage, filterType, searchData, user, isAuthenticated,statusFilterType]);
+    }, [currentPage, filterType, searchData, user, isAuthenticated, statusFilterType]);
     const statusFilterChange = (e) => {
         setStatusFilterType(e.target.value);
         setCurrentPage(1);
@@ -85,7 +85,7 @@ const AdminManagement = () => {
         }
     };
 
-      const openModal = (userItem, event) => {
+    const openModal = (userItem, event) => {
         if (event) {
             event.stopPropagation();
         }
@@ -100,7 +100,7 @@ const AdminManagement = () => {
 
     const refreshUserList = async () => {
         const params = {};
-        
+
         if (filterType !== 'all') {
             params.type = filterType;
         }
@@ -108,7 +108,7 @@ const AdminManagement = () => {
         if (statusFilterType !== 'all') {
             params.status = statusFilterType;
         }
-        
+
         params.page = currentPage;
         params.limit = pageSize;
         if (searchData) {
@@ -156,7 +156,7 @@ const AdminManagement = () => {
                                 <option value={'N'}>정상</option>
                                 <option value={'Y'}>탈퇴</option>
                             </select>
-                                                    </div>
+                        </div>
 
                         <div className="adminMag-right-content">
                             <input
@@ -186,107 +186,107 @@ const AdminManagement = () => {
                             </tr>
                         </thead>
                         <tbody>
-                                {data && data.length > 0 ? (
-                                    data.map((item) => (
-                                        <tr 
-                                            key={item.user_no} 
-                                            onClick={(e) => openModal(item, e)}
-                                            style={{ cursor: 'pointer' }}
+                            {data && data.length > 0 ? (
+                                data.map((item) => (
+                                    <tr
+                                        key={item.user_no}
+                                        onClick={(e) => openModal(item, e)}
+                                        style={{ cursor: 'pointer' }}
+                                    >
+                                        <td>{item.user_no}</td>
+                                        <td>{item.login_id}</td>
+                                        <td>{item.user_name}</td>
+
+                                        <td
+                                            style={{
+                                                color:
+                                                    item.status_yn === 'N'
+                                                        ? 'green'
+                                                        : item.status_yn === 'Y'
+                                                        ? 'red'
+                                                        : 'inherit',
+                                            }}
                                         >
-                                            <td>{item.user_no}</td>
-                                            <td>{item.login_id}</td>
-                                            <td>{item.user_name}</td>
-                                            
-                                            <td
-                                                style={{
-                                                    color:
-                                                        item.status_yn === 'N'
-                                                            ? 'green' 
-                                                            : item.status_yn === 'Y'
-                                                            ? 'red' 
-                                                            : 'inherit'
-                                                }}
-                                            >
-                                                {item.status_yn === 'N' ? '정상' : item.status_yn === 'Y' ? '탈퇴' : '대기'}
-                                            </td>
-                                            
-                                            <td>{item.reg_date}</td>
-                                            <td>{item.withdrawal_date || ''}</td>
-                                            
-                                            <td 
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    e.preventDefault();
-                                                }}
-                                                style={{ 
-                                                    cursor: 'default',
-                                                    pointerEvents: 'none'  
-                                                }}
-                                            >
-                                                {item.user_type === 'A' ? (
-                                                    <Chip
-                                                        label="슈퍼"
-                                                        icon={<CrownIcon fontSize="small" />}
-                                                        size="small"
-                                                        clickable={false}
-                                                        sx={{
-                                                            bgcolor: '#FFD700',
-                                                            color: '#333',
-                                                            fontWeight: 'bold',
-                                                            minWidth: '80px',
-                                                            pointerEvents: 'none', 
-                                                            cursor: 'default'
-                                                        }}
-                                                    />
-                                                ) : item.user_type === 'B' ? (
-                                                    <Chip
-                                                        label="관리자"
-                                                        icon={<SettingsIcon fontSize="small" />}
-                                                        size="small"
-                                                        clickable={false}
-                                                        sx={{
-                                                            bgcolor: '#90CAF9',
-                                                            color: '#333',
-                                                            fontWeight: 'bold',
-                                                            minWidth: '80px',
-                                                            pointerEvents: 'none', 
-                                                            cursor: 'default'
-                                                        }}
-                                                    />
-                                                ) : (
-                                                    <Chip
-                                                        label="일반회원"
-                                                        icon={<PersonIcon fontSize="small" />}
-                                                        size="small"
-                                                        clickable={false}
-                                                        sx={{
-                                                            bgcolor: '#E0E0E0',
-                                                            color: '#333',
-                                                            fontWeight: 'bold',
-                                                            minWidth: '80px',
-                                                            pointerEvents: 'none', 
-                                                            cursor: 'default'
-                                                        }}
-                                                    />
-                                                )}
-                                            </td>
-                                        </tr>
-                                    ))
-                                ) : (
-                                    <tr>
-                                        <td colSpan="7" style={{ textAlign: 'center', padding: '20px' }}>
-                                            데이터가 없습니다.
+                                            {item.status_yn === 'N' ? '정상' : item.status_yn === 'Y' ? '탈퇴' : '대기'}
+                                        </td>
+
+                                        <td>{item.reg_date}</td>
+                                        <td>{item.withdrawal_date || ''}</td>
+
+                                        <td
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                e.preventDefault();
+                                            }}
+                                            style={{
+                                                cursor: 'default',
+                                                pointerEvents: 'none',
+                                            }}
+                                        >
+                                            {item.user_type === 'A' ? (
+                                                <Chip
+                                                    label="슈퍼"
+                                                    icon={<CrownIcon fontSize="small" />}
+                                                    size="small"
+                                                    clickable={false}
+                                                    sx={{
+                                                        bgcolor: '#FFD700',
+                                                        color: '#333',
+                                                        fontWeight: 'bold',
+                                                        minWidth: '80px',
+                                                        pointerEvents: 'none',
+                                                        cursor: 'default',
+                                                    }}
+                                                />
+                                            ) : item.user_type === 'B' ? (
+                                                <Chip
+                                                    label="관리자"
+                                                    icon={<SettingsIcon fontSize="small" />}
+                                                    size="small"
+                                                    clickable={false}
+                                                    sx={{
+                                                        bgcolor: '#90CAF9',
+                                                        color: '#333',
+                                                        fontWeight: 'bold',
+                                                        minWidth: '80px',
+                                                        pointerEvents: 'none',
+                                                        cursor: 'default',
+                                                    }}
+                                                />
+                                            ) : (
+                                                <Chip
+                                                    label="일반회원"
+                                                    icon={<PersonIcon fontSize="small" />}
+                                                    size="small"
+                                                    clickable={false}
+                                                    sx={{
+                                                        bgcolor: '#E0E0E0',
+                                                        color: '#333',
+                                                        fontWeight: 'bold',
+                                                        minWidth: '80px',
+                                                        pointerEvents: 'none',
+                                                        cursor: 'default',
+                                                    }}
+                                                />
+                                            )}
                                         </td>
                                     </tr>
-                                )}
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="7" style={{ textAlign: 'center', padding: '20px' }}>
+                                        데이터가 없습니다.
+                                    </td>
+                                </tr>
+                            )}
                         </tbody>
                     </table>
                     <Pagination currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage} />
                 </div>
             </div>
 
-            <AdminManagementDetail 
-                open={showModal} 
+            <AdminManagementDetail
+                open={showModal}
                 onClose={closeModal}
                 selectedUser={selectedUser}
                 currentUser={user}
