@@ -251,19 +251,19 @@
 
 /* Naver 지도 정보창 스타일 */
 .iw_inner {
-    font-size: 12px; /* 폰트 크기를 줄여서 말풍선 크기를 작게 조정 */
+    font-size: 12px; 
     color: #333;
-    padding: 10px; /* padding을 줄여서 정보 창의 내부 여백을 줄임 */
+    padding: 10px; 
 }
 
 .iw_inner h3 {
-    font-size: 14px; /* 제목 크기를 줄여 말풍선 크기를 줄임 */
+    font-size: 14px; 
     color: #0078ff;
     margin-bottom: 5px;
 }
 
 .iw_inner img {
-    width: 40px; /* 이미지 크기를 줄여서 말풍선 내부의 이미지 크기를 작게 만듦 */
+    width: 40px; 
     height: 40px;
     margin-right: 5px;
     border-radius: 8px;

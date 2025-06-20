@@ -47,8 +47,8 @@ const Main2nd = () => {
         <Swiper
           modules={[Navigation, Parallax, Autoplay]}
           onInit={(swiper) => {
-            swiper.params.navigation.prevEl = prevRef.current;  // ← 이게 왼쪽 버튼이어야 함
-            swiper.params.navigation.nextEl = nextRef.current;  // ← 이게 오른쪽 버튼이어야 함
+            swiper.params.navigation.prevEl = prevRef.current;  
+            swiper.params.navigation.nextEl = nextRef.current; 
             swiper.navigation.init();
             swiper.navigation.update();
           }}

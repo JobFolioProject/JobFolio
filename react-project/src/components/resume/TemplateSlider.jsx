@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Slider from 'react-slick';
 import '../../css/resume/TemplateSlider.css'; // 스타일 따로 작성
 import axios from "../../utils/axiosConfig";
+import ResumePreviewModal from "./ResumePreviewModal"
 
 
 const TemplateSlider = ({ tempList, formData }) => {
@@ -9,6 +10,7 @@ const TemplateSlider = ({ tempList, formData }) => {
   const [open, setOpen] = useState(false);
   const [htmlString, setHtmlString] = useState(null);
   const [loading, setLoading] = useState(false);
+
   const settings = {
     dots: true, // 하단에 점으로 페이지네이션 표시
     infinite: true, // 무한 루프
@@ -46,12 +48,23 @@ const TemplateSlider = ({ tempList, formData }) => {
     ]
   };
 
-  const resumePreview = async()=>{
+  const resumePreview = async(formData,template_no)=>{
     setLoading(true);
     setOpen(true);
+    const dataToSend = {
+            ...formData,
+            education: [...formData.education, ...formData.newEducation],
+            experience: [...formData.experience, ...formData.newExperience],
+            template_no: 4,
+            newEducation: undefined,
+            newExperience: undefined,
+            skillList: [...formData.skillList, ...formData.newSkillList],
+        };
+
     try {
-      const res = await axios.get(`/api/resume/template/${tempNo}`);
-      setHtmlString(res.html);
+      const res = await axios.post("/api/resume/resumePreview", dataToSend);
+      const html = res.htmlContent
+      setHtmlString(html);
     } catch (err) {
       console.error('템플릿 상세 조회 실패', err);
       setHtmlString({ error: '상세 정보를 불러오는 데 실패했습니다.' });
@@ -78,8 +91,14 @@ const TemplateSlider = ({ tempList, formData }) => {
     return () => window.removeEventListener('message', handleMessage);
   }, []);
 
+//선택된 템플렛 정보.
+  const handelSelectTemplate = (template) => {
+    console.log('Selected template:', template);
+  }
+
 ////////////////////////////////////////////////
    return (
+    <>
     <div className="template-slider-wrapper">
       <h2>템플릿 선택</h2>
       {!tempList || tempList.length === 0 ? (
@@ -89,36 +108,28 @@ const TemplateSlider = ({ tempList, formData }) => {
           <Slider {...settings}>
             {tempList.map((template) => (
               <div id={`template-slide-${template.temp_no}`} key={template.temp_no} className="template-slide"
-              onClick={() => {resumePreview(formData)}}>
-            {/* <div key={template.temp_no} className="template-slide"></div> */}
-               {/* <img> 태그로 변경 및 이미지 경로 사용 */}
-                {/* <iframe
-                  src={template.file_pypath} // 변경된 이미지 경로 사용
-                  title={`템플릿 미리보기 ${template.temp_name}`} // 고유한 title 속성 추가
-                  alt={`템플릿 미리보기 ${template.temp_name}`}
-                  className="template-preview-image" // 이미지 스타일링을 위한 클래스 추가
-                  width="100%"
-                  height="300px"
-                ></iframe> */}
+              onClick={() => {resumePreview(formData, template.temp_no)}}>
                  <iframe
                   src={`${template.file_pypath}?tempNo=${template.temp_no}`} // tempNo 쿼리 파라미터 추가
                   title={`템플릿 미리보기 ${template.temp_name}`}
                   data-temp-no={template.temp_no} // data 속성은 그대로 유지
                   className="template-preview-image"
-                  width="100%"
-                  height="300px" // 초기 높이는 여전히 중요하지만, 스크립트가 재정의할 것
-// sandbox 속성을 추가하여 iframe 내부 스크립트의 보안을 강화할 수 있습니다.
-// 하지만 이 경우 postMessage가 작동하려면 'allow-scripts'와 'allow-same-origin'이 필요합니다.
-// sandbox="allow-scripts allow-same-origin"
                 ></iframe>
-                {/* 필요하다면 여기에 템플릿 이름을 표시할 수 있습니다 */}
-                {/* <p>{template.temp_name}</p> */}
               </div>
             ))}
           </Slider>
         </div>
       )}
     </div>
+    <ResumePreviewModal
+        open={open}
+        onClose={setOpen}
+        loading={loading}
+        setLoading={setLoading}
+        htmlString={htmlString}
+        formData={formData}
+      />
+    </>
   );
 };
 
