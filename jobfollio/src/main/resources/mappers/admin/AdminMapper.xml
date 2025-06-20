@@ -206,6 +206,7 @@
         <if test="address != null and address != ''">address = #{address},</if>
         <if test="hobby != null and hobby != ''">hobby = #{hobby},</if>
         <if test="note != null and note != ''">notes = #{note},</if>
+        <if test="expire_days != null">expire_days = #{expire_days},</if>
         <if test="withdrawal_date != null">withdrawal_date = #{withdrawal_date},</if>
         user_no = user_no
         WHERE login_id = #{login_id}
