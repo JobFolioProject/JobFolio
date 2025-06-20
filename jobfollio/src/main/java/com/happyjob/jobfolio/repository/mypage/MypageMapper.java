@@ -2,10 +2,12 @@ package com.happyjob.jobfolio.repository.mypage;
 
 import com.happyjob.jobfolio.vo.join.UserVO;
 import com.happyjob.jobfolio.vo.mypage.*;
+import com.happyjob.jobfolio.vo.pay.PayModel;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface MypageMapper {
@@ -55,4 +57,7 @@ public interface MypageMapper {
     // 모든 공통 스킬 조회
     public List<CommSkillDto> selectAllCommonSkills();
 
+    // 유저 결재 내역 조회
+    int selectTotalPayCount(Map<String, Object> paramMap);
+    List<PayHisDto> selectPayHistory(Map<String, Object> paramMap);
 }
