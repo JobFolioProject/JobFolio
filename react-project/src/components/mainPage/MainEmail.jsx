@@ -45,14 +45,13 @@ const MainEmail =() => {
               body: JSON.stringify(data)
             });
         
-            const responseText = await response.text();  // 응답을 텍스트로 받아보기
+            const responseText = await response.text(); 
             
-            // 응답이 JSON 형식이 아니면 텍스트 응답을 그대로 처리
             if (response.ok) {
               window.location.reload();
               alert('Your mail is sent!');
             } else {
-              console.error('Error:', responseText);  // 에러 응답 내용 출력
+              console.error('Error:', responseText); 
               alert('Oops... ' + responseText);
             }
           } catch (error) {

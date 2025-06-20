@@ -5,11 +5,11 @@
     padding: 0 20px; /* 슬라이더 좌우 여백 */
 }
 
-.template-grid .slick-list {
+.template-slider-wrapper .template-grid .slick-list {
     margin: 0 -10px; /* 슬라이드 간 간격을 조절하기 위한 음수 마진 */
 }
 
-.template-slide {
+.template-slider-wrapper .template-slide {
     padding: 0 10px; /* 각 슬라이드 아이템의 좌우 패딩으로 간격 조절 */
     box-sizing: border-box; /* 패딩이 너비에 포함되도록 설정 */
     display: flex !important; /* react-slick의 flex 이슈 해결 */
@@ -18,7 +18,7 @@
     flex-direction: column; /* 내용이 있다면 세로로 정렬 */
 }
 
-.template-preview-image {
+.template-slider-wrapper .template-preview-image {
     width: 100%; /* 슬라이드 컨테이너 너비에 맞춤 */
     height: 300px; /* 고정 높이 설정 (선택 사항) */
     object-fit: contain; /* 이미지 비율을 유지하며 컨테이너에 맞춤 (잘림 방지) */
