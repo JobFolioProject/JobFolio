@@ -14,6 +14,7 @@ import MyCareer from '../user/myPageComponent/MyCareer';
 import { major } from '@mui/system';
 import axios from "../../utils/axiosConfig";
 import Loading from "../common/Loading";
+import ResumeModal from './ResumeModal';
 
 
 const Resume = () => {
@@ -676,6 +677,8 @@ const saveFieldData = (type) => {
                                 <PrettyBtn onClick={pdfDownload}>PDF 다운로드</PrettyBtn>
                             ) : (
                                 <>
+                                    <ResumeModal
+                                    formData = {formData}/>
                                     <PrettyBtn onClick={handleSubmit}>미리보기</PrettyBtn>
                                     <PrettyBtn onClick={handleSubmit}>이력서 저장</PrettyBtn>
                                     <PrettyBtn onClick={pdfDownload}>이력서 저장 및 PDF 다운로드</PrettyBtn>

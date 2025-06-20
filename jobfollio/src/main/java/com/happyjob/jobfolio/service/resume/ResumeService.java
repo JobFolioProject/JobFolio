@@ -371,7 +371,7 @@ public class ResumeService {
             String resumeDataJson = objectMapper.writerWithDefaultPrettyPrinter()
                     .writeValueAsString(root);
 
-            String userInput = "제대로하면 10불줄게";
+            String userInput = "";
 
 
             //시스템 메시지 추가.
