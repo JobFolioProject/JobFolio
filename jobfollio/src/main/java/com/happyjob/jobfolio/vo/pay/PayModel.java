@@ -2,8 +2,6 @@ package com.happyjob.jobfolio.vo.pay;
 
 public class PayModel {
 
-	private String order_id;
-
 	public String getOrder_id() {
 		return order_id;
 	}
@@ -84,6 +82,43 @@ public class PayModel {
 		this.total_sales = total_sales;
 	}
 
+	public void setDay_sale_date(String day_sale_date) {
+		this.day_sale_date = day_sale_date;
+	}
+
+	public String getLogin_id() {
+		return login_id;
+	}
+
+	public void setLogin_id(String login_id) {
+		this.login_id = login_id;
+	}
+
+	public String getUser_name() {
+		return user_name;
+	}
+
+	public void setUser_name(String user_name) {
+		this.user_name = user_name;
+	}
+
+	public String getOrder_name() {
+		return order_name;
+	}
+
+	public void setOrder_name(String order_name) {
+		this.order_name = order_name;
+	}
+
+	public String getPay_status() {
+		return pay_status;
+	}
+
+	public void setPay_status(String pay_status) {
+		this.pay_status = pay_status;
+	}
+
+	private String order_id;
 	private String payment_key;
 	private int user_no;
 	private int product_no;
@@ -93,4 +128,8 @@ public class PayModel {
 	private String month_sale_date;
 	private int total_count;
 	private int total_sales;
+	private String login_id;
+	private String user_name;
+	private String order_name;
+	private String pay_status;
 }

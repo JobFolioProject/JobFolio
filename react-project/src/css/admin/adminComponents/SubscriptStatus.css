@@ -11,3 +11,11 @@
 .salesChart {
     margin-bottom: 50px;
 }
+
+.refundButton {
+    padding: 5px 20px 5px 20px;
+    color: #ececec;
+    background-color: rgb(60, 60, 60);
+    border-radius: 10px;
+    border: none;
+}
