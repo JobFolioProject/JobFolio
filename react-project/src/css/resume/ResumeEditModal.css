@@ -309,3 +309,9 @@
   outline: none;
   background: #f8faff;
 }
+
+.toggleInput .skill_dropdown {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}

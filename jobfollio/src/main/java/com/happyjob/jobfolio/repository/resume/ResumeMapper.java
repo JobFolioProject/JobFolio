@@ -47,7 +47,7 @@ public interface ResumeMapper {
 
     List<String> getSkillGroupCode();
 
-    String getGroupCodeByDetailCode(Map<String,Object> paramMap);
+    List<String> getSkillDetailCode(Map<String, Object> paramMap);
 
 //    ResumeInfoVO selectResumeInfoByResumeNo(int resumeNo);
 

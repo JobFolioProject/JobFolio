@@ -14,6 +14,7 @@ import com.happyjob.jobfolio.vo.mypage.CommSkillDto;
 import com.happyjob.jobfolio.vo.resume.AiResumeGenerateVO;
 import com.happyjob.jobfolio.vo.resume.ResumeInfoVO;
 import com.happyjob.jobfolio.vo.resume.TemplateVO;
+import com.mysql.fabric.Response;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -605,14 +606,14 @@ public class ResumeController {
         return ResponseEntity.ok(skillGroupCodeList);
     }
 
-    //해당 detail_code의 그룹코드 가져오기
-    @GetMapping("/selectedOneGroupCode")
-    public ResponseEntity<String> selectedOneGroupCode(@RequestParam String detail_code){
-        String getGroupCode = "";
+    // 디테일 코드 가져오기
+    @GetMapping("/selectSkillDetailCode")
+    public ResponseEntity<List<String>> selectSkillDetailCode(@RequestParam String group_code){
+        List<String> skillDetailCodeList = new ArrayList<>();
         Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("detail_code", detail_code);
-        getGroupCode = resumeService.getGroupCodeByDetailCode(paramMap);
-        return ResponseEntity.ok(getGroupCode);
+        paramMap.put("group_code", group_code);
+        skillDetailCodeList = resumeService.getSkillDetailCode(paramMap);
+        return ResponseEntity.ok(skillDetailCodeList);
     }
 
 

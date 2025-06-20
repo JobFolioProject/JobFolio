@@ -679,6 +679,7 @@ const ResumeEditModal = ({
         </div>
 
         <div className="buttonRow">
+          <button className="secondaryBtn">PDF 파일 저장</button>
           <button className="secondaryBtn" onClick={saveModify}>
             수정 사항 저장
           </button>

@@ -396,7 +396,7 @@ public class ResumeService {
         return resumeMapper.getSkillGroupCode();
     }
 
-    public String getGroupCodeByDetailCode(Map<String,Object> paramMap) {
-        return resumeMapper.getGroupCodeByDetailCode(paramMap);
+    public List<String> getSkillDetailCode(Map<String, Object> paramMap) {
+        return resumeMapper.getSkillDetailCode(paramMap);
     }
 }
