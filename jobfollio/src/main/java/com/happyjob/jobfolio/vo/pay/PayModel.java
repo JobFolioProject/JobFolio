@@ -118,6 +118,14 @@ public class PayModel {
 		this.pay_status = pay_status;
 	}
 
+	public int getSub_period() {
+		return sub_period;
+	}
+
+	public void setSub_period(int sub_period) {
+		this.sub_period = sub_period;
+	}
+
 	private String order_id;
 	private String payment_key;
 	private int user_no;
@@ -132,4 +140,5 @@ public class PayModel {
 	private String user_name;
 	private String order_name;
 	private String pay_status;
+	private int sub_period;
 }

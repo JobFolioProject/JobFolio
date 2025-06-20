@@ -73,6 +73,7 @@ const SubscriptManagement = () => {
     fetchMonthlyData();
   }, [monthlyPage]);
 
+
   // 결제 내역 데이터 요청
   useEffect(() => {
     const fetchsalesData = async () => {
@@ -92,7 +93,6 @@ const SubscriptManagement = () => {
 
     fetchsalesData();
   }, [salesDataPage]);
-
 
 
   // 차트용 데이터 (페이지에 상관없이 전체 조회)
@@ -186,6 +186,32 @@ const SubscriptManagement = () => {
     });
   };
 
+  // 환불 버튼
+  const handleRefund = async (orderId, paymentKey, amount, user_no, sub_period) => {
+    if (!window.confirm('정말 환불하시겠습니까?'))
+      return;
+  
+    try {
+      const res = await axios.post('/api/admin/sales/refundSuccess', {
+        orderId,
+        paymentKey,
+        amount,
+        user_no,
+        sub_period
+      });
+  
+      if (res.success) {
+        alert('환불이 성공적으로 처리되었습니다.');
+        setsalesDataPage(1);
+      } else {
+        alert('환불 처리 실패: ' + res.message);
+      }
+    } catch (error) {
+      console.error('환불 요청 실패:', error);
+      alert('환불 요청 중 오류가 발생했습니다.');
+    }
+  };
+  
   const dailyTotalPages = Math.ceil(dailyTotalCount / itemsPerPage);
   const monthlyTotalPages = Math.ceil(monthlyTotalCount / itemsPerPage);
   const salesTotalPages = Math.ceil(salesDataTotalCount / itemsPerPage);
@@ -306,11 +332,27 @@ const SubscriptManagement = () => {
                     <td>{item.order_name}</td>
                     <td>{item.amount}</td>
                     <td>{item.paid_date}</td>
-                    <td>{item.pay_status}</td>      
-                    <td><button className="refundButton">환 불</button></td>                      
+                    <td>
+                      {item.pay_status}
+                    </td>
+                    <td>
+                      {item.pay_status === "결제 완료" ? (
+                        <button
+                          className="refundButton"
+                          onClick={() => handleRefund(item.order_id, item.payment_key, item.amount,
+                            item.user_no, item.sub_period
+                          )}
+                        >
+                          환 불
+                        </button>
+                      ) : (
+                        '—'
+                      )}
+                    </td>
                   </tr>
                 ))}
               </tbody>
+
             </table>
             <Pagination
               currentPage={salesDataPage}
