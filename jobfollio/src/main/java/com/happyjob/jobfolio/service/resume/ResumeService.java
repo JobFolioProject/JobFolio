@@ -280,8 +280,12 @@ public class ResumeService {
 
     }
 
-    public List<ResumeInfoVO> selectResumeInfo(int user_no) {
-        return resumeMapper.selectResumeInfo(user_no);
+    public List<ResumeInfoVO> selectResumeInfo(Map<String,Object> requestMap) {
+        return resumeMapper.selectResumeInfo(requestMap);
+    }
+
+    public int selectResumeCount(Map<String,Object> requestMap) {
+        return resumeMapper.selectResumeCount(requestMap);
     }
 
     public List<ResumeInfoVO> resumeLikedList(int user_no) {
