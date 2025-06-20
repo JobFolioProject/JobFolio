@@ -4,6 +4,7 @@ import Main2nd from './mainPage/Main2nd';
 import Main3rd from './mainPage/Main3rd';
 import Main4th from './mainPage/Main4th';
 import MainEmail from './mainPage/MainEmail';
+import Chat from './mainPage/Chat';
 
 const Main = () => {
    
@@ -14,6 +15,7 @@ const Main = () => {
         <Main3rd/>
         <MainEmail/>
         <Main4th/>
+        <Chat/>
     </>
     );
 };

@@ -39,8 +39,6 @@ const Resume = () => {
             newExperience: undefined,
             skillList: [...formData.skillList, ...formData.newSkillList],
         };
-        
-        
             try {
                 const res = await axios.post('/api/resume/insertResumeInfo', dataToSend);
                 if (res.result === 1) {
@@ -162,7 +160,7 @@ const Resume = () => {
             getMyCareerInfo();
             console.log('user:' ,user);
         }
-    }, [user.userNo]);
+    }, [user]);
 
 
     const handleChange = (e) => {
@@ -669,7 +667,7 @@ const saveFieldData = (type) => {
                             <div><span>Template</span></div>
                         </label>
                             <div className='templete-test'>
-                                <TemplateSelection>템플렛선택</TemplateSelection>
+                                <TemplateSelection formData={formData}>템플렛선택</TemplateSelection>
                             </div>
                         <br/>
                         <div style={{ display: 'flex', justifyContent: 'center' }}>
@@ -677,9 +675,6 @@ const saveFieldData = (type) => {
                                 <PrettyBtn onClick={pdfDownload}>PDF 다운로드</PrettyBtn>
                             ) : (
                                 <>
-                                    <ResumeModal
-                                    formData = {formData}/>
-                                    <PrettyBtn onClick={handleSubmit}>미리보기</PrettyBtn>
                                     <PrettyBtn onClick={handleSubmit}>이력서 저장</PrettyBtn>
                                     <PrettyBtn onClick={pdfDownload}>이력서 저장 및 PDF 다운로드</PrettyBtn>
                                 </>

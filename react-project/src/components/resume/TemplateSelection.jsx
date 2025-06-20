@@ -3,7 +3,7 @@ import axios from "axios";
 import PrettyBtn from "./PrettyBtn";
 import TemplateSlider from "./TemplateSlider";
 
-const TemplateSelection = () => {
+const TemplateSelection = ({formData}) => {
 
 //모든 템플릿 리스트 조회하기. 10개면 10개
 //--> 어떻게 담아올라나 {0:{temp_no:1,temp_nm:g, ...},1:{temp_no:2,temp_nm:h, ...},...10:{temp_no:10,temp_nm:k, ...}} 이런식?
@@ -70,7 +70,7 @@ const TemplateSelection = () => {
             {error && <p className="error-message">{error}</p>}
             {!isLoading && !error && !tempList.length===0 && (
                 <p>선택 가능한 템플릿이 없습니다.</p>)}
-            <TemplateSlider tempList={tempList} className="TemplateSlider" />
+            <TemplateSlider tempList={tempList} formData={formData} className="TemplateSlider" />
              {/* 템플릿 리스트가 있고, 로딩 중이 아니고 에러도 없을 때만 슬라이더 렌더링
             {!isLoading && !error && tempList.length > 0 && (
                 <TemplateSlider tempList={tempList} />
