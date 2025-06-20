@@ -14,7 +14,9 @@ import java.util.Map;
 @Mapper
 public interface ResumeMapper {
 
-    List<ResumeInfoVO> selectResumeInfo(int user_no);
+    List<ResumeInfoVO> selectResumeInfo(Map<String,Object> requestMap);
+
+    int selectResumeCount(Map<String,Object> requestMap);
 
     List<ResumeInfoVO> resumeLikedList(int user_no);
 
