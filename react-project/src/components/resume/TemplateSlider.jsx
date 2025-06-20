@@ -1,9 +1,14 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Slider from 'react-slick';
 import '../../css/resume/TemplateSlider.css'; // 스타일 따로 작성
+import axios from "../../utils/axiosConfig";
 
 
-const TemplateSlider = ({ tempList }) => {
+const TemplateSlider = ({ tempList, formData }) => {
+
+  const [open, setOpen] = useState(false);
+  const [htmlString, setHtmlString] = useState(null);
+  const [loading, setLoading] = useState(false);
   const settings = {
     dots: true, // 하단에 점으로 페이지네이션 표시
     infinite: true, // 무한 루프
@@ -41,6 +46,21 @@ const TemplateSlider = ({ tempList }) => {
     ]
   };
 
+  const resumePreview = async()=>{
+    setLoading(true);
+    setOpen(true);
+    try {
+      const res = await axios.get(`/api/resume/template/${tempNo}`);
+      setHtmlString(res.html);
+    } catch (err) {
+      console.error('템플릿 상세 조회 실패', err);
+      setHtmlString({ error: '상세 정보를 불러오는 데 실패했습니다.' });
+    } finally {
+      setLoading(false);
+    }
+
+  }
+
 /////높이 너비 전달을 위해 추가함.////////////////////
     useEffect(() => {
     const handleMessage = (event) => {
@@ -68,7 +88,8 @@ const TemplateSlider = ({ tempList }) => {
         <div className="template-grid">
           <Slider {...settings}>
             {tempList.map((template) => (
-              <div id={`template-slide-${template.temp_no}`} key={template.temp_no} className="template-slide">
+              <div id={`template-slide-${template.temp_no}`} key={template.temp_no} className="template-slide"
+              onClick={() => {resumePreview(formData)}}>
             {/* <div key={template.temp_no} className="template-slide"></div> */}
                {/* <img> 태그로 변경 및 이미지 경로 사용 */}
                 {/* <iframe

@@ -107,7 +107,7 @@ const Main3rdImage = () => {
       
             <div className="introduce-area">
               <div className="header-container">
-                <h1>For <span className="auto-type">Programmer</span></h1>
+                <h1>For <span className="auto-type">Junior</span></h1>
             </div>
         <motion.div
                 className="introduce"
