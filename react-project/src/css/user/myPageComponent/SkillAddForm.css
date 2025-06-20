@@ -11,7 +11,7 @@
     font-size: 1.6em;
     color: #343a40;
     margin-top: 0;
-    margin-bottom: 25px;
+    margin-bottom: 5px;
     text-align: center;
 }
 
@@ -134,7 +134,7 @@
 }
 
 .skill-result-text {
-    font-size: 1em;
+    font-size: 0.9em;
     color: #343a40;
 }
 
@@ -167,7 +167,8 @@
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-    margin-bottom: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 
 /* 개별 선택된 스킬 태그 */
@@ -258,7 +259,6 @@
     display: flex;
     justify-content: flex-end; /* 버튼을 오른쪽으로 정렬 */
     gap: 15px; /* 버튼 간 간격 */
-    margin-top: 15px;
     padding: 0 15px;
 }
 
@@ -266,7 +266,7 @@
     padding: 13px 20px;
     border: none;
     border-radius: 6px;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.2s ease, transform 0.1s ease;
@@ -294,6 +294,10 @@
     /* 클래스명 변경 */
     background-color: #0056b3;
     transform: translateY(-1px);
+}
+
+.skill-search-input-group {
+    padding: 15px;
 }
 
 /* 애니메이션 */

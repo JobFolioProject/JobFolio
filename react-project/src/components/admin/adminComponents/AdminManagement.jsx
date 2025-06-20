@@ -37,7 +37,7 @@ const AdminManagement = () => {
         if (!isAuthenticated) return;
 
         const userDate = async () => {
-            // 리퀘스트 파라미터 설정?  api/admin/customers?type=abc&page=1&limit=10&search=keyword ... 이런식으로
+            // 리퀘스트 파라미터 설정?  api/admin/customers/list?type=abc&page=1&limit=10&search=keyword ... 이런식으로
             const params = {};
 
             if (filterType !== 'all') {
