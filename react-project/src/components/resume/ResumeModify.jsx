@@ -5,6 +5,7 @@ import ResumeEditModal from "./ResumeEditModal";
 import axios from "../../utils/axiosConfig";
 import { useAuth } from "../../context/AuthContext";
 import { ResumeEditContext } from '../../context/ResumeEditContext';
+import Banner from "../common/Banner";
 
 const ResumeModify = () => {
   const [resumeList, setResumeList] = useState([]);
@@ -109,9 +110,7 @@ const ResumeModify = () => {
 
   return (
     <>
-      <div className="resume-banner">
-        <img src="/resources/img/banner.png" alt="Banner" />
-      </div>
+      <Banner pageName="이력서 수정" />
       <div className="resume_wrap">
         <ResumeSidebar />
 
