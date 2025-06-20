@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.happyjob.jobfolio.repository.login.LoginMapper;
 import com.happyjob.jobfolio.repository.resume.ResumeMapper;
 import com.happyjob.jobfolio.vo.join.UserVO;
 import com.happyjob.jobfolio.vo.resume.*;
@@ -158,6 +159,7 @@ public class ResumeService {
 
     @Autowired
     private ResumeMapper resumeMapper;
+
 
     private RestTemplate restTemplate = new RestTemplate();
     private final String chatGptApiUrl = "https://api.openai.com/v1/chat/completions";
@@ -376,12 +378,27 @@ public class ResumeService {
             ObjectNode sysMsg = messages.addObject();
             sysMsg.put("role", "system");
             sysMsg.put("content",
-                    "You are the world's best cover letter writer.\n"
-                            + "You always produce the optimal cover letter results by utilizing the provided information.  \n\n"
-                            + "The cover letters you create have always been captivating from the introduction.  \n\n"
-                            + "Using the provided items, please create a cover letter that will lead to acceptance.  \n\n"
-                            + "You always produce the optimal cover letter results by utilizing the provided information.  \n\n"
+                    "HI, Alex. \n"
+                            + "Alex, You are a Career Expert \"Alex\" with a deep understanding of what makes a job application stand out. \n\n"
+                            + "I'm a client who has requested your assistance with my self-introduction. \n\n"
+                            + "Q. Please use data to create the best possible self-introduction for me.  \n\n"
+                            + "Please structure the self-introduction into three paragraphs: an opening, a body, and a conclusion.  \n\n"
+                            + "Content for the opening: Create a good impression with the given 'title,' grab attention, and pique curiosity. \n\n"
+                            + "Example opening content: \"I am "+ root.get("user_name") +", aspiring to be an expert in the 000 field,\" or \"I am [Your Name], who dreams of growth in the 000 position at your company,\" or \"I am [Your Name], who wishes to grow into a key talent at your company.\" \n\n"
+                            + "In the body, appeal to job relevance and competence by leveraging technology. \n\n"
+                            + "Utilize academic background and work experience to highlight my strengths, advantages, competencies, and past/future contributions to the company. \n\n"
+                            + "Content for the body: Demonstrate an understanding of the company and the role. \n\n"
+                            + "Example body content: \"I am applying with deep interest and passion for your company's 000 business (please specifically mention areas of interest).\" \n\n"
+                            + "Example body content: \"I wish to participate in your company's 000 project (utilize job-related data) and demonstrate my 000 competencies.\" \n\n"
+                            + "Example body content: \"Based on my meticulousness and problem-solving skills, I have achieved results through my 000 experience (connect experience and career).\" \n\n"
+                            + "Example body content: \"I wish to contribute to your company's development by utilizing my 000 competencies gained through various project experiences (present various experiences and competencies).\" \n\n"
+                            + "Example body content: \"As a talent who grows through continuous learning and challenges, I believe I am well-suited for your company (appeal to growth potential and suitability).\" \n\n"
+                            + "Conclusion: Emphasize my strengths, advantages, competencies, and contributions to the company, utilizing my academic background and work experience. \n\n"
+                            + "Enrich the content of my self-introduction and re-emphasize the points I want to highlight. \n\n"
+                            + "Q. Alex, you are the best expert, so please go through all the above steps to create the best self-introduction in the world, around 1000 characters. \n\n"
                             + "Please create it in Korean. \n\n"
+                            + "You can do really well. \n\n"
+                            + "let's think step by step. \n\n"
                             + resumeDataJson
             );
 

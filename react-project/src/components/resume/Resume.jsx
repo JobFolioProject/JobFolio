@@ -106,6 +106,7 @@ const Resume = () => {
     // 이력서 작성 폼 데이터 상태
     // U-data
     const [formData, setFormData] = useState({
+        user_name : user.userName,
         user_no: user.userNo,
         title: '',
         desired_position: '',
@@ -158,6 +159,7 @@ const Resume = () => {
     useEffect(() => {
         if (user.userNo !== null) {
             getMyCareerInfo();
+            console.log('user:' ,user);
         }
     }, [user.userNo]);
 
@@ -658,6 +660,7 @@ const saveFieldData = (type) => {
                         setMyCoverLetter={(value) => setFormData({ ...formData, coverLetter: value })}
                         setFormData={setFormData} // formData 상태를 자식 컴포넌트에 전달
                         userNo={user.userNo} 
+                        userName={user.userName}
                      />
                      <br/>
                         <br/>

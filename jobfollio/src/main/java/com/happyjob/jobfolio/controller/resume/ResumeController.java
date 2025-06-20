@@ -288,6 +288,8 @@ public class ResumeController {
             root.put("title", resumeInfo.get("title").toString()); //추가
             root.put("myCoverLetter", resumeInfo.get("myCoverLetter").toString());
             root.put("desired_position", resumeInfo.get("desired_position").toString());
+            root.put("user_name", resumeInfo.get("user_name").toString());
+
 
             //학력사항 정보
             List<Map<String, String>> educations = (List<Map<String,String>>) resumeInfo.get("educationList");
