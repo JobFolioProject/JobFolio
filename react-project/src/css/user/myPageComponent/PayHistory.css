@@ -1,6 +1,56 @@
-.payHistory{
+.payHistory {
     margin-top: 100px;
     display: flex;
     flex-direction: row;
     width: 100%;
+}
+
+.payHis-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    font-size: 14px;
+    table-layout: fixed;
+}
+.payHis-table th,
+.payHis-table td {
+    border-bottom: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.payHis-table th {
+    background-color: #f2f2f2;
+    font-weight: 600;
+}
+
+.payHis-table tr:hover {
+    background-color: #f9f9f9; /* 행 배경색 변경 (더 밝은 회색) */
+    cursor: pointer; /* 마우스 커서를 포인터로 변경하여 클릭 가능함을 암시 */
+}
+
+.payHis-controls {
+    display: flex;
+    justify-content: space-between;
+}
+.payHis-right-content {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 16px;
+    border-radius: 4px;
+    justify-self: flex-end;
+}
+
+.payHis-search-button {
+    text-align: center;
+    display: flex;
+    align-items: center;
+}
+.payHis-search-input {
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    padding-left: 5px;
 }

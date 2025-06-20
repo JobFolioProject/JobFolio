@@ -358,11 +358,15 @@
             product_no,
             order_name,
             amount,
-            paid_date
+            paid_date,
+            pay_status
         FROM tb_payment_his
         WHERE user_no = #{user_no}
         <if test="search != null and search != ''">
-            AND (order_name LIKE CONCAT('%', #{search}, '%') OR product_no LIKE CONCAT('%', #{search}, '%'))
+            AND (order_name LIKE CONCAT('%', #{search}, '%') OR order_id LIKE CONCAT('%', #{search}, '%'))
+        </if>
+        <if test="status == 2 or status == 3">
+            AND pay_status = #{status}
         </if>
         ORDER BY  paid_date DESC
         LIMIT #{limit} OFFSET #{offset}
@@ -374,7 +378,10 @@
         WHERE user_no = #{user_no}
         <if test="search != null and search != ''">
             AND (CAST(paid_date AS CHAR)
-                    LIKE CONCAT('%', #{search}, '%') OR product_name LIKE CONCAT('%', #{search}, '%'))
+                    LIKE CONCAT('%', #{search}, '%') OR order_name LIKE CONCAT('%', #{search}, '%') )
+        </if>
+        <if test="status == 2 or status == 3">
+            AND pay_status = #{status}
         </if>
     </select>
 </mapper>
