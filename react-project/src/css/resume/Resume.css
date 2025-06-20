@@ -6,15 +6,21 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+.resume-sideBar-content {
+    width: 28%;
+    display: flex;
+    justify-content: end;
+}
+
 .resume-content {
-    width: 100%;
-    padding-left: 40px;
+    width: 72%;
+
 }
 /* 이력서 콘텐츠 박스 */
 .resume-content-form {
     padding: 40px;
     width: 960px;
-    margin: 50px auto;
+    margin: 50px auto 50px 10px;
     background: #ffffff;
     border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);

@@ -8,17 +8,17 @@
     height: fit-content;
 }
 
-.resumeItem {
+.resumeDetail .resumeItem {
     position: relative;
     display: flex;
-    width: 470px;
+    width: 430px;
     height: 150px;
     border: 1px solid #cacaca;
     border-radius: 15px;
     margin-bottom: 40px;
 }
 
-.resumeItemCon {
+ .resumeDetail .resumeItemCon {
     position: relative;
     padding: 40px;
     width: 100%;
@@ -28,25 +28,46 @@
     align-self: center;
 }
 
+.resumeDetail .community-notice-pagination {
+  margin-bottom: 100px;
+  border-top: none;
+  margin: auto;
+}
 
+.resumeDetail .resumeItemHeader .bttnRow .resumeBtn {
+    padding: 10px 28px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-left: 5px;
+    background: #e3f2fd;
+    color: #1976d2;
+}
 
-.resumeItemHeader {
+.resumeDetail .resumeItemHeader .bttnRow .resumeBtn:hover {
+    background: #bbdefb;
+}
+
+.resumeDetail .resumeItemHeader {
     position: relative;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.resumeItemCon h3 {
+.resumeDetail .resumeItemCon h3 {
     color: #5f4dff;
     margin: 0;
 }
 
-.resumeItemCon h3:hover {
+.resumeDetail .resumeItemCon h3:hover {
     cursor:pointer;
 }
 
-.resumeItemDetail {
+.resumeDetail .resumeItemDetail {
     position: relative;
     width: 100%;
     display: flex;
@@ -55,7 +76,7 @@
     margin-top: 30px;
 }
 
-.likeIcon {
+.resumeDetail .likeIcon {
     color: #818191;
 }
 
@@ -67,11 +88,11 @@
     margin: 0;
 }
 
-p.resumeItemJob {
+.resumeDetail p.resumeItemJob {
     color: #717171;
 }
 
-p.resumeItemDate {
+.resumeDetail p.resumeItemDate {
     color: #8b8b8b;
     font-weight: 600;
     font-size: 15px;

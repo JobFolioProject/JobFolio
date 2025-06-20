@@ -88,7 +88,7 @@ const PostLike = () => {
                 </p>
                 {/* 서버에 생성일(create_at) 필드가 있다면 출력 */}
                 <p className="resumeItemDate">
-                  {item.resume_file_name || '날짜 정보 없음'}
+                  {item.create_date.slice(0,16) || '날짜 정보 없음'}
                 </p>
               </div>
             </div>

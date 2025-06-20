@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from "../../utils/axiosConfig";
 import { useAuth } from '../../context/AuthContext';
 import '../../css/interview/Interview.css';
+import Banner from '../common/Banner';
 
 const Interview = () => {
   const { user, isAuthenticated } = useAuth();
@@ -164,10 +165,7 @@ const Interview = () => {
 
   return (
     <div className="interview">
-      <div className="interview-banner">
-        <img src="/resources/img/banner.png" alt="Banner" />
-        <h1>면접연습</h1>
-      </div>
+      <Banner pageName="면접연습" />
       <div className="interview-container">
         <div className="interview-wrapper">
 

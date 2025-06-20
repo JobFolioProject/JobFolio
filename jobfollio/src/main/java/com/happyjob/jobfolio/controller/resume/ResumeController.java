@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.happyjob.jobfolio.repository.mypage.MypageMapper;
+import com.happyjob.jobfolio.security.UserPrincipal;
 import com.happyjob.jobfolio.service.join.UserService;
 import com.happyjob.jobfolio.service.resume.ResumeService;
 import com.happyjob.jobfolio.vo.community.CommunityBoardVo;
@@ -19,6 +20,7 @@ import com.mysql.fabric.Response;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -542,12 +544,22 @@ public class ResumeController {
     // ======================================== 이력서 내역 =============================================
     // 마이페이지 - 이력서 내역 조회
     @PostMapping("/resumeDetail")
-    public ResponseEntity<Map<String,Object>> resumeDetailList(@RequestBody Map<String,Integer> requestMap) {
-        int userNo = requestMap.get("userNo");
-        List<ResumeInfoVO> resumeList = resumeService.selectResumeInfo(userNo);
+    public ResponseEntity<Map<String,Object>> resumeDetailList(@RequestBody Map<String,Object> requestMap,
+                                                               @AuthenticationPrincipal UserPrincipal userPrincipal) {
+        int userNo = Integer.parseInt(userPrincipal.getUser_no().toString());
+        int page     = Integer.parseInt(requestMap.getOrDefault("page", "1").toString());
+        int pageSize = Integer.parseInt(requestMap.getOrDefault("pageSize", "6").toString());
+        requestMap.put("offset", (page - 1) * pageSize);
+        requestMap.put("limit",  pageSize);
+        requestMap.put("user_no", userNo);
+        List<ResumeInfoVO> resumeList = resumeService.selectResumeInfo(requestMap);
+        int totalCount = resumeService.selectResumeCount(requestMap);
+
+        requestMap.put("totalCount", totalCount);
 
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("resumeList", resumeList);
+        resultMap.put("totalCount", totalCount);
         return ResponseEntity.ok(resultMap);
     }
 
@@ -687,5 +699,12 @@ public class ResumeController {
 
 
 
+    //템플렛 조회하기.
+
+    @GetMapping("/selectAllTemplates")
+    @ResponseBody
+    public List<TemplateVO> selectAllTemplates() {
+        return resumeService.selectAllTemplates();
+    }
 
 }

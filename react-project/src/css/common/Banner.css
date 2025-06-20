@@ -1,0 +1,23 @@
+.banner {
+  margin-top: 70px;
+  position: relative;
+  height: 120px;            /* 보여줄 높이 */
+  overflow: hidden;           /* 아래쪽 잘라냄 */
+}
+
+.banner .banner-video {
+  position: absolute;
+  top: -0px;                  /* 필요시 영상 위치 조정 */
+  left: 0;
+  min-width: 1240px; 
+  height: auto;
+  min-height: 100%;           /* 영상 비율에 따라 추가 */
+  object-fit: cover;
+}
+
+.banner .banner-text {
+  position: absolute;
+  top: 30%;
+  left: 20%;
+  z-index: 1;
+}

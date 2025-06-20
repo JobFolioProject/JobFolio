@@ -280,8 +280,12 @@ public class ResumeService {
 
     }
 
-    public List<ResumeInfoVO> selectResumeInfo(int user_no) {
-        return resumeMapper.selectResumeInfo(user_no);
+    public List<ResumeInfoVO> selectResumeInfo(Map<String,Object> requestMap) {
+        return resumeMapper.selectResumeInfo(requestMap);
+    }
+
+    public int selectResumeCount(Map<String,Object> requestMap) {
+        return resumeMapper.selectResumeCount(requestMap);
     }
 
     public List<ResumeInfoVO> resumeLikedList(int user_no) {
@@ -324,9 +328,7 @@ public class ResumeService {
         return resumeMapper.insertResumeLike(resumeLikeVO);
     }
 
-    public List<TemplateVO> selectAllTemplates() {
-        return resumeMapper.selectAllTemplates();
-    }
+
 
     public TemplateVO selectTemplateByNum(int template_no) {
         return resumeMapper.selectTemplateByNum(template_no);
@@ -420,6 +422,10 @@ public class ResumeService {
 
     }
 
+    //템플렛 조회하기
+    public List<TemplateVO> selectAllTemplates() {
+        return resumeMapper.selectAllTemplates();
+    }
     public List<String> getSkillGroupCode() {
         return resumeMapper.getSkillGroupCode();
     }
@@ -427,4 +433,5 @@ public class ResumeService {
     public List<String> getSkillDetailCode(Map<String, Object> paramMap) {
         return resumeMapper.getSkillDetailCode(paramMap);
     }
+
 }
