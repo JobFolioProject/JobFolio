@@ -428,4 +428,171 @@
     font-size: 12px;
     padding: 0 12px;
   }
+
+  .jf-joinform-wrapper .gsi-material-button {
+    background-color: #ffffff !important;
+    border: 2px solid #dadce0 !important;
+    border-radius: 50% !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+    width: 45px !important;
+    height: 45px !important;
+    position: relative !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+  }
+  
+  .jf-joinform-wrapper .gsi-material-button .gsi-material-button-content-wrapper {
+    width: 100% !important;
+    height: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    position: relative !important;
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+  }
+  
+  .jf-joinform-wrapper .gsi-material-button .gsi-material-button-icon {
+    width: 22px !important;
+    height: 22px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    position: relative !important;
+    z-index: 10 !important;
+    min-width: 22px !important;
+    flex-shrink: 0 !important;
+  }
+  
+  .jf-joinform-wrapper .gsi-material-button .gsi-material-button-icon svg {
+    width: 22px !important;
+    height: 22px !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 10 !important;
+    position: relative !important;
+  }
+  
+  .jf-joinform-wrapper .gsi-material-button .gsi-material-button-icon svg path {
+    visibility: visible !important;
+    opacity: 1 !important;
+    display: block !important;
+  }
+  
+  .jf-joinform-wrapper .gsi-material-button .gsi-material-button-contents {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+  }
+  
+  .jf-joinform-wrapper .gsi-material-button .gsi-material-button-state {
+    background: transparent !important;
+    opacity: 0 !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    border-radius: 50% !important;
+  }
+  
+  .jf-joinform-wrapper .gsi-material-button:hover {
+    background-color: #f8f9fa !important;
+    border-color: #bfc0c2 !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+    transform: translateY(-1px) !important;
+  }
+  
+  .jf-joinform-wrapper .gsi-material-button:hover .gsi-material-button-state {
+    background-color: rgba(0, 0, 0, 0.04) !important;
+    opacity: 1 !important;
+  }
+  
+  .jf-joinform-wrapper .gsi-material-button:disabled {
+    background-color: #ffffff !important;
+    border-color: #dadce0 !important;
+    opacity: 1 !important;
+    cursor: pointer !important;
+  }
+  
+  .jf-joinform-wrapper .gsi-material-button:disabled .gsi-material-button-icon {
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+  
+  .jf-joinform-wrapper .gsi-material-button:disabled .gsi-material-button-icon svg {
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+  
+  .jf-joinform-wrapper .gsi-material-button:disabled .gsi-material-button-icon svg path {
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+  
+  .jf-joinform-wrapper .gsi-material-button:focus {
+    outline: 2px solid #007bff !important;
+    outline-offset: 2px !important;
+  }
+  
+  .jf-joinform-wrapper .gsi-material-button:active {
+    transform: translateY(0) !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+  }
+  
+  .jf-joinform-wrapper .social-login-section.large .gsi-material-button {
+    width: 45px !important;
+    height: 45px !important;
+  }
+  
+  .jf-joinform-wrapper .social-login-section.large .gsi-material-button .gsi-material-button-icon {
+    width: 22px !important;
+    height: 22px !important;
+  }
+  
+  .jf-joinform-wrapper .social-login-section.large .gsi-material-button .gsi-material-button-icon svg {
+    width: 22px !important;
+    height: 22px !important;
+  }
+  
+  .jf-joinform-wrapper .social-login-section.medium .gsi-material-button {
+    width: 40px !important;
+    height: 40px !important;
+  }
+  
+  .jf-joinform-wrapper .social-login-section.small .gsi-material-button {
+    width: 35px !important;
+    height: 35px !important;
+  }
+  
+  .jf-joinform-wrapper .gsi-material-button * {
+    box-sizing: border-box !important;
+  }
+  
+  .jf-joinform-wrapper .gsi-material-button::before,
+  .jf-joinform-wrapper .gsi-material-button::after {
+    display: none !important;
+  }
+  
+  .jf-joinform-wrapper .gsi-material-button {
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+    user-select: none !important;
+  }
 }

@@ -6,8 +6,8 @@ import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 
 const menuData = [
   { name: "사이트 바로가기", path: "/" },
-  { name: "회원 관리", path: "/adminPage/userManagement" },
-  { name: "관리자 계정 관리", path: "/adminPage/adminManagement" },
+  // { name: "회원 관리", path: "/adminPage/userManagement" },
+  { name: "계정 관리", path: "/adminPage/adminManagement" },
   { name: "이용권 현황", path: "/adminPage/subscriptStatus" },
   {
     name: "커뮤니티 관리",
