@@ -146,4 +146,79 @@
         </where>
     </select>
 
+    <!-- 특정 회원 정보 조회 -->
+    <select id="getMemberById" parameterType="String" resultType="com.happyjob.jobfolio.vo.usermgr.UserModel">
+        SELECT
+            user_no,
+            login_id,
+            user_type,
+            user_name,
+            password,
+            birthday,
+            sex,
+            hp,
+            reg_date,
+            withdrawal_date,
+            status_yn,
+            expire_days,
+            address,
+            hobby,
+            notes as note,
+            social_type,
+            social_id
+        FROM tb_userinfo
+        WHERE login_id = #{memberId}
+    </select>
+
+    <!-- 사용자 권한 변경 (C ↔ B) -->
+    <update id="updateUserAuthority" parameterType="map">
+        UPDATE tb_userinfo
+        SET user_type = #{userType}
+        WHERE login_id = #{memberId}
+    </update>
+
+    <!-- 사용자 탈퇴 처리 (N → Y, withdrawal_date 현재시간) -->
+    <update id="withdrawUser" parameterType="String">
+        UPDATE tb_userinfo
+        SET status_yn = 'Y',
+            withdrawal_date = CURRENT_TIMESTAMP
+        WHERE login_id = #{memberId}
+    </update>
+
+    <!-- 탈퇴 사용자 복구 (Y → N, withdrawal_date NULL) -->
+    <update id="restoreUser" parameterType="String">
+        UPDATE tb_userinfo
+        SET status_yn = 'N',
+            withdrawal_date = NULL
+        WHERE login_id = #{memberId}
+    </update>
+
+    <!-- 관리자가 회원 정보 수정 (비밀번호 제외) -->
+    <update id="updateMemberInfo" parameterType="com.happyjob.jobfolio.vo.usermgr.UserModel">
+        UPDATE tb_userinfo
+        SET
+        <if test="user_name != null and user_name != ''">user_name = #{user_name},</if>
+        <if test="user_type != null and user_type != ''">user_type = #{user_type},</if>
+        <if test="sex != null and sex != ''">sex = #{sex},</if>
+        <if test="birthday != null and birthday != ''">birthday = #{birthday},</if>
+        <if test="hp != null and hp != ''">hp = #{hp},</if>
+        <if test="status_yn != null and status_yn != ''">status_yn = #{status_yn},</if>
+        <if test="address != null and address != ''">address = #{address},</if>
+        <if test="hobby != null and hobby != ''">hobby = #{hobby},</if>
+        <if test="note != null and note != ''">notes = #{note},</if>
+        <if test="withdrawal_date != null">withdrawal_date = #{withdrawal_date},</if>
+        user_no = user_no
+        WHERE login_id = #{login_id}
+    </update>
+
+    <select id="getAllMembers" resultType="com.happyjob.jobfolio.vo.usermgr.UserModel">
+        SELECT
+            user_no, login_id, user_type, user_name, birthday, sex, hp,
+            reg_date, withdrawal_date, status_yn, expire_days,
+            address, hobby, notes as note, social_type, social_id
+        FROM tb_userinfo
+        ORDER BY reg_date DESC
+    </select>
+
+
 </mapper>

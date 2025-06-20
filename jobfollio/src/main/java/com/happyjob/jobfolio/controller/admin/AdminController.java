@@ -4,12 +4,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.happyjob.jobfolio.security.UserPrincipal;
 import com.happyjob.jobfolio.service.admin.AdminService;
 import com.happyjob.jobfolio.vo.admin.CustomerListDto;
 import com.happyjob.jobfolio.vo.usermgr.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = "*")
@@ -194,4 +196,82 @@ public class AdminController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
+
+    // 특정 사용자 상세 정보 조회
+    @GetMapping("/customers/{memberId}")
+    public ResponseEntity<?> getCustomerDetail(@PathVariable String memberId) {
+        try {
+            UserModel customer = adminService.getMemberById(memberId);
+            if (customer == null) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok(customer);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류가 발생했습니다.");
+        }
+    }
+
+    // 사용자 권한 변경 (C ↔ B)
+    @PatchMapping("/customers/{memberId}/change-authority")
+    public ResponseEntity<String> changeUserAuthority(@PathVariable String memberId,
+                                                      @RequestBody Map<String, String> request,
+                                                      @AuthenticationPrincipal UserPrincipal userPrincipal) {
+        try {
+            // A권한만 권한 변경 가능
+            if (!"A".equals(userPrincipal.getUser_type())) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("권한 변경은 슈퍼관리자(A)만 가능합니다.");
+            }
+
+            String newAuthority = request.get("user_type");
+
+            // B(하위관리자), C(일반) 권한만 허용
+            if (!"B".equals(newAuthority) && !"C".equals(newAuthority)) {
+                return ResponseEntity.badRequest().body("B(하위관리자) 또는 C(일반) 권한만 설정 가능합니다.");
+            }
+
+            int result = adminService.changeUserAuthority(memberId, newAuthority);
+            if (result > 0) {
+                return ResponseEntity.ok("사용자 권한이 변경되었습니다.");
+            } else {
+                return ResponseEntity.badRequest().body("권한 변경에 실패했습니다.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("오류 발생: " + e.getMessage());
+        }
+    }
+
+    // 사용자 탈퇴 처리 (N → Y, withdrawal_date 현재시간 설정)
+    @PatchMapping("/customers/{memberId}/withdraw")
+    public ResponseEntity<String> withdrawUser(@PathVariable String memberId) {
+        try {
+            int result = adminService.withdrawUser(memberId);
+            if (result > 0) {
+                return ResponseEntity.ok("사용자가 탈퇴 처리되었습니다.");
+            } else {
+                return ResponseEntity.badRequest().body("탈퇴 처리에 실패했습니다.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("오류 발생: " + e.getMessage());
+        }
+    }
+
+    // 탈퇴 사용자 복구 (Y → N, withdrawal_date NULL)
+    @PatchMapping("/customers/{memberId}/restore")
+    public ResponseEntity<String> restoreUser(@PathVariable String memberId) {
+        try {
+            int result = adminService.restoreUser(memberId);
+            if (result > 0) {
+                return ResponseEntity.ok("사용자가 복구되었습니다.");
+            } else {
+                return ResponseEntity.badRequest().body("복구에 실패했습니다.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("오류 발생: " + e.getMessage());
+        }
+    }
+
 }
