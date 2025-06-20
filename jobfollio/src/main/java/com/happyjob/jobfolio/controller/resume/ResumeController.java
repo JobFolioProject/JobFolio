@@ -699,5 +699,12 @@ public class ResumeController {
 
 
 
+    //템플렛 조회하기.
+
+    @GetMapping("/selectAllTemplates")
+    @ResponseBody
+    public List<TemplateVO> selectAllTemplates() {
+        return resumeService.selectAllTemplates();
+    }
 
 }
