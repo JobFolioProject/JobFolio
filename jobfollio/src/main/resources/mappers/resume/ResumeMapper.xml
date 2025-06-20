@@ -265,6 +265,26 @@
 		WHERE status_yn = 'N'
 	</select>
 
+<!--	전체 스킬 그룹코드 조회-->
+	<select id="getSkillGroupCode" resultType="String">
+		SELECT
+		    group_code
+		FROM
+		    tb_group_code
+		WHERE
+		    category_code = 'industry'
+	</select>
+
+
+	<select id="getSkillDetailCode" resultType="String" parameterType="map">
+		SELECT
+		    detail_name as DETAIL_CODE
+		FROM
+		    tb_detail_code
+		WHERE
+		    group_code = #{group_code}
+	</select>
+
 
 
 <!--	<select id="selectSkillInfoList"-->

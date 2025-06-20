@@ -10,10 +10,12 @@ import com.happyjob.jobfolio.service.resume.ResumeService;
 import com.happyjob.jobfolio.vo.community.CommunityBoardVo;
 import com.happyjob.jobfolio.vo.join.UserVO;
 import com.happyjob.jobfolio.vo.mypage.CertificateVO;
+import com.happyjob.jobfolio.vo.mypage.CommSkillDto;
 import com.happyjob.jobfolio.vo.mypage.LanguageSkillVO;
 import com.happyjob.jobfolio.vo.resume.AiResumeGenerateVO;
 import com.happyjob.jobfolio.vo.resume.ResumeInfoVO;
 import com.happyjob.jobfolio.vo.resume.TemplateVO;
+import com.mysql.fabric.Response;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -415,6 +417,7 @@ public class ResumeController {
         resumeInfoVO.setResume_file_lopath(logicalBase + fileName);
         int result = resumeService.insertResumeInfo(resumeInfoVO);
         resultMap.put("result", result);
+        resultMap.put("filePath", filePath.toString());
 
         return resultMap;
 
@@ -639,6 +642,25 @@ public class ResumeController {
 
         return resultMap;
     }
+
+    //스킬 그룹 코드 가져오기
+    @GetMapping("/selectSkillGroupCode")
+    public ResponseEntity<List<String>> selectSkillGroupCodeList(){
+        List<String> skillGroupCodeList = new ArrayList<>();
+        skillGroupCodeList = resumeService.getSkillGroupCode();
+        return ResponseEntity.ok(skillGroupCodeList);
+    }
+
+    // 디테일 코드 가져오기
+    @GetMapping("/selectSkillDetailCode")
+    public ResponseEntity<List<String>> selectSkillDetailCode(@RequestParam String group_code){
+        List<String> skillDetailCodeList = new ArrayList<>();
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("group_code", group_code);
+        skillDetailCodeList = resumeService.getSkillDetailCode(paramMap);
+        return ResponseEntity.ok(skillDetailCodeList);
+    }
+
 
 
 

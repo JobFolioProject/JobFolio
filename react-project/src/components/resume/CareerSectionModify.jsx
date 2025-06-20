@@ -6,7 +6,7 @@ const CareerSectionModify = ({ resumeInfo, setResumeInfo }) => {
       ...resumeInfo,
       career: resumeInfo.career.map((item, idx) =>
         idx === index
-          ? { ...item, [field]: date.toISOString().slice(0, 10) }
+          ? { ...item, [field]: date ? date.toISOString().slice(0, 10) : null }
           : item
       ),
     });
@@ -36,8 +36,8 @@ const CareerSectionModify = ({ resumeInfo, setResumeInfo }) => {
       </button>
       {resumeInfo.career.map((career, index) => (
         <div className="toggleInput" key={index}>
-          <label>
-            <div>회사명</div>
+          <div>
+            <label>회사명</label>
             <input
               type="text"
               value={career.company_name}
@@ -52,10 +52,10 @@ const CareerSectionModify = ({ resumeInfo, setResumeInfo }) => {
                 });
               }}
             />
-          </label>
+          </div>
 
-          <label>
-            <div>입사/퇴사 날짜</div>
+          <div>
+            <label>입사/퇴사 날짜</label>
             <Calendar
               selectedStartDate={
                 career.start_date ? new Date(career.start_date) : null
@@ -72,10 +72,10 @@ const CareerSectionModify = ({ resumeInfo, setResumeInfo }) => {
                 handleCareerDateChange(index, "end_date", date)
               }
             ></Calendar>
-          </label>
+          </div>
 
-          <label>
-            <div>직무</div>
+          <div>
+            <label>직무</label>
             <input
               type="text"
               value={career.position}
@@ -88,9 +88,9 @@ const CareerSectionModify = ({ resumeInfo, setResumeInfo }) => {
                 });
               }}
             />
-          </label>
-          <label>
-            <div>특이사항</div>
+          </div>
+          <div>
+            <label>특이사항</label>
             <input
               type="text"
               value={career.notes}
@@ -103,7 +103,7 @@ const CareerSectionModify = ({ resumeInfo, setResumeInfo }) => {
                 });
               }}
             />
-          </label>
+          </div>
           <button
             className="deleteCareerBtn"
             onClick={() => {

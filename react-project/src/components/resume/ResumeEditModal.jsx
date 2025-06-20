@@ -24,6 +24,7 @@ const ResumeEditModal = ({
   const [initalResumeInfo, setInitialResumeInfo] = useState(null);
   const [aiComment, setAiComment] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [filePath, setFilePath] = useState("");
   const [resumeInfo, setResumeInfo] = useState({
     name: "",
     title: "",
@@ -528,6 +529,7 @@ const ResumeEditModal = ({
     onClose();
   };
 
+  // Ai Comment 받아오기
   const getAiComment = async () => {
     setLoading(true);
     await axios
@@ -677,6 +679,7 @@ const ResumeEditModal = ({
         </div>
 
         <div className="buttonRow">
+          <button className="secondaryBtn">PDF 파일 저장</button>
           <button className="secondaryBtn" onClick={saveModify}>
             수정 사항 저장
           </button>

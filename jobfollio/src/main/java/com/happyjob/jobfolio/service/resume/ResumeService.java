@@ -419,4 +419,12 @@ public class ResumeService {
         }
 
     }
+
+    public List<String> getSkillGroupCode() {
+        return resumeMapper.getSkillGroupCode();
+    }
+
+    public List<String> getSkillDetailCode(Map<String, Object> paramMap) {
+        return resumeMapper.getSkillDetailCode(paramMap);
+    }
 }
