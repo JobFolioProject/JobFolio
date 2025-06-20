@@ -5,9 +5,10 @@ const CardFail = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    alert('결제에 실패했습니다.');
     const timer = setTimeout(() => {
       navigate('/pay');
-    }, 5000); // 5초 후 자동 이동
+    }, 1000); 
 
     return () => clearTimeout(timer);
   }, [navigate]);

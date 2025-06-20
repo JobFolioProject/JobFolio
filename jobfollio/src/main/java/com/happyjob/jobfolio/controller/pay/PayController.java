@@ -100,15 +100,13 @@ public class PayController {
 			in.close();
 
 			if (responseCode != 200) {
-				result.put("status", "fail");
+				result.put("success", false);
 				result.put("message", "결제 승인 실패: " + responseBody.toString());
 				return result;
 			}
 
-			// Toss 응답 JSON에서 metadata 파싱
 			ObjectMapper mapper = new ObjectMapper();
 			Map<String, Object> responseData = mapper.readValue(responseBody.toString(), Map.class);
-
 			Map<String, Object> metadata = (Map<String, Object>) responseData.get("metadata");
 
 			String productNo = metadata.get("product_no").toString();
@@ -125,18 +123,22 @@ public class PayController {
 
 			int inserted = payService.cardSuccess(paramMap);
 			if (inserted > 0) {
-				result.put("resultmsg", "DB 저장 성공");
+				result.put("success", true);
+				result.put("message", "DB 저장 성공");
 
 				postUpdateProcess(orderId);
 			} else {
-				result.put("resultmsg", "DB 저장 실패");
+				result.put("success", false);
+				result.put("message", "DB 저장 실패");
 			}
 
 		} catch (Exception e) {
-			result.put("message", e.getMessage());
+			result.put("success", false);
+			result.put("message", "서버 에러: " + e.getMessage());
 		}
 		return result;
 	}
+
 
 	private void postUpdateProcess(String orderId) throws Exception {
 		payService.updateUserSubscription(orderId);

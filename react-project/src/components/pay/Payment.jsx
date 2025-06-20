@@ -44,15 +44,8 @@ const Payment = () => {
         amount: Number(product.price),
         user_no: user.userNo,
       });
-<<<<<<< HEAD
  
       const { orderId, amount, order_name: orderName, product_no, user_no } = res;
-=======
-
-      console.log("insertOrder 응답:", res);
-  
-      const { orderId, amount, order_name: orderName } = res;
->>>>>>> main
   
       const parsedAmount = parseInt(amount, 10);
   
