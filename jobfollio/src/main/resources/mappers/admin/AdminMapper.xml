@@ -205,7 +205,7 @@
         <if test="status_yn != null and status_yn != ''">status_yn = #{status_yn},</if>
         <if test="address != null and address != ''">address = #{address},</if>
         <if test="hobby != null and hobby != ''">hobby = #{hobby},</if>
-        <if test="notes != null and note != ''">note = #{notes},</if>
+        <if test="note != null and note != ''">notes = #{note},</if>
         <if test="withdrawal_date != null">withdrawal_date = #{withdrawal_date},</if>
         user_no = user_no
         WHERE login_id = #{login_id}

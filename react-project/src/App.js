@@ -217,16 +217,17 @@ function AppContent() {
               </PrivateRoute>
             }
           />
-          {/* ========== 관리자 전용 (A, B 권한) 끝 ========== */}
-          {/* ========== 최고관리자 전용 (A 권한만) ========== */}
           <Route
             path="/adminPage/adminManagement"
             element={
-              <PrivateRoute requiredRoles={["A"]}>
+              <PrivateRoute requiredRoles={["A", "B"]}>
                 <AdminManagement />
               </PrivateRoute>
             }
           />
+          {/* ========== 관리자 전용 (A, B 권한) 끝 ========== */}
+          {/* ========== 최고관리자 전용 (A 권한만) ========== */}
+      
           <Route
             path="/adminPage/configuration"
             element={

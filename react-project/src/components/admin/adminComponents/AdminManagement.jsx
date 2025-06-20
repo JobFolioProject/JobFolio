@@ -1,17 +1,17 @@
 import Pagination from '../../common/Pagination.jsx';
 import '../../../css/admin/adminComponents/AdminManagement.css';
 import '../../../css/admin/adminComponents/InfoManagement.css';
-import AdminManagementDetail from './AdminManagement_detail.jsx';
+import AdminManagementDetail from './AdminManagementDetail';
 import AdminSideBar from '../AdminSideBar';
 import SearchIcon from '@mui/icons-material/Search';
 import { useEffect, useState } from 'react';
 import axios from '../../../utils/axiosConfig';
 import { useAuth } from '../../../context/AuthContext';
 
-import Chip from '@mui/material/Chip'; // Chip 컴포넌트 임포트
-import CrownIcon from '@mui/icons-material/EmojiEvents'; // 슈퍼관리자 아이콘 (예시)
-import SettingsIcon from '@mui/icons-material/Settings'; // 관리자 아이콘 (예시)
-import PersonIcon from '@mui/icons-material/Person'; // 일반회원 아이콘 (예시)
+import Chip from '@mui/material/Chip';
+import CrownIcon from '@mui/icons-material/EmojiEvents';
+import SettingsIcon from '@mui/icons-material/Settings';
+import PersonIcon from '@mui/icons-material/Person';
 
 const AdminManagement = () => {
     const { user, isAuthenticated } = useAuth();
@@ -22,73 +22,65 @@ const AdminManagement = () => {
     const pageSize = 10;
     const totalPages = Math.ceil(totalCount / pageSize);
 
-    const [filterType, setFilterType] = useState('all'); // 기본값
+    const [filterType, setFilterType] = useState('all');
     const [searchData, setSearchData] = useState('');
-    const [searchKeyword, setSearchKeyword] = useState(''); // 검색 입력 필드의 값
+    const [searchKeyword, setSearchKeyword] = useState('');
 
-    const [showModal, setShowModal] = useState(false); // 모달 오픈
-    const [selectedUser, setSelectedUser] = useState(null); // 모달에 표시할 유저 정보 아이디
+    const [showModal, setShowModal] = useState(false);
+    const [selectedUser, setSelectedUser] = useState(null);
 
     const [statusFilterType, setStatusFilterType] = useState('all');
 
     useEffect(() => {
-        const userNo = user.userNo;
-        if (!userNo && !user.userNo) return;
-        if (!isAuthenticated) return;
+        if (!user || !isAuthenticated) return;
 
-        const userDate = async () => {
-            // 리퀘스트 파라미터 설정?  api/admin/customers?type=abc&page=1&limit=10&search=keyword ... 이런식으로
+        const fetchUserData = async () => {
             const params = {};
 
             if (filterType !== 'all') {
-                params.type = filterType; // 필터 타입이 all 이 아닐때 type 파라미터 추가
+                params.type = filterType;
             }
+
             if (statusFilterType !== 'all') {
                 params.status = statusFilterType;
             }
 
-            // 페이지 네이션 파라미터
-            params.page = currentPage; // 현재 페이지 파라미터
-            params.limit = pageSize; // 제한 파라미터
+            params.page = currentPage;
+            params.limit = pageSize;
 
-            // 검색어 파라미터
             if (searchData) {
-                // 검색 데이터가 존재할 경우
-                params.search = searchData; // search 파라미터 추가
+                params.search = searchData;
             }
 
-            await axios
-                .get('api/admin/customers/list', { params: params })
-                .then((response) => {
-                    // 백엔드에서 받은 데이터로 상태 업데이트
-                    setData(response.customers); // 데이터
-                    setTotalCount(response.totalCount); // 전체 개수
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
+            try {
+                const response = await axios.get('api/admin/customers/list', { params: params });
+                setData(response.customers || []);
+                setTotalCount(response.totalCount || 0);
+            } catch (error) {
+                setData([]);
+                setTotalCount(0);
+            }
         };
-        userDate();
-    }, [currentPage, filterType, searchData, user, isAuthenticated, statusFilterType]);
-
+        
+        fetchUserData();
+    }, [currentPage, filterType, searchData, user, isAuthenticated,statusFilterType]);
     const statusFilterChange = (e) => {
         setStatusFilterType(e.target.value);
         setCurrentPage(1);
     };
-
-    // 필터 바꿀때 리스트 체인지 후 첫번째 페이지로
+    // 필터 변경
     const filterChange = (e) => {
         setFilterType(e.target.value);
         setCurrentPage(1);
     };
 
-    // 키워드로 검색하기
+    // 키워드 검색
     const keywordSearch = () => {
         setCurrentPage(1);
         setSearchData(searchKeyword);
     };
 
-    // 키 프레스로 검색하기
+    // 엔터키 검색
     const keyPress = (e) => {
         if (e.key === 'Enter') {
             keywordSearch();
@@ -96,10 +88,47 @@ const AdminManagement = () => {
         }
     };
 
-    const openModal = (num) => {
+      const openModal = (userItem, event) => {
+        if (event) {
+            event.stopPropagation();
+        }
+        setSelectedUser(userItem);
         setShowModal(true);
-        setSelectedUser(num);
     };
+
+    // 모달 닫기 함수
+    const closeModal = () => {
+        setShowModal(false);
+        setSelectedUser(null);
+    };
+
+    // 사용자 목록 새로고침 함수
+    const refreshUserList = async () => {
+        const params = {};
+        
+        if (filterType !== 'all') {
+            params.type = filterType;
+        }
+
+        if (statusFilterType !== 'all') {
+            params.status = statusFilterType;
+        }
+        
+        params.page = currentPage;
+        params.limit = pageSize;
+        if (searchData) {
+            params.search = searchData;
+        }
+
+        try {
+            const response = await axios.get('api/admin/customers/list', { params: params });
+            setData(response.customers || []);
+            setTotalCount(response.totalCount || 0);
+        } catch (error) {
+            console.error('사용자 목록 새로고침 실패:', error);
+        }
+    };
+
     return (
         <div className="adminManagement">
             <AdminSideBar />
@@ -108,12 +137,11 @@ const AdminManagement = () => {
                     <h2>계정 관리</h2>
                 </div>
 
-                {/* 검색창 */}
                 <div className="adminMag-section-content-box">
                     <div className="adminMag-header">
                         <h3>권한 관리</h3>
                         <p className="adminMag-warning">
-                            삭제할 경우 복구가 어려우며, 삭제 시 신중히 선택 바랍니다. <br></br>
+                            삭제할 경우 복구가 어려우며, 삭제 시 신중히 선택 바랍니다. <br />
                             관리자 등록 변경은 신중히 선택 바랍니다.
                         </p>
                     </div>
@@ -124,7 +152,6 @@ const AdminManagement = () => {
                                 <option value={'ADMIN_GROUP'}>관리자</option>
                                 <option value={'C'}>일반</option>
                             </select>
-
                             <select
                                 className="adminMag-filter-select"
                                 value={statusFilterType}
@@ -134,7 +161,7 @@ const AdminManagement = () => {
                                 <option value={'N'}>정상</option>
                                 <option value={'Y'}>탈퇴</option>
                             </select>
-                        </div>
+                                                    </div>
 
                         <div className="adminMag-right-content">
                             <input
@@ -164,81 +191,113 @@ const AdminManagement = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {data.map((item) => (
-                                <tr key={item.user_no} onClick={() => openModal(item.user_no)}>
-                                    <td>{item.user_no}</td>
-                                    <td>{item.login_id}</td>
-                                    <td>{item.user_name}</td>
-                                    <td
-                                        style={{
-                                            color:
-                                                item.status_yn === 'N'
-                                                    ? 'green' 
-                                                    : item.status_yn === 'Y'
-                                                    ? 'red' 
-                                                    : 'inherit',
-                                        }}
-                                    >
-                                        {item.status_yn === 'N' ? '정상' : item.status_yn === 'Y' ? '탈퇴' : '대기'}
-                                    </td>
-                                    <td>{item.reg_date}</td>
-                                    <td>{item.withdrawal_date}</td>
-                                    <td>
-                                        {item.user_type === 'A' ? (
-                                            <Chip
-                                                clickable={false}
-                                                label="슈퍼"
-                                                icon={<CrownIcon fontSize="small" />} // 아이콘 추가
-                                                size="small" // 뱃지 크기 조절
-                                                color="warning" // 노란색 계열 색상 (경고, 중요)
-                                                className="sparkle-badge"
-                                                sx={{
-                                                    bgcolor: '#FFD700', // 더 정확한 금색 배경
-                                                    color: '#333',
-                                                    fontWeight: 'bold',
-                                                    minWidth: '80px',
+                                {data && data.length > 0 ? (
+                                    data.map((item) => (
+                                        <tr 
+                                            key={item.user_no} 
+                                            onClick={(e) => openModal(item, e)}
+                                            style={{ cursor: 'pointer' }}
+                                        >
+                                            <td>{item.user_no}</td>
+                                            <td>{item.login_id}</td>
+                                            <td>{item.user_name}</td>
+                                            
+                                            <td
+                                                style={{
+                                                    color:
+                                                        item.status_yn === 'N'
+                                                            ? 'green' 
+                                                            : item.status_yn === 'Y'
+                                                            ? 'red' 
+                                                            : 'inherit'
                                                 }}
-                                            />
-                                        ) : item.user_type === 'B' ? (
-                                            <Chip
-                                                label="관리자"
-                                                icon={<SettingsIcon fontSize="small" />} // 아이콘 추가
-                                                size="small"
-                                                color="info" // 파란색 계열 색상 (정보)
-                                                sx={{
-                                                    bgcolor: '#90CAF9', // 하늘색 배경
-                                                    color: '#333',
-                                                    fontWeight: 'bold',
-                                                    minWidth: '80px',
+                                            >
+                                                {item.status_yn === 'N' ? '정상' : item.status_yn === 'Y' ? '탈퇴' : '대기'}
+                                            </td>
+                                            
+                                            <td>{item.reg_date}</td>
+                                            <td>{item.withdrawal_date || ''}</td>
+                                            
+                                            {/* 🔥 등급 셀 - 완전히 클릭 방지 */}
+                                            <td 
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    e.preventDefault();
                                                 }}
-                                                clickable={false}
-                                            />
-                                        ) : (
-                                            <Chip
-                                                label="일반회원"
-                                                icon={<PersonIcon fontSize="small" />} // 아이콘 추가
-                                                size="small"
-                                                color="default" // 기본 회색 계열
-                                                sx={{
-                                                    bgcolor: '#E0E0E0', // 연회색 배경
-                                                    color: '#333',
-                                                    fontWeight: 'bold',
-                                                    minWidth: '80px',
+                                                style={{ 
+                                                    cursor: 'default',
+                                                    pointerEvents: 'none'  // 모든 마우스 이벤트 차단
                                                 }}
-                                                clickable={false}
-                                            />
-                                        )}
-                                    </td>
-                                </tr>
-                            ))}
+                                            >
+                                                {item.user_type === 'A' ? (
+                                                    <Chip
+                                                        label="슈퍼"
+                                                        icon={<CrownIcon fontSize="small" />}
+                                                        size="small"
+                                                        clickable={false}
+                                                        sx={{
+                                                            bgcolor: '#FFD700',
+                                                            color: '#333',
+                                                            fontWeight: 'bold',
+                                                            minWidth: '80px',
+                                                            pointerEvents: 'none',  // Chip 자체도 클릭 방지
+                                                            cursor: 'default'
+                                                        }}
+                                                    />
+                                                ) : item.user_type === 'B' ? (
+                                                    <Chip
+                                                        label="관리자"
+                                                        icon={<SettingsIcon fontSize="small" />}
+                                                        size="small"
+                                                        clickable={false}
+                                                        sx={{
+                                                            bgcolor: '#90CAF9',
+                                                            color: '#333',
+                                                            fontWeight: 'bold',
+                                                            minWidth: '80px',
+                                                            pointerEvents: 'none',  // Chip 자체도 클릭 방지
+                                                            cursor: 'default'
+                                                        }}
+                                                    />
+                                                ) : (
+                                                    <Chip
+                                                        label="일반회원"
+                                                        icon={<PersonIcon fontSize="small" />}
+                                                        size="small"
+                                                        clickable={false}
+                                                        sx={{
+                                                            bgcolor: '#E0E0E0',
+                                                            color: '#333',
+                                                            fontWeight: 'bold',
+                                                            minWidth: '80px',
+                                                            pointerEvents: 'none',  // Chip 자체도 클릭 방지
+                                                            cursor: 'default'
+                                                        }}
+                                                    />
+                                                )}
+                                            </td>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan="7" style={{ textAlign: 'center', padding: '20px' }}>
+                                            데이터가 없습니다.
+                                        </td>
+                                    </tr>
+                                )}
                         </tbody>
                     </table>
-                    {/* 페이지네이션 */}
                     <Pagination currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage} />
                 </div>
             </div>
 
-            <AdminManagementDetail open={showModal} />
+            <AdminManagementDetail 
+                open={showModal} 
+                onClose={closeModal}
+                selectedUser={selectedUser}
+                currentUser={user}
+                onUserUpdated={refreshUserList}
+            />
         </div>
     );
 };
