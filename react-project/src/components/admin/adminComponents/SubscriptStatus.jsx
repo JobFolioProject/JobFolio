@@ -10,14 +10,22 @@ import { Chart } from 'chart.js/auto';
 const SubscriptManagement = () => {
   const itemsPerPage = 5;
 
-  // 상태값
+  // 일별 현황
   const [dailyData, setDailyData] = useState([]);
   const [dailyPage, setDailyPage] = useState(1);
   const [dailyTotalCount, setDailyTotalCount] = useState(0);
 
+  // 월별 현황
   const [monthlyData, setMonthlyData] = useState([]);
   const [monthlyPage, setMonthlyPage] = useState(1);
   const [monthlyTotalCount, setMonthlyTotalCount] = useState(0);
+
+  // 결제 내역
+  const [salesData, setsalesData] = useState([]);
+  const [salesDataPage, setsalesDataPage] = useState(1);
+  const [salesDataTotalCount, setsalesDataTotalCount] = useState(0);
+
+
 
   // 차트 참조
   const updateDayChartRef = useRef(null);
@@ -64,6 +72,28 @@ const SubscriptManagement = () => {
 
     fetchMonthlyData();
   }, [monthlyPage]);
+
+  // 결제 내역 데이터 요청
+  useEffect(() => {
+    const fetchsalesData = async () => {
+      try {
+        const res = await axios.get('/api/admin/sales/salesHistory', {
+          params: {
+            currentpage: salesDataPage,
+            pagesize: itemsPerPage,
+          },
+        });
+        setsalesData(res.salesHistory);
+        setsalesDataTotalCount(res.totalcnt);
+      } catch (err) {
+        console.error('월별 데이터 불러오기 실패:', err);
+      }
+    };
+
+    fetchsalesData();
+  }, [salesDataPage]);
+
+
 
   // 차트용 데이터 (페이지에 상관없이 전체 조회)
   useEffect(() => {
@@ -158,6 +188,7 @@ const SubscriptManagement = () => {
 
   const dailyTotalPages = Math.ceil(dailyTotalCount / itemsPerPage);
   const monthlyTotalPages = Math.ceil(monthlyTotalCount / itemsPerPage);
+  const salesTotalPages = Math.ceil(salesDataTotalCount / itemsPerPage);
 
   return (
     <div className='infoManagement'>
@@ -240,6 +271,52 @@ const SubscriptManagement = () => {
               totalPages={monthlyTotalPages}
               setCurrentPage={setMonthlyPage}
             />
+          </div>
+          </div>
+          
+
+        {/* 결제 내역 */}
+        <div>
+          <div className="chartData">
+            <div className='info-header'>
+              <div className='info-controls'>
+                <h2>결제 내역</h2>
+              </div>
+            </div>
+           
+            <table className='info-table'>
+              <thead>
+                <tr>
+                  <th>결제 ID</th>
+                  <th>회원 ID</th>
+                  <th>이름</th>
+                  <th>주문명</th>
+                  <th>금액</th>
+                  <th>결제 날짜</th>
+                  <th>상태</th>
+                  <th>처리</th>
+                </tr>
+              </thead>
+              <tbody>
+                {salesData.map((item) => (
+                  <tr key={item.order_id}>
+                    <td>{item.order_id}</td>
+                    <td>{item.login_id}</td>
+                    <td>{item.user_name}</td>
+                    <td>{item.order_name}</td>
+                    <td>{item.amount}</td>
+                    <td>{item.paid_date}</td>
+                    <td>{item.pay_status}</td>      
+                    <td><button className="refundButton">환 불</button></td>                      
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <Pagination
+              currentPage={salesDataPage}
+              totalPages={salesTotalPages}
+              setCurrentPage={setsalesDataPage}
+              />
           </div>
         </div>
         </div>
