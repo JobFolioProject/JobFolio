@@ -315,3 +315,82 @@
   transform: translateY(-2px) !important;
   box-shadow: 0 4px 8px rgba(0,0,0,0.10) !important;
 }
+
+/* [CSS스타일충돌해결사] 기존 join.css 맨 아래에 추가 */
+
+/* 🎯 로그인 모달 전용 스타일 - 직사각형 버튼 */
+.login-form-modal .gsi-material-button {
+  width: 100% !important;
+  height: 50px !important;
+  border-radius: 5px !important; /* 원형이 아닌 직사각형 */
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background-color: #fff !important;
+  border: 1px solid #dadce0 !important;
+  font-size: 16px !important;
+  font-weight: bold !important;
+  padding: 0 20px !important;
+  margin-bottom: 10px !important;
+  box-sizing: border-box !important;
+  transition: all 0.2s ease !important;
+}
+
+.login-form-modal .gsi-material-button .gsi-material-button-icon {
+  width: 24px !important;
+  height: 24px !important;
+  margin-right: 12px !important;
+  padding: 0 !important; /* 원형 버튼의 padding 제거 */
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.login-form-modal .gsi-material-button .gsi-material-button-content-wrapper {
+  width: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.login-form-modal .gsi-material-button .gsi-material-button-contents {
+  flex: 1 !important;
+  text-align: center !important;
+  font-weight: bold !important;
+  font-size: 16px !important;
+  color: #3c4043 !important;
+  display: block !important; /* 텍스트 보이게 */
+}
+
+.login-form-modal .gsi-material-button:hover {
+  background-color: #f8f9fa !important;
+  border-color: #dadce0 !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* 🎯 로그인 모달의 다른 소셜 버튼들도 직사각형으로 */
+.login-form-modal .social-login-btn {
+  width: 100% !important;
+  height: 50px !important;
+  border-radius: 5px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin-bottom: 10px !important;
+}
+
+.login-form-modal .kakao-svg-btn {
+  width: 100% !important;
+  height: 50px !important;
+  border-radius: 5px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin-bottom: 10px !important;
+}
+
+.login-form-modal .kakao-svg-icon {
+  width: 24px !important;
+  height: 24px !important;
+}

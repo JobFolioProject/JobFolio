@@ -47,7 +47,7 @@ public class CustomOidcUserService extends OidcUserService {
             return new CustomOAuth2User(user, oidcUser.getAttributes());
 
         } catch (Exception e) {
-            System.err.println("CustomOidcUserService 에러: " + e.getMessage());
+            // System.err.println("CustomOidcUserService 에러: " + e.getMessage());
             e.printStackTrace();
             throw new OAuth2AuthenticationException(
                 new OAuth2Error("LOGIN_ERROR", e.getMessage(), null),
@@ -157,7 +157,7 @@ public class CustomOidcUserService extends OidcUserService {
             return info;
 
         } catch (Exception e) {
-            System.err.println("People API 응답 파싱 실패: " + e.getMessage());
+            // System.err.println("People API 응답 파싱 실패: " + e.getMessage());
             return new GooglePeopleInfo();
         }
     }
