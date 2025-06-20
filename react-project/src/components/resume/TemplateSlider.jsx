@@ -10,6 +10,7 @@ const TemplateSlider = ({ tempList, formData }) => {
   const [open, setOpen] = useState(false);
   const [htmlString, setHtmlString] = useState(null);
   const [loading, setLoading] = useState(false);
+
   const settings = {
     dots: true, // 하단에 점으로 페이지네이션 표시
     infinite: true, // 무한 루프
@@ -89,6 +90,11 @@ const TemplateSlider = ({ tempList, formData }) => {
     window.addEventListener('message', handleMessage);
     return () => window.removeEventListener('message', handleMessage);
   }, []);
+
+//선택된 템플렛 정보.
+  const handelSelectTemplate = (template) => {
+    console.log('Selected template:', template);
+  }
 
 ////////////////////////////////////////////////
    return (

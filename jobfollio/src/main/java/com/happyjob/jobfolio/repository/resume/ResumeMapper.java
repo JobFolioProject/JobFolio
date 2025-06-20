@@ -1,6 +1,7 @@
 package com.happyjob.jobfolio.repository.resume;
 
 import com.happyjob.jobfolio.vo.join.UserVO;
+import com.happyjob.jobfolio.vo.mypage.CommSkillDto;
 import com.happyjob.jobfolio.vo.resume.LinkInfoVO;
 import com.happyjob.jobfolio.vo.resume.ResumeInfoVO;
 import com.happyjob.jobfolio.vo.resume.ResumeLikeVO;
@@ -46,6 +47,10 @@ public interface ResumeMapper {
 
     // 이력서 목록 조회
     List<ResumeInfoVO> communityResumeList(Map<String, Object> paramMap);
+
+    List<String> getSkillGroupCode();
+
+    List<String> getSkillDetailCode(Map<String, Object> paramMap);
 
 //    ResumeInfoVO selectResumeInfoByResumeNo(int resumeNo);
 
