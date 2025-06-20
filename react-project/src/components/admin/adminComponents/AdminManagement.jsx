@@ -152,9 +152,9 @@ const AdminManagement = () => {
                                         style={{
                                             color:
                                                 item.status_yn === 'N'
-                                                    ? 'green' // N일 경우 초록색
+                                                    ? 'green' 
                                                     : item.status_yn === 'Y'
-                                                    ? 'red' // Y일 경우 빨간색
+                                                    ? 'red' 
                                                     : 'inherit',
                                         }}
                                     >
