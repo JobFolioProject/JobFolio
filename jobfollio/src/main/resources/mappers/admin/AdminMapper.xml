@@ -156,7 +156,7 @@
             expire_days,
             address,
             hobby,
-            note,
+            notes,
             social_type,
             social_id
         FROM tb_userinfo
@@ -198,7 +198,7 @@
         <if test="status_yn != null and status_yn != ''">status_yn = #{status_yn},</if>
         <if test="address != null and address != ''">address = #{address},</if>
         <if test="hobby != null and hobby != ''">hobby = #{hobby},</if>
-        <if test="note != null and note != ''">note = #{note},</if>
+        <if test="notes != null and note != ''">note = #{notes},</if>
         <if test="withdrawal_date != null">withdrawal_date = #{withdrawal_date},</if>
         user_no = user_no
         WHERE login_id = #{login_id}
@@ -208,7 +208,7 @@
         SELECT
             user_no, login_id, user_type, user_name, birthday, sex, hp,
             reg_date, withdrawal_date, status_yn, expire_days,
-            address, hobby, note, social_type, social_id
+            address, hobby, notes, social_type, social_id
         FROM tb_userinfo
         ORDER BY reg_date DESC
     </select>
