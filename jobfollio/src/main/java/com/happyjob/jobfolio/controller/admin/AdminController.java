@@ -171,11 +171,13 @@ public class AdminController {
     public ResponseEntity<CustomerListDto> getAllCustomers(@RequestParam(required = false) String search,
                                                            @RequestParam(required = false) String type,
                                                            @RequestParam(defaultValue = "1") int page,
-                                                           @RequestParam(defaultValue  = "10") int limit) {
+                                                           @RequestParam(defaultValue  = "10") int limit,
+                                                           @RequestParam(required = false) String status) {
         try {
             Map<String, Object> paramMap = new HashMap<>();
             paramMap.put("search", search);
             paramMap.put("type", type);
+            paramMap.put("status", status);
             int offset = (page - 1) * limit;
             paramMap.put("offset", offset);
             paramMap.put("limit", limit);

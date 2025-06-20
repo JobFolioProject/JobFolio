@@ -29,6 +29,8 @@ const AdminManagement = () => {
     const [showModal, setShowModal] = useState(false); // 모달 오픈
     const [selectedUser, setSelectedUser] = useState(null); // 모달에 표시할 유저 정보 아이디
 
+    const [statusFilterType, setStatusFilterType] = useState('all');
+
     useEffect(() => {
         const userNo = user.userNo;
         if (!userNo && !user.userNo) return;
@@ -40,6 +42,9 @@ const AdminManagement = () => {
 
             if (filterType !== 'all') {
                 params.type = filterType; // 필터 타입이 all 이 아닐때 type 파라미터 추가
+            }
+            if (statusFilterType !== 'all') {
+                params.status = statusFilterType;
             }
 
             // 페이지 네이션 파라미터
@@ -64,7 +69,12 @@ const AdminManagement = () => {
                 });
         };
         userDate();
-    }, [currentPage, filterType, searchData, user, isAuthenticated]);
+    }, [currentPage, filterType, searchData, user, isAuthenticated, statusFilterType]);
+
+    const statusFilterChange = (e) => {
+        setStatusFilterType(e.target.value);
+        setCurrentPage(1);
+    };
 
     // 필터 바꿀때 리스트 체인지 후 첫번째 페이지로
     const filterChange = (e) => {
@@ -86,8 +96,9 @@ const AdminManagement = () => {
         }
     };
 
-    const openModal = () => {
+    const openModal = (num) => {
         setShowModal(true);
+        setSelectedUser(num);
     };
     return (
         <div className="adminManagement">
@@ -112,6 +123,16 @@ const AdminManagement = () => {
                                 <option value={'all'}>전체</option>
                                 <option value={'ADMIN_GROUP'}>관리자</option>
                                 <option value={'C'}>일반</option>
+                            </select>
+
+                            <select
+                                className="adminMag-filter-select"
+                                value={statusFilterType}
+                                onChange={statusFilterChange}
+                            >
+                                <option value={'all'}>모든 상태</option>
+                                <option value={'N'}>정상</option>
+                                <option value={'Y'}>탈퇴</option>
                             </select>
                         </div>
 
@@ -144,7 +165,7 @@ const AdminManagement = () => {
                         </thead>
                         <tbody>
                             {data.map((item) => (
-                                <tr key={item.user_no} onClick={() => openModal(item)}>
+                                <tr key={item.user_no} onClick={() => openModal(item.user_no)}>
                                     <td>{item.user_no}</td>
                                     <td>{item.login_id}</td>
                                     <td>{item.user_name}</td>

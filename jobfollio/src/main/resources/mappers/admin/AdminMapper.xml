@@ -104,13 +104,17 @@
                 AND (login_id LIKE CONCAT('%', #{search}, '%')
                 OR user_name LIKE CONCAT('%', #{search}, '%'))
             </if>
-        <if test="type != null and type != '' and type != null">
+        <if test="type != null and type != '' and type != 'all'">
             <choose>
                 <when test="type == 'ADMIN_GROUP'">
                     AND user_type IN ('A', 'B') </when>
                 <otherwise>
-                    AND user_type = #{type} </otherwise>
+                    AND user_type = #{type}
+                </otherwise>
             </choose>
+        </if>
+        <if test="status != null and status != '' and status != 'all'">
+            AND status_yn = #{status}
         </if>
         </where>
             LIMIT #{limit} OFFSET #{offset}
@@ -126,7 +130,7 @@
                 OR user_name LIKE CONCAT('%', #{search}, '%'))
             </if>
 
-            <if test="type != null and type != '' and type != null">
+            <if test="type != null and type != '' and type != 'all'">
                 <choose>
                     <when test="type == 'ADMIN_GROUP'">
                         AND user_type IN ('A', 'B')
@@ -135,6 +139,9 @@
                         AND user_type = #{type}
                     </otherwise>
                 </choose>
+            </if>
+            <if test="status != null and status != '' and status != 'all'">
+                AND status_yn = #{status}
             </if>
         </where>
     </select>
