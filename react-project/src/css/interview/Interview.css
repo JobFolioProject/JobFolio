@@ -33,7 +33,6 @@
 }
 .interview .interview-wrapper {
   display: flex;
-  flex-wrap: wrap;
   width: 100%;
   max-width: 1200px;
   gap: 40px;
@@ -56,7 +55,7 @@
 }
 .interview .resume-load-group .text {
   font-size: 1.25rem;
-  color: #818CF8;
+  color: rgb(81, 185, 224);
   font-weight: 700;
 }
 .interview .resume-load-group .controls-row {
@@ -80,7 +79,7 @@
   font-weight: bold;
   border: none;
   border-radius: 20px;
-  background: #645bff;
+  background: rgb(81, 185, 224);
   color: #fff;
   transition: background .2s;
   cursor: pointer;
@@ -103,7 +102,7 @@
 }
 .interview .customInput .text {
   font-size: 1.25rem;
-  color: #818CF8;
+  color: rgb(81, 185, 224);
   font-weight: 700;
   margin-bottom: 5px;
 }
@@ -119,7 +118,6 @@
 .interview .customInput textarea {
   height: 270px;
   width: 100%;
-  resize: vertical;
 }
 
 /* ─── 오른쪽 결과 ─── */
@@ -130,7 +128,7 @@
 }
 .interview .interview-gpt-title {
   font-size: 1.25rem;
-  color: #818CF8;
+  color: rgb(81, 185, 224);
   font-weight: 700;
   margin: 20px 0 0 7px;
   background: #fdfafa;
@@ -153,7 +151,17 @@
 
 /* ─── QA 블록 ─── */
 .interview .qa-block {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
+}
+.interview .interview-qna-block {
+  border: 1px solid #cce0ff;
+  border-radius: 5px;
+}
+.interview .interview-qna-block div{
+  padding: 5px;
+}
+.interview .answer-block {
+  border-bottom: 1px solid #cce0ff;
 }
 .interview .question-block p {
   font-weight: bold;
@@ -161,12 +169,16 @@
 .interview .answer-block textarea {
   width: 100%;
   min-height: 80px;
+  border: 1px solid #cce0ff;
   box-sizing: border-box;
-  resize: vertical;
   padding: 10px;
 }
 .interview .feedback-block {
-  background: #f9f9f9;
+  padding: .5rem;
+  border-radius: 4px;
+  font-style: italic;
+}
+.interview .improvements-block {
   padding: .5rem;
   border-radius: 4px;
   font-style: italic;
@@ -179,7 +191,7 @@
   padding: .6em 1.2em;
   border: none;
   border-radius: 20px;
-  background: #645bff;
+  background: rgb(81, 185, 224);
   color: #fff;
   font-weight: bold;
   cursor: pointer;
@@ -198,7 +210,7 @@
   padding: 1em 1.8em;
   border: none;
   border-radius: 20px;
-  background: #645bff;
+  background: rgb(81, 185, 224);
   color: #fff;
   font-weight: bold;
   transition: background .2s;
@@ -213,7 +225,7 @@
   width: 40px;
   height: 40px;
   border: 4px solid #ddd;
-  border-top-color: #818CF8;
+  border-top-color: rgb(81, 185, 224);
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin: 100px auto;

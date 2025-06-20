@@ -227,9 +227,9 @@ const Interview = () => {
 
               {/* 첫 질문 생성 버튼 */}
               <div className="interview-button">
-                  <button onClick={generateFirstBatch} disabled={loading}>
-                    {loading ? "불러오는 중..." : "모의 면접 시작"}
-                  </button>
+                <button onClick={generateFirstBatch} disabled={loading}>
+                  {loading ? "불러오는 중..." : "모의 면접 시작"}
+                </button>
               </div>
             </div>
           </div>
@@ -242,17 +242,19 @@ const Interview = () => {
               {/* 이전 Q&A 히스토리 */}
               {answers.map((ans, idx) => (
                 <div key={idx} className="qa-block history-block">
-                  <div className="question-block">
-                    <p><strong>Q{idx + 1}.</strong> {questions[idx]}</p>
-                  </div>
-                  <div className="answer-block">
-                    <p><em>답변:</em> {ans}</p>
-                  </div>
-                  <div className="feedback-block">
-                    <p><em>총평:</em> {feedbacks[idx]}</p>
-                  </div>
-                  <div className="improvements-block">
-                    <p><em>개선할 점:</em> {improvementsList[idx]}</p>
+                  <div className="interview-qna-block">
+                    <div className="question-block">
+                      <p><strong>질문 {idx + 1}.</strong> {questions[idx]}</p>
+                    </div>
+                    <div className="answer-block">
+                      <p><strong>답변 {idx + 1}.</strong> {ans}</p>
+                    </div>
+                    <div className="feedback-block">
+                      <p><strong>총평:</strong> {feedbacks[idx]}</p>
+                    </div>
+                    <div className="improvements-block">
+                      <p><strong>개선할 점:</strong> {improvementsList[idx]}</p>
+                    </div>
                   </div>
                 </div>
               ))}
