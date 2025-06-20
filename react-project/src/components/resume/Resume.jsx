@@ -15,6 +15,7 @@ import { major } from '@mui/system';
 import axios from "../../utils/axiosConfig";
 import Loading from "../common/Loading";
 import ResumeModal from './ResumeModal';
+import Banner from '../common/Banner';
 
 
 const Resume = () => {
@@ -375,11 +376,11 @@ const saveFieldData = (type) => {
  
     return (
         <>
-            <div className="resume-banner">
-                <img src="/resources/img/banner.png" alt="Banner" />
+            <Banner pageName="이력서 작성" />
+            <div className='resume_wrap'>
+            <div className="resume-sideBar-content">
+                <ResumeSidebar/>
             </div>
-        <div className='resume_wrap'>
-            <ResumeSidebar/>
             <div className='resume-content'>
                 {/* <div style={{ marginLeft: '200px', padding: '200px' }}> */}
                 <div className='resume-content-form'>

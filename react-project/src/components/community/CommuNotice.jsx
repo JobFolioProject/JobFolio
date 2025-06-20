@@ -5,6 +5,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import { useEffect, useState } from 'react';
 import axios from "../../utils/axiosConfig";
 import Pagination from '../common/Pagination.jsx';
+import Banner from '../common/Banner.jsx';
 
 const CommuNotice = () => {
   const [noticeList, setNoticeList] = useState([]);
@@ -62,10 +63,7 @@ const CommuNotice = () => {
 
   return (
     <>
-      <div className="notice-banner">
-        <img src="/resources/img/banner.png" alt="Banner" />
-        <h1>공지사항</h1>
-      </div>
+      <Banner pageName="공지사항" />
       <CommuMenuBar />
 
       <div className='community-notice-container'>
