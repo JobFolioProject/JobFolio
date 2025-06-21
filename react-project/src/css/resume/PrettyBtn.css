@@ -1,91 +1,93 @@
-/* ResumeButton.css */
-
 .resume-btn {
   font-weight: 600;
   border: none;
   border-radius: 12px;
   cursor: pointer;
   transition: background-color 0.2s ease, box-shadow 0.2s ease;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.resume-btn .sm {
-  padding: 4px 10px;
+/* Size modifiers */
+.resume-btn.sm {
+  padding: 6px 14px;
   font-size: 0.85rem;
-  height: 40px;
+  height: 36px;
   margin-bottom: 10px;
 }
 
-.resume-btn .md {
-  padding: 10px 24px;
+.resume-btn.md {
+  padding: 10px 20px;
   font-size: 1rem;
 }
 
-.resume-btn .lg {
-  padding: 14px 32px;
+.resume-btn.lg {
+  padding: 14px 28px;
   font-size: 1.1rem;
 }
 
+
 /* Variants */
-.resume-btn .primary {
-  background: #e3f2fd;
-  color: #1976d2;
-}
-
-.resume-btn .primary:hover {
-  background: #bbdefb;
-}
-
-.resume-btn .primary:active {
-  background: #90caf9;
-}
-
-.resume-btn .secondary {
-  background: #f5f5f5;
-  color: #424242;
-}
-
-.resume-btn .secondary:hover {
-  background: #e0e0e0;
-}
-
-.resume-btn .secondary:active {
-  background: #bdbdbd;
-}
-
-.resume-btn .danger {
-  background: #ffebee;
-  color: #d32f2f;
-}
-
-.resume-btn .danger:hover {
-  background: #ffcdd2;
-}
-
-.resume-btn .danger:active {
-  background: #ef9a9a;
-}
-
-.resume-btn .outlined {
+.resume-btn.primary {
   background: transparent;
-  border: 2px solid #1976d2;
-  color: #1976d2;
+  color: #1565c0;
 }
 
-.resume-btn .outlined:hover {
-  background: #e3f2fd;
+.resume-btn.primary:hover {
+  background: #d2e3fc;
 }
 
-.resume-btn .outlined:active {
-  background: #bbdefb;
+.resume-btn.primary:active {
+  background: #aecbfa;
+}
+
+.resume-btn.secondary {
+  background: #eceff1;
+  color: #37474f;
+}
+
+.resume-btn.secondary:hover {
+  background: #dfe3e6;
+}
+
+.resume-btn.secondary:active {
+  background: #cfd8dc;
+}
+
+.resume-btn.danger {
+  background: #fdecea;
+  color: #c62828;
+}
+
+.resume-btn.danger:hover {
+  background: #f9cfcf;
+}
+
+.resume-btn.danger:active {
+  background: #f4a9a9;
+}
+
+.resume-btn.outlined {
+  background: transparent;
+  border: 2px solid #1565c0;
+  color: #1565c0;
+}
+
+.resume-btn.outlined:hover {
+  background: #e8f0fe;
+}
+
+.resume-btn.outlined:active {
+  background: #d2e3fc;
 }
 
 /* Disabled state */
-.resume-btn .disabled {
+.resume-btn.disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-.resume-btn .disabled:hover {
+.resume-btn.disabled:hover {
   background: inherit;
   color: inherit;
 }
+
