@@ -11,7 +11,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { useAuth } from "../../context/AuthContext";
 import MyCareer from '../user/myPageComponent/MyCareer';
-import { major } from '@mui/system';
+import { alignItems, display, justifyContent, major, padding } from '@mui/system';
 import axios from "../../utils/axiosConfig";
 import Loading from "../common/Loading";
 import ResumeModal from './ResumeModal';
@@ -23,7 +23,6 @@ const Resume = () => {
     // 이력서 작성 폼을 포함하고 있으며, 사이드바를 사용하여 다른 이력서 관련 페이지로 이동할 수 있습니다.
 
     const { user, isAuthenticated } = useAuth();
-
     const [filePath, setFilePath] = useState("");
     const [loading, setLoading] = useState(false);
     const [download, setDownload] = useState(false);
@@ -39,6 +38,8 @@ const Resume = () => {
             newEducation: undefined,
             newExperience: undefined,
             skillList: [...formData.skillList, ...formData.newSkillList],
+            languageList: [...formData.languageList, ...formData.newLanguage],
+            certificateList: [...formData.certificateList, ...formData.newCertificate],
         };
             try {
                 const res = await axios.post('/api/resume/insertResumeInfo', dataToSend);
@@ -110,16 +111,19 @@ const Resume = () => {
         user_no: user.userNo,
         title: '',
         desired_position: '',
-        skillList: [],
-        newSkillList:[],
         link_url: '',
         //API로 불러온 기존데이터(DB에서 조회해온)
         experience: [],
         education: [],
-        // 새로 추가 중인 (임시) 경력 데이터
-        newExperience: [], // 여기에 항상 최대 1개의 객체만 존재하도록 관리
-         // 새로 추가 중인 (임시) 학력 데이터
-        newEducation: [], // 여기에 항상 최대 1개의 객체만 존재하도록 관리
+        skillList: [],
+        certificateList:[],
+        languageList:[],
+        // 여기에 항상 최대 1개의 객체만 존재하도록 관리 //// 새로 추가 중인 (임시) 경력 데이터
+        newExperience: [], 
+        newEducation: [], 
+        newSkillList:[],
+        newCertificate:[],
+        newLanguage:[],
         coverLetter: '', // 자기소개서 상태 추가
         template_no : 4, //
     });
@@ -141,6 +145,8 @@ const Resume = () => {
                 coverLetter : response.coverLetter || '', //db에 없음. input하는 값(db에 저장x)
                 template_no : response.template_no || 4, //mypage에서 조회하는 것 아님. 즉 `/api/myPage/${userNo}/career` api 사용x
                 // newExperience와 newEducation은 그대로 빈 배열로 유지
+                languageList : response.languageSkillList || [],
+                certificateList : response.certificateList || [],
             }));
             console.log('초기 데이터 확인', response);
         } catch (error) {
@@ -149,8 +155,10 @@ const Resume = () => {
             // 에러 발생 시 기존 데이터 초기화 (신규 데이터는 영향 없음)
             setFormData((prev) => ({
             ...prev,
-            existingExperience: [],
-            existingEducation: [],
+            experience: [],
+            education: [],
+            languageList: [],
+            certificateList: [],
         }));
     }
 };
@@ -175,8 +183,36 @@ const Resume = () => {
     // useEffect(() => {
     //     console.log('폼 데이터가 변경되었습니다:', formData);
     // }, [formData]);
-   
 
+
+// 각 섹션의 펼침 상태 관리 state 추가    
+    const [showSkillDetails, setShowSkillDetails] = useState(false);
+    const [showLanguageDetails, setShowLanguageDetails] = useState(false);
+    const [showEducationDetails, setShowEducationDetails] = useState(false);
+    const [showExperienceDetails, setShowExperienceDetails] = useState(false);
+    const [showCertificateDetails, setShowCertificateDetails] = useState(false);
+ // 상세보기 토글 함수
+    const toggleDetails = (sectionName) => {
+        switch (sectionName) {
+            case 'skill':
+                setShowSkillDetails(!showSkillDetails);
+                break;
+            case 'language':
+                setShowLanguageDetails(!showLanguageDetails);
+                break;
+            case 'education':
+                setShowEducationDetails(!showEducationDetails);
+                break;
+            case 'experience':
+                setShowExperienceDetails(!showExperienceDetails);
+                break;
+            case 'certificate':
+                setShowCertificateDetails(!showCertificateDetails);
+                break;
+            default:
+                break;
+        }
+    };
 //==============================공통 함수로 필드 관리==========================================
 //(공통)학력, 경력 입력 변경 핸들러 (몇 번째 학력,경력인지, 필드 이름, 값)
     //최대 1개의 객체만 존재하도록 관리
@@ -209,31 +245,9 @@ const Resume = () => {
 
 
 
-//학력 추가 버튼 클릭 시 새 학력 항목 추가 ! 근데 기존 학력과 별도로, 새로운 학력 배열에 추가
-  const addEducation = () => {
-// 이미 새로운 학력 입력 중이거나, 총 학력이 4개 이상이면 추가하지 않음
-    if (formData.newEducation.length > 0 || (formData.education.length + formData.newEducation.length) >= 4) {
-        return;
-    }
-    setFormData((prev) =>({
-        ...prev,
-        newEducation: [{
-            school_name:'',
-            major:'',
-            sub_major: '',
-            gpa:'',
-            enroll_date: null, 
-            grad_date: null,
-            //새로운 항목 추가 시에도 edu_no 부여하기.
-            edu_no: Date.now(), //edu_no: 1750118974000
-        }],
-    }));
-  };
-
-
 //(공통) 새로 추가한 항목 '저장' 버튼 클릭 시 호출
 const saveFieldData = (type) => {
-    if (!['newEducation', 'newExperience', 'newSkillList'].includes(type)) return;
+    if (!['newEducation', 'newExperience', 'newSkillList', 'newLanguage', 'newCertificate'].includes(type)) return;
 
     const fieldMap = {
         newEducation: {
@@ -250,6 +264,16 @@ const saveFieldData = (type) => {
             targetKey: 'skillList',
             requiredFields: ['group_code', 'skill_code', 'exp_level'],
             idKey: 'skill_code' //스킬코드가 고유하니까.
+        },
+        newLanguage: {
+            targetKey: 'languageList',
+            requiredFields: ['language', 'level'],
+            idKey: 'language' //language가 고유하니까.
+        },
+        newCertificate: {
+            targetKey : 'certificateList',
+            requiredFields : ['certificate_name', 'certificate_no', 'acquired_date', 'issuing_org'],
+            idKey : 'certificate_name'
         }
     };
     
@@ -268,6 +292,25 @@ const saveFieldData = (type) => {
         );
         if (isAlreadyAdded) {
             alert(`${newEntry.skill_code}은(는) 이미 추가된 기술입니다.`);
+            return;
+        }
+    }
+    //언어 중복 검사.
+    if (type === 'newLanguage') {
+        const isAlreadyAdded = formData.languageList.some(
+            (item) => item.language === newEntry.language
+        );
+        if (isAlreadyAdded) {
+            alert(`${newEntry.language}은(는) 이미 추가된 언어입니다.`);
+            return;
+        }
+    }//기술 중복 검사.
+    if (type === 'newCertificate') {
+        const isAlreadyAdded = formData.certificateList.some(
+            (item) => item.certificate_name === newEntry.certificate_name
+        );
+        if (isAlreadyAdded) {
+            alert(`${newEntry.certificate_name}은(는) 이미 추가된 언어입니다.`);
             return;
         }
     }
@@ -300,6 +343,8 @@ const saveFieldData = (type) => {
             education: 'edu_no',
             experience: 'career_no',
             skillList: 'skill_code',
+            languageList: 'language',
+            certificateList: 'certificate_name',
         };
 
         const idKey = fieldMap[type];
@@ -324,12 +369,62 @@ const saveFieldData = (type) => {
     }
     // --- ⭐⭐⭐ 핵심 디버깅 추가 끝 ⭐⭐⭐ ---
 
-    
+ 
+//=================외국어 능력 추가===========================================================================
+const addLanguage = () => {
+    if (formData.newLanguage.length>0 || formData.languageList.length + formData.newLanguage.length >= 4){
+        return;
+    }
+    setFormData((prev)=>({
+        ...prev,
+        newLanguage: [{
+            language : '',
+            level: '',
+        }],
+    }));
+};
+
+ 
+//=================자격증 추가===========================================================================
+const addCertificate = () => {
+    if (formData.newCertificate.length>0 || formData.certificateList.length + formData.newCertificate.length >= 4){
+        return;
+    }
+    setFormData((prev)=>({
+        ...prev,
+        newCertificate: [{
+            certificate_name : '',
+            certificate_no: '',
+            issuing_org:'',
+            acquired_date:'',
+        }],
+    }));
+};
+
+//=================학력 추가===========================================================================
+  const addEducation = () => {
+// 이미 새로운 학력 입력 중이거나, 총 학력이 4개 이상이면 추가하지 않음
+    if (formData.newEducation.length > 0 || (formData.education.length + formData.newEducation.length) >= 4) {
+        return;
+    }
+    setFormData((prev) =>({
+        ...prev,
+        newEducation: [{
+            school_name:'',
+            major:'',
+            sub_major: '',
+            gpa:'',
+            enroll_date: null, 
+            grad_date: null,
+            //새로운 항목 추가 시에도 edu_no 부여하기.
+            edu_no: Date.now(), //edu_no: 1750118974000
+        }],
+    }));
+  };   
 
 
-//=======================경력 ==================================================
+//=================경력 추가===========================================================================
 
-  // 경력 사항 추가 핸들러. 근데! 기존 경력과 별도로, 새로운 경력 배열에 추가
 
   const addExperience = () => {
     setFormData((prev) =>({
@@ -347,7 +442,7 @@ const saveFieldData = (type) => {
     }));
   }
 
-//==========스킬 추가=============================
+//=================스킬 추가===========================================================================
 //기술 추가 버튼 클릭 시 새  항목 추가 ! 근데 기존 기술과 별도로, 새로운 기술 배열에 추가
   const addSkill = () => {
 // 이미 새로운 학력 입력 중이거나, skillList 총 기술이 4개 이상이면 추가하지 않음
@@ -373,6 +468,21 @@ const saveFieldData = (type) => {
     // handleFieldChange가 예상하는 'e' (이벤트 객체) 형태로 객체를 생성
     handleFieldChange({ target: { name: name, value: value } }, type, 0); // newSkillList는 index 0 사용
 };
+
+//============국기 emoji======================
+const getFlagEmoji = (countryCode) => {
+    if (!countryCode) return '';
+    // 몇 가지 예시, 실제 사용할 언어 코드에 따라 추가해야 합니다.
+    const flags = {
+        'ko': '🇰🇷',
+        'en': '🇬🇧', // 또는 🇺🇸
+        'ja': '🇯🇵',
+        'zh': '🇨🇳',
+        'es': '🇪🇸'
+        // 필요에 따라 더 많은 언어 코드와 이모지 추가
+    };
+    return flags[countryCode.toLowerCase()] || '';
+};
  
     return (
         <>
@@ -390,23 +500,19 @@ const saveFieldData = (type) => {
                     <br />
                 </p>
             <form >
-                        <label>
-                            <div><span>제목</span></div> {/* 제목을 div로 감싸고 */}
-                            <div><input type="text" name="title" onChange={handleChange} value={formData.title}/></div> {/* 인풋을 div로 감쌉니다 */}
-                        </label>
+                    <label>
+                        <div><span>제목:</span></div> {/* 제목을 div로 감싸고 */}
+                        <div><input type="text" name="title" onChange={handleChange} value={formData.title}></input></div> {/* 인풋을 div로 감쌉니다 */}
+                    </label>
                         <br /> {/* <br />은 이제 필요 없을 수 있습니다. 레이아웃에 따라 조절하세요. */}
 
                         <label>
-                            <div><span>희망직무</span></div>
+                            <div><span>희망직무:</span></div>
                             <div><input type="text" name="desired_position" onChange={handleChange} value={formData.desired_position}/></div>
                         </label>
                         <br />
-
                         {/* 나머지 부분도 동일하게 적용 */}
-                        <label>
-                            <div><span>기술/툴</span></div>
-                        </label>
-                            {formData.skillList.length > 0 ?(
+                            {/* {formData.skillList.length > 0 ?(
                                 <div className="skill-display-section"> 
                                 <h4>기존 기술 정보</h4>
                                     {formData.skillList.map((skill) =>{
@@ -434,13 +540,65 @@ const saveFieldData = (type) => {
                                 </div>
                             ):(
                                 <p>등록된 기존 기술 정보가 없습니다</p>
-                            )}
+                            )} */}
+{formData.skillList.length > 0 ? (
+    <div className="skill-section-wrapper"> {/* 새로운 wrapper div 추가 (스타일링 용이) */}
+        <div className="summary-row">
+            {/* 🚩 접힌 상태에서 보여줄 요약 정보 */}
+            <p className="summary-text">
+                <strong>보유 기술:</strong>&nbsp;
+                {formData.skillList.map((skill, index) => (
+                                <span key={skill.skill_code || index} className="tag">
+                                    {skill.skill_code}
+                                    {/* {skill.exp_level && ` (${skill.exp_level})`} 레벨도 같이 보여줄 때 */}
+                                </span>
+                            ))}
+            </p>
+            {/* 🚩 상세보기/접기 버튼 */}
+            <PrettyBtn
+                type="button"
+                size="sm"
+                onClick={() => toggleDetails('skill')}
+                style={{ marginLeft: '10px' }}
+            >
+                {showSkillDetails ? '접기' : '상세보기'}
+            </PrettyBtn>
+        </div>
 
-                             {/* DropDown 컴포넌트와 스킬 목록을 감싸는 label 태그의 닫힘 */}
+        {/* 🚩 showSkillDetails 상태에 따라 상세 내용 조건부 렌더링 */}
+        {showSkillDetails && (
+            <div className="skill-details-section">
+                <h4>기존 기술 정보 상세</h4>
+                {formData.skillList.map((skill) => (
+                    <div key={`skill-${skill.skill_code}`} className='skill-row-display'>
+                        <PrettyBtn
+                            type="button"
+                            size="sm"
+                            onClick={() => removeStagedField('skillList', skill.skill_code)}
+                            style={{ marginRight: '10px', padding: '5px 8px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                        >
+                            <img
+                                src="/resources/img/minus_circle.png"
+                                alt="기술 삭제"
+                                style={{ width: '20px', height: '20px', border: 'none', backgroundColor: 'transparent' }}
+                            />
+                        </PrettyBtn>
+                        <p><strong>분야:</strong>{skill.group_code}</p>
+                        {skill.group_code && <p><strong>기술:</strong>{skill.skill_code}</p>}
+                        {skill.skill_code && <p><strong>숙련도:</strong>{skill.exp_level}</p>}
+                    </div>
+                ))}
+            </div>
+        )}
+    </div>
+) : (
+    <p>등록된 기존 기술 정보가 없습니다</p>
+)}
+
                             {/* 신규 기술 입력 버튼 */}
                             {formData.newSkillList.length === 0 && formData.skillList.length < 4 && (
                                 <div>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <div style={{ display: 'flex',justifyContent: 'flex-end', alignItems: 'center' }}>
                                         <PrettyBtn type="button" size="sm" onClick={addSkill} >새 기술 추가</PrettyBtn>
                                     </div>
                                 </div>
@@ -470,57 +628,248 @@ const saveFieldData = (type) => {
                                     <PrettyBtn type="button" size="sm" onClick={(e) => removeNewField(e, 'newSkillList')} style={{ marginLeft: '5px' }}>취소</PrettyBtn>
                                 </div>
                             )}
+                        <br />
+        {/* <label>
+                <div><span>외국어 능력</span></div>
+            </label> */}
+            {/* 🚩 languageList에 데이터가 있을 경우에만 섹션 렌더링 */}
+            {formData.languageList.length > 0 ? (
+                <div className="language-section-wrapper"> {/* skill-section-wrapper와 유사한 wrapper div */}
+                    <div className="summary-row">
+                        {/* 🚩 접힌 상태에서 보여줄 요약 정보 */}
+                        <p className="summary-text">
+                            <strong>보유 외국어 능력:</strong>&nbsp;
+                            {formData.languageList.map((lan, index) => (
+                                <span key={lan.language || index} className="tag"> {/* 각 언어를 태그로 표시 */}
+                                    {/* getFlagEmoji(lan.language_code) 부분 제거 */}
+                                    {lan.language}
+                                    {/* {lan.level && ` (${lan.level})`} 레벨도 같이 보여줄 때 */}
+                                </span>
+                            ))}
+                        </p>
+                        {/* 🚩 상세보기/접기 버튼 */}
+                        <PrettyBtn
+                            type="button"
+                            size="sm"
+                            onClick={() => toggleDetails('language')} // 'language' 섹션 토글
+                            style={{ marginLeft: '10px' }}
+                        >
+                            {showLanguageDetails ? '접기' : '상세보기'}
+                        </PrettyBtn>
+                    </div>
 
-                        <br />
-                    <label>
-                        <div><span>링크</span></div>
-                        <div><input type="text" name="link_url" onChange={handleChange} value={formData.link_url}/></div>
-                    </label>
-                        <br />
-                        {/* ---기존 학력 섹션 --- */}
-                    <label>
-                        <div><span>학력</span></div>
-                    </label>
-                        {formData.education.length > 0 ? (
-                            <div className="education-display-section">
-                                <h4>기존 학력 정보</h4>
-                                {formData.education.map((edu) => {
-                                     // 디버깅: 각 렌더링되는 학력 항목의 ID와 학교명 확인
-                            //console.log(`렌더링 중인 학력 항목: ID=${edu.edu_no}, 학교명=${edu.school_name}`);
-                            return (
-                                      <div key={`edu-${edu.edu_no}`} className="education-row-display">
-                                        <PrettyBtn 
-                                            type="button" 
-                                            size="sm" 
-                                            onClick={() => removeStagedField('education', edu.edu_no)} // id를 전달하여 해당 항목 삭제
-                                            style={{ marginLeft: '10px' }} // 버튼 간격 조절
-                                        >
-                                            <img
-                                                src="/resources/img/minus_circle.png" // ⭐ 로컬에 저장된 이미지 파일 경로 ⭐
-                                                alt="경력 삭제" // ⭐ 접근성을 위한 alt 텍스트 필수 ⭐
-                                                style={{
-                                                    width: '20px', // 아이콘의 너비 (필요에 따라 조절)
-                                                    height: '20px', // 아이콘의 높이 (필요에 따라 조절)
-                                                    border: 'none', // 이미지에 기본적으로 생길 수 있는 테두리 제거
-                                                    backgroundColor: 'transparent'
-                                                }}
-                                            />
-                                        </PrettyBtn>
-                                        <p><strong>학교명:</strong> {edu.school_name}</p>
-                                        <p><strong>입학일:</strong> {edu.enroll_date ? new Date(edu.enroll_date).toLocaleDateString() : 'N/A'}
-                                            {" "}
-                                            <strong>졸업일:</strong> {edu.grad_date ? new Date(edu.grad_date).toLocaleDateString() : 'N/A'}
-                                        </p>
-                                        <p><strong>전공:</strong> {edu.major}</p>
-                                        {edu.sub_major && <p><strong>복수전공:</strong> {edu.sub_major}</p>}
-                                        {edu.gpa && <p><strong>학점:</strong> {edu.gpa}</p>}
-                                    </div>
-                                );
-                })}
+                    {/* 🚩 showLanguageDetails 상태에 따라 상세 내용 조건부 렌더링 */}
+                    {showLanguageDetails && (
+                        <div className="language-details-section">
+                            <h4>기존 외국어 능력 상세</h4>
+                            {formData.languageList.map((lan) => (
+                                <div key={`language-${lan.language}`} className='language-row-display'>
+                                    <PrettyBtn
+                                        type='button'
+                                        size='sm'
+                                        onClick={() => removeStagedField('languageList', lan.language)}
+                                        style={{ marginRight: '10px', padding: '5px 8px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                                    >
+                                        <img
+                                            src="/resources/img/minus_circle.png"
+                                            alt="언어 삭제"
+                                            style={{ width: '20px', height: '20px', border: 'none', backgroundColor: 'transparent' }}
+                                        />
+                                    </PrettyBtn>
+                                    <p><strong>외국어:</strong>{lan.language}</p> {/* getFlagEmoji(lan.language_code) 부분 제거 */}
+                                    {lan.language && <p><strong>레벨:</strong>{lan.level}</p>}
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            ) : (
+                <p>등록된 기존 외국어 정보가 없습니다.</p>
+            )}
+
+                    {/* 외국어 입력 추가 버튼 */}
+                        {(formData.languageList.length + formData.newLanguage.length) < 4 && formData.newLanguage.length === 0 && (
+                        <div>
+                            <div style={{ display:'flex', justifyContent: 'flex-end', alignItems: 'center'}}>
+                                <PrettyBtn type='button' size='sm' onClick={addLanguage}>외국어 능력 추가</PrettyBtn>
                             </div>
-                        ) : (
-                            <p>등록된 기존 학력 정보가 없습니다.</p>
+                        </div>
                         )}
+                        {formData.newLanguage.length > 0 && (// newSkill 배열을 맵핑하여 입력 드롭다운 생성
+                                <div className='language-row-input'>
+                                    <DropDown
+                                        options={['영어', '독일어', '중국어']}
+                                        selected={formData.newLanguage[0]?.language || ''}
+                                        placeholder="외국어 선택"
+                                        onSelect={(value)=>handleDropdownChange('language', value, 'newLanguage' )}/>
+                                    <DropDown
+                                        options={['상','중','하']}
+                                        selected={formData.newLanguage[0]?.level || ''}
+                                        placeholder="level 선택"
+                                        onSelect={(value)=>handleDropdownChange('level', value, 'newLanguage' )}/>
+                                    <PrettyBtn type="button" size="sm" onClick={() => saveFieldData('newLanguage')} style={{ marginLeft: '10px' }}>저장</PrettyBtn>
+                                    <PrettyBtn type="button" size="sm" onClick={(e) => removeNewField(e, 'newLanguage')} style={{ marginLeft: '5px' }}>취소</PrettyBtn>
+                                </div>
+                            )}
+                        <br />
+                        {/* 기존 자격증 버튼 */}
+            {/* <label>
+                <div><span>자격증</span></div>
+            </label> */}
+            {/* 🚩 certificateList에 데이터가 있을 경우에만 섹션 렌더링 */}
+            {formData.certificateList.length > 0 ? (
+                <div className='certificate-section-wrapper'> {/* 새로운 wrapper div 추가 */}
+                    <div className="summary-row">
+                        {/* 🚩 접힌 상태에서 보여줄 요약 정보 */}
+                        <p className="summary-text">
+                            <strong>보유 자격증:</strong>&nbsp;
+                            {formData.certificateList.map((cert, index) => (
+                                <span key={cert.certificate_name || index} className="tag"> {/* 각 자격증을 태그로 표시 */}
+                                    {cert.certificate_name}
+                                    {cert.issuing_org && ` (${cert.issuing_org})`} {/* 발행기관도 같이 보여줄 때 */}
+                                </span>
+                            ))}
+                        </p>
+                        {/* 🚩 상세보기/접기 버튼 */}
+                        <PrettyBtn
+                            type="button"
+                            size="sm"
+                            onClick={() => toggleDetails('certificate')} // 'certificate' 섹션 토글
+                            style={{ marginLeft: '10px' }}
+                        >
+                            {showCertificateDetails ? '접기' : '상세보기'}
+                        </PrettyBtn>
+                    </div>
+
+                    {/* 🚩 showCertificateDetails 상태에 따라 상세 내용 조건부 렌더링 */}
+                    {showCertificateDetails && (
+                        <div className="certificate-details-section">
+                            <h4>기존 자격증 정보 상세</h4>
+                            {formData.certificateList.map((cert) => (
+                                <div key={`certificate-${cert.certificate_name}`} className='certificate-row-display'>
+                                    <PrettyBtn
+                                        type='button'
+                                        size='sm'
+                                        onClick={() => removeStagedField('certificateList', cert.certificate_name)} // 'certificateList'로 수정
+                                        style={{ marginRight: '10px', padding: '5px 8px', display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: 'transparent'}}
+                                    >
+                                        <img
+                                            src="/resources/img/minus_circle.png"
+                                            alt="자격증 삭제"
+                                            style={{width: '20px', height: '20px', border: 'none', backgroundColor: 'transparent'}}
+                                        />
+                                    </PrettyBtn>
+                                    <p><strong>자격증명:</strong>{cert.certificate_name}</p>
+                                    <p><strong>발행기관:</strong>{cert.issuing_org}</p>
+                                    <p><strong>취득일:</strong>{cert.acquired_date}</p>
+                                    {/* `certificate_no`는 필수가 아니라면 조건부 렌더링 가능 */}
+                                    {cert.certificate_no && <p><strong>일련번호:</strong>{cert.certificate_no}</p>}
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            ) : (
+                <p>등록된 기존 자격증 정보가 없습니다.</p>
+            )}
+                        {/* 자격증 추가 버튼 */}
+                         {(formData.certificateList.length + formData.newCertificate.length) < 4 && formData.newCertificate.length === 0 && (
+                        <div>
+                            <div style={{ display:'flex', justifyContent: 'flex-end', alignItems: 'center'}}>
+                                
+                                <PrettyBtn type='button' size='sm' onClick={addCertificate}>새 자격증 추가</PrettyBtn>
+                            </div>
+                        </div>
+                        )}
+                        {formData.newCertificate.length > 0 && (// newEducation 배열을 맵핑하여 입력 필드 생성
+                            <div className='certificate-row-input'>
+                                <div className='certificate-row-input-group'>
+                                <input type='text' name='certificate_name' placeholder='자격증명 입력' onChange={(e)=>handleFieldChange(e, 'newCertificate')} value={formData.newCertificate[0]?.certificate_name || ''}/>
+                                <Calendar
+                                    selectedStartDate={formData.newCertificate[0]?.start_date}
+                                    startplaceholder="취득일"
+                                    onChangeStartDate={(date)=>handleFieldDateChange('newCertificate', 'start_date', date)}
+                                    // selectedEndDate={formData.newCertificate[0]?.end_date}
+                                    // endplaceholder="퇴사일"
+                                    // onChangeEndDate={(date) => handleFieldDateChange('newCertificate', 'end_date', date)}
+                                />
+                                <input type = 'text' name='certificate_no' placeholder='자격증 일련번호' onChange={(e) => handleFieldChange(e, 'newCertificate')} value={formData.newCertificate[0]?.certificate_no||''}/>
+                                <input type='text' name='issuing_org' placeholder='발행기관' onChange={(e)=>handleFieldChange(e, 'newCertificate')} value={formData.newCertificate[0]?.issuing_org || ''}/>
+                                </div>
+                            
+                            {/* <PrettyBtn type="button" size="sm" onClick={() => removeExperience(index)} disabled={formData.newCertificate.length <= 0}>삭제</PrettyBtn> */}
+                            <PrettyBtn type="button" size="sm" onClick={()=>saveFieldData('newCertificate')}>저장</PrettyBtn>
+                            <PrettyBtn type="button" size="sm" onClick={(e)=>removeNewField(e, 'newCertificate')}>취소</PrettyBtn>
+
+
+                        </div>
+                    )}
+
+               
+                        {/* ---기존 학력 섹션 --- */}
+            {/* <label>
+                <div><span>학력</span></div>
+            </label> */}
+            {/* 🚩 education에 데이터가 있을 경우에만 섹션 렌더링 */}
+            {formData.education.length > 0 ? (
+                <div className="education-section-wrapper"> {/* 새로운 wrapper div 추가 */}
+                    <div className="summary-row">
+                        {/* 🚩 접힌 상태에서 보여줄 요약 정보 */}
+                        <p className="summary-text">
+                            <strong>학력 정보:</strong>&nbsp;
+                            {formData.education.map((edu, index) => (
+                                <span key={edu.edu_no || index} className="tag"> {/* 각 학력 항목을 태그로 표시 */}
+                                    {edu.school_name}
+                                    {edu.major && ` (${edu.major})`} {/* 전공도 같이 보여줄 때 */}
+                                </span>
+                            ))}
+                        </p>
+                        {/* 🚩 상세보기/접기 버튼 */}
+                        <PrettyBtn
+                            type="button"
+                            size="sm"
+                            onClick={() => toggleDetails('education')} // 'education' 섹션 토글
+                            style={{ marginLeft: '10px' }}
+                        >
+                            {showEducationDetails ? '접기' : '상세보기'}
+                        </PrettyBtn>
+                    </div>
+
+                    {/* 🚩 showEducationDetails 상태에 따라 상세 내용 조건부 렌더링 */}
+                    {showEducationDetails && (
+                        <div className="education-details-section">
+                            <h4>기존 학력 정보 상세</h4>
+                            {formData.education.map((edu) => (
+                                <div key={`edu-${edu.edu_no}`} className="education-row-display">
+                                    <PrettyBtn
+                                        type="button"
+                                        size="sm"
+                                        onClick={() => removeStagedField('education', edu.edu_no)}
+                                        style={{ marginRight: '10px', padding: '5px 8px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                                    >
+                                        <img
+                                            src="/resources/img/minus_circle.png"
+                                            alt="학력 삭제" // alt 텍스트를 "학력 삭제"로 변경
+                                            style={{ width: '20px', height: '20px', border: 'none', backgroundColor: 'transparent' }}
+                                        />
+                                    </PrettyBtn>
+                                    <p><strong>학교명:</strong> {edu.school_name}</p>
+                                    <p>
+                                        <strong>입학일:</strong> {edu.enroll_date ? new Date(edu.enroll_date).toLocaleDateString() : 'N/A'}
+                                        {" "}
+                                        <strong>졸업일:</strong> {edu.grad_date ? new Date(edu.grad_date).toLocaleDateString() : 'N/A'}
+                                    </p>
+                                    <p><strong>전공:</strong> {edu.major}</p>
+                                    {edu.sub_major && <p><strong>복수전공:</strong> {edu.sub_major}</p>}
+                                    {edu.gpa && <p><strong>학점:</strong> {edu.gpa}</p>}
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            ) : (
+                <p>등록된 기존 학력 정보가 없습니다.</p>
+            )}
                     {/* 신규 학력 입력 버튼 */}
                     {(formData.education.length + formData.newEducation.length) < 4 && formData.newEducation.length === 0 && (
                         <div>
@@ -553,61 +902,70 @@ const saveFieldData = (type) => {
 
                     {/* --- 경력 섹션 --- */}
                     {/* exp.career_no를 key로 사용하도록 코드를 업데이트. 만약 career_no가 null 또는 undefined일 경우를 대비하여 index를 **비상용(fallback)**으로 남겨둠 */}
-                <label>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <span>경력</span>
+                {/* 🚩 label 내부의 div에서 justifyContent: 'space-between' 제거 (버튼이 summary-row로 이동) */}
+            {/* 🚩 experience에 데이터가 있을 경우에만 섹션 렌더링 */}
+            {formData.experience.length > 0 ? (
+                <div className="experience-section-wrapper"> {/* 새로운 wrapper div 추가 */}
+                    <div className="summary-row">
+                        {/* 🚩 접힌 상태에서 보여줄 요약 정보 */}
+                        <p className="summary-text">
+                            <strong>경력 정보:</strong>&nbsp;
+                            {formData.experience.map((exp, index) => (
+                                <span key={exp.career_no || index} className="tag"> {/* 각 경력 항목을 태그로 표시 */}
+                                    {exp.company_name}
+                                    {exp.position && ` (${exp.position})`} {/* 직무도 같이 보여줄 때 */}
+                                </span>
+                            ))}
+                        </p>
+                        {/* 🚩 상세보기/접기 버튼 */}
+                        <PrettyBtn
+                            type="button"
+                            size="sm"
+                            onClick={() => toggleDetails('experience')} // 'experience' 섹션 토글
+                            style={{ marginLeft: '10px' }}
+                        >
+                            {showExperienceDetails ? '접기' : '상세보기'}
+                        </PrettyBtn>
                     </div>
-                </label>
-                        {formData.experience.length > 0 ? (
-                            <div className="experience-display-section">
-                                <h4>기존 경력 정보</h4>
-                                {formData.experience.map((exp, index) => (
-                                    <div key={exp.career_no || index} className="experience-row-display">
-                                        <PrettyBtn
-                                            type="button"
-                                            size="sm"
-                                            // exp.career_no가 있다면 그걸 사용하고, 없다면 index를 fallback으로 사용합니다.
-                                            // removeStagedField 함수는 학력(education)과 경력(experience) 모두에 사용될 수 있도록 일반화된 이름입니다.
-                                            onClick={() => removeStagedField('experience', exp.career_no || index)}
-                                            style={{ marginRight: '10px' }} // 버튼과 텍스트 사이 간격 조절
-                                        >
-                                            <img
-                                                src="/resources/img/minus_circle.png" // ⭐ 로컬에 저장된 이미지 파일 경로 ⭐
-                                                alt="경력 삭제" // ⭐ 접근성을 위한 alt 텍스트 필수 ⭐
-                                                style={{
-                                                    width: '20px', // 아이콘의 너비 (필요에 따라 조절)
-                                                    height: '20px', // 아이콘의 높이 (필요에 따라 조절)
-                                                    border: 'none', // 이미지에 기본적으로 생길 수 있는 테두리 제거
-                                                    backgroundColor: 'transparent'
-                                                }}
-                                            />
-                                        </PrettyBtn>
-                                        <p><strong>회사명:</strong> {exp.company_name}</p>
-                                        <p><strong>직무:</strong> {exp.position}</p>
-                                        <p>
-                                            <strong>기간:</strong> {exp.start_date ? new Date(exp.start_date).toLocaleDateString() : 'N/A'}
-                                            {' '}~{' '}
-                                            {exp.end_date ? new Date(exp.end_date).toLocaleDateString() : 'N/A'}
-                                        </p>
-                                        <p><strong>상세내용:</strong> {exp.notes}</p>
-                                    </div>
-                                    
-                                ))}
-                            </div>
-                        ) : (
-                            <p>등록된 기존 경력 정보가 없습니다.</p>
-                        )}
-                            {/* 무조건 렌더링: exp.position이 null, undefined, 빈 문자열이라도 <p><strong>직무:</strong> </p>가 항상 렌더링. null도 렌더링됨*/}
-                            {/* <p><strong>직무:</strong> {exp.position}</p> */}
-                            {/* 조건부 렌더링: exp.position이 truthy한 경우에만 <p> 요소가 렌더링. null은 렌더링 안됨 */}
-                            {/* {exp.position && <p><strong>직무:</strong> {exp.position}</p>} */}
-                            {/* <p><strong>상세내용:</strong> {exp.notes}</p> */}
-                        <br />
+
+                    {/* 🚩 showExperienceDetails 상태에 따라 상세 내용 조건부 렌더링 */}
+                    {showExperienceDetails && (
+                        <div className="experience-details-section">
+                            <h4>기존 경력 정보 상세</h4>
+                            {formData.experience.map((exp, index) => (
+                                <div key={exp.career_no || index} className="experience-row-display">
+                                    <PrettyBtn
+                                        type="button"
+                                        size="sm"
+                                        onClick={() => removeStagedField('experience', exp.career_no || index)}
+                                        style={{ marginRight: '10px', padding: '5px 8px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                                    >
+                                        <img
+                                            src="/resources/img/minus_circle.png"
+                                            alt="경력 삭제"
+                                            style={{ width: '20px', height: '20px', border: 'none', backgroundColor: 'transparent' }}
+                                        />
+                                    </PrettyBtn>
+                                    <p><strong>회사명:</strong> {exp.company_name}</p>
+                                    {exp.position && <p><strong>직무:</strong> {exp.position}</p>} {/* 직무가 있을 때만 렌더링 */}
+                                    <p>
+                                        <strong>기간:</strong> {exp.start_date ? new Date(exp.start_date).toLocaleDateString() : 'N/A'}
+                                        {' '}~{' '}
+                                        {exp.end_date ? new Date(exp.end_date).toLocaleDateString() : 'N/A'}
+                                    </p>
+                                    {exp.notes && <p><strong>상세내용:</strong> {exp.notes}</p>} {/* 상세내용이 있을 때만 렌더링 */}
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            ) : (
+                <p>등록된 기존 경력 정보가 없습니다.</p>
+            )}
                         {/* 경력 추가 버튼*/}
                         {(formData.experience.length + formData.newExperience.length) < 4 && formData.newExperience.length === 0 && (
                         <div>
                             <div style={{ display:'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                                <span>.</span>
                                 <PrettyBtn type='button' size='sm' onClick={addExperience}>새 경력 추가</PrettyBtn>
                             </div>
                         </div>
@@ -636,7 +994,11 @@ const saveFieldData = (type) => {
 
                         </div>
                     )}
-
+                    <label>
+                        <div><span>링크</span></div>
+                        <div><input type="text" name="link_url" onChange={handleChange} value={formData.link_url}/></div>
+                    </label>
+                        <br />
 
                         <label>
                             {/*내가 작성한 자소서는 DB에 저장할것인지???*/}
@@ -664,9 +1026,7 @@ const saveFieldData = (type) => {
                      />
                      <br/>
                         <br/>
-                        <label>
-                            <div><span>Template</span></div>
-                        </label>
+        
                             <div className='templete-test'>
                                 <TemplateSelection formData={formData}>템플렛선택</TemplateSelection>
                             </div>
