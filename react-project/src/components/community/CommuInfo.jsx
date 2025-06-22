@@ -41,7 +41,7 @@ const CommuInfo = () => {
 
         <ul className="info-list">
         {infoList.map((item) => (
-          <li key={item.id} className={`info-item ${openItem === item.id ? 'open' : ''}`}>
+          <li key={item.id} className={`info-item ${openItem === item.id ? 'inactive' : ''}`}>
             <div className="question-info" onClick={() => toggleItem(item.id)}>
               <div className='question-left'>
               <span className="info-Q">Q.</span>

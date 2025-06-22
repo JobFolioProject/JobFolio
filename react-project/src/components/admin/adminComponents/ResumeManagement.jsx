@@ -3,6 +3,9 @@ import AdminSideBar from '../AdminSideBar';
 import Pagination from '../../common/Pagination.jsx'; 
 import { useState, useEffect } from 'react';
 import axios from "../../../utils/axiosConfig";
+import { Select, MenuItem } from "@mui/material";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 const ResumeManagement = () => {
   const [tempList, setTempList] = useState([]);
@@ -109,7 +112,36 @@ const ResumeManagement = () => {
 
   fetchResumes();
 }, [currentPage, searchTerm, searchField]);
-   
+
+    // 팝업 열기 유틸
+    const openResumePopup = (physicalPath) => {
+        const path = physicalPath
+            .replace(/^.*?resume_output/, '/resumes')
+            .replace(/\\/g,'/');
+        const url = `http://localhost:80${path}`;
+        window.open(url, '_blank', 'width=900,height=700');
+    };
+
+
+    const handleStatusChange = (resumeNo, newStatus) => {
+      axios.post('/api/resume/deleteResume', {
+        resume_no: resumeNo,
+        status_yn: newStatus
+      })
+      .then(() => {
+        setTempList((prev) =>
+          prev.map((item) =>
+            item.resume_no === resumeNo ? { ...item, status_yn: newStatus } : item
+          )
+        );
+      })
+      .catch((err) => {
+        console.error("표시여부 변경 실패:", err);
+        alert("표시여부 변경 실패");
+      });
+    };
+    
+
     return (
     <div className='resumeManagement'>
     <AdminSideBar/>
@@ -121,8 +153,9 @@ const ResumeManagement = () => {
         <div className='info-section-content-box'>
           <div className='info-header'>
             <h3>이력서</h3>
-            <p className='info-warning'>삭제할 경우 복구가 어려우며, 하이잡 이용자에게 해당 항목이 즉시 비노출됩니다. 삭제 시 신중히 선택 바랍니다.</p>
-            <div className='info-controls'>
+            <p className='info-warning'>삭제할 경우 복구가 어려우며, JobFolio 이용자에게 해당 항목이 즉시 비노출됩니다. 삭제 시 신중히 선택 바랍니다.</p>
+            <div className='info-controls search-bar'>
+              <div className="search-group">
               <select
                 className="search-select"
                 value={searchField}
@@ -134,15 +167,16 @@ const ResumeManagement = () => {
               </select>
 
               <input
-                clasName="search-input"
+                className="search-input"
                 type="text"
-                palceholder="검색어 입력"
+                placeholder="검색어 입력"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}              
               >
               </input>
 
               <button onClick={() => setCurrentPage(1)}>검색</button>
+              </div>
               <button onClick={handleDeleteSelected}>선택 삭제</button>
             </div>
             </div>
@@ -162,7 +196,8 @@ const ResumeManagement = () => {
                 key={template.resume_no}
                 className="resume-card-wrapper"
               >
-                <div className="template-slide">
+                <div className="template-slide"
+                  onClick={() => openResumePopup(template.resume_file_pypath)}>
                   <input
                     type="checkbox"
                     className='resume-select-checkbox'
@@ -183,6 +218,21 @@ const ResumeManagement = () => {
                     <p><strong>제목:</strong> {template.title}</p>
                     <p><strong>작성일:</strong> {template.create_date? template.create_date.slice(0,16) : '날짜 없음'}</p>
                     <p><strong>작성자:</strong> {template.user_name}</p>
+
+                    <div className='status-select-container'>
+                      <Select
+                        className='input-status-select'
+                        value={template.status_yn ?? "N"}
+                        onChange={(e) => handleStatusChange(template.resume_no, e.target.value)}
+                      >
+                        <MenuItem value="N">
+                          <VisibilityIcon/> 노출
+                        </MenuItem>
+                        <MenuItem value="Y">
+                          <VisibilityOffIcon/> 숨김
+                        </MenuItem>
+                      </Select>
+                    </div>
                 </div>
               </div>
             ))}
