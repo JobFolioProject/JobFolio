@@ -61,17 +61,16 @@
     color: #333;
     font-size: 1.6em;
     text-align: center;
-    margin-top: 0;
+    margin-bottom: 5px;
 }
 
 .certificationContainer {
     display: flex;
-    justify-content: center;
-    padding: 0 15px;
+    padding: 15px 15px;
 }
 .certificationInputArea {
     display: grid;
-    grid-template-columns: repeat(6, minmax(120px, 1fr)); /* Education과 동일한 그리드 레이아웃 */
+    grid-template-columns: repeat(6, auto); /* Education과 동일한 그리드 레이아웃 */
     gap: 10px;
     width: 100%;
     max-width: 900px;
@@ -106,7 +105,7 @@
     border: 1px solid #a0cbed; /* 테마 색상 유지 */
     border-radius: 6px;
     box-sizing: border-box;
-    font-size: 13px;
+    font-size: 14px;
     background-color: #ffffff;
     color: #555;
     transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
@@ -171,7 +170,7 @@
     resize: vertical;
     padding: 12px;
     box-sizing: border-box;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: normal;
     color: #555;
     border: 1px solid #a0cbed;
@@ -188,8 +187,6 @@
     display: flex;
     justify-content: flex-end;
     gap: 15px;
-    margin-top: 15px;
-    margin-bottom: 15px;
     padding: 0 15px;
 }
 /* 폼 버튼 공통 스타일 */

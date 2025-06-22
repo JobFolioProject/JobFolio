@@ -1,4 +1,5 @@
 import '../../css/user/MyPage.css';
+import Banner from '../common/Banner';
 import SideBar from './myPageComponent/SideBar';
 import { Outlet, useLocation } from 'react-router-dom';
 
@@ -30,6 +31,8 @@ const MyPage = () => {
     const pageTitle = getPageTitle(location.pathname);
 
     return (
+        <>
+            <Banner pageName="마이페이지" />
         <div className="MyPage">
             <SideBar />
             <div className="mypagebg">
@@ -43,6 +46,7 @@ const MyPage = () => {
                 </div>
             </div>
         </div>
+    </>
     );
 };
 

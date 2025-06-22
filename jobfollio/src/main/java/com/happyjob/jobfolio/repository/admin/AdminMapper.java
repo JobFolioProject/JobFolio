@@ -7,6 +7,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.happyjob.jobfolio.vo.usermgr.UserModel;
+import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface AdminMapper {
@@ -49,4 +50,16 @@ public interface AdminMapper {
     List<UserModel> selectFillterAndPageCustomers(Map<String, Object> paramMap);
     // 유저 총 카운트
     int selectTotalCustomerCount(Map<String, Object> paramMap);
+
+
+    UserModel getMemberById(@Param("memberId") String memberId);
+
+
+    int updateUserAuthority(@Param("memberId") String memberId, @Param("userType") String userType);
+
+
+    int withdrawUser(@Param("memberId") String memberId);
+
+
+    int restoreUser(@Param("memberId") String memberId);
 }

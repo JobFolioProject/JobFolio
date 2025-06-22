@@ -180,7 +180,6 @@ const SkillSection = React.memo(({ userNo, skillList, onListChange }) => {
     }, []); // 의존성 배열에 콜백 추가 (useCallback)
 
     // SkillDetailModal에서 '저장' 시 호출될 콜백 ( SkillAddForm의 currentFormSkills 업데이트용 )
-    // 이 함수는 SkillAddForm 내부에서 currentFormSkills 상태를 업데이트합니다.
     const updateSkillDetailInAddForm = useCallback((updatedSkillData) => {}, []);
     //// SkillDetailModal에서 삭제 시 호출될 콜백 (SkillAddForm의 currentFormSkills에서 스킬 제거)
     const deleteSkillInAddForm = useCallback((skillToDeleteCode, skillToDeleteGroupCode) => {}, []);

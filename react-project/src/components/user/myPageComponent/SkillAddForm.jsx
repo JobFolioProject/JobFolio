@@ -254,7 +254,7 @@ const SkillAddForm = React.memo(
         return (
             <div className="skill-add-form-container">
                 <h2>보유 스킬 관리</h2>
-                <div className="search-input-group">
+                <div className="skill-search-input-group">
                     <input
                         type="text"
                         placeholder="스킬명 또는 그룹명으로 검색 (예: Java, 백엔드)"
@@ -268,88 +268,90 @@ const SkillAddForm = React.memo(
                             X
                         </button>
                     )}
-                </div>
-                {errorMessage && <ValidationMessage message={errorMessage} />}
-                {loading && <p className="loading-message">스킬 목록을 불러오는 중...</p>}
+                    {errorMessage && <ValidationMessage message={errorMessage} />}
+                    {loading && <p className="loading-message">스킬 목록을 불러오는 중...</p>}
 
-                <div className="skill-results-area">
-                    {filterSkills.length > 0 ? (
-                        <ul className="skill-results-list">
-                            {filterSkills.map((skill) => {
-                                // skill은 CommSkillDto 형태
-                                const skillUniqueId = `${skill.detail_code}-${skill.group_code}`;
-                                // currentFormSkills(SkillVO 리스트)에 포함되어 있는지 (체크박스 표시용)
-                                const isSelectedInForm = currentFormSkills.some(
-                                    (s) => `${s.skill_code}-${s.group_code}` === skillUniqueId
-                                );
+                    <div className="skill-results-area">
+                        {filterSkills.length > 0 ? (
+                            <ul className="skill-results-list">
+                                {filterSkills.map((skill) => {
+                                    // skill은 CommSkillDto 형태
+                                    const skillUniqueId = `${skill.detail_code}-${skill.group_code}`;
+                                    // currentFormSkills(SkillVO 리스트)에 포함되어 있는지 (체크박스 표시용)
+                                    const isSelectedInForm = currentFormSkills.some(
+                                        (s) => `${s.skill_code}-${s.group_code}` === skillUniqueId
+                                    );
 
-                                return (
-                                    <li
-                                        key={`${skill.detail_code}-${skill.group_code}`}
-                                        className={`skill-result-item ${isSelectedInForm ? 'selected' : ''}`}
-                                        onClick={() => skillSelection(skill)}
-                                    >
-                                        <input type="checkbox" checked={isSelectedInForm} readOnly />
-                                        <span className="skill-result-text">
-                                            {skill.detail_name} ({skill.group_code})
-                                        </span>
-                                    </li>
-                                );
-                            })}
-                        </ul>
-                    ) : (
-                        !loading &&
-                        searchKeyword.trim().length > 0 && <p className="no-results-message">검색 결과가 없습니다.</p>
+                                    return (
+                                        <li
+                                            key={`${skill.detail_code}-${skill.group_code}`}
+                                            className={`skill-result-item ${isSelectedInForm ? 'selected' : ''}`}
+                                            onClick={() => skillSelection(skill)}
+                                        >
+                                            <input type="checkbox" checked={isSelectedInForm} readOnly />
+                                            <span className="skill-result-text">
+                                                {skill.detail_name} ({skill.group_code})
+                                            </span>
+                                        </li>
+                                    );
+                                })}
+                            </ul>
+                        ) : (
+                            !loading &&
+                            searchKeyword.trim().length > 0 && (
+                                <span className="no-results-message">검색 결과가 없습니다.</span>
+                            )
+                        )}
+                    </div>
+                    {currentFormSkills.length > 0 && incompleteSkillsExist && (
+                        <span className="guidance-message">
+                            <WarningIcon className="warning-icon" /> **저장하려면 모든 스킬의 상세 정보(숙련도, 사용
+                            툴/특이사항)를 입력해야 합니다.** <br></br>각 스킬 태그를 클릭하여 입력해주세요.
+                        </span>
+                    )}
+                    {currentFormSkills.length > 0 && (
+                        <div className="temporary-skill-tags">
+                            <h4>현재 선택/관리 중인 스킬:</h4>
+                            <div className="tags-wrapper">
+                                {currentFormSkills.map((skill) => {
+                                    const isSkillIncomplete =
+                                        !skill.exp_level ||
+                                        skill.exp_level.trim() === '' ||
+                                        !skill.skill_tool ||
+                                        skill.skill_tool.trim() === '';
+                                    return (
+                                        <div
+                                            key={`${skill.user_no}-${skill.skill_code}-${skill.group_code}`}
+                                            className="temp-skill-tag"
+                                            onClick={() =>
+                                                onTagClick({
+                                                    ...skill, // SkillVO 형태의 스킬 데이터 (임시 필드 포함)
+                                                    // SkillDetailModal에서 사용될 콜백들 (SkillAddForm의 상태를 변경)
+                                                    onDetailSave: handleUpdateDetailFromModal,
+                                                    onDetailDelete: handleDeleteDetailFromModal,
+                                                })
+                                            }
+                                        >
+                                            <span>
+                                                {skill.skill_name} ({skill.group_code})
+                                                {isSkillIncomplete && <WarningIcon className="incomplete-icon" />}
+                                            </span>
+                                            <span
+                                                className="temp-skill-tag-remove"
+                                                onClick={(e) => {
+                                                    e.stopPropagation(); // 태그 클릭 이벤트(모달 열기) 전파 방지
+                                                    removeSkillItem(skill);
+                                                }}
+                                            >
+                                                ❌
+                                            </span>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
                     )}
                 </div>
-                {currentFormSkills.length > 0 && incompleteSkillsExist && (
-                    <span className="guidance-message">
-                        <WarningIcon className="warning-icon" /> **저장하려면 모든 스킬의 상세 정보(숙련도, 사용
-                        툴/특이사항)를 입력해야 합니다.** <br></br>각 스킬 태그를 클릭하여 입력해주세요.
-                    </span>
-                )}
-                {currentFormSkills.length > 0 && (
-                    <div className="temporary-skill-tags">
-                        <h4>현재 선택/관리 중인 스킬:</h4>
-                        <div className="tags-wrapper">
-                            {currentFormSkills.map((skill) => {
-                                const isSkillIncomplete =
-                                    !skill.exp_level ||
-                                    skill.exp_level.trim() === '' ||
-                                    !skill.skill_tool ||
-                                    skill.skill_tool.trim() === '';
-                                return (
-                                    <div
-                                        key={`${skill.user_no}-${skill.skill_code}-${skill.group_code}`}
-                                        className="temp-skill-tag"
-                                        onClick={() =>
-                                            onTagClick({
-                                                ...skill, // SkillVO 형태의 스킬 데이터 (임시 필드 포함)
-                                                // SkillDetailModal에서 사용될 콜백들 (SkillAddForm의 상태를 변경)
-                                                onDetailSave: handleUpdateDetailFromModal,
-                                                onDetailDelete: handleDeleteDetailFromModal,
-                                            })
-                                        }
-                                    >
-                                        <span>
-                                            {skill.skill_name} ({skill.group_code})
-                                            {isSkillIncomplete && <WarningIcon className="incomplete-icon" />}
-                                        </span>
-                                        <span
-                                            className="temp-skill-tag-remove"
-                                            onClick={(e) => {
-                                                e.stopPropagation(); // 태그 클릭 이벤트(모달 열기) 전파 방지
-                                                removeSkillItem(skill);
-                                            }}
-                                        >
-                                            ❌
-                                        </span>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    </div>
-                )}
                 <div className="skillFormButtons">
                     <button type="button" onClick={handleCancel}>
                         취소

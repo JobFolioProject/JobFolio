@@ -796,4 +796,117 @@ public class UserController {
         }
     }
 
+    /**
+     * 마이페이지 비밀번호 변경
+     */
+    @PostMapping("/change-password")
+    public ResponseEntity<Map<String, Object>> changePassword(
+            @RequestBody Map<String, Object> paramMap,
+            HttpServletRequest request,
+            HttpServletResponse response) {
+
+        logger.info("+ Start UserController.changePassword");
+        logger.info("   - ParamMap : " + paramMap);
+
+        Map<String, Object> resultMap = new HashMap<>();
+
+        try {
+            // JWT에서 사용자 정보 추출
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+            if (authentication == null || !authentication.isAuthenticated() ||
+                    !(authentication.getPrincipal() instanceof UserPrincipal)) {
+
+                resultMap.put("result", "N");
+                resultMap.put("message", "로그인이 필요합니다.");
+                return ResponseEntity.ok(resultMap);
+            }
+
+            UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+            String currentLoginId = userPrincipal.getLogin_id();
+            Long currentUserNo = userPrincipal.getUser_no();
+
+            // 요청 파라미터 검증
+            String currentPassword = (String) paramMap.get("currentPassword");
+            String newPassword = (String) paramMap.get("newPassword");
+            String confirmPassword = (String) paramMap.get("confirmPassword");
+
+            if (currentPassword == null || currentPassword.trim().isEmpty()) {
+                resultMap.put("result", "N");
+                resultMap.put("message", "현재 비밀번호를 입력해주세요.");
+                return ResponseEntity.ok(resultMap);
+            }
+
+            if (newPassword == null || newPassword.trim().isEmpty()) {
+                resultMap.put("result", "N");
+                resultMap.put("message", "새 비밀번호를 입력해주세요.");
+                return ResponseEntity.ok(resultMap);
+            }
+
+            if (confirmPassword == null || confirmPassword.trim().isEmpty()) {
+                resultMap.put("result", "N");
+                resultMap.put("message", "새 비밀번호 확인을 입력해주세요.");
+                return ResponseEntity.ok(resultMap);
+            }
+
+            // 새 비밀번호와 확인 비밀번호 일치 확인
+            if (!newPassword.equals(confirmPassword)) {
+                resultMap.put("result", "N");
+                resultMap.put("message", "새 비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+                return ResponseEntity.ok(resultMap);
+            }
+
+            // 현재 비밀번호와 새 비밀번호가 같은지 확인
+            if (currentPassword.equals(newPassword)) {
+                resultMap.put("result", "N");
+                resultMap.put("message", "현재 비밀번호와 새 비밀번호가 동일합니다.");
+                return ResponseEntity.ok(resultMap);
+            }
+
+            // UserService의 updatePassword 메서드 사용 (현재 비밀번호 검증 포함)
+            Map<String, Object> updateMap = new HashMap<>();
+            updateMap.put("login_id", currentLoginId);
+            updateMap.put("currentPassword", currentPassword);
+            updateMap.put("newPassword", newPassword);
+
+            int updateResult = userService.updatePassword(updateMap);
+
+            if (updateResult > 0) {
+                try {
+                    // 사용자의 모든 토큰 무효화 (다른 기기에서도 로그아웃)
+                    userService.invalidateUserTokens(currentUserNo.intValue(), "PASSWORD_CHANGED");
+
+                    // 현재 기기 쿠키 삭제
+                    cookieUtil.deleteAllAuthCookies(response);
+
+                    logger.info("비밀번호 변경 완료 및 전체 로그아웃 처리: " + currentLoginId);
+
+                } catch (Exception logoutError) {
+                    logger.error("비밀번호 변경 후 로그아웃 처리 중 오류: ", logoutError);
+                }
+
+                resultMap.put("result", "Y");
+                resultMap.put("message", "비밀번호가 성공적으로 변경되었습니다. 보안을 위해 다시 로그인해주세요.");
+                return ResponseEntity.ok(resultMap);
+
+            } else {
+                resultMap.put("result", "N");
+                resultMap.put("message", "현재 비밀번호가 올바르지 않습니다.");
+                return ResponseEntity.ok(resultMap);
+            }
+
+        } catch (IllegalArgumentException e) {
+            // 비밀번호 검증 에러 (UserService에서 발생)
+            logger.error("Password validation error in changePassword: ", e);
+            resultMap.put("result", "N");
+            resultMap.put("message", e.getMessage());
+            return ResponseEntity.ok(resultMap);
+        } catch (Exception e) {
+            logger.error("Error in changePassword: ", e);
+            resultMap.put("result", "N");
+            resultMap.put("message", "비밀번호 변경 중 오류가 발생했습니다.");
+            return ResponseEntity.internalServerError().body(resultMap);
+        }
+    }
+
 }

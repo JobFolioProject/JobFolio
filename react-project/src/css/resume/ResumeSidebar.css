@@ -10,7 +10,7 @@
   /* position: fixed; */
   position: sticky;
   top: 30px; /* sticky 동작 위치 */
-  margin: 50px 0 50px 30px; /* 콘텐츠와 간격 조절 */
+  margin: 50px 0 50px 10%; /* 콘텐츠와 간격 조절 */
   flex-shrink: 0; 
   transition: all 0.3s ease-in-out;
   /* 호버 효과 줄 때나 반응형 대응시 부드럽게 전환됨 */

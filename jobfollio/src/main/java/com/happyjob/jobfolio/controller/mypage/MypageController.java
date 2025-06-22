@@ -2,8 +2,11 @@ package com.happyjob.jobfolio.controller.mypage;
 
 import com.happyjob.jobfolio.service.mypage.MypageService;
 import com.happyjob.jobfolio.service.resume.ResumeService;
+import com.happyjob.jobfolio.vo.admin.CustomerListDto;
 import com.happyjob.jobfolio.vo.join.UserVO;
 import com.happyjob.jobfolio.vo.mypage.*;
+import com.happyjob.jobfolio.vo.pay.PayModel;
+import com.happyjob.jobfolio.vo.usermgr.UserModel;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -220,13 +223,29 @@ public class MypageController {
 
 
 
-    // ======================================== 결재 내역 =============================================
-    // 마이페이지 - 결재 내역 조회
+    // ======================================== 결제 내역 =============================================
+    // 마이페이지 - 결제 내역 조회
     @GetMapping("/payHistory/{user_no}")
-    public Map<String, Object> payHistory(@PathVariable Long userNo) {
-        Map<String, Object> resultMap = new HashMap<String, Object>();
+    public ResponseEntity<PayResponseDto> payHistory(@PathVariable(name = "user_no") Long userNo,
+                                               @RequestParam(required = false) String search,
+                                               @RequestParam(defaultValue = "1") int page,
+                                               @RequestParam(defaultValue  = "10") int limit,
+                                             @RequestParam(name = "status", defaultValue = "1") int pay_status) {
 
-        return resultMap;
+
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("user_no", userNo);
+        paramMap.put("search", search);
+        int offset = (page - 1) * limit;
+        paramMap.put("offset", offset);
+        paramMap.put("limit", limit);
+        paramMap.put("page", page);
+        paramMap.put("status", pay_status);
+
+        int totalCount = mypageService.getTotalPayCount(paramMap);
+        List<PayHisDto> payHistoryData = mypageService.getPayHistory(paramMap);
+
+        return ResponseEntity.ok(new PayResponseDto(payHistoryData,totalCount));
     }
 
     // ======================================== 좋아요 내역 =============================================
