@@ -134,13 +134,14 @@ public class AdminSalesController {
         String paymentKey = (String) params.get("paymentKey");
         String orderId = (String) params.get("orderId");
         int amount = Integer.parseInt(params.get("amount").toString());
+        int userNo = Integer.parseInt(params.get("user_no").toString());
+        int subPeriod = Integer.parseInt(params.get("sub_period").toString());
 
         Map<String, Object> result = new HashMap<>();
 
         try {
             String encodedAuth = Base64.getEncoder().encodeToString((secretKey + ":").getBytes("UTF-8"));
-
-            URL url = new URL("https://api.tosspayments.com/v1/payments/{paymentKey}/cancel");
+            URL url = new URL("https://api.tosspayments.com/v1/payments/" + paymentKey + "/cancel");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
             conn.setRequestMethod("POST");
@@ -148,17 +149,13 @@ public class AdminSalesController {
             conn.setRequestProperty("Content-Type", "application/json");
             conn.setDoOutput(true);
 
-            String jsonBody = String.format(
-                    "{\\\"cancelReason\\\":\\\"구매자가 취소를 원함\\\"}"
-            );
-
+            String jsonBody = "{\"cancelReason\":\"구매자가 취소를 원함\"}";
             try (OutputStream os = conn.getOutputStream()) {
                 os.write(jsonBody.getBytes("UTF-8"));
             }
 
             int responseCode = conn.getResponseCode();
             InputStream is = (responseCode == 200) ? conn.getInputStream() : conn.getErrorStream();
-
             BufferedReader in = new BufferedReader(new InputStreamReader(is, "UTF-8"));
             StringBuilder responseBody = new StringBuilder();
             String line;
@@ -169,7 +166,7 @@ public class AdminSalesController {
 
             if (responseCode != 200) {
                 result.put("success", false);
-                result.put("message", "결제 승인 실패: " + responseBody.toString());
+                result.put("message", "환불 승인 실패: " + responseBody);
                 return result;
             }
 
@@ -177,8 +174,15 @@ public class AdminSalesController {
             Map<String, Object> responseData = mapper.readValue(responseBody.toString(), Map.class);
             Map<String, Object> metadata = (Map<String, Object>) responseData.get("metadata");
 
+            System.out.println("1. 토스 환불 응답 : " + responseData);
+
+            if (metadata == null) {
+                result.put("success", false);
+                result.put("message", "환불은 되었지만 메타데이터가 누락되었습니다.");
+                return result;
+            }
+
             String productNo = metadata.get("product_no").toString();
-            String userNo = metadata.get("user_no").toString();
             String orderName = metadata.get("order_name").toString();
 
             Map<String, Object> paramMap = new HashMap<>();
@@ -188,27 +192,33 @@ public class AdminSalesController {
             paramMap.put("product_no", productNo);
             paramMap.put("user_no", userNo);
             paramMap.put("order_name", orderName);
+            paramMap.put("sub_period", subPeriod);
 
-            int inserted = adminSalesService.refundSuccess(paramMap);
-            if (inserted > 0) {
+            // DB 상태 업데이트
+            int updated = adminSalesService.refundSuccess(paramMap);
+            if (updated > 0) {
+                // 환불 성공 시 구독 기간 차감 처리
+                Map<String, Object> subParamMap = new HashMap<>();
+                subParamMap.put("user_no", userNo);
+                subParamMap.put("sub_period", subPeriod);
+
+                adminSalesService.updateUserSubscription(subParamMap);
+
                 result.put("success", true);
                 result.put("message", "환불 성공");
-
-                 updateUserSubscription(orderId);
             } else {
                 result.put("success", false);
-                result.put("message", "환불 성공");
+                result.put("message", "DB 업데이트 실패");
             }
 
         } catch (Exception e) {
             result.put("success", false);
             result.put("message", "서버 에러: " + e.getMessage());
+            e.printStackTrace();
         }
+
         return result;
     }
 
-    // 환불 후 구독 기간 빼기
-    private void updateUserSubscription(String orderId) throws Exception {
-        adminSalesService.updateUserSubscription(orderId);
-    }
+
 }

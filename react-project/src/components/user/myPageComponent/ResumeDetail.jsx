@@ -5,6 +5,7 @@ import axios from '../../../utils/axiosConfig';
 import { useContext, useState, useEffect } from 'react';
 import { useAuth } from '../../../context/AuthContext';
 import { Navigate } from 'react-router-dom';
+import Pagination from '../../common/Pagination.jsx';
 
 const ResumeDetail = () => {
 
@@ -13,10 +14,15 @@ const ResumeDetail = () => {
     const { user, isAuthenticated } = useAuth();
     const { setEditResumeData } = useContext(ResumeEditContext);
     const [redirect, setRedirect] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalCount, setTotalCount] = useState(0);
+    const pageSize = 6;
+    const totalPages = Math.ceil(totalCount / pageSize);
+    
     
     useEffect(() => {
         axiosResumeInfo();
-    }, []);
+    }, [currentPage]);
     // 팝업 열기 유틸
   const openResumePopup = (physicalPath) => {
   // "X:/resume_output/..." → "/resumes/..."
@@ -27,22 +33,24 @@ const ResumeDetail = () => {
   window.open(url, '_blank', 'width=900,height=700');
 };
 
-    const axiosResumeInfo = async () => {
+    const axiosResumeInfo = async (page = currentPage) => {
         try {
             const userNo = user.userNo;
             
 
             // JSON 바디에 userNo 담아 POST
             const response = await axios.post('/api/resume/resumeDetail', {
-            userNo: userNo
+            userNo: userNo,
+            page,
+            pageSize,
             });
-            console.log(response);
 
-            const { resumeList } = response;
+            
 
             if (Array.isArray(resumeList) && resumeList.length >= 0) {
                 // 첫 번째 이력서를 resumeInfo에 세팅
-                setResumeList(resumeList);
+                setResumeList(response.resumeList);
+                setTotalCount(response.totalCount);
             }
             
         } catch (err) {
@@ -98,8 +106,10 @@ const ResumeDetail = () => {
             <div className="resumeItemCon">
               <div className="resumeItemHeader">
                 <h3 onClick={() => openResumePopup(item.resume_file_pypath)}>{item.title || '제목 없음'}</h3>
-                <button onClick={() => modifyResume(item.resume_file_pypath, item.title, item.publication_yn)}>수정</button>
-                <button onClick={() => deleteResume(item.resume_no)}>삭제</button>
+                <div className='bttnRow'>
+                <button className="resumeBtn" onClick={() => modifyResume(item.resume_file_pypath, item.title, item.publication_yn)}>수정</button>
+                <button className="resumeBtn" onClick={() => deleteResume(item.resume_no)}>삭제</button>
+                </div>
               </div>
               <div className="resumeItemDetail">
                 <p className="resumeItemJob">
@@ -114,6 +124,13 @@ const ResumeDetail = () => {
           </div>
         ))
       }
+            <div className="community-notice-pagination">
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                setCurrentPage={setCurrentPage}
+              />
+            </div>
         </div>
     );
 };

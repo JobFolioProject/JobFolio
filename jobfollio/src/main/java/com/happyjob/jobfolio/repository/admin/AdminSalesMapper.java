@@ -2,6 +2,7 @@ package com.happyjob.jobfolio.repository.admin;
 
 import com.happyjob.jobfolio.vo.pay.PayModel;
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,9 @@ public interface AdminSalesMapper {
     // 관리자 페이지 - 결제 내역 조회 (페이지네이션)
     public int salesHistoryCnt(Map<String, Object> paramMap);
 
-    // 관리자 페이지 - 결제 내역 조회
-    int refundSuccess(Map<String, Object> params);
+    // 관리자 페이지 - 결제 상태값 환불로 변경
+    int refundSuccess(Map<String, Object> paramMap) throws Exception;
+
+    // 관리자 페이지 - 환불 후 구독 기간 차감
+    void updateUserSubscription(Map<String, Object> paramMap);
 }

@@ -12,6 +12,7 @@ public class PayHisDto {
     private int amount;
     private String paid_date;
     private String order_id;
+    private int pay_status;
 
     public String getOrder_name() {
         return order_name;
@@ -31,6 +32,14 @@ public class PayHisDto {
 
     public int getProduct_no() {
         return product_no;
+    }
+
+    public int getPay_status() {
+        return pay_status;
+    }
+
+    public void setPay_status(int pay_status) {
+        this.pay_status = pay_status;
     }
 
     public void setProduct_no(int product_no) {

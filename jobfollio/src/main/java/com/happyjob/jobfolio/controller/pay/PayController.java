@@ -109,6 +109,8 @@ public class PayController {
 			Map<String, Object> responseData = mapper.readValue(responseBody.toString(), Map.class);
 			Map<String, Object> metadata = (Map<String, Object>) responseData.get("metadata");
 
+			System.out.println("1. 토스 결제 응답 메세지 : " + responseData);
+			
 			String productNo = metadata.get("product_no").toString();
 			String userNo = metadata.get("user_no").toString();
 			String orderName = metadata.get("order_name").toString();
