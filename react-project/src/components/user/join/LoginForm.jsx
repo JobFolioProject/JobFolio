@@ -1,7 +1,9 @@
 import "../../../css/user/join/LoginForm.css";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import FindAccountForm from "./FindAccountForm"; 
+import FindAccountForm from "./FindAccountForm";
+import FindPasswordForm from "./FindPasswordForm";
+import FindPasswordResult from "./FindPasswordResult";
 import { useAuth } from "../../../context/AuthContext";
 
 const LoginForm = ({ onClose }) => {
@@ -13,6 +15,17 @@ const LoginForm = ({ onClose }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [showFindAccount, setShowFindAccount] = useState(false);
   const [findAccountType, setFindAccountType] = useState("");
+
+  // 비밀번호 찾기 관련 state 추가 (Login.jsx와 동일)
+  const [showFindPassword, setShowFindPassword] = useState(false);
+  const [findPasswordEmail, setFindPasswordEmail] = useState("");
+  const [showFindPasswordResult, setShowFindPasswordResult] = useState(false);
+
+  // 바깥 클릭 시 창이 닫히지 않도록 처리
+  const handleOverlayClick = (e) => {
+    // 바깥 클릭 시 아무것도 하지 않음 - 창이 닫히지 않음
+    e.stopPropagation();
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -36,7 +49,9 @@ const LoginForm = ({ onClose }) => {
         navigate("/");
       } else {
         if (result.message && result.message.includes("탈퇴한 계정")) {
-          setError("탈퇴한 계정입니다. 고객센터에 문의하시거나 계정 복구를 요청해주세요.");
+          setError(
+            "탈퇴한 계정입니다. 고객센터에 문의하시거나 계정 복구를 요청해주세요."
+          );
         } else {
           setError(result.message || "로그인에 실패했습니다.");
         }
@@ -52,9 +67,9 @@ const LoginForm = ({ onClose }) => {
     }
   };
 
+  // 비밀번호 찾기 함수 수정 (Login.jsx와 동일)
   const goToFindPassword = () => {
-    setFindAccountType("password");
-    setShowFindAccount(true);
+    setShowFindPassword(true);
   };
 
   const goToFindId = () => {
@@ -72,17 +87,42 @@ const LoginForm = ({ onClose }) => {
     setFindAccountType("");
   };
 
+  // 비밀번호 찾기 관련 핸들러 함수들 추가 (Login.jsx와 동일)
+  const handleFindPasswordClose = () => {
+    setShowFindPassword(false);
+  };
+
+  const handleFindPasswordSuccess = (email) => {
+    setShowFindPassword(false);
+    setFindPasswordEmail(email);
+    setShowFindPasswordResult(true);
+  };
+
+  const handleFindPasswordResultClose = () => {
+    setShowFindPasswordResult(false);
+    setFindPasswordEmail("");
+  };
+
+  const handleGoToLogin = () => {
+    setShowFindPasswordResult(false);
+    setFindPasswordEmail("");
+  };
+
   return (
     <>
-      {!showFindAccount && (
-        <div className="login-form-modal-overlay" onClick={onClose}>
+      {!showFindAccount && !showFindPassword && !showFindPasswordResult && (
+        <div className="login-form-modal-overlay" onClick={handleOverlayClick}>
           <div
             className="login-form-modal"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="login-form-container">
               <h1 className="login-form-title">
-                <img src="/resources/logo/logo.png" alt="로고" className="logoImg" />
+                <img
+                  src="/resources/logo/logo.png"
+                  alt="로고"
+                  className="logoImg"
+                />
                 <h3 className="login-form-subtitle">
                   AI기반의 자기소개서 생성서비스
                 </h3>
@@ -174,10 +214,26 @@ const LoginForm = ({ onClose }) => {
           </div>
         </div>
       )}
+
       {showFindAccount && (
         <FindAccountForm
           onClose={handleFindAccountClose}
           type={findAccountType}
+        />
+      )}
+
+      {showFindPassword && (
+        <FindPasswordForm
+          onClose={handleFindPasswordClose}
+          onSuccess={handleFindPasswordSuccess}
+        />
+      )}
+
+      {showFindPasswordResult && (
+        <FindPasswordResult
+          onClose={handleFindPasswordResultClose}
+          email={findPasswordEmail}
+          onGoToLogin={handleGoToLogin}
         />
       )}
     </>
