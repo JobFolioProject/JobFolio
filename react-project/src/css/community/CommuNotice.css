@@ -1,30 +1,22 @@
 .community-notice-container {
   display: flex;
+  height: 100vh;
   margin-left: auto;
   margin-right: auto;
   justify-content: center;
 }
 .community-notice-container
  .community-notice-wrapper{
-  max-width: 1000px; 
-  width: 100%; 
+  min-width: 1200px; 
   padding: 0 16px; 
   box-sizing: border-box;
 }
-.community-notice-content ul{
-  list-style-type: none;
-}
-
-.community-notice-top ul {
-  list-style-type: none;
-  display: flex;
-}
-
 .community-notice-container
  .community-notice-wrapper
  .community-notice-category {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   border-top: 1px solid black;
 }
 .community-notice-container
@@ -33,7 +25,6 @@
  .community-notice-tap {
   height: 60px;
   display: flex;
-  align-items: stretch;
  }
 .community-notice-container
  .community-notice-wrapper
@@ -46,7 +37,6 @@
   padding-left: 0;
   margin: 0;
   list-style-type: none;
-  padding-left: 0;
 }
 .community-notice-container
  .community-notice-wrapper
@@ -57,15 +47,10 @@
 .community-notice-container
  .community-notice-wrapper
  .community-notice-category
- .community-notice-tap ul li a{
-  padding: 15px;
-}
-.community-notice-container
- .community-notice-wrapper
- .community-notice-category
  .community-notice-search {
   display: flex;
-  align-items: center;
+  justify-content: flex-end;  
+  margin: 16px 0;
 }
 .community-notice-container
  .community-notice-wrapper
@@ -74,6 +59,37 @@
  .community-notice-search-container{
   display: flex;
   align-items: center;
+  border: 1px solid #ccc;
+  overflow: hidden;
+  width: 100%;
+  max-width: 360px; /* 필요에 따라 조정 */
+  background-color: #fff;
+  box-sizing: border-box;
+}
+.community-notice-container
+ .community-notice-wrapper
+ .community-notice-category
+ .community-notice-search
+ .community-notice-search-container 
+ .community-notice-search-select{
+  flex: none;
+  padding: 0 12px;
+  height: 36px;
+  border: none;
+  background: none;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+  border-right: 1px solid #ccc;
+}
+.community-notice-container
+ .community-notice-wrapper
+ .community-notice-category
+ .community-notice-search
+ .community-notice-search-container 
+ .community-notice-search-select:focus{
+  outline: none;
+  box-shadow: none;
 }
 .community-notice-container
  .community-notice-wrapper
@@ -82,36 +98,26 @@
  .community-notice-search-container 
  input {
   flex: 1;
-  height: 30px;
-  padding: 0px 12px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+  height: 36px;
+  padding: 0 12px;
+  border: none;
   font-size: 14px;
-  box-sizing: border-box;
-}
-.community-notice-container
- .community-notice-wrapper
- .community-notice-category
- .community-notice-search
- .community-notice-search-container 
- input:focus {
-  opacity: 1;
+  outline: none;
 }
 .community-notice-search-btn {
-  height: 30px;
-  margin-left: 8px;
-  padding: 0px 10px;
-  display: flex;
-  align-items: center;  
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 14px;
+  flex: none;
+  width: 40px;
+  height: 36px;
+  border: none;
+  background: none;
   cursor: pointer;
-  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
 }
 .community-notice-search-btn:hover {
-  background-color: #0000003b;
-  color: black;
+  background-color: #f0f0f0;
 }
 .community-notice-search-icon {
   margin-right: 5px;
@@ -148,6 +154,15 @@
   width: 100%;
   height: 100%; 
   border-bottom: 1px solid rgb(230, 230, 230);
+}
+.community-notice-container
+ .community-notice-wrapper
+ .community-notice-section
+ .community-notice-body
+ ul
+ li
+ a:hover {
+  background: rgb(230, 243, 249)
 }
 .community-notice-container
  .community-notice-wrapper
@@ -204,7 +219,7 @@
 
 /* 중요 공지 배경 스타일 */
 .notice-priority {
-  background-color: #0000003b; 
+  background-color: #cce0ff; 
 }
 
 /* 버튼 스타일 정의 */
@@ -244,8 +259,6 @@
  .community-notice-category
  .community-notice-tap
  ul li button.active {
-  border-top: 2px solid #1f78ff;
-  border-bottom: 2px solid #1f78ff;
   font-weight: bold;
   color: #1f78ff;
   background-color: transparent;
