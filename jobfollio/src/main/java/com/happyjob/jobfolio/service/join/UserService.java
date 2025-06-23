@@ -853,7 +853,7 @@ public class UserService {
     }
 
     /**
-     * 비밀번호 재설정용 인증번호 발송 (새로운 프로세스)
+     * 비밀번호 재설정용 인증번호 발송
      */
     public boolean sendPasswordResetVerification(String email) throws Exception {
         logger.info("+ Start UserService.sendPasswordResetVerification");
@@ -873,17 +873,7 @@ public class UserService {
             int insertResult = emailVerificationMapper.insertEmailVerification(verification);
 
             if (insertResult > 0) {
-                // 이메일 발송
-                String subject = "[JobFolio] 비밀번호 재설정 인증번호";
-                String content = String.format(
-                        "비밀번호 재설정을 위한 인증번호입니다.\n\n" +
-                                "인증번호: %s\n\n" +
-                                "이 인증번호는 5분간 유효합니다.\n\n" +
-                                "JobFolio 드림",
-                        verificationCode
-                );
-
-                return emailService.sendEmail(email, subject, content);
+                return emailService.sendPasswordResetEmail(email, verificationCode);
             }
 
         } catch (Exception e) {
@@ -902,7 +892,6 @@ public class UserService {
         logger.info("   - Email : " + email);
 
         try {
-            // 인증번호 확인
             EmailVerificationVO verification = emailVerificationMapper.selectByVerificationCode(verificationCode);
 
             if (verification == null || !verification.getEmail().equals(email)) {
@@ -910,16 +899,13 @@ public class UserService {
                 return false;
             }
 
-            // 만료 시간 확인
             if (verification.getExpireTime().before(new Date())) {
                 logger.warn("   - Expired verification code for email: " + email);
                 return false;
             }
 
-            // 새 비밀번호 생성 (8자리)
             String newPassword = generateRandomPassword();
 
-            // DB에 암호화된 비밀번호 저장
             String encodedPassword = passwordEncoder.encode(newPassword);
 
             Map<String, Object> updateMap = new HashMap<>();
@@ -929,27 +915,9 @@ public class UserService {
             int updateResult = userMapper.updatePassword(updateMap);
 
             if (updateResult > 0) {
-                // 사용된 인증번호 삭제/무효화
                 emailVerificationMapper.updateVerificationUsed(verification.getId());
 
-                // 사용자 이름 조회
-                Map<String, Object> userMap = new HashMap<>();
-                userMap.put("login_id", email);
-                UserVO user = userMapper.selectUserByLoginId(userMap);
-                String userName = user != null ? user.getUser_name() : "";
-
-                // 실제 비밀번호를 이메일로 발송
-                String subject = "[JobFolio] 새로운 비밀번호 안내";
-                String content = String.format(
-                        "안녕하세요 %s님,\n\n" +
-                                "새로운 비밀번호를 안내드립니다.\n\n" +
-                                "새 비밀번호: %s\n\n" +
-                                "보안을 위해 로그인 후 반드시 비밀번호를 변경해주세요.\n\n" +
-                                "JobFolio 드림",
-                        userName, newPassword
-                );
-
-                boolean emailSent = emailService.sendEmail(email, subject, content);
+                boolean emailSent = emailService.sendNewPasswordEmail(email, newPassword);
 
                 if (emailSent) {
                     logger.info("   - Password reset successful for email: " + email);
@@ -965,6 +933,7 @@ public class UserService {
 
         return false;
     }
+
     /**
      * 8자리 랜덤 비밀번호 생성 (영문+숫자+특수문자)
      */

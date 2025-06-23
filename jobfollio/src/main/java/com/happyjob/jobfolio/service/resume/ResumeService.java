@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.happyjob.jobfolio.repository.login.LoginMapper;
 import com.happyjob.jobfolio.repository.resume.ResumeMapper;
 import com.happyjob.jobfolio.vo.join.UserVO;
 import com.happyjob.jobfolio.vo.resume.*;
@@ -181,13 +180,19 @@ public class ResumeService {
         return resumeMapper.selectResumeInfo(requestMap);
     }
 
+    // 관리자페이지에선 모든 정보 불러옴
+    public List<ResumeInfoVO> adminSelectResumeInfo(Map<String, Object> paramMap) {
+        return resumeMapper.adminSelectResumeInfo(paramMap);
+    }
+
+
+
+
     public int selectResumeCount(Map<String,Object> requestMap) {
         return resumeMapper.selectResumeCount(requestMap);
     }
 
-    public List<ResumeInfoVO> resumeLikedList(int user_no) {
-        return resumeMapper.resumeLikedList(user_no);
-    }
+ 
 
     public int unlikeResume(int user_no, int resume_no) {
         return resumeMapper.unlikeResume(user_no, resume_no);
@@ -200,6 +205,8 @@ public class ResumeService {
     public int deleteResume(int resume_no) {
         return resumeMapper.deleteResume(resume_no);
     }
+
+    public int updateResumeStatus(ResumeInfoVO resumeInfoVO) {return resumeMapper.updateResumeStatus(resumeInfoVO);}
 
     public int deleteSelectedResume(List<Integer> resume_nos) {
         return resumeMapper.deleteSelectedResume(resume_nos);
@@ -331,4 +338,12 @@ public class ResumeService {
         return resumeMapper.getSkillDetailCode(paramMap);
     }
 
+    // 마이페이지 회원 좋아요 리스트
+    public List<ResumeInfoVO> resumeLikedList(Map<String,Object> requestMap) {
+        return resumeMapper.resumeLikedList(requestMap);
+    }
+    // 마이페이지 해당 회원의 좋아요 수
+    public Integer selectLikeCount(Map<String, Object> paramMap) {
+        return resumeMapper.selectLikeCount(paramMap);
+    }
 }

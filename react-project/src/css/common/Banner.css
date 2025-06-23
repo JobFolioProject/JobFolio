@@ -5,10 +5,14 @@
   overflow: hidden;           /* 아래쪽 잘라냄 */
 }
 
+.banner img {
+  width: 100%;
+}
+
 .banner .banner-video {
   position: absolute;
   top: -0px;                  /* 필요시 영상 위치 조정 */
-  left: 0;
+  right: 0;
   min-width: 1240px; 
   height: auto;
   min-height: 100%;           /* 영상 비율에 따라 추가 */

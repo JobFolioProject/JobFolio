@@ -83,6 +83,25 @@ const CareerHistorySection = React.memo(({ userNo, careerHistoryList, onListChan
             setEditingCareerNo(null);
             return;
         }
+
+        // 현재 폼이 작성 되어 있고 확인 메세지
+        const isFormDirty =
+            currentFormCareer.company_name ||
+            currentFormCareer.position ||
+            currentFormCareer.notes ||
+            currentFormCareer.start_date ||
+            currentFormCareer.end_date;
+
+        if ((showAddForm || editingCareerNo !== null) && isFormDirty) {
+            const confirmDiscard = window.confirm(
+                '현재 작성중인 내용이 있습니다. \n새 학력을 추가하면 내용이 초기화 됩니다.'
+            );
+
+            if (!confirmDiscard) {
+                return;
+            }
+        }
+
         setCurrentFormCareer(formCareerData); // 폼 데이터 초기화
         setShowAddForm(true); // 폼을 보이도록 설정
         setEditingCareerNo(null); // 수정 모드 해제
@@ -90,7 +109,6 @@ const CareerHistorySection = React.memo(({ userNo, careerHistoryList, onListChan
         setErrors({}); // 에러 상태 초기화
         setStartDate(null); // DatePicker 초기화
         setEndDate(null); // DatePicker 초기화
-        console.log('careerHistoryList', careerHistoryList);
     };
 
     // 폼 입력 값 변경 핸들러
@@ -137,7 +155,7 @@ const CareerHistorySection = React.memo(({ userNo, careerHistoryList, onListChan
     };
     // 삭제 아이콘 버튼 클릭 핸들러
     const deleteItemClick = async (careerNoToDelete) => {
-        const isConfirm = window.confirm('정말로 이 경력을 삭제하시겠습니까? 되돌릴 수 없습니다.');
+        const isConfirm = window.confirm('정말 경력을 삭제하시겠습니까? 되돌릴 수 없습니다.');
 
         if (isConfirm) {
             setErrorMessage('');
@@ -409,7 +427,9 @@ const CareerHistorySection = React.memo(({ userNo, careerHistoryList, onListChan
                         );
                     })
                 ) : (
-                    <p className="emptyMessage">경력을 추가해 주세요</p>
+                    <div className="career-empty-container">
+                        <span className="emptyMessage">경력을 추가해 주세요</span>
+                    </div>
                 )
             ) : null}
 
