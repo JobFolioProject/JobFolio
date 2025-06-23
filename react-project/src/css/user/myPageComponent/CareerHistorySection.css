@@ -416,3 +416,11 @@
     text-align: center;
     border-right: 1px solid #eee;
 }
+
+.career-empty-container {
+    color: #6c757d;
+    text-align: center;
+    width: 100%;
+    padding: 10px;
+    font-weight: 500;
+}

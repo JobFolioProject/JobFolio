@@ -5,6 +5,7 @@ import FindAccountForm from "./FindAccountForm";
 import FindPasswordForm from "./FindPasswordForm";
 import FindPasswordResult from "./FindPasswordResult";
 import { useAuth } from "../../../context/AuthContext";
+import { useSnackbar } from "../../../context/SnackbarProvider";
 
 const LoginForm = ({ onClose }) => {
   const navigate = useNavigate();
@@ -16,14 +17,13 @@ const LoginForm = ({ onClose }) => {
   const [showFindAccount, setShowFindAccount] = useState(false);
   const [findAccountType, setFindAccountType] = useState("");
 
-  // 비밀번호 찾기 관련 state 추가 (Login.jsx와 동일)
+  const snackbar = useSnackbar();
+
   const [showFindPassword, setShowFindPassword] = useState(false);
   const [findPasswordEmail, setFindPasswordEmail] = useState("");
   const [showFindPasswordResult, setShowFindPasswordResult] = useState(false);
 
-  // 바깥 클릭 시 창이 닫히지 않도록 처리
   const handleOverlayClick = (e) => {
-    // 바깥 클릭 시 아무것도 하지 않음 - 창이 닫히지 않음
     e.stopPropagation();
   };
 
@@ -44,9 +44,37 @@ const LoginForm = ({ onClose }) => {
         password: password,
       });
 
+      console.log("=== 로그인 응답 구조 확인 ===");
+      console.log("전체 result:", result);
+      console.log("result.user:", result.user);
+      console.log("result.data:", result.data);
+
       if (result.success) {
+        let userName = '사용자';
+        
+        const possibleUserNames = [
+          result.user?.user_name,    
+          result.user?.name,        
+          result.data?.user?.user_name,
+          result.data?.user?.name,   
+          result.data?.user_name,    
+          result.data?.name,         
+          result.userName,           
+          result.name,                
+          result.user_name,          
+        ];
+
+        userName = possibleUserNames.find(name => name && typeof name === 'string' && name.trim()) || '사용자';
+        
+        console.log("최종 선택된 사용자 이름:", userName);
+
+        // 🔥 로그인 팝업 즉시 닫기
         onClose();
         navigate("/");
+        
+        // 🔥 MUI 초록색 팝업만 표시 (3초 후 자동 사라짐)
+        snackbar.auth.loginSuccess(userName);
+        
       } else {
         if (result.message && result.message.includes("탈퇴한 계정")) {
           setError(
@@ -58,16 +86,30 @@ const LoginForm = ({ onClose }) => {
       }
     } catch (error) {
       console.error("Login error:", error);
-      setError(
-        error.message ||
-          "로그인 중 오류가 발생했습니다. 네트워크 연결을 확인해주세요."
-      );
+      
+      let errorMessage = "로그인 중 오류가 발생했습니다.";
+      
+      if (error.message) {
+        if (error.message.includes("네트워크")) {
+          errorMessage = "네트워크 연결을 확인해주세요.";
+          snackbar.system.networkError();
+        } else if (error.message.includes("서버")) {
+          errorMessage = "서버에 문제가 발생했습니다.";
+          snackbar.system.serverError();
+        } else {
+          errorMessage = error.message;
+          snackbar.error(errorMessage);
+        }
+      } else {
+        snackbar.error(errorMessage);
+      }
+      
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // 비밀번호 찾기 함수 수정 (Login.jsx와 동일)
   const goToFindPassword = () => {
     setShowFindPassword(true);
   };
@@ -87,7 +129,6 @@ const LoginForm = ({ onClose }) => {
     setFindAccountType("");
   };
 
-  // 비밀번호 찾기 관련 핸들러 함수들 추가 (Login.jsx와 동일)
   const handleFindPasswordClose = () => {
     setShowFindPassword(false);
   };

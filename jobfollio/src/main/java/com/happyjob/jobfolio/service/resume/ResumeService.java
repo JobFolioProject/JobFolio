@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.happyjob.jobfolio.repository.login.LoginMapper;
 import com.happyjob.jobfolio.repository.resume.ResumeMapper;
 import com.happyjob.jobfolio.vo.join.UserVO;
 import com.happyjob.jobfolio.vo.resume.*;
@@ -33,129 +32,8 @@ public class ResumeService {
     @Value("${chatgpt.api.key}")
     private String api_key;
 
-    private String template =
-            "<!DOCTYPE html>\n" +
-                    "<html lang=\"ko\">\n" +
-                    "<head>\n" +
-                    "  <meta charset=\"UTF-8\" />\n" +
-                    "  <title>이력서 - 템플릿</title>\n" +
-                    "  <style>\n" +
-                    "    body {\n" +
-                    "      font-family: 'Noto Sans KR', sans-serif;\n" +
-                    "      margin: 0;\n" +
-                    "      padding: 60px;\n" +
-                    "      background: #f6f6f6;\n" +
-                    "      color: #000;\n" +
-                    "    }\n" +
-                    "    .container {\n" +
-                    "      width: 800px;\n" +
-                    "      margin: auto;\n" +
-                    "      background: #fff;\n" +
-                    "      padding: 40px;\n" +
-                    "      box-shadow: 0 0 10px rgba(0,0,0,0.1);\n" +
-                    "    }\n" +
-                    "    h1 {\n" +
-                    "      text-align: center;\n" +
-                    "      font-size: 28px;\n" +
-                    "      margin-bottom: 40px;\n" +
-                    "    }\n" +
-                    "    .photo-section {\n" +
-                    "      display: flex;\n" +
-                    "      align-items: center;\n" +
-                    "      margin-bottom: 30px;\n" +
-                    "    }\n" +
-                    "    .photo-section img {\n" +
-                    "      width: 120px;\n" +
-                    "      height: 150px;\n" +
-                    "      object-fit: cover;\n" +
-                    "      border: 1px solid #ccc;\n" +
-                    "      margin-right: 20px;\n" +
-                    "    }\n" +
-                    "    table {\n" +
-                    "      width: 100%;\n" +
-                    "      border-collapse: collapse;\n" +
-                    "      margin-bottom: 30px;\n" +
-                    "    }\n" +
-                    "    th, td {\n" +
-                    "      border: 1px solid #ccc;\n" +
-                    "      padding: 10px;\n" +
-                    "      text-align: left;\n" +
-                    "      font-size: 14px;\n" +
-                    "      height: 38px;\n" +
-                    "    }\n" +
-                    "    th {\n" +
-                    "      background-color: #f0f0f0;\n" +
-                    "    }\n" +
-                    "    .section-title {\n" +
-                    "      font-size: 18px;\n" +
-                    "      font-weight: bold;\n" +
-                    "      margin: 30px 0 10px;\n" +
-                    "    }\n" +
-                    "  </style>\n" +
-                    "</head>\n" +
-                    "<body>\n" +
-                    "  <div class=\"container\">\n" +
-                    "    <h1>이력서</h1>\n" +
-                    "\n" +
-                    "    <div class=\"photo-section\">\n" +
-                    "      <img src=\"https://via.placeholder.com/120x150?text=사진\" alt=\"사진\">\n" +
-                    "      <table>\n" +
-                    "        <tr><th>이름</th><td class=\"name\"></td></tr>\n" +
-                    "        <tr><th>이메일</th><td class=\"email\"></td></tr>\n" +
-                    "        <tr><th>전화번호</th><td class=\"phone\"></td></tr>\n" +
-                    "        <tr><th>홈페이지</th><td class=\"website\"></td></tr>\n" +
-                    "      </table>\n" +
-                    "    </div>\n" +
-                    "\n" +
-                    "    <div class=\"section-title\">교육사항</div>\n" +
-                    "    <table>\n" +
-                    "      <thead>\n" +
-                    "        <tr><th>학교명</th><th>전공</th><th>기간</th></tr>\n" +
-                    "      </thead>\n" +
-                    "      <tbody class=\"education\">\n" +
-                    "        <!-- education 배열을 순회하며 <tr><td>...</td></tr> 생성 -->\n" +
-                    "      </tbody>\n" +
-                    "    </table>\n" +
-                    "\n" +
-                    "    <div class=\"section-title\">경력사항</div>\n" +
-                    "    <table>\n" +
-                    "      <thead>\n" +
-                    "        <tr><th>회사명</th><th>부서</th><th>직위</th><th>기간</th></tr>\n" +
-                    "      </thead>\n" +
-                    "      <tbody class=\"experience\">\n" +
-                    "        <!-- experience 배열 → <tr> 렌더링 -->\n" +
-                    "      </tbody>\n" +
-                    "    </table>\n" +
-                    "\n" +
-                    "    <div class=\"section-title\">언어 및 자격증</div>\n" +
-                    "    <table>\n" +
-                    "      <thead>\n" +
-                    "        <tr><th>항목</th><th>내용</th></tr>\n" +
-                    "      </thead>\n" +
-                    "      <tbody class=\"certifications\">\n" +
-                    "        <!-- certifications 배열 → <tr> 렌더링 -->\n" +
-                    "      </tbody>\n" +
-                    "    </table>\n" +
-                    "\n" +
-                    "    <div class=\"section-title\">프로젝트</div>\n" +
-                    "    <table>\n" +
-                    "      <thead>\n" +
-                    "        <tr><th>프로젝트명</th><th>내용</th></tr>\n" +
-                    "      </thead>\n" +
-                    "      <tbody class=\"projects\">\n" +
-                    "        <!-- projects 배열 → <tr> 렌더링 -->\n" +
-                    "      </tbody>\n" +
-                    "    </table>\n" +
-                    "\n" +
-                    "    <div class=\"section-title\">자기소개</div>\n" +
-                    "    <table>\n" +
-                    "      <tr>\n" +
-                    "        <td class=\"introduction\" style=\"height: 120px; vertical-align: top;\"></td>\n" +
-                    "      </tr>\n" +
-                    "    </table>\n" +
-                    "  </div>\n" +
-                    "</body>\n" +
-                    "</html>\n";
+    private String template = "";
+
 
     @Autowired
     private ResumeMapper resumeMapper;
@@ -196,24 +74,42 @@ public class ResumeService {
 
             String userInput = "";
 
+            StringBuilder prompt = new StringBuilder()
+                    .append("🔹 Your reply MUST be a single, complete HTML document only. Do NOT wrap it in Markdown fences.\n\n")
+                    .append("🔹 Instructions\n")
+                    .append("1. Take every key in the JSON below and find the element whose CSS class has the same name.\n")
+                    .append("   • Replace that element’s innerHTML with the corresponding value.\n")
+                    .append("   • Single-value keys: userName, email, phone, birthday, link\n")
+                    .append("   • Array keys: education, experience, skillList, certification, language_skill\n")
+                    .append("2. Keep all existing attributes (style, script, data-*) exactly as they are.\n")
+                    .append("3. Do NOT change tag names, class names or the overall layout.\n")
+                    .append("4. All visible text must be written in Korean.\n")
+                    .append("5. Rewrite the introduction into at least ten polished, professional sentences. "
+                            + "If there is not enough data, create plausible details that make the applicant look appealing.\n\n")
+                    .append("--- USER DATA (JSON) ---\n")
+                    .append(userDataJson).append("\n\n")
+                    .append("--- HTML TEMPLATE ---\n")
+                    .append(template).append("\n");
+
+
             // system 메시지: 지시 + template
             ObjectNode sysMsg = messages.addObject();
             sysMsg.put("role", "system");
-            sysMsg.put("content",
-                    "You are to respond **only** with a fully filled HTML resume template.  \n"
-                            + "The template uses CSS class names that exactly match the keys in the user data JSON.  \n"
-                            + "- Replace each element’s inner HTML for classes:  \n"
-                            + "  • name, email, phone, website  \n"
-                            + "  • education (an array you should render as table rows)  \n"
-                            + "  • experience (array → table rows)  \n"
-                            + "  • certifications (array → table rows)  \n"
-                            + "  • projects (array → table rows)  \n"
-                            + "Output only the complete HTML document, without any additional explanation.  \n\n"
-                            + "User Data JSON:\n" + userDataJson + "\n\n"
-                            + "Polish and refine the introduction text for professionalism, make introduction fully enough at least 10 sentences.  \n"
-                            + "If data in introduction is not enough, make any data to appeal your self and please fill 10 sentences.  \n"
-                            + "Here is the HTML template:\n" + template + "\n\n"
-                            + "Ensure that all text content inside HTML tags is written in Korean."
+            sysMsg.put("content","You are to respond **only** with a fully filled HTML resume template.  \n"
+                    + "The template uses CSS class names that exactly match the keys in the user data JSON.  \n"
+                    + "- Replace each element’s inner HTML for classes:  \n"
+                    + "  • name, email, phone, link  \n"
+                    + "  • education (an array you should render as table rows)  \n"
+                    + "  • experience (array → table rows)  \n"
+                    + "  • certifications (array → table rows)  \n"
+                    + "  • projects (array → table rows)  \n"
+                    + "Output only the complete HTML document, without any additional explanation.  \n\n"
+                    + "User Data JSON:\n" + userDataJson + "\n\n"
+                    + "Polish and refine the introduction text for professionalism, make introduction fully enough at least 10 sentences.  \n"
+                    + "If data in introduction is not enough, make any data to appeal your self and please fill 10 sentences.  \n"
+                    + "Here is the HTML template:\n" + template + "\n\n"
+                    + "Ensure that all text content inside HTML tags is written in Korean."
+
             );
 
 
@@ -284,13 +180,19 @@ public class ResumeService {
         return resumeMapper.selectResumeInfo(requestMap);
     }
 
+    // 관리자페이지에선 모든 정보 불러옴
+    public List<ResumeInfoVO> adminSelectResumeInfo(Map<String, Object> paramMap) {
+        return resumeMapper.adminSelectResumeInfo(paramMap);
+    }
+
+
+
+
     public int selectResumeCount(Map<String,Object> requestMap) {
         return resumeMapper.selectResumeCount(requestMap);
     }
 
-    public List<ResumeInfoVO> resumeLikedList(int user_no) {
-        return resumeMapper.resumeLikedList(user_no);
-    }
+ 
 
     public int unlikeResume(int user_no, int resume_no) {
         return resumeMapper.unlikeResume(user_no, resume_no);
@@ -303,6 +205,8 @@ public class ResumeService {
     public int deleteResume(int resume_no) {
         return resumeMapper.deleteResume(resume_no);
     }
+
+    public int updateResumeStatus(ResumeInfoVO resumeInfoVO) {return resumeMapper.updateResumeStatus(resumeInfoVO);}
 
     public int deleteSelectedResume(List<Integer> resume_nos) {
         return resumeMapper.deleteSelectedResume(resume_nos);
@@ -434,4 +338,12 @@ public class ResumeService {
         return resumeMapper.getSkillDetailCode(paramMap);
     }
 
+    // 마이페이지 회원 좋아요 리스트
+    public List<ResumeInfoVO> resumeLikedList(Map<String,Object> requestMap) {
+        return resumeMapper.resumeLikedList(requestMap);
+    }
+    // 마이페이지 해당 회원의 좋아요 수
+    public Integer selectLikeCount(Map<String, Object> paramMap) {
+        return resumeMapper.selectLikeCount(paramMap);
+    }
 }

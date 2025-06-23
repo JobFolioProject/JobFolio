@@ -122,7 +122,7 @@ const MyCareer = () => {
         return (
             <div className="userInfoWrap">
                 <div className="userInfoContent">
-                    <p>🔄 커리어 데이터를 불러오는 중...</p>
+                    <span>🔄 커리어 데이터를 불러오는 중...</span>
                 </div>
             </div>
         );

@@ -30,7 +30,9 @@ import java.io.ByteArrayOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -57,8 +59,8 @@ public class ResumeController {
         Map<String,Object> resultMap = new HashMap<>();
 
         return resultMap;
-
     }
+
 
 //    // 이력서 작성 페이지에 해당 유저의 스킬목록을 조회
 //    @RequestMapping("/write")
@@ -187,6 +189,7 @@ public class ResumeController {
                 node.put("major", edu.getOrDefault("major", ""));
                 node.put("sub_major", edu.getOrDefault("sub_major", ""));
                 node.put("gpa", edu.getOrDefault("gpa", ""));
+                node.put("notes", edu.getOrDefault("notes", ""));
                 String period = edu.getOrDefault("enroll_date", "") + " ~ " + edu.getOrDefault("grad_date", "");
                 node.put("period", period);
                 eduArray.add(node);
@@ -204,6 +207,7 @@ public class ResumeController {
                 node.put("position", exp.getOrDefault("position", ""));       // 직위가 paramMap에 있다면
                 node.put("start_date", exp.getOrDefault("start_date", ""));
                 node.put("end_date", exp.getOrDefault("end_date", ""));
+                node.put("career_notes", exp.getOrDefault("notes", ""));
                 String period = exp.getOrDefault("start_date", "") + " ~ " + exp.getOrDefault("end_date", "");
                 node.put("period", period);
                 expArray.add(node);
@@ -212,26 +216,28 @@ public class ResumeController {
 
             // certifications 배열
             @SuppressWarnings("unchecked")
-            List<CertificateVO> certs = mypageMapper.getCertificateListByUserNo(user_no);
+            List<Map<String, String>> certs = Optional.ofNullable((List<Map<String, String>>) paramMap.get("certificateList"))
+                    .orElse(Collections.emptyList());
             ArrayNode certArray = mapper.createArrayNode();
-            for (CertificateVO cert : certs) {
+            for (Map<String, String> cert : certs) {
                 ObjectNode node = mapper.createObjectNode();
-                node.put("certificate_no", cert.getCertificate_no());
-                node.put("certificate_name", cert.getCertificate_name());
-                node.put("issuing_org", cert.getIssuing_org());
-                node.put("acquired_date", cert.getAcquired_date());
+                node.put("certificate_no", cert.getOrDefault("certificate_no", ""));
+                node.put("certificate_name", cert.getOrDefault("certificate_name", ""));
+                node.put("issuing_org", cert.getOrDefault("issuing_org", ""));
+                node.put("acquired_date", cert.getOrDefault("acquired_date", ""));
                 certArray.add(node);
             }
             root.set("certification", certArray);
 
-            // certifications 배열
+            // languageList 배열
             @SuppressWarnings("unchecked")
-            List<LanguageSkillVO> langs = mypageMapper.getLanguageListByUserNo(user_no);
+            List<Map<String, String>> langs = Optional.ofNullable((List<Map<String, String>>) paramMap.get("languageList"))
+                    .orElse(Collections.emptyList());
             ArrayNode langArray = mapper.createArrayNode();
-            for (LanguageSkillVO lang : langs) {
+            for (Map<String, String> lang : langs) {
                 ObjectNode node = mapper.createObjectNode();
-                node.put("language", lang.getLanguage());
-                node.put("level", lang.getLevel());
+                node.put("language", lang.getOrDefault("language", ""));
+                node.put("level", lang.getOrDefault("level", ""));
                 langArray.add(node);
             }
             root.set("language_skill", langArray);
@@ -273,22 +279,36 @@ public class ResumeController {
         byte[] bytes = Files.readAllBytes(path);
         String html = new String(bytes, StandardCharsets.UTF_8);
 
-        String xhtml = html
-                .replaceAll("(?i)<br>", "<br/>")
-                .replaceAll("(?i)<hr>", "<hr/>")
-                // 필요하다면 <img>, <input> 등도
-                ;
+        String body = html
+                // (1) 중복 · 구버전 DOCTYPE, XML 선언 전부 제거
+                .replaceAll("(?is)<script[^>]*?>.*?</script>", "")
+                .replaceAll("(?is)<!DOCTYPE[^>]*>", "")
+                .replaceAll("(?is)<\\?xml[^>]*>", "")
+                // (2) 빈태그 XHTML 형식으로 치환
+                .replaceAll("(?i)<br(?=[^/>]*>)",  "<br/>")
+                .replaceAll("(?i)<hr(?=[^/>]*>)",  "<hr/>")
+                .replaceAll("(?i)<img([^>]*)(?<!/)>", "<img$1/>")   // img 도 자주 문제
+                .replaceAll("(?i)<meta([^>]*)(?<!/)>", "<meta$1/>");
 
-        // 2) PDF로 변환
+        String xhtml = ""
+                + "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                + "<!DOCTYPE html PUBLIC\n"
+                + "  \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n"
+                + "  \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n"
+                + body;
+
+        /* -------------- PDF 렌더링 -------------- */
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        PdfRendererBuilder builder = new PdfRendererBuilder();
-        builder.useFont(
+        PdfRendererBuilder     b = new PdfRendererBuilder();
+
+        /* 1) 폰트 등록 : 이름을 CSS 와 동일하게 “Noto Serif KR” 로 */
+        b.useFont(
                 () -> this.getClass().getResourceAsStream("/fonts/NotoSansKR-Regular.ttf"),
                 "Noto Sans KR"
         );
-        builder.withHtmlContent(xhtml, path.getParent().toUri().toString());
-        builder.toStream(os);
-        builder.run();
+        b.withHtmlContent(xhtml, path.getParent().toUri().toString());
+        b.toStream(os);
+        b.run();
         byte[] pdfBytes = os.toByteArray();
 
         // 3) HTTP 응답 헤더 세팅
@@ -564,12 +584,22 @@ public class ResumeController {
     }
 
     @PostMapping("/resume/liked")
-    public ResponseEntity<Map<String,Object>> resumeLikedList(@RequestBody Map<String,Integer> requestMap) {
-        int userNo = requestMap.get("userNo");
-        List<ResumeInfoVO> resumeList = resumeService.resumeLikedList(userNo);
+    public ResponseEntity<Map<String,Object>> resumeLikedList(@RequestBody Map<String,Object> requestMap,
+                                                              @AuthenticationPrincipal UserPrincipal userPrincipal) {
 
+        int userNo = Integer.parseInt(userPrincipal.getUser_no().toString());
+        int page     = Integer.parseInt(requestMap.getOrDefault("page", "1").toString());
+        int pageSize = Integer.parseInt(requestMap.getOrDefault("pageSize", "6").toString());
+        requestMap.put("offset", (page - 1) * pageSize);
+        requestMap.put("limit",  pageSize);
+        requestMap.put("user_no", userNo);
+        List<ResumeInfoVO> resumeList = resumeService.resumeLikedList(requestMap);
+        int totalCount = resumeService.selectLikeCount(requestMap);
+
+        requestMap.put("totalCount", totalCount);
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("resumeList", resumeList);
+        resultMap.put("totalCount", totalCount);
         return ResponseEntity.ok(resultMap);
     }
 
@@ -626,6 +656,24 @@ public class ResumeController {
             }
 
     }
+
+    // 관리자 이력서 페이지 표시여부 Y/N
+    @PostMapping("/updateResumeStatus")
+    public ResponseEntity<Map<String,Object>> updateResumeStatus(@RequestBody Map<String,Object> requestMap) {
+        int resumeNo = (Integer) requestMap.get("resume_no");
+        String statusYn = (String) requestMap.get("status_yn");
+
+        ResumeInfoVO vo = new ResumeInfoVO();
+        vo.setResume_no(resumeNo);
+        vo.setStatus_yn(statusYn);
+
+        int result = resumeService.updateResumeStatus(vo);
+
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("message", result > 0 ? "Y" : "N");
+        return ResponseEntity.ok(resultMap);
+    }
+
     // 관리자 이력서 페이지 이력서 data 삭제
     @PostMapping("/deleteSelectedResume")
     public ResponseEntity<Map<String,Object>> deleteSelectedResume(@RequestBody List<Integer> resumeNos) {
@@ -633,8 +681,6 @@ public class ResumeController {
         int result = resumeService.deleteSelectedResume(resumeNos);
         resultMap.put("message", result > 0 ? "Y" : "N");
         return ResponseEntity.ok(resultMap);
-
-
     }
 
     // 이력서 게시판 데이터 불러오기
@@ -675,6 +721,52 @@ public class ResumeController {
 
 
         System.out.println(resultMap);
+
+        return resultMap;
+    }
+
+    // 관리자페이지에선 모든 정보 가져옴
+    @GetMapping("/adminSelectResumeInfo")
+    public Map<String, Object> adminResumeList(Model model,
+                                                   @RequestParam Map<String, Object> paramMap,
+                                                   HttpServletRequest request,
+                                                   HttpServletResponse response,
+                                                   HttpSession session) throws Exception {
+
+        Map<String, Object> resultMap = new HashMap<>();
+
+        String search = (String) paramMap.get("search");
+        paramMap.put("search", search);
+
+        String searchField = (String) paramMap.get("searchField");
+        paramMap.put("searchField", searchField);
+
+        int page = 1;
+        int pageSize = 12;
+
+        try {
+            String pageStr = (String) paramMap.get("page");
+            String pageSizeStr = (String) paramMap.get("pageSize");
+            if (pageStr != null && !pageStr.isEmpty()) page = Integer.parseInt(pageStr);
+            if (pageSizeStr != null && !pageSizeStr.isEmpty()) pageSize = Integer.parseInt(pageSizeStr);
+        } catch (NumberFormatException e) {
+            resultMap.put("error", "잘못된 요청입니다.");
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return resultMap;
+        }
+
+        int offset = (page - 1) * pageSize;
+        paramMap.put("offset", offset);
+        paramMap.put("limit", pageSize);
+
+        // ✅ 관리자 페이지 요청이면 includeHidden 설정
+        String isAdmin = (String) paramMap.get("admin");
+        if ("true".equals(isAdmin)) {
+            paramMap.put("includeHidden", true); // Mapper에서 이 값으로 조건 분기
+        }
+
+        List<ResumeInfoVO> boardList = resumeService.adminSelectResumeInfo(paramMap);
+        resultMap.put("boardList", boardList);
 
         return resultMap;
     }

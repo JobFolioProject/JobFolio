@@ -64,10 +64,12 @@ const TemplateSlider = ({ tempList, formData }) => {
             ...formData,
             education: [...formData.education, ...formData.newEducation],
             experience: [...formData.experience, ...formData.newExperience],
-            template_no: 4,
+            template_no: template_no,
             newEducation: undefined,
             newExperience: undefined,
             skillList: [...formData.skillList, ...formData.newSkillList],
+            languageList: [...formData.languageList, ...formData.newLanguage],
+            certificateList: [...formData.certificateList, ...formData.newCertificate],
         };
 
     try {
@@ -116,7 +118,8 @@ const TemplateSlider = ({ tempList, formData }) => {
           <Slider {...settings}>
             {tempList.map((template) => (
 
-              <div id={`template-slide-${template.template_no}`} key={template.template_no} className="template-slide" onClick={() => {resumePreview(formData, template.temp_no)}}>
+              <div id={`template-slide-${template.template_no}`} key={template.template_no} className="template-slide" 
+              onClick={() => {resumePreview(formData, template.template_no)}}>
 
                  <iframe
                   srcDoc={template.html}
@@ -125,7 +128,9 @@ const TemplateSlider = ({ tempList, formData }) => {
                   // data-temp-no={template.template_no} // data 속성은 그대로 유지
                   className="template-preview-image"
                   width="100%"
-                  height="300px" // 초기 높이는 여전히 중요하지만, 스크립트가 재정의할 것
+                  height="150" // 초기 높이는 여전히 중요하지만, 스크립트가 재정의할 것
+                  scrolling="no"
+                  data-temp-no={template.template_no}  
                 ></iframe>
               </div>
             ))}
