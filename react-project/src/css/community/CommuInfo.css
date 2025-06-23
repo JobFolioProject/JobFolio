@@ -54,21 +54,16 @@
 
 .info-question {
   font-weight: 500;
-  color: #6d6d6d;  /* ← 기본 글자색 */
+  color: #000000;  /* ← 기본 글자색 */
   font-size: 1rem;
   transition : color 0.3s ease;
 }
 
-/* 선택된 항목 - 진하게 */
-.info-question.active {
-  color: #000000;
-  font-weight: bold;
-}
 
 /* 선택 안 된 항목 - 연하게 */
-.info-question.inactive {
+.info-item.inactive .info-question,
+.info-item.inactive .info-Q {
   color: #bbb;
-  font-weight: normal;
 }
 
 .info-item .question-info .info-Q:hover {
