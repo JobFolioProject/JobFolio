@@ -257,7 +257,6 @@ const ResumeManagement = () => {
       </div>
       </div>
       </div>
-      </div>
     );
 };
 
