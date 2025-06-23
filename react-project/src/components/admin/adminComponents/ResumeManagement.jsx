@@ -1,23 +1,24 @@
 import '../../../css/admin/adminComponents/ResumeManagement.css';
 import AdminSideBar from '../AdminSideBar';
-import Pagination from '../../common/Pagination.jsx'; 
+import Pagination from '../../common/Pagination.jsx';
 import { useState, useEffect } from 'react';
-import axios from "../../../utils/axiosConfig";
-import { Select, MenuItem } from "@mui/material";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import axios from '../../../utils/axiosConfig';
+import { Select, MenuItem } from '@mui/material';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 const ResumeManagement = () => {
-  const [tempList, setTempList] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [selected, setSelected] = useState([]);
-  const [searchField, setSearchField] = useState('title');
-  const [searchTerm, setSearchTerm] = useState('');
-  const pageSize = 12;
+    const [tempList, setTempList] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [selected, setSelected] = useState([]);
+    const [searchField, setSearchField] = useState('title');
+    const [searchTerm, setSearchTerm] = useState('');
+    const pageSize = 12;
 
-  const totalPages = Math.ceil(tempList.length / pageSize);
-  const startIdx = (currentPage - 1) * pageSize;
-  const currentTemplates = tempList.slice(startIdx, startIdx + pageSize);
+    const totalPages = Math.ceil(tempList.length / pageSize);
+    const startIdx = (currentPage - 1) * pageSize;
+    const currentTemplates = tempList.slice(startIdx, startIdx + pageSize);
+
 
   const handleToggleSelect = (resumeNo) => {
     setSelected((prev) =>
@@ -89,9 +90,10 @@ const ResumeManagement = () => {
               return { ...item, html: htmlText };
             } catch (e) {
               return { ...item, html: `<p>불러오기 실패</p>` };
+
             }
-          })
-        );
+        };
+
 
         setTempList(withHtml);
       } catch (err) {
@@ -255,6 +257,7 @@ const ResumeManagement = () => {
       </div>
     </div>
   );
+        
 };
 
 export default ResumeManagement;

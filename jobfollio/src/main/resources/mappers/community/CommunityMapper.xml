@@ -21,6 +21,20 @@
         <if test="statusYn != null and statusYn != ''">
             AND b.status_yn = #{statusYn}
         </if>
+        <!-- 검색 필터 -->
+        <if test="search != null and search != ''">
+            <choose>
+                <when test="searchCategory == 'title'">
+                    AND b.title LIKE CONCAT('%', #{search}, '%')
+                </when>
+                <when test="searchCategory == 'content'">
+                    AND b.content LIKE CONCAT('%', #{search}, '%')
+                </when>
+                <otherwise>
+                    AND (b.title LIKE CONCAT('%', #{search}, '%') OR b.content LIKE CONCAT('%', #{search}, '%'))
+                </otherwise>
+            </choose>
+        </if>
         ORDER BY b.priority DESC, b.write_date DESC
     </select>
 
@@ -39,8 +53,19 @@
         JOIN tb_userinfo u ON b.author = u.user_no
         WHERE b.board_type = #{boardType}
         AND b.priority   = 0
+        <!-- 검색 필터 -->
         <if test="search != null and search != ''">
-            AND b.title LIKE CONCAT('%', #{search}, '%')
+            <choose>
+                <when test="searchCategory == 'title'">
+                    AND b.title LIKE CONCAT('%', #{search}, '%')
+                </when>
+                <when test="searchCategory == 'content'">
+                    AND b.content LIKE CONCAT('%', #{search}, '%')
+                </when>
+                <otherwise>
+                    AND (b.title LIKE CONCAT('%', #{search}, '%') OR b.content LIKE CONCAT('%', #{search}, '%'))
+                </otherwise>
+            </choose>
         </if>
         <if test="statusYn != null and statusYn != ''">
             AND b.status_yn = #{statusYn}
@@ -55,8 +80,19 @@
         FROM tb_board
         WHERE board_type = #{boardType}
         AND priority   = 0
+        <!-- 검색 필터 -->
         <if test="search != null and search != ''">
-            AND title LIKE CONCAT('%', #{search}, '%')
+            <choose>
+                <when test="searchCategory == 'title'">
+                    AND title LIKE CONCAT('%', #{search}, '%')
+                </when>
+                <when test="searchCategory == 'content'">
+                    AND content LIKE CONCAT('%', #{search}, '%')
+                </when>
+                <otherwise>
+                    AND (title LIKE CONCAT('%', #{search}, '%') OR content LIKE CONCAT('%', #{search}, '%'))
+                </otherwise>
+            </choose>
         </if>
         <if test="statusYn != null and statusYn != ''">
             AND status_yn = #{statusYn}

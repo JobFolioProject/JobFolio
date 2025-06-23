@@ -41,15 +41,18 @@ import Unauthorized from "./components/common/Unauthorized";
 import NotFound from "./components/common/NotFound";
 import OAuthCallback from "./components/oauth/OAuthCallback";
 import OAuthError from "./components/oauth/OAuthError";
+import { SnackbarProvider } from "./context/SnackbarProvider";
 
 
 function App() {
   return (
     <AuthProvider>
       <ResumeEditProvider>
+        <SnackbarProvider>
         <BrowserRouter>
           <AppContent />
         </BrowserRouter>
+        </SnackbarProvider>
       </ResumeEditProvider>
     </AuthProvider>
   );

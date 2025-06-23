@@ -68,6 +68,8 @@ const TemplateSlider = ({ tempList, formData }) => {
             newEducation: undefined,
             newExperience: undefined,
             skillList: [...formData.skillList, ...formData.newSkillList],
+            languageList: [...formData.languageList, ...formData.newLanguage],
+            certificateList: [...formData.certificateList, ...formData.newCertificate],
         };
 
     try {

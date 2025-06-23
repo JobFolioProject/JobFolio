@@ -21,7 +21,7 @@ public interface ResumeMapper {
 
     int selectResumeCount(Map<String,Object> requestMap);
 
-    List<ResumeInfoVO> resumeLikedList(int user_no);
+    List<ResumeInfoVO> resumeLikedList(Map<String,Object> requestMap);
 
     int unlikeResume(int user_no, int resume_no);
 
@@ -62,6 +62,5 @@ public interface ResumeMapper {
     List<String> getSkillDetailCode(Map<String, Object> paramMap);
 
 
-
-
+    int selectLikeCount(Map<String, Object> paramMap);
 }

@@ -21,8 +21,8 @@ const LanguageSection = React.memo(({ userNo, languageSkillList, onListChange })
 
     // 에러 초기화
     const [errors, setErrors] = useState({
-        language: false, // 언어
-        level: false, // 렙
+        language: '', // 언어
+        level: '', // 렙
     });
 
     // 자격증 최대 개수 설정
@@ -36,6 +36,19 @@ const LanguageSection = React.memo(({ userNo, languageSkillList, onListChange })
             alert(`어학 능력은 최대 ${MAX_LANGUAGE_SKILL_COUNT}개까지만 추가할 수 있습니다.`);
             return;
         }
+        // 현재 폼이 작성 되어 있고 확인 메세지
+        const isFormDirty = currentFormLanguage.language || currentFormLanguage.level;
+
+        if ((showAddForm || editingLanguage !== null) && isFormDirty) {
+            const confirmDiscard = window.confirm(
+                '현재 작성중인 내용이 있습니다. \n새 학력을 추가하면 내용이 초기화 됩니다.'
+            );
+
+            if (!confirmDiscard) {
+                return;
+            }
+        }
+
         setCurrentFormLanguage(formLanguageData);
         setShowAddForm(true);
         seteditingLanguage(null);
@@ -48,7 +61,7 @@ const LanguageSection = React.memo(({ userNo, languageSkillList, onListChange })
         const { name, value } = e.target;
 
         // 에러
-        setErrors((pervErrors) => ({ ...pervErrors, [name]: false }));
+        setErrors((pervErrors) => ({ ...pervErrors, [name]: '' }));
         setErrorMessage('');
 
         setCurrentFormLanguage((prev) => {
@@ -97,7 +110,7 @@ const LanguageSection = React.memo(({ userNo, languageSkillList, onListChange })
 
     // 삭제 아이콘 버튼 이벤트
     const deleteItemClick = async (languageToDelete) => {
-        const isConfirm = window.confirm('정말로 이 어학 능력을 삭제하시겠습니까? 되돌릴 수 없습니다.');
+        const isConfirm = window.confirm('정말 어학 능력을 삭제하시겠습니까? 되돌릴 수 없습니다.');
 
         if (isConfirm) {
             setErrorMessage('');
@@ -144,6 +157,19 @@ const LanguageSection = React.memo(({ userNo, languageSkillList, onListChange })
             setErrors((prev) => ({ ...prev, level: true }));
             if (!firstErrorRef) firstErrorRef = levelRef;
             hasError = true;
+        }
+
+        // 중복 언어 검사
+        const isDuplicatedLanguage = languageSkillList.some(
+            (lang) =>
+                lang.language === currentFormLanguage.language && // 입력된 언어가
+                lang.language !== editingLanguage // 현재 수정하려는 원본 언어명과 다를 경우 (수정 시 자신과의 중복은 허용)
+        );
+
+        if (isDuplicatedLanguage) {
+            alert('이미 등록된 언어입니다. 다른 언어를 입력해주세요.'); // alert 추가
+            languageRef.current?.focus(); // 해당 필드에 포커스
+            return; // 즉시 함수 종료
         }
 
         if (hasError) {
@@ -270,7 +296,9 @@ const LanguageSection = React.memo(({ userNo, languageSkillList, onListChange })
                         );
                     })
                 ) : (
-                    <p className="emptyMessage">어학 능력을 추가해 주세요</p>
+                    <div className="language-empty-container">
+                        <span className="emptyMessage">어학 능력을 추가해 주세요</span>
+                    </div>
                 )
             ) : null}
 

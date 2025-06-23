@@ -212,26 +212,28 @@ public class ResumeController {
 
             // certifications 배열
             @SuppressWarnings("unchecked")
-            List<CertificateVO> certs = mypageMapper.getCertificateListByUserNo(user_no);
+            List<Map<String, String>> certs = Optional.ofNullable((List<Map<String, String>>) paramMap.get("certificateList"))
+                    .orElse(Collections.emptyList());
             ArrayNode certArray = mapper.createArrayNode();
-            for (CertificateVO cert : certs) {
+            for (Map<String, String> cert : certs) {
                 ObjectNode node = mapper.createObjectNode();
-                node.put("certificate_no", cert.getCertificate_no());
-                node.put("certificate_name", cert.getCertificate_name());
-                node.put("issuing_org", cert.getIssuing_org());
-                node.put("acquired_date", cert.getAcquired_date());
+                node.put("certificate_no", cert.getOrDefault("certificate_no", ""));
+                node.put("certificate_name", cert.getOrDefault("certificate_name", ""));
+                node.put("issuing_org", cert.getOrDefault("issuing_org", ""));
+                node.put("acquired_date", cert.getOrDefault("acquired_date", ""));
                 certArray.add(node);
             }
             root.set("certification", certArray);
 
-            // certifications 배열
+            // languageList 배열
             @SuppressWarnings("unchecked")
-            List<LanguageSkillVO> langs = mypageMapper.getLanguageListByUserNo(user_no);
+            List<Map<String, String>> langs = Optional.ofNullable((List<Map<String, String>>) paramMap.get("languageList"))
+                    .orElse(Collections.emptyList());
             ArrayNode langArray = mapper.createArrayNode();
-            for (LanguageSkillVO lang : langs) {
+            for (Map<String, String> lang : langs) {
                 ObjectNode node = mapper.createObjectNode();
-                node.put("language", lang.getLanguage());
-                node.put("level", lang.getLevel());
+                node.put("language", lang.getOrDefault("language", ""));
+                node.put("level", lang.getOrDefault("level", ""));
                 langArray.add(node);
             }
             root.set("language_skill", langArray);
@@ -564,12 +566,22 @@ public class ResumeController {
     }
 
     @PostMapping("/resume/liked")
-    public ResponseEntity<Map<String,Object>> resumeLikedList(@RequestBody Map<String,Integer> requestMap) {
-        int userNo = requestMap.get("userNo");
-        List<ResumeInfoVO> resumeList = resumeService.resumeLikedList(userNo);
+    public ResponseEntity<Map<String,Object>> resumeLikedList(@RequestBody Map<String,Object> requestMap,
+                                                              @AuthenticationPrincipal UserPrincipal userPrincipal) {
 
+        int userNo = Integer.parseInt(userPrincipal.getUser_no().toString());
+        int page     = Integer.parseInt(requestMap.getOrDefault("page", "1").toString());
+        int pageSize = Integer.parseInt(requestMap.getOrDefault("pageSize", "6").toString());
+        requestMap.put("offset", (page - 1) * pageSize);
+        requestMap.put("limit",  pageSize);
+        requestMap.put("user_no", userNo);
+        List<ResumeInfoVO> resumeList = resumeService.resumeLikedList(requestMap);
+        int totalCount = resumeService.selectLikeCount(requestMap);
+
+        requestMap.put("totalCount", totalCount);
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("resumeList", resumeList);
+        resultMap.put("totalCount", totalCount);
         return ResponseEntity.ok(resultMap);
     }
 
