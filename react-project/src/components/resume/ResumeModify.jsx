@@ -4,8 +4,9 @@ import ResumeSidebar from "./ResumeSidebar";
 import ResumeEditModal from "./ResumeEditModal";
 import axios from "../../utils/axiosConfig";
 import { useAuth } from "../../context/AuthContext";
-import { ResumeEditContext } from '../../context/ResumeEditContext';
+import { ResumeEditContext } from "../../context/ResumeEditContext";
 import Banner from "../common/Banner";
+import Pagination from "../common/Pagination.jsx";
 
 const ResumeModify = () => {
   const [resumeList, setResumeList] = useState([]);
@@ -15,9 +16,21 @@ const ResumeModify = () => {
   const [showDetailResume, setShowDetailResume] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const { editResumeData, setEditResumeData } = useContext(ResumeEditContext);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const pageSize = 6;
 
   const iframeRef = useRef(null);
   const { user, isAuthenticated } = useAuth();
+
+  useEffect(() => {
+    getResumeList();
+  }, [currentPage]);
+
+  useEffect(() => {
+    setTotalPages(Math.ceil(totalCount / pageSize));
+  }, [totalCount]);
 
   useEffect(() => {
     if (!editResumeData.path) return;
@@ -30,24 +43,23 @@ const ResumeModify = () => {
           editResumeData.publication
         );
       } finally {
-        setEditResumeData({ path: null, title: '', publication: '' });
+        setEditResumeData({ path: null, title: "", publication: "" });
       }
     };
     fetchAndClear();
   }, [editResumeData, setEditResumeData]);
 
   //이력서 리스트 출력
-  const getResumeList = async () => {
+  const getResumeList = async (page = currentPage) => {
     const userNo = user.userNo;
     if (!userNo) return;
 
     await axios
-      .post("/api/resume/resumeDetail", { userNo: userNo })
+      .post("/api/resume/resumeDetail", { userNo: userNo, page, pageSize })
       .then((res) => {
-        console.log(res);
-        const { resumeList } = res;
-        if (Array.isArray(resumeList) && resumeList.length > 0) {
-          setResumeList(resumeList);
+        if (Array.isArray(resumeList) && resumeList.length >= 0) {
+          setResumeList(res.resumeList);
+          setTotalCount(res.totalCount);
         }
       })
       .catch((err) => {
@@ -64,7 +76,6 @@ const ResumeModify = () => {
         },
       })
       .then((res) => {
-        console.log(res);
         setHtmlString(res);
         setShowDetailResume(true);
         setResumeTitle(resumeTitle);
@@ -80,16 +91,8 @@ const ResumeModify = () => {
     setHtmlString("");
     setResumeTitle("");
     setShowDetailResume(false);
-  };
-
-  useEffect(() => {
     getResumeList();
-    // if(context === ""){
-    // openResumeDetail(response)
-    //   setShowDetailResume("true");
-    // context 비우기*****************
-    // }
-  }, []);
+  };
 
   //iframe html파일 크기에 맞춰 출력
   useEffect(() => {
@@ -133,16 +136,23 @@ const ResumeModify = () => {
                     </h3>
                   </div>
                   <div className="resumeItemDetail">
-                    <p className="resumeItemJob">
+                    {/* <p className="resumeItemJob">
                       {item.desired_position || "희망 직무 없음"}
-                    </p>
+                    </p> */}
                     <p className="resumeItemDate">
-                      {item.resume_file_name || "날짜 정보 없음"}
+                      {item.create_date || "날짜 정보 없음"}
                     </p>
                   </div>
                 </div>
               </div>
             ))}
+            <div className="resume-modify-pagination">
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                setCurrentPage={setCurrentPage}
+              />
+            </div>
           </div>
         )}
         {showDetailResume && (

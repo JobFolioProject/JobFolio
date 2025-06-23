@@ -1,6 +1,8 @@
+import { useState } from "react";
 import Calendar from "../common/Calendar";
 
 const CareerSectionModify = ({ resumeInfo, setResumeInfo }) => {
+  // const [isCurrentJob, setIsCurrentJob] = useState(false);
   const handleCareerDateChange = (index, field, date) => {
     setResumeInfo({
       ...resumeInfo,
@@ -26,6 +28,7 @@ const CareerSectionModify = ({ resumeInfo, setResumeInfo }) => {
                 end_date: "",
                 position: "",
                 notes: "",
+                isCurrentJob: false,
               },
             ],
           });
@@ -56,22 +59,54 @@ const CareerSectionModify = ({ resumeInfo, setResumeInfo }) => {
 
           <div>
             <label>입사/퇴사 날짜</label>
-            <Calendar
-              selectedStartDate={
-                career.start_date ? new Date(career.start_date) : null
-              }
-              startplaceholder={"입사일"}
-              onChangeStartDate={(date) =>
-                handleCareerDateChange(index, "start_date", date)
-              }
-              selectedEndDate={
-                career.end_date ? new Date(career.end_date) : null
-              }
-              endplaceholder={"퇴사일"}
-              onChangeEndDate={(date) =>
-                handleCareerDateChange(index, "end_date", date)
-              }
-            ></Calendar>
+            <div className="career_date_section">
+              <Calendar
+                selectedStartDate={
+                  career.start_date ? new Date(career.start_date) : null
+                }
+                startplaceholder={"입사일"}
+                onChangeStartDate={(date) =>
+                  handleCareerDateChange(index, "start_date", date)
+                }
+                selectedEndDate={
+                  career.isCurrentJob
+                    ? new Date()
+                    : career.end_date
+                    ? new Date(career.end_date)
+                    : null
+                  // career.end_date ? new Date(career.end_date) : null
+                }
+                endplaceholder={"퇴사일"}
+                isCurrentJob={career.isCurrentJob}
+                onChangeEndDate={(date) =>
+                  handleCareerDateChange(index, "end_date", date)
+                }
+              ></Calendar>
+              <span className="current-job-checkbox">
+                <input
+                  type="checkbox"
+                  id="currentJob"
+                  name=""
+                  onChange={() => {
+                    setResumeInfo({
+                      ...resumeInfo,
+                      career: resumeInfo.career.map((item, idx) =>
+                        idx === index
+                          ? {
+                              ...item,
+                              isCurrentJob: !item.isCurrentJob,
+                              end_date: !item.isCurrentJob
+                                ? new Date().toISOString().slice(0, 10)
+                                : "",
+                            }
+                          : item
+                      ),
+                    });
+                  }}
+                />
+                <p>재직중</p>
+              </span>
+            </div>
           </div>
 
           <div>

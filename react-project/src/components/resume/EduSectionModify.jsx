@@ -65,20 +65,53 @@ const EduSectionModify = ({ resumeInfo, setResumeInfo }) => {
 
           <div>
             <label>입학/졸업 날짜</label>
-            <Calendar
-              selectedStartDate={
-                edu.enroll_date ? new Date(edu.enroll_date) : null
-              }
-              startplaceholder={"입학일"}
-              onChangeStartDate={(date) =>
-                handleEducationDateChange(index, "enroll_date", date)
-              }
-              selectedEndDate={edu.grad_date ? new Date(edu.grad_date) : null}
-              endplaceholder={"졸업일"}
-              onChangeEndDate={(date) =>
-                handleEducationDateChange(index, "grad_date", date)
-              }
-            />
+            <div className="edu_date_section">
+              <Calendar
+                selectedStartDate={
+                  edu.enroll_date ? new Date(edu.enroll_date) : null
+                }
+                startplaceholder={"입학일"}
+                onChangeStartDate={(date) =>
+                  handleEducationDateChange(index, "enroll_date", date)
+                }
+                selectedEndDate={
+                  edu.isCurrentEdu
+                    ? new Date()
+                    : edu.grad_date
+                    ? new Date(edu.grad_date)
+                    : null
+                }
+                endplaceholder={"졸업일"}
+                onChangeEndDate={(date) =>
+                  handleEducationDateChange(index, "grad_date", date)
+                }
+                isCurrentEdu={edu.isCurrentEdu}
+              />
+              <span className="current-edu-checkbox">
+                <input
+                  type="checkbox"
+                  id="currentEdu"
+                  name=""
+                  onChange={() => {
+                    setResumeInfo({
+                      ...resumeInfo,
+                      education: resumeInfo.education.map((item, idx) =>
+                        idx === index
+                          ? {
+                              ...item,
+                              isCurrentEdu: !item.isCurrentEdu,
+                              grad_date: !item.isCurrentEdu
+                                ? new Date().toISOString().slice(0, 10)
+                                : "",
+                            }
+                          : item
+                      ),
+                    });
+                  }}
+                />
+                <p>재학중</p>
+              </span>
+            </div>
           </div>
           <div>
             <label>학력상태</label>

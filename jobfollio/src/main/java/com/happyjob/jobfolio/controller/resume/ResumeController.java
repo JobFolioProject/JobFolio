@@ -273,11 +273,19 @@ public class ResumeController {
         byte[] bytes = Files.readAllBytes(path);
         String html = new String(bytes, StandardCharsets.UTF_8);
 
-        String xhtml = html
+        String body = html
                 .replaceAll("(?i)<br>", "<br/>")
                 .replaceAll("(?i)<hr>", "<hr/>")
+                .replaceAll("(?i)<meta([^>]+)>", "<meta$1/>")
                 // 필요하다면 <img>, <input> 등도
                 ;
+
+        String xhtml = ""
+                + "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                + "<!DOCTYPE html PUBLIC\n"
+                + "  \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n"
+                + "  \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n"
+                + body;
 
         // 2) PDF로 변환
         ByteArrayOutputStream os = new ByteArrayOutputStream();
@@ -433,7 +441,6 @@ public class ResumeController {
         resumeInfoVO.setUser_no(Integer.parseInt(paramMap.get("userNo").toString()));
         resumeInfoVO.setTemplate_no(Integer.parseInt(paramMap.get("templateNo").toString()));
         resumeInfoVO.setTitle(resumeInfo.get("title").toString());
-        resumeInfoVO.setDesired_position(resumeInfo.get("desired_position").toString());
         resumeInfoVO.setResume_file_name(fileName);
         resumeInfoVO.setResume_file_pypath(filePath.toString());
         resumeInfoVO.setPublication_yn(resumeInfo.get("publication_yn").toString());
@@ -458,7 +465,7 @@ public class ResumeController {
             ObjectMapper mapper = new ObjectMapper();
             ObjectNode root = mapper.createObjectNode();
             root.put("coverLetter", resumeInfo.get("coverLetter").toString());
-            root.put("desired_position", resumeInfo.get("desired_position").toString());
+//            root.put("desired_position", resumeInfo.get("desired_position").toString());
 
             //학력사항 정보
             List<Map<String, String>> educations = (List<Map<String,String>>) resumeInfo.get("education");
@@ -695,6 +702,17 @@ public class ResumeController {
         paramMap.put("group_code", group_code);
         skillDetailCodeList = resumeService.getSkillDetailCode(paramMap);
         return ResponseEntity.ok(skillDetailCodeList);
+    }
+
+    // 특정 템플릿 HTML 코드 반환
+    @GetMapping("/getTemplateCode")
+    public ResponseEntity<String> getTemplateCode(@RequestParam int template_no) throws IOException {
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("template_no", template_no);
+        TemplateVO template = resumeService.selectTemplateByNum(template_no);
+        Path path = Paths.get(template.getFile_pypath());
+        String html = new String(Files.readAllBytes(path), StandardCharsets.UTF_8);
+        return ResponseEntity.ok(html);
     }
 
 

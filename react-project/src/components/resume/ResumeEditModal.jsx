@@ -11,6 +11,7 @@ import axios from "../../utils/axiosConfig";
 import Loading from "../common/Loading";
 import { useAuth } from "../../context/AuthContext";
 import { Navigate } from "react-router-dom";
+import TemplateSelection from "./TemplateSelection";
 
 const ResumeEditModal = ({
   open,
@@ -30,10 +31,8 @@ const ResumeEditModal = ({
   const [resumeInfo, setResumeInfo] = useState({
     name: "",
     title: "",
-    // address: "",
     email: "",
     phone: "",
-    // desired_position: "",
     link: "",
     resumeNo: "",
     templateNo: "",
@@ -49,6 +48,7 @@ const ResumeEditModal = ({
         sub_major: "",
         gpa: "",
         notes: "",
+        isCurrentEdu: false,
       },
     ],
     career: [
@@ -58,6 +58,7 @@ const ResumeEditModal = ({
         end_date: "",
         position: "",
         notes: "",
+        isCurrentJob: false,
       },
     ],
     skills: [
@@ -65,7 +66,6 @@ const ResumeEditModal = ({
         skill_code: "",
         group_code: "",
         exp_level: "",
-        // skill_tool: "",
       },
     ],
     languages: [
@@ -80,7 +80,6 @@ const ResumeEditModal = ({
         certificate_name: "",
         issuing_org: "",
         acquired_date: "",
-        // notes: "",
       },
     ],
   });
@@ -422,7 +421,6 @@ const ResumeEditModal = ({
 
   // 이력서 수정 버튼 클릭 이벤트
   const saveModify = async () => {
-    setIsDownload(true);
     const updatedHtml = getPreviewHtml();
     await axios
       .post("/api/resume/saveModifiedResume", {
@@ -432,6 +430,7 @@ const ResumeEditModal = ({
         html: updatedHtml,
       })
       .then((res) => {
+        setIsDownload(true);
         console.log(res);
         if (res.result === 1) {
           console.log(res.filePath);
@@ -471,7 +470,7 @@ const ResumeEditModal = ({
         link.remove();
 
         setIsDownload(false);
-        return <Navigate to="/resume/edit" replace />;
+        onClose();
       })
       .catch((err) => {
         console.error(err.response || err);
@@ -603,6 +602,18 @@ const ResumeEditModal = ({
             />
           </div>
         )}
+
+        <div className="templete-test">
+          <TemplateSelection
+            formData={resumeInfo}
+            editType={"U"}
+            setResumeInfo={setResumeInfo}
+            setInitHtmlContent={setInitHtmlContent}
+            setHtmlContent={setHtmlContent}
+          >
+            템플렛선택
+          </TemplateSelection>
+        </div>
 
         <div className="aiSection">
           <h2 className="aiTitle">AI Comment</h2>
