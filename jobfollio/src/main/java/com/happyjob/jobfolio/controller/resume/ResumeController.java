@@ -57,8 +57,8 @@ public class ResumeController {
         Map<String,Object> resultMap = new HashMap<>();
 
         return resultMap;
-
     }
+
 
 //    // 이력서 작성 페이지에 해당 유저의 스킬목록을 조회
 //    @RequestMapping("/write")
@@ -626,6 +626,24 @@ public class ResumeController {
             }
 
     }
+
+    // 관리자 이력서 페이지 표시여부 Y/N
+    @PostMapping("/updateResumeStatus")
+    public ResponseEntity<Map<String,Object>> updateResumeStatus(@RequestBody Map<String,Object> requestMap) {
+        int resumeNo = (Integer) requestMap.get("resume_no");
+        String statusYn = (String) requestMap.get("status_yn");
+
+        ResumeInfoVO vo = new ResumeInfoVO();
+        vo.setResume_no(resumeNo);
+        vo.setStatus_yn(statusYn);
+
+        int result = resumeService.updateResumeStatus(vo);
+
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("message", result > 0 ? "Y" : "N");
+        return ResponseEntity.ok(resultMap);
+    }
+
     // 관리자 이력서 페이지 이력서 data 삭제
     @PostMapping("/deleteSelectedResume")
     public ResponseEntity<Map<String,Object>> deleteSelectedResume(@RequestBody List<Integer> resumeNos) {
@@ -633,8 +651,6 @@ public class ResumeController {
         int result = resumeService.deleteSelectedResume(resumeNos);
         resultMap.put("message", result > 0 ? "Y" : "N");
         return ResponseEntity.ok(resultMap);
-
-
     }
 
     // 이력서 게시판 데이터 불러오기
@@ -675,6 +691,52 @@ public class ResumeController {
 
 
         System.out.println(resultMap);
+
+        return resultMap;
+    }
+
+    // 관리자페이지에선 모든 정보 가져옴
+    @GetMapping("/adminSelectResumeInfo")
+    public Map<String, Object> adminResumeList(Model model,
+                                                   @RequestParam Map<String, Object> paramMap,
+                                                   HttpServletRequest request,
+                                                   HttpServletResponse response,
+                                                   HttpSession session) throws Exception {
+
+        Map<String, Object> resultMap = new HashMap<>();
+
+        String search = (String) paramMap.get("search");
+        paramMap.put("search", search);
+
+        String searchField = (String) paramMap.get("searchField");
+        paramMap.put("searchField", searchField);
+
+        int page = 1;
+        int pageSize = 12;
+
+        try {
+            String pageStr = (String) paramMap.get("page");
+            String pageSizeStr = (String) paramMap.get("pageSize");
+            if (pageStr != null && !pageStr.isEmpty()) page = Integer.parseInt(pageStr);
+            if (pageSizeStr != null && !pageSizeStr.isEmpty()) pageSize = Integer.parseInt(pageSizeStr);
+        } catch (NumberFormatException e) {
+            resultMap.put("error", "잘못된 요청입니다.");
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return resultMap;
+        }
+
+        int offset = (page - 1) * pageSize;
+        paramMap.put("offset", offset);
+        paramMap.put("limit", pageSize);
+
+        // ✅ 관리자 페이지 요청이면 includeHidden 설정
+        String isAdmin = (String) paramMap.get("admin");
+        if ("true".equals(isAdmin)) {
+            paramMap.put("includeHidden", true); // Mapper에서 이 값으로 조건 분기
+        }
+
+        List<ResumeInfoVO> boardList = resumeService.adminSelectResumeInfo(paramMap);
+        resultMap.put("boardList", boardList);
 
         return resultMap;
     }

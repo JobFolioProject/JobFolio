@@ -16,6 +16,9 @@ public interface ResumeMapper {
 
     List<ResumeInfoVO> selectResumeInfo(Map<String,Object> requestMap);
 
+    // 관리자페이지에선 모든 정보 불러오기
+    List<ResumeInfoVO> adminSelectResumeInfo(Map<String, Object> paramMap);
+
     int selectResumeCount(Map<String,Object> requestMap);
 
     List<ResumeInfoVO> resumeLikedList(int user_no);
@@ -28,6 +31,9 @@ public interface ResumeMapper {
 
     // 관리자페이지에서 이력서 삭제
     int deleteSelectedResume(List<Integer> resume_nos);
+
+    // 관리자페이지에서 Y/N
+    int updateResumeStatus(ResumeInfoVO resumeInfoVO);
 
     int insertResumeInfo(ResumeInfoVO resumeInfoVO);
 

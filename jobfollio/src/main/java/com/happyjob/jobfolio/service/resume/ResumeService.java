@@ -284,6 +284,14 @@ public class ResumeService {
         return resumeMapper.selectResumeInfo(requestMap);
     }
 
+    // 관리자페이지에선 모든 정보 불러옴
+    public List<ResumeInfoVO> adminSelectResumeInfo(Map<String, Object> paramMap) {
+        return resumeMapper.adminSelectResumeInfo(paramMap);
+    }
+
+
+
+
     public int selectResumeCount(Map<String,Object> requestMap) {
         return resumeMapper.selectResumeCount(requestMap);
     }
@@ -303,6 +311,8 @@ public class ResumeService {
     public int deleteResume(int resume_no) {
         return resumeMapper.deleteResume(resume_no);
     }
+
+    public int updateResumeStatus(ResumeInfoVO resumeInfoVO) {return resumeMapper.updateResumeStatus(resumeInfoVO);}
 
     public int deleteSelectedResume(List<Integer> resume_nos) {
         return resumeMapper.deleteSelectedResume(resume_nos);
