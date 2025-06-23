@@ -130,7 +130,7 @@ const FaqManagement = () => {
         <div className = 'faq-section-content-box'>
         <div className='faq-header'>
           <h3>FAQ</h3>
-          <p className='faq-warning'>삭제할 경우 복구가 어려우며, 하이잡 이용자에게 해당 항목이 즉시 비노출됩니다. 삭제 시 신중히 선택 바랍니다.</p>
+          <p className='faq-warning'>삭제할 경우 복구가 어려우며, JobFolio 이용자에게 해당 항목이 즉시 비노출됩니다. 삭제 시 신중히 선택 바랍니다.</p>
           <div className='faq-controls'>
             <button onClick={handleDeleteSelected}>선택 삭제</button>
             <button onClick={openNewPostModal}>FAQ 등록</button>
