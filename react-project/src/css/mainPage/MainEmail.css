@@ -5,7 +5,7 @@
     justify-content: center;
     align-items: center;
     overflow: hidden;
-    background-image: linear-gradient(to bottom, #ffffff 0%, #fae6f1 100%);
+    background-image: linear-gradient(to top, #fae6f1 0%, #fff6fb 100%);
   }
   
   .main-email .box {
@@ -18,7 +18,7 @@
     justify-content: center;
     align-items: baseline;
     letter-spacing: 0.1em;
-    background-image: linear-gradient(to bottom left, #cce0ff 0%, #fae6f1 100%);
+    background-color: #e6f4fa;
   }
 
   .main-email .box .text {
