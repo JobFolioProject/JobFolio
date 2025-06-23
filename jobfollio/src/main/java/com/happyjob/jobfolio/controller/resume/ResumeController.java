@@ -30,7 +30,9 @@ import java.io.ByteArrayOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -187,6 +189,7 @@ public class ResumeController {
                 node.put("major", edu.getOrDefault("major", ""));
                 node.put("sub_major", edu.getOrDefault("sub_major", ""));
                 node.put("gpa", edu.getOrDefault("gpa", ""));
+                node.put("notes", edu.getOrDefault("notes", ""));
                 String period = edu.getOrDefault("enroll_date", "") + " ~ " + edu.getOrDefault("grad_date", "");
                 node.put("period", period);
                 eduArray.add(node);
@@ -204,6 +207,7 @@ public class ResumeController {
                 node.put("position", exp.getOrDefault("position", ""));       // 직위가 paramMap에 있다면
                 node.put("start_date", exp.getOrDefault("start_date", ""));
                 node.put("end_date", exp.getOrDefault("end_date", ""));
+                node.put("career_notes", exp.getOrDefault("notes", ""));
                 String period = exp.getOrDefault("start_date", "") + " ~ " + exp.getOrDefault("end_date", "");
                 node.put("period", period);
                 expArray.add(node);
@@ -275,22 +279,36 @@ public class ResumeController {
         byte[] bytes = Files.readAllBytes(path);
         String html = new String(bytes, StandardCharsets.UTF_8);
 
-        String xhtml = html
-                .replaceAll("(?i)<br>", "<br/>")
-                .replaceAll("(?i)<hr>", "<hr/>")
-                // 필요하다면 <img>, <input> 등도
-                ;
+        String body = html
+                // (1) 중복 · 구버전 DOCTYPE, XML 선언 전부 제거
+                .replaceAll("(?is)<script[^>]*?>.*?</script>", "")
+                .replaceAll("(?is)<!DOCTYPE[^>]*>", "")
+                .replaceAll("(?is)<\\?xml[^>]*>", "")
+                // (2) 빈태그 XHTML 형식으로 치환
+                .replaceAll("(?i)<br(?=[^/>]*>)",  "<br/>")
+                .replaceAll("(?i)<hr(?=[^/>]*>)",  "<hr/>")
+                .replaceAll("(?i)<img([^>]*)(?<!/)>", "<img$1/>")   // img 도 자주 문제
+                .replaceAll("(?i)<meta([^>]*)(?<!/)>", "<meta$1/>");
 
-        // 2) PDF로 변환
+        String xhtml = ""
+                + "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                + "<!DOCTYPE html PUBLIC\n"
+                + "  \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n"
+                + "  \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n"
+                + body;
+
+        /* -------------- PDF 렌더링 -------------- */
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        PdfRendererBuilder builder = new PdfRendererBuilder();
-        builder.useFont(
+        PdfRendererBuilder     b = new PdfRendererBuilder();
+
+        /* 1) 폰트 등록 : 이름을 CSS 와 동일하게 “Noto Serif KR” 로 */
+        b.useFont(
                 () -> this.getClass().getResourceAsStream("/fonts/NotoSansKR-Regular.ttf"),
                 "Noto Sans KR"
         );
-        builder.withHtmlContent(xhtml, path.getParent().toUri().toString());
-        builder.toStream(os);
-        builder.run();
+        b.withHtmlContent(xhtml, path.getParent().toUri().toString());
+        b.toStream(os);
+        b.run();
         byte[] pdfBytes = os.toByteArray();
 
         // 3) HTTP 응답 헤더 세팅

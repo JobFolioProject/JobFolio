@@ -257,7 +257,7 @@ const ResumeManagement = () => {
       </div>
     </div>
   );
-        
+
 };
 
 export default ResumeManagement;
