@@ -1,4 +1,3 @@
-// 📁 src/components/user/join/SocialLogin.jsx
 import React from 'react';
 import '../../../css/user/join/SocialLogin.css';
 
@@ -32,7 +31,7 @@ const renderGoogleButton = () => (
     title="구글로 로그인"
     style={{
       backgroundColor: '#ffffff',
-      border: '2px solid #dadce0',
+      border: '2px solid #dadce0',  
       borderRadius: '50%',
       width: '45px',
       height: '45px',
