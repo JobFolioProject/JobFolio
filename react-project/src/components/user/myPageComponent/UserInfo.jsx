@@ -169,7 +169,7 @@ const UserInfo = () => {
                         </button>
                     )}
                     <button className="userInfoBackButton" onClick={handleEditClick}>
-                        수정하기
+                        {isEditing ? '저장하기' : '수정하기'}
                     </button>
                 </div>
                 <hr />

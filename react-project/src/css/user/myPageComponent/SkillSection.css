@@ -52,8 +52,8 @@
 /* 보유 스킬이 없을 때 메시지 */
 .emptyMessage {
     color: #6c757d;
-    font-style: italic;
     text-align: center;
     width: 100%;
     padding: 10px;
+    font-weight: 500;
 }

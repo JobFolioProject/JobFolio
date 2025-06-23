@@ -242,7 +242,7 @@ const SkillSection = React.memo(({ userNo, skillList, onListChange }) => {
                             </div>
                         ))
                     ) : (
-                        <p className="emptyMessage">보유 스킬을 추가해 주세요</p>
+                        <span className="emptyMessage">보유 스킬을 추가해 주세요</span>
                     )}
                 </div>
             )}

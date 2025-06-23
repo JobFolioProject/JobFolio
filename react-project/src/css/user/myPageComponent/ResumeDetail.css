@@ -18,7 +18,7 @@
     margin-bottom: 40px;
 }
 
- .resumeDetail .resumeItemCon {
+.resumeDetail .resumeItemCon {
     position: relative;
     padding: 40px;
     width: 100%;
@@ -29,9 +29,9 @@
 }
 
 .resumeDetail .community-notice-pagination {
-  margin-bottom: 100px;
-  border-top: none;
-  margin: auto;
+    margin-bottom: 100px;
+    border-top: none;
+    margin: auto;
 }
 
 .resumeDetail .resumeItemHeader .bttnRow .resumeBtn {
@@ -64,7 +64,7 @@
 }
 
 .resumeDetail .resumeItemCon h3:hover {
-    cursor:pointer;
+    cursor: pointer;
 }
 
 .resumeDetail .resumeItemDetail {
@@ -81,7 +81,7 @@
 }
 
 .resumeDetail .likeIcon:hover {
-    cursor:pointer;
+    cursor: pointer;
 }
 
 .resumeItemDetail p {
@@ -97,4 +97,12 @@
     font-weight: 600;
     font-size: 15px;
     letter-spacing: 1px;
+}
+
+.emptyResumeList {
+    color: #6c757d;
+    text-align: center;
+    width: 100%;
+    padding: 10px;
+    font-weight: 500;
 }
