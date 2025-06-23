@@ -79,7 +79,8 @@ body {
 
 /* 라벨 그룹 */
 .resume-content-form label {
-    display: block;
+    /* display: block; */
+    display: flex;
     margin-bottom: 20px; /* 라벨 하단 여백 조정 */
 }
 
@@ -98,7 +99,55 @@ body {
     min-width: 90px;
 }
 
-/* 인풋 & 텍스트에어리어 */
+/* 제목, 희망직무, 링크 인풋 */
+.resume-content-form .input-title-space input[type="text"]{
+    flex: 1 1;
+    padding: 12px 15px 10px 0;
+    font-size: 1rem;
+    background: var(--background-card);
+    border: none;
+    border-bottom: 1px solid #686868;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: none; /* <-- 여기에서 그림자를 none으로 재정의합니다! */
+    border-radius: 0; /* <-- 여기에서 둥근 모서리를 0으로 재정의합니다! */
+    border-bottom: 1px solid var(--border-light); /* 기본 밑줄 */
+}
+
+
+.input-title {
+    width: 15%;
+}
+.input-title-space {
+    width: 80%;
+}
+/*자기소개서 텍스트에어리어*/
+.resume-content-form .input-cover-space input[type="textarea"]{
+    flex: 1 1;
+    padding: 12px 15px 10px 0;
+    font-size: 1rem;
+    background: var(--background-card);
+    border: none;
+    border-bottom: 1px solid #686868;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.input-cover-space {
+    width: 80%;
+}
+
+.resume-content-form input[type="text"],
+.resume-content-form textarea {
+    flex: 1;
+    padding: 12px 15px; /* 패딩 조정 */
+    font-size: 1rem; /* 폰트 크기 조정 */
+    color: var(--text-dark);
+    background: var(--background-card);
+    border: 1px solid var(--border-light);
+    border-radius: 8px; /* 모서리 더 부드럽게 */
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.03); /* 내부 그림자 미세 조정 */
+}
+
 .resume-content-form input[type="text"],
 .resume-content-form textarea {
     flex: 1;
@@ -115,8 +164,10 @@ body {
 .resume-content-form input:focus,
 .resume-content-form textarea:focus {
     outline: none;
-    border-color: var(--primary-blue); /* 포커스 시 메인 강조색 사용 */
-    box-shadow: 0 0 0 3px var(--secondary-blue); /* 은은한 포커스 효과 */
+    border-color: var(--primary-blue); 
+    /* 포커스 시 메인 강조색 사용 */
+    /* box-shadow: 0 0 0 3px var(--secondary-blue);  */
+    /* 은은한 포커스 효과 */
 }
 
 .resume-content-form input::placeholder,
@@ -124,18 +175,41 @@ body {
     color: var(--text-light); /* 플레이스홀더 색상 조정 */
 }
 
+
+/* 제목 부분 인풋의 포커스 시 스타일 */
+.resume-content-form .input-title-space input[type="text"]:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+    box-shadow: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.resume-content-form .input-title-space input[type="text"]:hover {
+    border-color: var(--primary-blue);
+}
+
 /* 토글바/////////2025-06021 추가 */
-.language-section-wrapper
-.certificate-section-wrapper
-.experience-section-wrapper
-.education-section-wrapper
+.language-section-wrapper,
+.certificate-section-wrapper,
+.experience-section-wrapper,
+.education-section-wrapper,
 .skill-section-wrapper {
-   margin-top: 15px; /* 각 섹션 상단 여백 */
+   margin-top: 25px; /* 각 섹션 상단 여백 */
     /* border: 1px solid var(--border-light); 섹션 테두리 (선택 사항) */
-    padding: 15px;
-    border-radius: 8px;
-    background-color: var(--white);
+    padding: 20px;
+    border-radius: 10px;
+    /* background-color: var(--white); */
     box-shadow: var(--shadow-small); 
+    background-color: var(--background-card);border: 1px solid var(--border-light); /* <-- 각 섹션에 테두리를 추가하여 명확한 경계 제공 (선택 사항) */
+    transition: border-color 0.3s ease; /* ← 부드러운 테두리 색 변화 */
+}
+
+.language-section-wrapper:hover,
+.certificate-section-wrapper:hover,
+.experience-section-wrapper:hover,
+.education-section-wrapper:hover,
+.skill-section-wrapper:hover {
+  border-color: var(--primary-blue);
 }
 
 /* 요약 정보 행 */
@@ -207,12 +281,27 @@ body {
 }
 
 /* 상세 정보 섹션 */
-.language-details-section
-.experience-details-section
-.education-details-section
-.certificate-details-section
+.language-details-section,
+.experience-details-section,
+.education-details-section,
+.certificate-details-section,
 .skill-details-section {
     padding-top: 10px;
+}
+
+
+/*기존 외국어 능력 상세.. 같은 글자 크기. 지워서 필요없어짐.*/
+.education-details-section h4,
+.certificate-details-section h4,
+.experience-details-section h4,
+.language-details-section h4,
+.skill-details-section h4 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 15px; /* 제목 아래 여백 */
+    padding-bottom: 8px; /* 아래쪽 패딩 */
+    border-bottom: 1px dashed var(--border-light); /* 점선 구분선 */
 }
 
 /* --- 기존 학력/경력 정보 표시 섹션 --- */
@@ -306,14 +395,13 @@ body {
     align-items: center; /* 세로 중앙 정렬 */
 }
 
-.certificate-row-input > input[type="text"],
+.certificate-row-input > input[type="text"],certificate-row-input-group
 .education-row-input > input[type="text"] {
     flex: 1 1 220px; /* flex-grow: 1, flex-shrink: 1, flex-basis: 220px. 최소 너비 220px 보장. */
     min-width: 220px;
 }
 
 /* Calendar 컴포넌트 래퍼 */
-.language-row-input .date-range-wrapper,
 .certificate-row-input .date-range-wrapper,
 .education-row-input .date-range-wrapper,
 .experience-row-input .date-range-wrapper {
