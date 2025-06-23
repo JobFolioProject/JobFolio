@@ -243,7 +243,6 @@ const ResumeManagement = () => {
               </div>
             </>
           )}
-
           {totalPages > 1 && (
             <div className="community-notice-pagination">
               <Pagination
@@ -257,7 +256,6 @@ const ResumeManagement = () => {
       </div>
     </div>
   );
-
 };
 
 export default ResumeManagement;
