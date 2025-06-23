@@ -566,12 +566,22 @@ public class ResumeController {
     }
 
     @PostMapping("/resume/liked")
-    public ResponseEntity<Map<String,Object>> resumeLikedList(@RequestBody Map<String,Integer> requestMap) {
-        int userNo = requestMap.get("userNo");
-        List<ResumeInfoVO> resumeList = resumeService.resumeLikedList(userNo);
+    public ResponseEntity<Map<String,Object>> resumeLikedList(@RequestBody Map<String,Object> requestMap,
+                                                              @AuthenticationPrincipal UserPrincipal userPrincipal) {
 
+        int userNo = Integer.parseInt(userPrincipal.getUser_no().toString());
+        int page     = Integer.parseInt(requestMap.getOrDefault("page", "1").toString());
+        int pageSize = Integer.parseInt(requestMap.getOrDefault("pageSize", "6").toString());
+        requestMap.put("offset", (page - 1) * pageSize);
+        requestMap.put("limit",  pageSize);
+        requestMap.put("user_no", userNo);
+        List<ResumeInfoVO> resumeList = resumeService.resumeLikedList(requestMap);
+        int totalCount = resumeService.selectLikeCount(requestMap);
+
+        requestMap.put("totalCount", totalCount);
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("resumeList", resumeList);
+        resultMap.put("totalCount", totalCount);
         return ResponseEntity.ok(resultMap);
     }
 

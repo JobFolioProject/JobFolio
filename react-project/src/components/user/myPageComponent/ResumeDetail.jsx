@@ -92,42 +92,42 @@ const ResumeDetail = () => {
                 </div>
             ) : (
                 // 3) map으로 반복 렌더링
-                resumeList.map((item) => (
-                    <div key={item.resume_no} className="resumeItem">
-                        <div className="resumeItemCon">
-                            <div className="resumeItemHeader">
-                                <h3 onClick={() => openResumePopup(item.resume_file_pypath)}>
-                                    {item.title || '제목 없음'}
-                                </h3>
-                                <div className="bttnRow">
-                                    <button
-                                        className="resumeBtn"
-                                        onClick={() =>
-                                            modifyResume(item.resume_file_pypath, item.title, item.publication_yn)
-                                        }
-                                    >
-                                        수정
-                                    </button>
-                                    <button className="resumeBtn" onClick={() => deleteResume(item.resume_no)}>
-                                        삭제
-                                    </button>
+                <>
+                    {resumeList.map((item) => (
+                        <div key={item.resume_no} className="resumeItem">
+                            <div className="resumeItemCon">
+                                <div className="resumeItemHeader">
+                                    <h3 onClick={() => openResumePopup(item.resume_file_pypath)}>
+                                        {item.title || '제목 없음'}
+                                    </h3>
+                                    <div className="bttnRow">
+                                        <button
+                                            className="resumeBtn"
+                                            onClick={() =>
+                                                modifyResume(item.resume_file_pypath, item.title, item.publication_yn)
+                                            }
+                                        >
+                                            수정
+                                        </button>
+                                        <button className="resumeBtn" onClick={() => deleteResume(item.resume_no)}>
+                                            삭제
+                                        </button>
+                                    </div>
+                                </div>
+                                <div className="resumeItemDetail">
+                                    <p className="resumeItemJob">{item.desired_position || '희망 직무 없음'}</p>
+                                    {/* 서버에 생성일(create_at) 필드가 있다면 출력 */}
+                                    <p className="resumeItemDate">
+                                        {item.create_date.slice(0, 16) || '날짜 정보 없음'}
+                                    </p>
                                 </div>
                             </div>
-                            <div className="resumeItemDetail">
-                                <p className="resumeItemJob">{item.desired_position || '희망 직무 없음'}</p>
-                                {/* 서버에 생성일(create_at) 필드가 있다면 출력 */}
-                                <p className="resumeItemDate">{item.create_date.slice(0, 16) || '날짜 정보 없음'}</p>
-                            </div>
                         </div>
-                        <div className="community-notice-pagination">
-                            <Pagination
-                                currentPage={currentPage}
-                                totalPages={totalPages}
-                                setCurrentPage={setCurrentPage}
-                            />
-                        </div>
+                    ))}
+                    <div className="community-notice-pagination">
+                        <Pagination currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage} />
                     </div>
-                ))
+                </>
             )}
         </div>
     );
