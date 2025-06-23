@@ -66,6 +66,26 @@ const CertificateSection = React.memo(({ userNo, certificateList, onListChange }
             alert(`자격증은 최대 ${MAX_CERTIFICATION_COUNT}개까지만 추가할 수 있습니다.`);
             return;
         }
+
+        // 현재 폼이 작성 되어 있고 확인 메세지
+        const isFormDirty =
+            currentFormCert.certificate_name ||
+            currentFormCert.issuing_org ||
+            currentFormCert.acquired_date ||
+            currentFormCert.end_date ||
+            currentFormCert.certificate_no ||
+            currentFormCert.notes;
+
+        if ((showAddForm || editingCertNo !== null) && isFormDirty) {
+            const confirmDiscard = window.confirm(
+                '현재 작성중인 내용이 있습니다. \n새 학력을 추가하면 내용이 초기화 됩니다.'
+            );
+
+            if (!confirmDiscard) {
+                return;
+            }
+        }
+
         setCurrentFormCert(formCertData);
         setShowAddForm(true);
         setEditingCertNo(null);
@@ -128,7 +148,7 @@ const CertificateSection = React.memo(({ userNo, certificateList, onListChange }
 
     // 삭제 아이콘 버튼 이벤트
     const deleteItemClick = async (certNoToDelete) => {
-        const isConfirm = window.confirm('정말로 이 자격 정보를 삭제하시겠습니까? 되돌릴 수 없습니다.');
+        const isConfirm = window.confirm('정말 자격 정보를 삭제하시겠습니까? 되돌릴 수 없습니다.');
 
         if (isConfirm) {
             setErrorMessage('');
@@ -339,7 +359,9 @@ const CertificateSection = React.memo(({ userNo, certificateList, onListChange }
                         );
                     })
                 ) : (
-                    <p className="emptyMessage">자격증을 추가해 주세요</p>
+                    <div className="certification-empty-container">
+                        <span className="emptyMessage">자격증을 추가해 주세요</span>
+                    </div>
                 )
             ) : null}
 

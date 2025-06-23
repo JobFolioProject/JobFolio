@@ -104,26 +104,38 @@ const PayHistory = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {data.map((item) => (
-                                    <tr key={item.order_id}>
-                                        <td>{item.order_id}</td>
-                                        <td>{item.order_name}</td>
-                                        <td>{item.amount.toLocaleString('ko-KR') + '원'}</td>
-                                        <td>{item.paid_date.substring(0, 16)}</td>
-                                        <td
-                                            style={{
-                                                color:
-                                                    item.pay_status === 2
-                                                        ? 'green'
-                                                        : item.pay_status === 3
-                                                        ? 'red'
-                                                        : 'inherit',
-                                            }}
-                                        >
-                                            {item.pay_status === 2 ? '완료' : item.pay_status === 3 ? '환불' : '요청'}
+                                {data && data.length > 0 ? (
+                                    data.map((item) => (
+                                        <tr key={item.order_id}>
+                                            <td>{item.order_id}</td>
+                                            <td>{item.order_name}</td>
+                                            <td>{item.amount.toLocaleString('ko-KR') + '원'}</td>
+                                            <td>{item.paid_date.substring(0, 16)}</td>
+                                            <td
+                                                style={{
+                                                    color:
+                                                        item.pay_status === 2
+                                                            ? 'green'
+                                                            : item.pay_status === 3
+                                                            ? 'red'
+                                                            : 'inherit',
+                                                }}
+                                            >
+                                                {item.pay_status === 2
+                                                    ? '완료'
+                                                    : item.pay_status === 3
+                                                    ? '환불'
+                                                    : '요청'}
+                                            </td>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan="5" className="payHis-noPay">
+                                            결제 내역이 없습니다.
                                         </td>
                                     </tr>
-                                ))}
+                                )}
                             </tbody>
                         </table>
                         <Pagination currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage} />

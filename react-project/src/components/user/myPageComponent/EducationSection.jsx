@@ -85,6 +85,25 @@ const EducationSection = React.memo(({ userNo, educationList, onListChange }) =>
             return;
         }
 
+        // 현재 폼이 작성 되어 있고 확인 메세지
+        const isFormDirty =
+            currentFormEdu.school_name ||
+            currentFormEdu.major ||
+            currentFormEdu.gpa ||
+            currentFormEdu.notes ||
+            currentFormEdu.edu_status ||
+            enrollDate ||
+            gradDate;
+
+        if ((showAddForm || editingEduNo !== null) && isFormDirty) {
+            const confirmDiscard = window.confirm(
+                '현재 작성중인 내용이 있습니다. \n새 학력을 추가하면 내용이 초기화 됩니다.'
+            );
+
+            if (!confirmDiscard) {
+                return;
+            }
+        }
         // 먼저 폼 상태 내용를 초기화
         setCurrentFormEdu(formEduData);
         setShowAddForm(true);
@@ -178,7 +197,7 @@ const EducationSection = React.memo(({ userNo, educationList, onListChange }) =>
 
     // 삭제 아이콘 버튼 이벤트
     const deleteItemClick = async (eduNoToDelete) => {
-        const isConfirm = window.confirm('정말로 이 학력을 삭제하시겠습니까? 되돌릴 수 없습니다.');
+        const isConfirm = window.confirm('정말 학력을 삭제하시겠습니까? 되돌릴 수 없습니다.');
 
         if (isConfirm) {
             setErrorMessage('');
@@ -366,7 +385,7 @@ const EducationSection = React.memo(({ userNo, educationList, onListChange }) =>
     const gradDateInputRef = useRef(null);
     const enrollDateInputRef = useRef(null);
     const gpaRef = useRef(null); // 학점 input용
-    const gpaScaleRef = useRef(null); // 기준학점 select용
+    // const gpaScaleRef = useRef(null); // 기준학점 select용
 
     // 폼이 열릴 때 첫 번째 필드에 포커스 schoolNameRef는 school_name 필드와 연결
     useEffect(() => {
@@ -455,7 +474,9 @@ const EducationSection = React.memo(({ userNo, educationList, onListChange }) =>
                         );
                     })
                 ) : (
-                    <p className="emptyMessage">학력을 추가해 주세요</p>
+                    <div className="education-empty-container">
+                        <span className="emptyMessage">학력을 추가해 주세요</span>
+                    </div>
                 )
             ) : null}
 

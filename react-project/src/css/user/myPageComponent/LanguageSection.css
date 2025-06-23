@@ -157,3 +157,11 @@
     background-color: #0056b3;
     transform: translateY(-1px);
 }
+
+.language-empty-container {
+    color: #6c757d;
+    text-align: center;
+    width: 100%;
+    padding: 10px;
+    font-weight: 500;
+}

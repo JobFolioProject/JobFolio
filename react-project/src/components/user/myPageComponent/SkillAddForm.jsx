@@ -305,8 +305,8 @@ const SkillAddForm = React.memo(
                     </div>
                     {currentFormSkills.length > 0 && incompleteSkillsExist && (
                         <span className="guidance-message">
-                            <WarningIcon className="warning-icon" /> **저장하려면 모든 스킬의 상세 정보(숙련도, 사용
-                            툴/특이사항)를 입력해야 합니다.** <br></br>각 스킬 태그를 클릭하여 입력해주세요.
+                            <WarningIcon className="warning-icon" /> 저장하려면 모든 스킬의 상세 정보(숙련도, 사용
+                            툴/특이사항)를 입력해야 합니다. <br></br>각 스킬 태그를 클릭하여 입력해주세요.
                         </span>
                     )}
                     {currentFormSkills.length > 0 && (
