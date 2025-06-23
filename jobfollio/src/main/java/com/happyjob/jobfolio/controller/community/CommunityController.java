@@ -54,10 +54,16 @@ public class CommunityController {
     ) throws Exception {
         logger.info("+ Start " + this.getClass());
 
-        // 1) 파라미터 처리
+        // 파라미터 처리
         String boardType = (String) paramMap.get("boardType");
+        // 검색어
         String search    = (String) paramMap.get("search");
         paramMap.put("search", search);
+        // 검색 대상 카테고리(title, content, titleContent)
+        String searchCategory = (String) paramMap.get("searchCategory");
+        if (searchCategory != null && !searchCategory.isEmpty()) {
+            paramMap.put("searchCategory", searchCategory);
+        }
         int page     = Integer.parseInt((String) paramMap.getOrDefault("page", "1"));
         int pageSize = Integer.parseInt((String) paramMap.getOrDefault("pageSize", "10"));
         paramMap.put("offset", (page - 1) * pageSize);
