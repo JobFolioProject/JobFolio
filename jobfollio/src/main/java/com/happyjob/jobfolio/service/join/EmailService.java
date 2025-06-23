@@ -2,6 +2,7 @@ package com.happyjob.jobfolio.service.join;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import javax.xml.bind.DatatypeConverter;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -11,6 +12,11 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -23,7 +29,7 @@ public class EmailService {
     @Autowired
     private JavaMailSender javaMailSender;
 
-    // application.properties에서 설정값 가져오기
+
     @Value("${spring.mail.username}")
     private String fromEmail;
 
@@ -32,6 +38,84 @@ public class EmailService {
 
     @Value("${app.url:http://localhost:3000}")
     private String appUrl;
+
+    private String getLogoBase64() {
+        FileInputStream fis = null;
+        try {
+            // 프로젝트 구조에 맞는 경로 설정
+            String[] possiblePaths = {
+                    "../react-project/public/resources/logo/logo.PNG",  // 상대경로
+                    "react-project/public/resources/logo/logo.PNG",     // 다른 상대경로
+                    System.getProperty("user.dir") + "/../react-project/public/resources/logo/logo.PNG" // 절대경로
+            };
+
+            File logoFile = null;
+            for (String path : possiblePaths) {
+                File testFile = new File(path);
+                if (testFile.exists() && testFile.isFile()) {
+                    logoFile = testFile;
+                    logger.info("Logo found at: " + path);
+                    break;
+                }
+            }
+
+            if (logoFile == null) {
+                logger.warn("Logo file not found in any expected location");
+                return null;
+            }
+
+            // Java 1.8 방식으로 파일 읽기
+            fis = new FileInputStream(logoFile);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = fis.read(buffer)) != -1) {
+                baos.write(buffer, 0, bytesRead);
+            }
+
+            byte[] imageBytes = baos.toByteArray();
+            baos.close();
+
+            // Java 1.8 Base64 인코딩 (javax.xml.bind 사용)
+            String base64Image = DatatypeConverter.printBase64Binary(imageBytes);
+            return "data:image/png;base64," + base64Image;
+
+        } catch (IOException e) {
+            logger.error("Error encoding logo to base64: ", e);
+            return null;
+        } finally {
+            if (fis != null) {
+                try {
+                    fis.close();
+                } catch (IOException e) {
+                    logger.error("Error closing file stream: ", e);
+                }
+            }
+        }
+    }
+
+    private String buildEmailHeader() {
+        String logoBase64 = getLogoBase64();
+        StringBuilder header = new StringBuilder();
+
+        header.append("<div class=\"email-header\">");
+
+        if (logoBase64 != null) {
+            // 로고 이미지 사용
+            header.append("<img src=\"").append(logoBase64).append("\" ");
+            header.append("alt=\"").append(appName).append("\" ");
+            header.append("style=\"height: 50px; margin-bottom: 12px; max-width: 200px; object-fit: contain;\"/>");
+        } else {
+            // 텍스트 로고 사용 (fallback)
+            header.append("<div class=\"logo\">").append(appName).append("</div>");
+        }
+
+        header.append("<div class=\"header-subtitle\">프리미엄 채용 플랫폼</div>");
+        header.append("</div>");
+
+        return header.toString();
+    }
 
     /**
      * 단순 텍스트 이메일 발송
@@ -104,7 +188,7 @@ public class EmailService {
     public boolean sendSignupVerificationEmail(String to, String verificationToken) {
         logger.info("+ Start EmailService.sendSignupVerificationEmail");
 
-        String subject = "✅ " + appName + " 이메일 인증을 완료해주세요";
+        String subject =  appName + " 이메일 인증을 완료해주세요";
         String htmlContent = buildSignupEmailTemplate(verificationToken);
 
         return sendHtmlEmail(to, subject, htmlContent);
@@ -128,7 +212,7 @@ public class EmailService {
     public boolean sendPasswordResetEmail(String to, String resetToken) {
         logger.info("+ Start EmailService.sendPasswordResetEmail");
 
-        String subject = "🔐 " + appName + " 비밀번호 재설정 인증번호";
+        String subject = appName + " 비밀번호 재설정 인증번호";
         String htmlContent = buildPasswordResetEmailTemplate(resetToken);
 
         return sendHtmlEmail(to, subject, htmlContent);
@@ -455,10 +539,10 @@ public class EmailService {
         html.append("</head>");
         html.append("<body>");
         html.append("<div class=\"email-container\">");
-        html.append("<div class=\"email-header\">");
-        html.append("<div class=\"logo\">").append(appName).append("</div>");
-        html.append("<div class=\"header-subtitle\">프리미엄 채용 플랫폼</div>");
-        html.append("</div>");
+
+        // 로고 포함 헤더
+        html.append(buildEmailHeader());
+
         html.append("<div class=\"email-body\">");
         html.append(content);
         html.append("</div>");
@@ -494,7 +578,7 @@ public class EmailService {
         content.append("<div class=\"welcome-text\">이메일 인증을 완료해주세요! 🎉</div>");
         content.append("<div class=\"description\">");
         content.append(appName).append("에 가입해 주셔서 감사합니다.<br>");
-        content.append("아래 인증번호를 입력하여 계정 활성화를 완료해주세요.");
+        content.append("아래 인증번호를 입력하여 계정 회원가입을 완료해주세요!");
         content.append("</div>");
 
         content.append("<div class=\"verification-card\">");
@@ -543,7 +627,7 @@ public class EmailService {
         content.append("</div>");
 
         content.append("<div class=\"info-box success\">");
-        content.append("<div class=\"info-title\">✅ 다음 단계</div>");
+        content.append("<div class=\"info-title\"> 다음 단계</div>");
         content.append("<ul class=\"info-list\">");
         content.append("<li>위 아이디로 로그인하실 수 있습니다</li>");
         content.append("<li>비밀번호를 잊으셨다면 '비밀번호 찾기'를 이용해주세요</li>");
@@ -563,7 +647,7 @@ public class EmailService {
      */
     private String buildPasswordResetEmailTemplate(String resetToken) {
         StringBuilder content = new StringBuilder();
-        content.append("<div class=\"welcome-text\">비밀번호를 재설정해주세요 🔐</div>");
+        content.append("<div class=\"welcome-text\">비밀번호를 재설정해주세요 </div>");
         content.append("<div class=\"description\">");
         content.append("아래 인증번호로 새로운 비밀번호를 설정해주세요.");
         content.append("</div>");
@@ -618,7 +702,7 @@ public class EmailService {
         content.append("</div>");
 
         content.append("<div class=\"info-box warning\">");
-        content.append("<div class=\"info-title\">🔐 보안 권장사항</div>");
+        content.append("<div class=\"info-title\"> 보안 권장사항</div>");
         content.append("<ul class=\"info-list\">");
         content.append("<li>새 비밀번호를 안전한 곳에 보관하세요</li>");
         content.append("<li>정기적으로(3-6개월) 비밀번호를 변경하세요</li>");
@@ -644,7 +728,7 @@ public class EmailService {
      */
     private String buildNewPasswordEmailTemplate(String newPassword) {
         StringBuilder content = new StringBuilder();
-        content.append("<div class=\"welcome-text\">새로운 비밀번호가 발급되었습니다! 🔑</div>");
+        content.append("<div class=\"welcome-text\">새로운 비밀번호가 발급되었습니다! </div>");
         content.append("<div class=\"description\">");
         content.append("요청하신 비밀번호 재설정이 완료되었습니다.<br>");
         content.append("아래 새 비밀번호로 로그인 후 반드시 비밀번호를 변경해주세요.");
@@ -656,7 +740,7 @@ public class EmailService {
         content.append("</div>");
 
         content.append("<div class=\"info-box warning\">");
-        content.append("<div class=\"info-title\">🔐 보안 주의사항</div>");
+        content.append("<div class=\"info-title\"> 보안 주의사항</div>");
         content.append("<ul class=\"info-list\">");
         content.append("<li><strong>즉시 변경:</strong> 로그인 후 마이페이지에서 비밀번호를 변경하세요</li>");
         content.append("<li><strong>안전 보관:</strong> 이 비밀번호를 안전한 곳에 기록해두세요</li>");
@@ -665,7 +749,6 @@ public class EmailService {
         content.append("</div>");
 
         content.append("<div style=\"text-align: center; margin: 32px 0;\">");
-        content.append("<a href=\"").append(appUrl).append("/login\" class=\"cta-button\">로그인하러 가기</a>");
         content.append("</div>");
 
         content.append("<div style=\"text-align: center; margin: 24px 0;\">");
