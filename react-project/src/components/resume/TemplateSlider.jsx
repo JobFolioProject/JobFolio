@@ -68,6 +68,8 @@ const TemplateSlider = ({ tempList, formData }) => {
             newEducation: undefined,
             newExperience: undefined,
             skillList: [...formData.skillList, ...formData.newSkillList],
+            languageList: [...formData.languageList, ...formData.newLanguage],
+            certificateList: [...formData.certificateList, ...formData.newCertificate],
         };
 
     try {
@@ -109,7 +111,6 @@ const TemplateSlider = ({ tempList, formData }) => {
    return (
     <>
     <div className="template-slider-wrapper">
-      <h2>템플릿 선택</h2>
       {!tempList || tempList.length === 0 ? (
         <p>선택 가능한 템플릿이 없습니다.</p>
       ) : (
