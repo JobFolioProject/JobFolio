@@ -21,7 +21,7 @@
   max-width: 1200px;
   gap: 40px;
   height: 100%; /* .interview-container의 높이를 상속 */ 
-  max-height: 750px; 
+  max-height: 650px; 
   padding: 10px;
 }
 
@@ -60,9 +60,6 @@
 
 .interview .resume-load-group .controls-row .input {
   flex: 1;
-  min-width: 200px;
-  height: 50px;
-  border: 1px solid rgb(81, 185, 224);
 }
 
 .interview .resume-load-group .get-my-introduce-button {
@@ -70,19 +67,20 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 0.6em 1rem;
+  padding: 0.2em 1rem;
   gap: 0.3em;
   font-weight: bold;
   border: none;
-  border-radius: 20px;
-  background: rgb(81, 185, 224);
-  color: #fff;
+  border-radius: 5px;
+  background: #cce0ff;
+  color: rgb(52, 73, 94);
   transition: background .2s;
   cursor: pointer;
 }
 
 .interview .resume-load-group .get-my-introduce-button:hover {
   background: #111;
+  color: white;
 }
 
 .interview .resume-load-group .get-my-introduce-button .button-line {
@@ -106,19 +104,13 @@
   margin-bottom: 5px;
 }
 
-.interview .customInput .input,
 .interview .customInput textarea {
-  padding: 11px 10px;
-  font-size: 1rem;
-  border: 2px solid rgb(81, 185, 224);
-  border-radius: 5px;
-  background: #fff;
-  box-sizing: border-box;
-}
-
-.interview .customInput textarea {
-  height: 380px;
   width: 100%;
+  min-height: 370px;
+  max-height: 370px;
+  font-size: 1rem;
+  border-radius: 5px;
+  box-sizing: border-box;
 }
 
 /* ─── 모의 면접 시작 버튼 ─── */
@@ -131,8 +123,8 @@
   padding: 1em 1.8em;
   border: none;
   border-radius: 20px;
-  background: rgb(81, 185, 224);
-  color: #fff;
+  background: #cce0ff;
+  color: rgb(52, 73, 94);
   font-weight: bold;
   transition: background .2s;
   cursor: pointer;
@@ -140,12 +132,12 @@
 
 .interview .interview-button button:hover {
   background: #111;
+  color: white;
 }
 
 /* ─── 우측 결과 영역 ─── */
 .interview .interview-gpt-title {
   font-size: 1.25rem;
-  color: rgb(81, 185, 224);
   font-weight: 700;
   margin: 20px 0 0 7px;
   background: #fdfafa;
@@ -157,7 +149,8 @@
 .interview .interview-container-right-content {
   overflow-y: auto;
   margin: 5px;
-  border: 2px solid rgb(81, 185, 224);
+  border: 1px solid rgb(191, 191, 192);
+  border-radius: 5px;
   height: 100%;    
 }
 
@@ -166,10 +159,11 @@
   padding: 10px;
 }
 
-.interview .history-block {
-  border-bottom: 1px solid rgb(81, 185, 224);
+.interview .interview-qna-block {
+  padding: 5px;
+  background-color: #cce0ff;
+  border-radius: 5px;
 }
-
 .interview .interview-qna-block div {
   padding: 5px;
 }
@@ -178,22 +172,23 @@
   font-weight: bold;
 }
 
-.interview .answer-block {
-  border-bottom: 1px solid #cce0ff;
-}
-
 .interview .answer-block textarea {
   width: 100%;
   min-height: 80px;
-  border: 1px solid #cce0ff;
+  border: 1px solid rgb(191, 191, 192);
   box-sizing: border-box;
   padding: 10px;
+}
+.interview .interview-container-right .interview-container-right-content .current-block .answer-block textarea:focus {
+  outline: none;
+  border: 2px solid rgb(25, 118, 210);
 }
 
 .interview .feedback-block,
 .interview .improvements-block {
   padding: .5rem;
-  border-radius: 4px;
+  border-radius: 5px;
+  background-color: rgb(230, 243, 249);
   font-style: italic;
 }
 
@@ -206,8 +201,8 @@
   padding: .6em 1.2em;
   border: none;
   border-radius: 20px;
-  background: rgb(81, 185, 224);
-  color: #fff;
+  background: #cce0ff;
+  color: rgb(52, 73, 94);
   font-weight: bold;
   cursor: pointer;
   transition: background .2s;
@@ -215,6 +210,7 @@
 
 .interview .action-block button:hover {
   background: #111;
+  color: white;
 }
 
 /* ─── 로딩 스피너 ─── */
@@ -227,6 +223,47 @@
   animation: spin 1s linear infinite;
   margin: 100px auto;
 }
+
+/* ===== WebKit 계열 (Chrome, Safari) ===== */
+.interview
+  .interview-container
+  .interview-wrapper
+  .interview-container-right
+  .interview-container-right-content::-webkit-scrollbar {
+  width: 8px;                          /* 수직 스크롤바 두께 */
+  height: 8px;                         /* 가로 스크롤바 높이 */
+}
+.interview-container-right-content::-webkit-scrollbar-button {
+  -webkit-appearance: none;
+  color: #111;
+}
+.interview
+  .interview-container
+  .interview-wrapper
+  .interview-container-right
+  .interview-container-right-content::-webkit-scrollbar-track {
+  background: none;                 /* 트랙(배경) 색 */
+  border-radius: 4px;
+}
+
+.interview
+  .interview-container
+  .interview-wrapper
+  .interview-container-right
+  .interview-container-right-content::-webkit-scrollbar-thumb {
+  background-color: #cce0ff;              /* 스크롤바 핸들(thumb) 색 */
+  border-radius: 4px;
+  border: 2px solid #f1f1f1;          /* thumb 주변 여백 효과 */
+}
+
+.interview
+  .interview-container
+  .interview-wrapper
+  .interview-container-right
+  .interview-container-right-content::-webkit-scrollbar-thumb:hover {
+  background-color: #555;              /* hover 시 색 변화 */
+}
+
 
 @keyframes spin {
   to { transform: rotate(360deg); }
@@ -249,9 +286,3 @@
   }
 }
 
-@media (max-width: 480px) {
-  .interview .interview-button button {
-    padding: .8em 1.2em;
-    font-size: .9rem;
-  }
-}
