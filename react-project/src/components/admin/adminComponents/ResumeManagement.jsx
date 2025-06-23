@@ -92,7 +92,7 @@ const ResumeManagement = () => {
               return { ...item, html: `<p>불러오기 실패</p>` };
 
             }
-        };
+        }));
 
 
         setTempList(withHtml);
