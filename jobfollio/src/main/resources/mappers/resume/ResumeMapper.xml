@@ -24,6 +24,40 @@
 			LIMIT #{offset}, #{limit}
 	</select>
 
+	<!-- 관리자는 모든 정보 가져오는 쿼리 -->
+	<select id="adminSelectResumeInfo"
+			parameterType="Map"
+			resultType="com.happyjob.jobfolio.vo.resume.ResumeInfoVO">
+		SELECT
+		resume_no,
+		user_no,
+		title,
+		desired_position,
+		template_no,
+		resume_file_name,
+		resume_file_pypath,
+		resume_file_lopath,
+		publication_yn,
+		create_date,
+		status_yn
+		FROM tb_resume_info
+		WHERE 1 = 1
+		<if test="user_no != null">
+			AND user_no = #{user_no}
+		</if>
+		<choose>
+			<when test="includeHidden != null and includeHidden == true">
+				<!-- status_yn 조건 없음 -->
+			</when>
+			<otherwise>
+				AND status_yn = 'N'
+			</otherwise>
+		</choose>
+		ORDER BY resume_no DESC
+		LIMIT #{offset}, #{limit}
+	</select>
+
+
 	<select id="selectResumeCount"
 			parameterType="Map"
 			resultType="int">
@@ -116,6 +150,13 @@
 		UPDATE tb_resume_info
 		SET status_yn = 'Y'
 		WHERE resume_no = #{resume_no};
+	</update>
+
+	<!-- 관리자페이지 이력서 Y/N -->
+	<update id="updateResumeStatus" parameterType="com.happyjob.jobfolio.vo.resume.ResumeInfoVO">
+		UPDATE tb_resume_info
+		SET status_yn = #{status_yn}
+		WHERE resume_no = #{resume_no}
 	</update>
 
 	<!-- 관리자페이지 이력서 삭제 (data 삭제) -->
