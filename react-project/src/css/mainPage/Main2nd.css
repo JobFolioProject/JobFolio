@@ -392,7 +392,7 @@ main-2nd .centery, .main-2nd .header__basic--studio .header__img, .main-2nd .sec
 }
 .swiper-button-next::after,
 .swiper-button-prev::after {
-  display: none; /* ✅ 기본 Swiper 아이콘 제거 */
+  display: none; 
 }
 
 .swiper-button-next {

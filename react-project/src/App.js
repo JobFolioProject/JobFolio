@@ -6,7 +6,8 @@ import Main from "./components/Main";
 import Login from "./components/user/Login";
 import Resume from "./components/resume/Resume";
 import Payment from "./components/pay/Payment";
-import CardSuccess  from "./components/pay/cardSuccess";
+import CardSuccess from "./components/pay/cardSuccess";
+import CardFail  from "./components/pay/cardFail";
 import MyPage from "./components/user/MyPage";
 import AdminPage from "./components/admin/AdminPage";
 import UserInfo from "./components/user/myPageComponent/UserInfo";
@@ -117,6 +118,14 @@ function AppContent() {
               </PrivateRoute>
             }
           />
+           <Route
+            path="/pay/cardFail"
+            element={
+              <PrivateRoute loginRequired={true}>
+                <CardFail />
+              </PrivateRoute>
+            }
+          />
           {/*  마이페이지*/}
           <Route
             path="/myPage"
@@ -208,16 +217,17 @@ function AppContent() {
               </PrivateRoute>
             }
           />
-          {/* ========== 관리자 전용 (A, B 권한) 끝 ========== */}
-          {/* ========== 최고관리자 전용 (A 권한만) ========== */}
           <Route
             path="/adminPage/adminManagement"
             element={
-              <PrivateRoute requiredRoles={["A"]}>
+              <PrivateRoute requiredRoles={["A", "B"]}>
                 <AdminManagement />
               </PrivateRoute>
             }
           />
+          {/* ========== 관리자 전용 (A, B 권한) 끝 ========== */}
+          {/* ========== 최고관리자 전용 (A 권한만) ========== */}
+      
           <Route
             path="/adminPage/configuration"
             element={

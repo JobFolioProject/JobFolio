@@ -1,62 +1,100 @@
 /* Resume.css */
 
-/* 전체 페이지 배경 */
+/* 추가적으로, PrettyBtn이나 DropDown 등의 컴포넌트와 조화를 이루도록
+   variables.css 또는 기본 테마 색상을 활용하는 것이 좋습니다. */
+/* 색상 팔레트 정의 */
+:root {
+    --primary-blue: #4A90E2; /* 메인 강조색 (더 세련된 파랑) */
+    --secondary-blue: #A8D1FA; /* 보조 파랑색 */
+    --text-dark: #34495E; /* 진한 텍스트 색상 */
+    --text-medium: #7F8C8D; /* 중간 텍스트 색상 */
+    --text-light: #B0BEC5; /* 연한 텍스트 색상 */
+    --background-light: #F8F9FA; /* 밝은 배경색 */
+    --background-card: #FFFFFF; /* 카드 배경색 */
+    --border-light: #E0E0E0; /* 연한 테두리 색상 */
+    --shadow-light: rgba(0, 0, 0, 0.08); /* 그림자 색상 */
+    --danger-red: #E74C3C; /* 삭제 등 경고 색상 */
+    --danger-light-red: #FADBD8; /* 경고 배경 색상 */
+}
+
+/* 추가적으로, PrettyBtn이나 DropDown 등의 컴포넌트와 조화를 이루도록
+   variables.css 또는 기본 테마 색상을 활용하는 것이 좋습니다. */
+
+    /* --primary-blue: #007bff; 예시: 주요 파란색 */
+    /* --button-bg-light: #e6f2ff; 예시: 버튼 밝은 배경색 */
+    /* --text-dark: #333; 예시: 어두운 텍스트 색상 */
+    /* --card-bg: #ffffff; 예시: 카드 배경색 */
+    /* --border-light: #ddd; 예시: 밝은 테두리 색상 */
+
+/* 전체 페이지 배경 및 타이포그래피 */
 body {
-    background-color: #f7f9fc;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--background-light);
+    font-family: 'Inter', 'Noto Sans KR', sans-serif; /* Google Fonts 사용 */
+    color: var(--text-dark);
+    line-height: 1.6;
+    margin: 0; /* 기본 마진 제거 */
+    padding: 0;
+}
+
+/* 레이아웃 */
+.resume-sideBar-content {
+    width: 25%; /* 사이드바 너비를 살짝 줄여 콘텐츠 공간 확보 */
+    display: flex;
+    justify-content: end;
 }
 
 .resume-content {
-    width: 100%;
-    padding-left: 40px;
+    width: 72%; /* 콘텐츠 너비 증가 */
 }
+
 /* 이력서 콘텐츠 박스 */
 .resume-content-form {
-    padding: 40px;
-    width: 960px;
-    margin: 50px auto;
-    background: #ffffff;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    max-width: 960px; /* 최대 너비 설정 */
+    width: 95%; /* 작은 화면에서 유동적으로 조절 */
+    margin: 50px auto 50px 10px; /* 상하 50px, 좌우 자동 (중앙 정렬) */
+    background: var(--background-card);
+    border-radius: 16px; /* 모서리를 좀 더 부드럽게 */
+    box-shadow: 0 12px 24px var(--shadow-light); /* 그림자 효과 강화 */
+    padding: 30px 40px; /* 패딩 조정 */
     transition: all 0.3s ease-in-out;
 }
 
 /* 제목 */
 .resume-content-form h1 {
-    color: #1f2937;
+    color: var(--text-dark);
     text-align: center;
-    font-size: 2rem;
+    font-size: 2.2rem; /* 폰트 크기 살짝 키움 */
     font-weight: 700;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
 }
 
 /* 부제 */
 .resume-content-form p {
-    color: #6b7280;
+    color: var(--text-medium);
     text-align: center;
     font-size: 1rem;
-    margin-bottom: 30px;
+    margin-bottom: 40px; /* 여백 증가 */
     line-height: 1.6;
 }
 
 /* 라벨 그룹 */
 .resume-content-form label {
     display: block;
-    margin-bottom: 25px;
+    margin-bottom: 20px; /* 라벨 하단 여백 조정 */
 }
 
 .resume-content-form label > div {
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-bottom: 8px;
+    margin-bottom: 10px; /* 라벨 내부 요소 여백 조정 */
     flex-wrap: wrap;
 }
 
 .resume-content-form label span {
-    font-size: 1rem;
+    font-size: 1.05rem; /* 폰트 크기 살짝 키움 */
     font-weight: 600;
-    color: #374151;
+    color: var(--text-dark);
     min-width: 90px;
 }
 
@@ -64,122 +102,242 @@ body {
 .resume-content-form input[type="text"],
 .resume-content-form textarea {
     flex: 1;
-    padding: 14px 16px;
-    font-size: 15px;
-    color: #111827;
-    background: #ffffff;
-    border: 1px solid #dbeafe;
-    border-radius: 10px;
-    transition: 0.2s ease-in-out;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.03);
+    padding: 12px 15px; /* 패딩 조정 */
+    font-size: 1rem; /* 폰트 크기 조정 */
+    color: var(--text-dark);
+    background: var(--background-card);
+    border: 1px solid var(--border-light);
+    border-radius: 8px; /* 모서리 더 부드럽게 */
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.03); /* 내부 그림자 미세 조정 */
 }
 
 .resume-content-form input:focus,
 .resume-content-form textarea:focus {
     outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    border-color: var(--primary-blue); /* 포커스 시 메인 강조색 사용 */
+    box-shadow: 0 0 0 3px var(--secondary-blue); /* 은은한 포커스 효과 */
 }
 
 .resume-content-form input::placeholder,
 .resume-content-form textarea::placeholder {
-    color: #9ca3af;
+    color: var(--text-light); /* 플레이스홀더 색상 조정 */
+}
+
+/* 토글바/////////2025-06021 추가 */
+.language-section-wrapper
+.certificate-section-wrapper
+.experience-section-wrapper
+.education-section-wrapper
+.skill-section-wrapper {
+   margin-top: 15px; /* 각 섹션 상단 여백 */
+    /* border: 1px solid var(--border-light); 섹션 테두리 (선택 사항) */
+    padding: 15px;
+    border-radius: 8px;
+    background-color: var(--white);
+    box-shadow: var(--shadow-small); 
+}
+
+/* 요약 정보 행 */
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 10px; /* 요약 정보와 상세 내용 사이 여백 */
+    border-bottom: 1px dashed var(--border-light); /* 구분선 (선택 사항) */
+    margin-bottom: 10px;
+}
+.summary-row:last-child {
+    border-bottom: none; /* 마지막 요약 행에는 구분선 제거 */
+}
+/*없애면 왼쪽으로 쏠림*/
+.summary-text { 
+    flex-grow: 1; /* 텍스트가 공간을 최대한 차지하도록 */
+    margin: 0; /* p 태그 기본 마진 제거 */
+    font-size: 1rem;
+    color: var(--text-dark);
+}
+
+.summary-text strong {
+    color: var(--primary-blue); /* 강조색 */
+    margin-right: 5px;
+}
+
+/* 태그처럼 보이는 스타일 (콤마로 구분된 텍스트에 적용) */
+.summary-text .tag {
+    display: inline-flex; /* flexbox를 사용하여 내부 요소 정렬 */
+    align-items: center; /* 세로 중앙 정렬 */
+    background-color: var(--button-bg-light); /* 밝은 배경색 */
+    color: var(--primary-blue); /* 기본 텍스트 색상 */
+    padding: 5px 12px; /* 상하좌우 패딩 조정 */
+    border-radius: 20px; /* 더 둥근 모서리 */
+    margin-right: 8px; /* 태그 간 간격 */
+    margin-bottom: 8px; /* 여러 줄일 경우 아래쪽 간격 */
+    font-size: 0.9rem; /* 글꼴 크기 */
+    font-weight: 500; /* 살짝 두껍게 */
+    white-space: nowrap; /* 줄바꿈 방지 */
+    border: 1px solid var(--primary-blue); /* 테두리 추가로 입체감 */
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+    transition: all 0.2s ease-in-out; /* 부드러운 전환 효과 */
+}
+
+/* 마우스 오버 시 효과 (선택 사항) */
+.summary-text .tag:hover {
+    background-color: var(--primary-blue); /* 배경색 반전 */
+    color: white;
+    transform: translateY(-1px); /* 살짝 위로 뜨는 효과 */
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    cursor: default; /* 마우스 커서 변경 */
+}
+
+/* 보유 기술 텍스트 자체에 대한 스타일 (선택 사항) 이거 빼면 보유기술이 파란색 글씨가 됨. */
+.summary-text strong {
+    margin-right: 10px; /* "보유 기술:"과 태그 사이의 간격 */
+    color: var(--text-dark); /* 좀 더 진한 색상 */
+    font-size: 1rem;
+}
+
+/* 전체 summary-row 정렬을 위한 스타일 (필요시) */
+.summary-row {
+    display: flex;
+    flex-wrap: wrap; /* 내용이 많아지면 다음 줄로 넘어가도록 */
+    align-items: center; /* 세로 중앙 정렬 */
+    gap: 10px; /* 요소들 사이의 기본 간격 */
+    padding: 10px 0; /* 상하 패딩 */
+}
+
+/* 상세 정보 섹션 */
+.language-details-section
+.experience-details-section
+.education-details-section
+.certificate-details-section
+.skill-details-section {
+    padding-top: 10px;
 }
 
 /* --- 기존 학력/경력 정보 표시 섹션 --- */
+.certificate-display-section,
+.language-display-section,
 .skill-display-section,
 .education-display-section,
 .experience-display-section {
-    margin-top: 15px;
-    margin-bottom: 30px;
-    padding: 15px 20px;
-    background-color: #e0f2fe; /* 연한 파란색 배경 */
-    border: 1px solid #bfdbfe; /* 경계선 */
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    margin-top: 25px;
+    margin-bottom: 35px;
+    padding: 20px 25px; /* 패딩 조정 */
+    background-color: #EEF7FF; /* 더 연한 배경색 */
+    border: 1px solid #D1E9FF; /* 경계선 색상 조정 */
+    border-radius: 12px; /* 모서리 부드럽게 */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06); /* 그림자 효과 개선 */
 }
+.certificate-display-section h4,
+.language-display-section h4,
 .skill-display-section h4,
 .education-display-section h4,
 .experience-display-section h4 {
-    color: #1e40af; /* 진한 파란색 글씨 */
-    font-size: 1.1rem;
+    color: var(--primary-blue); /* 메인 강조색 사용 */
+    font-size: 1.15rem; /* 폰트 크기 살짝 키움 */
     margin-top: 0;
-    margin-bottom: 15px;
-    padding-bottom: 10px;
-    border-bottom: 1px dashed #93c5fd;
+    margin-bottom: 18px;
+    padding-bottom: 12px;
+    border-bottom: 1px dashed #C0E0FF; /* 더 부드러운 점선 */
 }
+
+
+
+/* 20250621///기존 각 항목별 표시 스타일은 유지 2025-06-21 토글바~ 위 사이는 이제 없으니 지워야하나. */
+.certificate-row-display,
+.language-row-display,
 .skill-row-display,
 .education-row-display,
 .experience-row-display {
     display: flex;
-    flex-wrap: wrap; /* 내용이 길어지면 줄바꿈 */
-    gap: 15px; /* 항목 간 간격 */
-    margin-bottom: 10px;
-    padding-bottom: 10px;
-    border-bottom: 1px dotted #a7d9f7; /* 각 항목 아래 점선 구분 */
+    flex-wrap: wrap;
+    gap: 20px; /* 항목 간 간격 증가 */
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px dotted #DCECFB; /* 각 항목 아래 점선 구분 */
 }
+.certificate-row-display:last-child,
+.language-row-display:last-child,
 .skill-row-display:last-child,
 .education-row-display:last-child,
 .experience-row-display:last-child {
-    border-bottom: none; /* 마지막 항목에는 점선 없음 */
+    border-bottom: none;
     margin-bottom: 0;
     padding-bottom: 0;
 }
-
+.certificate-row-display p,
+.language-row-display p,
 .skill-row-display p,
 .education-row-display p,
 .experience-row-display p {
-    margin: 0; /* 단락 마진 제거 */
-    font-size: 0.95rem;
-    color: #334155; /* 어두운 회색 글씨 */
-    text-align: left; /* 텍스트 왼쪽 정렬 */
-    /* 개별 항목의 너비 조절 */
-    flex-basis: auto; /* 기본적으로 콘텐츠 크기에 맞게 */
-    flex-grow: 1; /* 가능한 경우 늘어나도록 */
-    min-width: 150px; /* 최소 너비 설정 */
+    margin: 0;
+    font-size: 0.98rem; /* 폰트 크기 살짝 키움 */
+    color: var(--text-dark); /* 텍스트 색상 조정 */
+    text-align: left;
+    flex-basis: auto;
+    flex-grow: 1;
+    min-width: 180px; /* 최소 너비 조정 */
 }
+.certificate-row-display p strong,
+.language-row-display p strong,
 .skill-row-display p strong,
 .experience-row-display p strong,
 .education-row-display p strong {
-    color: #0d3680;
+    color: var(--primary-blue); /* 강조 텍스트도 메인 강조색으로 */
 }
 
 /* --- 신규 학력/경력 입력 필드 섹션 --- */
-/* 학력 및 경력 영역 공통 (새로 추가하는 입력 필드) */
+.skill-row-input,
+.language-row-input,
+.certificate-row-input,
 .education-row-input,
 .experience-row-input {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
-    margin-bottom: 18px;
-    padding: 18px;
-    border: 1px dashed #dbeafe;
-    border-radius: 10px;
-    background: #f9fbfd;
+    gap: 15px; /* 간격 조정 */
+    margin-bottom: 20px;
+    padding: 20px;
+    border: 1px dashed #D6EEFF; /* 더 부드러운 점선 테두리 */
+    border-radius: 12px; /* 모서리 부드럽게 */
+    background: #FDFEFF; /* 더 밝은 배경색 */
     box-shadow: inset 0 1px 3px rgba(0,0,0,0.02);
     justify-content: flex-start;
+    align-items: center; /* 세로 중앙 정렬 */
 }
 
-/* 학력 항목 내 입력 필드 조정 */
+.certificate-row-input > input[type="text"],
 .education-row-input > input[type="text"] {
-    flex: 1 1 200px; /* flex-grow: 1, flex-shrink: 1, flex-basis: 200px. 최소 너비 200px 보장. */
-    min-width: 200px;
+    flex: 1 1 220px; /* flex-grow: 1, flex-shrink: 1, flex-basis: 220px. 최소 너비 220px 보장. */
+    min-width: 220px;
 }
 
 /* Calendar 컴포넌트 래퍼 */
+.language-row-input .date-range-wrapper,
+.certificate-row-input .date-range-wrapper,
 .education-row-input .date-range-wrapper,
 .experience-row-input .date-range-wrapper {
-    flex: 0 0 auto; /* 늘어나지 않고, 줄어들지 않으며, 콘텐츠 크기에 따라 너비 결정 */
-    min-width: 270px; /* 캘린더 전체를 담을 수 있는 최소 너비 */
+    flex: 0 0 auto;
+    min-width: 290px; /* 캘린더 전체를 담을 수 있는 최소 너비 조정 */
 }
 
 /* 경력 항목 날짜+회사명 묶음 */
-.experience-input-group { /* 'experience-row input' 대신 더 명확한 이름 사용 */
+.experience-input-group {
     display: flex;
     gap: 10px;
     flex-wrap: wrap;
-    flex: 2; /* 이 그룹이 더 많은 공간을 차지하도록 */
-    min-width: 300px; /* 최소 너비 */
+    flex: 2;
+    min-width: 320px; /* 최소 너비 조정 */
+}
+
+/* 기본 PrettyBtn 스타일 */
+.PrettyBtn {
+    border-radius: 8px; /* 통일된 모서리 */
+    font-weight: 600;
+    padding: 8px 16px; /* 패딩 조정 */
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.95rem; /* 폰트 크기 조정 */
 }
 
 /* 삭제 버튼 */
@@ -187,20 +345,17 @@ body {
 .experience-row-input .PrettyBtn {
     margin-left: auto;
     align-self: center;
-    min-width: 70px;
-    background-color: #fef2f2;
-    border: 1px solid #fca5a5;
-    color: #b91c1c;
-    border-radius: 6px;
-    font-weight: 600;
-    padding: 6px 12px;
-    cursor: pointer;
-    transition: all 0.2s ease;
+    min-width: 80px; /* 최소 너비 조정 */
+    background-color: var(--danger-light-red); /* 정의된 경고 배경색 */
+    border: 1px solid #F9CACA; /* 더 부드러운 경계선 */
+    color: var(--danger-red); /* 정의된 경고 색상 */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* 그림자 추가 */
 }
 
 .education-row-input .PrettyBtn:hover,
 .experience-row-input .PrettyBtn:hover {
-    background-color: #fecaca;
+    background-color: #FEEEEE; /* 호버 시 더 밝게 */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
 /* 항목 제목 + 추가 버튼 */
@@ -208,46 +363,111 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 15px;
+    margin-bottom: 20px; /* 여백 조정 */
 }
 
 .resume-content-form label > div:has(.PrettyBtn) span {
-    font-size: 1.1rem;
+    font-size: 1.2rem; /* 폰트 크기 살짝 키움 */
     font-weight: 700;
-    color: #1f2937;
+    color: var(--text-dark);
 }
 
 /* 자기소개서 영역 */
 .my-cover-letter-section {
-    min-height: 200px;
+    min-height: 220px; /* 최소 높이 살짝 늘림 */
     resize: vertical;
+    /* input/textarea와 동일한 스타일을 사용하므로 별도 스타일은 최소화 */
 }
 
 /* 제출 버튼 */
 .resume-content-form .PrettyBtn[type="submit"] {
     display: block;
-    margin: 40px auto 0;
-    background: linear-gradient(to right, #3b82f6, #60a5fa);
+    margin: 50px auto 20px; /* 상하 여백 조정 */
+    background: linear-gradient(to right, #4A90E2, #7DB9EE); /* 더 부드러운 그라데이션 */
     border: none;
-    border-radius: 10px;
-    padding: 14px 30px;
+    border-radius: 12px; /* 모서리 부드럽게 */
+    padding: 16px 35px; /* 패딩 조정 */
     color: white;
-    font-size: 1.1em;
+    font-size: 1.15em; /* 폰트 크기 살짝 키움 */
     font-weight: bold;
     cursor: pointer;
     transition: all 0.3s ease;
+    box-shadow: 0 6px 15px rgba(74, 144, 226, 0.2); /* 그림자 강화 */
 }
 
 .resume-content-form .PrettyBtn[type="submit"]:hover {
-    background: linear-gradient(to right, #2563eb, #3b82f6);
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+    background: linear-gradient(to right, #3A7DD4, #66A3DC); /* 호버 시 색상 조정 */
+    box-shadow: 0 8px 20px rgba(74, 144, 226, 0.35);
+    transform: translateY(-2px); /* 약간의 움직임 효과 */
 }
 
 /* 템플릿 선택 wrapper */
 .template-selection-wrapper {
-    margin-top: 15px; /* 필요에 따라 마진 조정 */
-    padding: 15px;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    background-color: #f8fafc;
+    margin-top: 25px; /* 마진 조정 */
+    padding: 20px;
+    border: 1px solid #D6EEFF; /* 테두리 색상 조정 */
+    border-radius: 10px;
+    background-color: #FDFEFF; /* 배경색 조정 */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04); /* 그림자 추가 */
+}
+
+/* 모바일 반응형 디자인 (선택 사항이지만, 현대 웹에서는 필수적) */
+@media (max-width: 768px) {
+    .resume-sideBar-content {
+        width: 100%; /* 모바일에서는 사이드바를 전체 너비로 */
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+
+    .resume-content {
+        width: 100%; /* 모바일에서는 콘텐츠도 전체 너비로 */
+    }
+
+    .resume-content-form {
+        margin: 20px auto; /* 모바일에서 마진 조정 */
+        padding: 20px; /* 모바일에서 패딩 조정 */
+        border-radius: 12px; /* 모서리 조정 */
+    }
+
+    .resume-content-form h1 {
+        font-size: 1.8rem;
+    }
+
+    .resume-content-form p {
+        font-size: 0.9rem;
+        margin-bottom: 20px;
+    }
+
+    .resume-content-form label span {
+        min-width: auto; /* 모바일에서 최소 너비 제거 */
+        font-size: 0.95rem;
+    }
+
+    .skill-row-input,
+    .language-row-input,
+    .certificate-row-input,
+    .education-row-input,
+    .experience-row-input {
+        flex-direction: column; /* 모바일에서 세로로 정렬 */
+        gap: 10px;
+        padding: 15px;
+    }
+
+    .certificate-row-input > input[type="text"],
+    .education-row-input > input[type="text"],
+    .experience-input-group,
+    .language-row-input .date-range-wrapper,
+    .certificate-row-input .date-range-wrapper,
+    .education-row-input .date-range-wrapper,
+    .experience-row-input .date-range-wrapper {
+        min-width: unset; /* 모바일에서 최소 너비 제한 해제 */
+        width: 100%; /* 너비를 100%로 설정 */
+        flex-basis: auto;
+    }
+
+    .education-row-input .PrettyBtn,
+    .experience-row-input .PrettyBtn {
+        margin-left: 0; /* 모바일에서 왼쪽 마진 제거 */
+        width: 100%; /* 버튼도 100% 너비로 */
+    }
 }

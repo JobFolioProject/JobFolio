@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import com.happyjob.jobfolio.repository.admin.AdminMapper;
 import com.happyjob.jobfolio.vo.usermgr.UserModel;
 
+import javax.transaction.Transactional;
+
 @Service
 public class AdminService {
 
@@ -115,11 +117,71 @@ public class AdminService {
         return adminMapper.countTotalTasks();
     }
 
+    // 회원 목록 필터 및 페이지
     public List<UserModel> getFillterAndPageCustomers(Map<String, Object> paramMap) {
         return adminMapper.selectFillterAndPageCustomers(paramMap);
     }
-
+    // 회원 전체 인원 수
     public int getTotalCustomerCount(Map<String, Object> paramMap) {
         return adminMapper.selectTotalCustomerCount(paramMap);
+    }
+
+    public UserModel getMemberById(String memberId) {
+        if (memberId == null || memberId.trim().isEmpty()) {
+            return null;
+        }
+        return adminMapper.getMemberById(memberId);
+    }
+
+    // 사용자 권한 변경 (C ↔ B)
+    @Transactional
+    public int changeUserAuthority(String memberId, String newAuthority) {
+        if (memberId == null || memberId.trim().isEmpty()) {
+            throw new IllegalArgumentException("사용자 ID가 필요합니다.");
+        }
+
+        if (!"B".equals(newAuthority) && !"C".equals(newAuthority)) {
+            throw new IllegalArgumentException("B(하위관리자) 또는 C(일반) 권한만 설정 가능합니다.");
+        }
+
+        // 기존 회원 확인
+        UserModel existingMember = getMemberById(memberId);
+        if (existingMember == null) {
+            throw new IllegalArgumentException("존재하지 않는 회원입니다.");
+        }
+
+        return adminMapper.updateUserAuthority(memberId, newAuthority);
+    }
+
+    // 사용자 탈퇴 처리 (N → Y, withdrawal_date 현재시간 설정)
+    @Transactional
+    public int withdrawUser(String memberId) {
+        if (memberId == null || memberId.trim().isEmpty()) {
+            throw new IllegalArgumentException("사용자 ID가 필요합니다.");
+        }
+
+        // 기존 회원 확인
+        UserModel existingMember = getMemberById(memberId);
+        if (existingMember == null) {
+            throw new IllegalArgumentException("존재하지 않는 회원입니다.");
+        }
+
+        return adminMapper.withdrawUser(memberId);
+    }
+
+    // 탈퇴 사용자 복구 (Y → N, withdrawal_date NULL)
+    @Transactional
+    public int restoreUser(String memberId) {
+        if (memberId == null || memberId.trim().isEmpty()) {
+            throw new IllegalArgumentException("사용자 ID가 필요합니다.");
+        }
+
+        // 기존 회원 확인
+        UserModel existingMember = getMemberById(memberId);
+        if (existingMember == null) {
+            throw new IllegalArgumentException("존재하지 않는 회원입니다.");
+        }
+
+        return adminMapper.restoreUser(memberId);
     }
 }

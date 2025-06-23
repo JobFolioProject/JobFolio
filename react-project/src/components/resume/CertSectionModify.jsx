@@ -1,4 +1,14 @@
+import SingleCalendar from "../common/SingleCalendar";
+
 const CertSectionModify = ({ resumeInfo, setResumeInfo }) => {
+  const handleCertDateChange = (index, field, date) => {
+    setResumeInfo({
+      ...resumeInfo,
+      certifications: resumeInfo.certifications.map((item, idx) =>
+        idx === index ? { ...item, [field]: date ? date : null } : item
+      ),
+    });
+  };
   return (
     <>
       <button
@@ -24,8 +34,8 @@ const CertSectionModify = ({ resumeInfo, setResumeInfo }) => {
       </button>
       {resumeInfo.certifications.map((cert, index) => (
         <div className="toggleInput" key={index}>
-          <label>
-            <div>자격증 번호</div>
+          <div>
+            <label>자격증 번호</label>
             <input
               type="text"
               value={cert.certificate_no}
@@ -40,10 +50,10 @@ const CertSectionModify = ({ resumeInfo, setResumeInfo }) => {
                 });
               }}
             />
-          </label>
+          </div>
 
-          <label>
-            <div>자격증명</div>
+          <div>
+            <label>자격증명</label>
             <input
               type="text"
               value={cert.certificate_name}
@@ -58,9 +68,9 @@ const CertSectionModify = ({ resumeInfo, setResumeInfo }) => {
                 });
               }}
             />
-          </label>
-          <label>
-            <div>발행기관</div>
+          </div>
+          <div>
+            <label>발행기관</label>
             <input
               type="text"
               value={cert.issuing_org}
@@ -75,26 +85,21 @@ const CertSectionModify = ({ resumeInfo, setResumeInfo }) => {
                 });
               }}
             />
-          </label>
-          <label>
-            <div>취득일</div>
-            <input
-              type="text"
-              value={cert.acquired_date}
-              onChange={(e) => {
-                setResumeInfo({
-                  ...resumeInfo,
-                  certifications: resumeInfo.certifications.map((item, idx) =>
-                    idx === index
-                      ? { ...item, acquired_date: e.target.value }
-                      : item
-                  ),
-                });
-              }}
+          </div>
+          <div>
+            <label>취득일</label>
+            <SingleCalendar
+              selectedDate={
+                cert.acquired_date ? new Date(cert.acquired_date) : null
+              }
+              onChangeDate={(date) =>
+                handleCertDateChange(index, "acquired_date", date)
+              }
+              placeholder={"취득일"}
             />
-          </label>
-          <label>
-            <div>특이사항</div>
+          </div>
+          <div>
+            <label>특이사항</label>
             <input
               type="text"
               value={cert.notes}
@@ -107,7 +112,7 @@ const CertSectionModify = ({ resumeInfo, setResumeInfo }) => {
                 });
               }}
             />
-          </label>
+          </div>
           <button
             className="deleteCareerBtn"
             onClick={() => {

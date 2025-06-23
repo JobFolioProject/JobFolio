@@ -123,9 +123,6 @@
   margin-bottom: 0;
   font-size: 1rem;
   gap: 16px;
-}
-
-.toggleInput label > div:first-child {
   width: 110px;
   min-width: 110px;
   font-weight: bold;
@@ -170,19 +167,6 @@
   color: #b71c1c;
 }
 
-.toggleInput .coverLetterTextarea {
-  width: 100%;
-  min-height: 100px;
-  border: 1.2px solid #e0e5ee;
-  border-radius: 8px;
-  font-size: 1rem;
-  padding: 10px 14px;
-  margin-bottom: 18px;
-  resize: vertical;
-  box-sizing: border-box;
-  background: #fff;
-}
-
 .modal-content .aiSection {
   background: #f4f6fb;
   border-radius: 12px;
@@ -196,7 +180,8 @@
   margin-bottom: 10px;
 }
 
-.modal-content .aiInput {
+.modal-content .aiInput,
+.coverLetterTextarea {
   font-family: "Pretendard", "Noto Sans KR", Arial, sans-serif;
   width: 100%;
   min-height: 200px;
@@ -297,4 +282,36 @@
 .custom-radio:focus + .radio-label:before {
   outline: 2px solid #0056b3;
   outline-offset: 2px;
+}
+
+.toggleInput select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  transition: border 0.2s;
+  background: #fff;
+  color: #222;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,<svg width='16' height='16' viewBox='0 0 16 16' fill='gray' xmlns='http://www.w3.org/2000/svg'><path d='M4 6l4 4 4-4' stroke='%23999' stroke-width='2' fill='none' fill-rule='evenodd'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px 16px;
+}
+
+.modal-content select:focus,
+.toggleInput select:focus {
+  border: 1.5px solid #007bff;
+  outline: none;
+  background: #f8faff;
+}
+
+.toggleInput .skill_dropdown {
+  display: flex;
+  align-items: center;
+  gap: 14px;
 }

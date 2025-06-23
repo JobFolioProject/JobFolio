@@ -6,6 +6,7 @@ import axios from "../../utils/axiosConfig";
 import FavoriteIcon from '@mui/icons-material/FavoriteBorder';
 import { useAuth } from '../../context/AuthContext';
 import CircularProgress from '@mui/material/CircularProgress';
+import Banner from '../common/Banner.jsx';
 
 const CommuResume = () => {
 
@@ -114,14 +115,10 @@ const CommuResume = () => {
     };
 
   return (
-    <>
-      <div className="resume-banner">
-        <img src="/resources/img/banner.png" alt="Banner" />
-        <h1>이력서</h1>
-      </div>
+    <div className='CommuResume'>
+      <Banner pageName="이력서" />
 
       <CommuMenuBar />
-
       <div className="resume-template-wrapper">
         <h2>이력서 목록</h2>
 
@@ -195,7 +192,7 @@ const CommuResume = () => {
           </div>
         )}
       </div>
-    </>
+    </div>
   );
 };
 

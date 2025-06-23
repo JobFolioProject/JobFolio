@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +29,9 @@ public class AdminSalesService {
 
     @Autowired
     private AdminSalesMapper adminSalesMapper;
+
+    @Autowired
+    private PayMapper payMapper;
 
     // 관리자 페이지 - 일별 매출 현황
     public List<PayModel> daySalesList(Map<String, Object> paramMap) throws Exception {
@@ -56,6 +61,26 @@ public class AdminSalesService {
     // 관리자 페이지 - 월별 매출 현황 - 차트
     public List<PayModel> monthSalesChart(Map<String, Object> paramMap) throws Exception {
         return adminSalesMapper.monthSalesChart(paramMap);
+    }
+
+    // 관리자 페이지 - 결제 내역 조회
+    public List<PayModel> salesHistory(Map<String, Object> paramMap) throws Exception {
+        return adminSalesMapper.salesHistory(paramMap);
+    }
+
+    // 관리자 페이지 - 결제 내역 조회
+    public int salesHistoryCnt(Map<String, Object> paramMap) throws Exception {
+        return adminSalesMapper.salesHistoryCnt(paramMap);
+    }
+
+    // 관리자 페이지 - 환불 처리 후 상태 값 변경
+    public int refundSuccess(Map<String, Object> paramMap) throws Exception {
+        return adminSalesMapper.refundSuccess(paramMap);
+    }
+
+    // 환불 후 구독 기간 빼기
+    public void updateUserSubscription(Map<String, Object> paramMap) throws Exception {
+        adminSalesMapper.updateUserSubscription(paramMap);
     }
 
 }

@@ -4,16 +4,16 @@
     width: 100%;
 }
 
-.resume-template-wrapper {
+.resumeManagement .resume-template-wrapper {
   min-width: 900px;
   padding: 20px 80px;
 }
 
-.resume-template-wrapper h2 {
+.resumeManagement .resume-template-wrapper h2 {
   margin-left: 100px;
 }
 
-.resume-template-grid{
+.resumeManagement .resume-template-grid{
   display: flex;
   flex-wrap: wrap;       /* 넘칠 경우 줄바꿈 */
   gap: 20px;             /* 카드 간 간격 */
@@ -21,7 +21,7 @@
   padding: 20px 0;
 }
 
-.resume-card-wrapper {
+.resumeManagement .resume-card-wrapper {
   width: 280px;
   display: flex;
   flex-direction: column;
@@ -35,12 +35,12 @@
   cursor: pointer;
 }
 
-.resume-card-wrapper:hover {
+.resumeManagement .resume-card-wrapper:hover {
   transform: translateY(-4px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.template-slide {
+.resumeManagement .template-slide {
   position : relative;
   width: 100%;
   height: 300px;
@@ -48,7 +48,7 @@
   border-bottom: 1px solid #f0f0f0;
 }
 
-.resume-select-checkbox {
+.resumeManagement .resume-select-checkbox {
   position: absolute;
   top: 8px;
   left: 8px;
@@ -57,7 +57,7 @@
 }
 
 /* info 박스 스타일 */
-.resume-info-box {
+.resumeManagement .resume-info-box {
   background-color: #f9f9f9;
   padding: 16px;
   font-size: 0.9rem;
@@ -73,27 +73,28 @@
     background-color: #f5f5f5;
 }
 
-.resume-template-preview-image {
+.resumeManagement .resume-template-preview-image {
   width: 100%;
   height: 100%;
   border: none;
 }
 
-.community-notice-pagination {
+.resumeManagement .community-notice-pagination {
   margin-bottom: 100px;
   border-top: none;
 }
 
-.resume-info-box p {
+.resumeManagement .resume-info-box p {
   margin: 4px 0;
   word-break: break-all;
 }
 
-.resume-info-box strong {
+.resumeManagement .resume-info-box strong {
   color: #555;
   font-weight: 600;
   margin-right: 4px;
 }
+
 
 /* 검색 바 전체 */
 .search-bar {
@@ -148,4 +149,5 @@
 
 .status-select-container {
   margin-top: 8px;
+
 }

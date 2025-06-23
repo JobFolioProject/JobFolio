@@ -48,6 +48,7 @@ const PrivateRoute = ({
     restrictedPaths.includes(location.pathname) &&
     isExpired(user?.expire_days)
   ) {
+    alert("결제가 필요한 메뉴입니다");
     return <Navigate to="/pay" replace />;
   }
 

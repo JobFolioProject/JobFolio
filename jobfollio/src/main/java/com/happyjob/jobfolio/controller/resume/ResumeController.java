@@ -5,18 +5,22 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.happyjob.jobfolio.repository.mypage.MypageMapper;
+import com.happyjob.jobfolio.security.UserPrincipal;
 import com.happyjob.jobfolio.service.join.UserService;
 import com.happyjob.jobfolio.service.resume.ResumeService;
 import com.happyjob.jobfolio.vo.community.CommunityBoardVo;
 import com.happyjob.jobfolio.vo.join.UserVO;
 import com.happyjob.jobfolio.vo.mypage.CertificateVO;
+import com.happyjob.jobfolio.vo.mypage.CommSkillDto;
 import com.happyjob.jobfolio.vo.mypage.LanguageSkillVO;
 import com.happyjob.jobfolio.vo.resume.AiResumeGenerateVO;
 import com.happyjob.jobfolio.vo.resume.ResumeInfoVO;
 import com.happyjob.jobfolio.vo.resume.TemplateVO;
+import com.mysql.fabric.Response;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -69,6 +73,71 @@ public class ResumeController {
         Map<String,Object> resultMap = new HashMap<>();
 
         ResumeInfoVO resumeInfoVO = new ResumeInfoVO();
+        Long user_no = Long.valueOf(paramMap.get("user_no").toString());
+
+        try {
+
+
+            // 2) JSON 생성 로직
+            ObjectMapper mapper = new ObjectMapper();
+
+            String htmlContent=paramMap.get("htmlString").toString();
+
+
+            // ❶ 저장할 경로 생성
+            String outputDir = "X:/resume_output/resume_made";
+            // ❶ 타임스탬프 포맷터
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
+            // ❷ 현재 날짜·시간 문자열
+            String timestamp = LocalDateTime.now().format(formatter);
+            // ❸ 파일명에 user_no와 timestamp 결합
+            String fileName = "resume_" + user_no + "_" + timestamp + ".html";
+            Path dirPath = Paths.get(outputDir);
+            Path filePath = dirPath.resolve(fileName);
+
+            if (Files.notExists(dirPath)) {
+                Files.createDirectories(dirPath);
+            }
+            // ❸ JDK 8 호환 방식으로 쓰기
+            byte[] bytes = htmlContent.getBytes(StandardCharsets.UTF_8);
+            Files.write(filePath, bytes);
+
+            resultMap.put("filePath", filePath.toString());
+
+            resumeInfoVO.setUser_no(Integer.parseInt(user_no.toString()));
+            resumeInfoVO.setTitle(paramMap.get("title").toString());
+            resumeInfoVO.setDesired_position(paramMap.get("desired_position").toString());
+            resumeInfoVO.setTemplate_no(Integer.parseInt(paramMap.get("template_no").toString()));
+            String publicationYn = Optional.ofNullable(paramMap.get("publication_yn"))
+                    .map(Object::toString)
+                    .orElse("N");  // 기본값 N
+            resumeInfoVO.setPublication_yn(publicationYn);
+            // 파일명
+            resumeInfoVO.setResume_file_name(fileName);
+            // 물리경로 (Physical Path)
+            resumeInfoVO.setResume_file_pypath(filePath.toString());
+            // 논리경로 (Logical Path) – 웹에서 접근 가능한 URL 패턴에 맞춰 설정
+            String logicalBase = "/resume_output/resume_made/";
+            resumeInfoVO.setResume_file_lopath(logicalBase + fileName);
+
+            int result = resumeService.insertResumeInfo(resumeInfoVO);
+
+            resultMap.put("result", result);
+
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        return resultMap;
+
+    }
+
+    @RequestMapping("/resumePreview")
+    public Map<String,Object> resumePreview(@RequestBody Map<String,Object> paramMap){
+        Map<String,Object> resultMap = new HashMap<>();
+
+        ResumeInfoVO resumeInfoVO = new ResumeInfoVO();
         UserVO userVO = new UserVO();
         Long user_no = Long.valueOf(paramMap.get("user_no").toString());
 
@@ -81,25 +150,25 @@ public class ResumeController {
             ObjectNode root = mapper.createObjectNode();
 
             // 사용자 정보 매핑
-            root.put("userName",  userVO.getUser_name());      // name ← userName
+            root.put("userName", userVO.getUser_name());      // name ← userName
             root.put("email", userVO.getLogin_id());       // email ← loginId
             root.put("phone", userVO.getHp());            // phone ← hp
             root.put("birthday", userVO.getBirthday());            // phone ← hp
-            root.put("link", paramMap.getOrDefault("link_url","").toString());
+            root.put("link", paramMap.getOrDefault("link_url", "").toString());
 
             // skillList 배열
             @SuppressWarnings("unchecked")
-            List<Map<String,String>> skillLists = Optional.ofNullable((List<Map<String,String>>) paramMap.get("skillList"))
+            List<Map<String, String>> skillLists = Optional.ofNullable((List<Map<String, String>>) paramMap.get("skillList"))
                     .orElse(Collections.emptyList());
             ArrayNode skillArray = mapper.createArrayNode();
-            for (Map<String,String> skill : skillLists) {
+            for (Map<String, String> skill : skillLists) {
                 ObjectNode node = mapper.createObjectNode();
-                node.put("exp_level", skill.getOrDefault("exp_level",""));
-                node.put("skill_tool", skill.getOrDefault("skill_tool",""));
-                node.put("skill_name", skill.getOrDefault("skill_name",""));
-                node.put("skill_code",  skill.getOrDefault("skill_code",""));
-                node.put("group_code", skill.getOrDefault("group_code",""));
-                node.put("group_name", skill.getOrDefault("group_name",""));
+                node.put("exp_level", skill.getOrDefault("exp_level", ""));
+                node.put("skill_tool", skill.getOrDefault("skill_tool", ""));
+                node.put("skill_name", skill.getOrDefault("skill_name", ""));
+                node.put("skill_code", skill.getOrDefault("skill_code", ""));
+                node.put("group_code", skill.getOrDefault("group_code", ""));
+                node.put("group_name", skill.getOrDefault("group_name", ""));
 
                 skillArray.add(node);
             }
@@ -107,18 +176,18 @@ public class ResumeController {
 
             // education 배열
             @SuppressWarnings("unchecked")
-            List<Map<String,String>> educations = Optional.ofNullable((List<Map<String,String>>) paramMap.get("education"))
+            List<Map<String, String>> educations = Optional.ofNullable((List<Map<String, String>>) paramMap.get("education"))
                     .orElse(Collections.emptyList());
             ArrayNode eduArray = mapper.createArrayNode();
-            for (Map<String,String> edu : educations) {
+            for (Map<String, String> edu : educations) {
                 ObjectNode node = mapper.createObjectNode();
-                node.put("school_name", edu.getOrDefault("school_name",""));
-                node.put("enroll_date", edu.getOrDefault("enroll_date",""));
-                node.put("grad_date", edu.getOrDefault("grad_date",""));
-                node.put("major",  edu.getOrDefault("major",""));
-                node.put("sub_major", edu.getOrDefault("sub_major",""));
-                node.put("gpa", edu.getOrDefault("gpa",""));
-                String period = edu.getOrDefault("enroll_date","") + " ~ " + edu.getOrDefault("grad_date","");
+                node.put("school_name", edu.getOrDefault("school_name", ""));
+                node.put("enroll_date", edu.getOrDefault("enroll_date", ""));
+                node.put("grad_date", edu.getOrDefault("grad_date", ""));
+                node.put("major", edu.getOrDefault("major", ""));
+                node.put("sub_major", edu.getOrDefault("sub_major", ""));
+                node.put("gpa", edu.getOrDefault("gpa", ""));
+                String period = edu.getOrDefault("enroll_date", "") + " ~ " + edu.getOrDefault("grad_date", "");
                 node.put("period", period);
                 eduArray.add(node);
             }
@@ -126,16 +195,16 @@ public class ResumeController {
 
             // experience 배열
             @SuppressWarnings("unchecked")
-            List<Map<String,String>> experiences = Optional.ofNullable((List<Map<String,String>>) paramMap.get("experience"))
+            List<Map<String, String>> experiences = Optional.ofNullable((List<Map<String, String>>) paramMap.get("experience"))
                     .orElse(Collections.emptyList());
             ArrayNode expArray = mapper.createArrayNode();
-            for (Map<String,String> exp : experiences) {
+            for (Map<String, String> exp : experiences) {
                 ObjectNode node = mapper.createObjectNode();
-                node.put("company",  exp.getOrDefault("company_name",""));
-                node.put("position", exp.getOrDefault("position",""));       // 직위가 paramMap에 있다면
-                node.put("start_date", exp.getOrDefault("start_date",""));
-                node.put("end_date", exp.getOrDefault("end_date",""));
-                String period = exp.getOrDefault("start_date","") + " ~ " + exp.getOrDefault("end_date","");
+                node.put("company", exp.getOrDefault("company_name", ""));
+                node.put("position", exp.getOrDefault("position", ""));       // 직위가 paramMap에 있다면
+                node.put("start_date", exp.getOrDefault("start_date", ""));
+                node.put("end_date", exp.getOrDefault("end_date", ""));
+                String period = exp.getOrDefault("start_date", "") + " ~ " + exp.getOrDefault("end_date", "");
                 node.put("period", period);
                 expArray.add(node);
             }
@@ -176,7 +245,7 @@ public class ResumeController {
             TemplateVO templateVO = resumeService.selectTemplateByNum(Integer.parseInt(paramMap.get("template_no").toString()));
             String file = templateVO.getFile_pypath();
 
-            String apiJson= resumeService.getChatResponse(root,file);
+            String apiJson = resumeService.getChatResponse(root, file);
 
             JsonNode rootNode = mapper.readTree(apiJson);
             String htmlContent = rootNode
@@ -186,53 +255,12 @@ public class ResumeController {
                     .path("content")
                     .asText();
 
-            // ❶ 저장할 경로 생성
-            String outputDir = "X:/resume_output/resume_made";
-            // ❶ 타임스탬프 포맷터
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
-            // ❷ 현재 날짜·시간 문자열
-            String timestamp = LocalDateTime.now().format(formatter);
-            // ❸ 파일명에 user_no와 timestamp 결합
-            String fileName = "resume_" + user_no + "_" + timestamp + ".html";
-            Path dirPath = Paths.get(outputDir);
-            Path filePath = dirPath.resolve(fileName);
-
-            resultMap.put("filePath", filePath.toString());
-
-            if (Files.notExists(dirPath)) {
-                Files.createDirectories(dirPath);
-            }
-            // ❸ JDK 8 호환 방식으로 쓰기
-            byte[] bytes = htmlContent.getBytes(StandardCharsets.UTF_8);
-            Files.write(filePath, bytes);
-
-            resumeInfoVO.setUser_no(Integer.parseInt(user_no.toString()));
-            resumeInfoVO.setTitle(paramMap.get("title").toString());
-            resumeInfoVO.setDesired_position(paramMap.get("desired_position").toString());
-            resumeInfoVO.setTemplate_no(Integer.parseInt(paramMap.get("template_no").toString()));
-            String publicationYn = Optional.ofNullable(paramMap.get("publication_yn"))
-                    .map(Object::toString)
-                    .orElse("N");  // 기본값 N
-            resumeInfoVO.setPublication_yn(publicationYn);
-            // 파일명
-            resumeInfoVO.setResume_file_name(fileName);
-            // 물리경로 (Physical Path)
-            resumeInfoVO.setResume_file_pypath(filePath.toString());
-            // 논리경로 (Logical Path) – 웹에서 접근 가능한 URL 패턴에 맞춰 설정
-            String logicalBase = "/resume_output/resume_made/";
-            resumeInfoVO.setResume_file_lopath(logicalBase + fileName);
-
-            int result = resumeService.insertResumeInfo(resumeInfoVO);
-
-            resultMap.put("result", result);
-
-
+            resultMap.put("htmlContent", htmlContent);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
         return resultMap;
-
     }
 
     /**
@@ -288,6 +316,8 @@ public class ResumeController {
             root.put("title", resumeInfo.get("title").toString()); //추가
             root.put("myCoverLetter", resumeInfo.get("myCoverLetter").toString());
             root.put("desired_position", resumeInfo.get("desired_position").toString());
+            root.put("user_name", resumeInfo.get("user_name").toString());
+
 
             //학력사항 정보
             List<Map<String, String>> educations = (List<Map<String,String>>) resumeInfo.get("educationList");
@@ -413,6 +443,7 @@ public class ResumeController {
         resumeInfoVO.setResume_file_lopath(logicalBase + fileName);
         int result = resumeService.insertResumeInfo(resumeInfoVO);
         resultMap.put("result", result);
+        resultMap.put("filePath", filePath.toString());
 
         return resultMap;
 
@@ -513,12 +544,22 @@ public class ResumeController {
     // ======================================== 이력서 내역 =============================================
     // 마이페이지 - 이력서 내역 조회
     @PostMapping("/resumeDetail")
-    public ResponseEntity<Map<String,Object>> resumeDetailList(@RequestBody Map<String,Integer> requestMap) {
-        int userNo = requestMap.get("userNo");
-        List<ResumeInfoVO> resumeList = resumeService.selectResumeInfo(userNo);
+    public ResponseEntity<Map<String,Object>> resumeDetailList(@RequestBody Map<String,Object> requestMap,
+                                                               @AuthenticationPrincipal UserPrincipal userPrincipal) {
+        int userNo = Integer.parseInt(userPrincipal.getUser_no().toString());
+        int page     = Integer.parseInt(requestMap.getOrDefault("page", "1").toString());
+        int pageSize = Integer.parseInt(requestMap.getOrDefault("pageSize", "6").toString());
+        requestMap.put("offset", (page - 1) * pageSize);
+        requestMap.put("limit",  pageSize);
+        requestMap.put("user_no", userNo);
+        List<ResumeInfoVO> resumeList = resumeService.selectResumeInfo(requestMap);
+        int totalCount = resumeService.selectResumeCount(requestMap);
+
+        requestMap.put("totalCount", totalCount);
 
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("resumeList", resumeList);
+        resultMap.put("totalCount", totalCount);
         return ResponseEntity.ok(resultMap);
     }
 
@@ -638,6 +679,32 @@ public class ResumeController {
         return resultMap;
     }
 
+    //스킬 그룹 코드 가져오기
+    @GetMapping("/selectSkillGroupCode")
+    public ResponseEntity<List<String>> selectSkillGroupCodeList(){
+        List<String> skillGroupCodeList = new ArrayList<>();
+        skillGroupCodeList = resumeService.getSkillGroupCode();
+        return ResponseEntity.ok(skillGroupCodeList);
+    }
 
+    // 디테일 코드 가져오기
+    @GetMapping("/selectSkillDetailCode")
+    public ResponseEntity<List<String>> selectSkillDetailCode(@RequestParam String group_code){
+        List<String> skillDetailCodeList = new ArrayList<>();
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("group_code", group_code);
+        skillDetailCodeList = resumeService.getSkillDetailCode(paramMap);
+        return ResponseEntity.ok(skillDetailCodeList);
+    }
+
+
+
+    //템플렛 조회하기.
+
+    @GetMapping("/selectAllTemplates")
+    @ResponseBody
+    public List<TemplateVO> selectAllTemplates() {
+        return resumeService.selectAllTemplates();
+    }
 
 }

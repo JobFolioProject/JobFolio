@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@channel.io/channel-web-sdk-loader": "^2.0.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@fortawesome/fontawesome-free": "^6.7.2",
@@ -20,6 +21,7 @@
     "@tosspayments/tosspayments-sdk": "^2.3.5",
     "axios": "^1.9.0",
     "bootstrap": "^5.3.6",
+    "channel.io": "^1.0.0",
     "chart.js": "^4.4.9",
     "date-fns": "^4.1.0",
     "dompurify": "^3.2.6",

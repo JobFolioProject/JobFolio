@@ -3,12 +3,14 @@ package com.happyjob.jobfolio.service.mypage;
 import com.happyjob.jobfolio.repository.mypage.MypageMapper;
 import com.happyjob.jobfolio.vo.join.UserVO;
 import com.happyjob.jobfolio.vo.mypage.*;
+import com.happyjob.jobfolio.vo.pay.PayModel;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class MypageService {
@@ -129,4 +131,12 @@ public class MypageService {
         return mypageMapper.getSkillListByUserNo(userNo);
     }
 
+
+    // 해당 유저의 결재 내역 조회
+    public int getTotalPayCount(Map<String, Object> paramMap) {
+        return mypageMapper.selectTotalPayCount(paramMap);
+    }
+    public List<PayHisDto> getPayHistory(Map<String, Object> paramMap) {
+        return mypageMapper.selectPayHistory(paramMap);
+    }
 }

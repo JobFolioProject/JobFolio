@@ -1,6 +1,7 @@
 package com.happyjob.jobfolio.repository.resume;
 
 import com.happyjob.jobfolio.vo.join.UserVO;
+import com.happyjob.jobfolio.vo.mypage.CommSkillDto;
 import com.happyjob.jobfolio.vo.resume.LinkInfoVO;
 import com.happyjob.jobfolio.vo.resume.ResumeInfoVO;
 import com.happyjob.jobfolio.vo.resume.ResumeLikeVO;
@@ -13,7 +14,9 @@ import java.util.Map;
 @Mapper
 public interface ResumeMapper {
 
-    List<ResumeInfoVO> selectResumeInfo(int user_no);
+    List<ResumeInfoVO> selectResumeInfo(Map<String,Object> requestMap);
+
+    int selectResumeCount(Map<String,Object> requestMap);
 
     List<ResumeInfoVO> resumeLikedList(int user_no);
 
@@ -36,8 +39,6 @@ public interface ResumeMapper {
 
     int insertResumeLike(ResumeLikeVO resumeLikeVO);
 
-    List<TemplateVO> selectAllTemplates();
-
     TemplateVO selectTemplateByNum(int template_no);
 
     int insertTemplate(TemplateVO templateVO);
@@ -47,11 +48,14 @@ public interface ResumeMapper {
     // 이력서 목록 조회
     List<ResumeInfoVO> communityResumeList(Map<String, Object> paramMap);
 
-//    ResumeInfoVO selectResumeInfoByResumeNo(int resumeNo);
+
+    List<TemplateVO> selectAllTemplates();
+
+    List<String> getSkillGroupCode();
+
+    List<String> getSkillDetailCode(Map<String, Object> paramMap);
 
 
-//    // 스킬 목록 조회
-//    List<SkillInfoVO> selectSkillInfoList(int user_no);
 
 
 }

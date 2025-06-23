@@ -41,7 +41,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             return new CustomOAuth2User(user, oauth2User.getAttributes());
 
         } catch (Exception e) {
-            System.err.println("CustomOAuth2UserService 에러: " + e.getMessage());
+            // System.err.println("CustomOAuth2UserService 에러: " + e.getMessage());
             e.printStackTrace();
             throw new OAuth2AuthenticationException(
                 new OAuth2Error("LOGIN_ERROR", e.getMessage(), null),

@@ -3,7 +3,7 @@ import axios from 'axios';
 import PrettyBtn from './PrettyBtn'; // PrettyBtn 컴포넌트 임포트
 
 
-const ResumeAiCoverLetter = ({formData,myCoverLetter,setMyCoverLetter,setFormData,userNo}) => {
+const ResumeAiCoverLetter = ({formData,myCoverLetter,setMyCoverLetter,setFormData,userNo, userName}) => {
     const [aiCoverLetter, setAiCoverLetter] = useState(''); //자기소개서 내용 상태.
     const [loading, setLoading] = useState(false);
 
@@ -13,6 +13,7 @@ const handleGenerateResume = async() => {
      // 💡 중요: 백엔드 CareerAllDto의 필드명과 일치하도록 데이터 구조를 가공합니다.
         // Resume 컴포넌트의 handleSubmit 로직을 따릅니다.
         const dataToSendToBackend = { // 기타 CareerAllDto에 필요한 필드들을 여기에 추가
+            user_name: userName,
             user_no: userNo,
             // formData에서 필요한 개별 필드들을 직접 매핑
             title: formData.title,

@@ -1,31 +1,27 @@
 .career-line-item {
-    /* language-line-item -> career-line-item */
     display: flex;
     align-items: baseline;
     flex-wrap: wrap;
     margin-bottom: 5px;
-    gap: 5px; /* 항목 간 기본 간격 */
+    gap: 5px;
 }
 
 .career-display-header {
-    /* language-display-header -> career-display-header */
     margin-bottom: 5px;
 }
 
 .career-company-name {
-    /* language-name -> career-company-name */
     font-weight: bold;
     font-size: 1.2em !important;
     color: #333;
     margin-right: 0;
-    flex-shrink: 0; /* 줄바꿈 시에도 축소되지 않도록 */
+    flex-shrink: 0;
 }
 
 .career-period {
-    /* language-level -> career-period (기간 표시용) */
     font-size: 0.95em;
     color: #777;
-    margin-left: 10px; /* 회사명과의 간격 */
+    margin-left: 10px;
 }
 
 .career-details-row {
@@ -44,32 +40,29 @@
 }
 
 .careerFormBox {
-    /* languageFormBox -> careerFormBox */
     padding: 15px;
     border-bottom-left-radius: 8px;
     border-bottom-right-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     align-items: baseline;
-    border-top: 3px solid rgb(47, 130, 255); /* 테마 색상 유지 */
+    border-top: 3px solid rgb(47, 130, 255);
 }
 .careerFormBox .formTitle {
     font-weight: bold;
     color: #333;
     font-size: 1.6em;
     text-align: center;
-    margin-top: 0;
+    margin-bottom: 5px;
 }
 
 .careerContainer {
-    /* languageContainer -> careerContainer */
     display: flex;
     justify-content: center;
-    padding: 0 15px;
+    padding: 15px 15px;
 }
 .careerInputArea {
-    /* languageInputArea -> careerInputArea */
     display: grid;
-    grid-template-columns: repeat(6, minmax(120px, 1fr)); /* Education과 동일한 그리드 레이아웃 */
+    grid-template-columns: repeat(6, auto);
     gap: 10px;
     width: 100%;
     max-width: 900px;
@@ -80,37 +73,32 @@
     flex-direction: column;
 }
 
-/* 회사명 필드 (input)에 대한 그리드 컬럼 설정 (예시) */
 .formCol.company-name-field {
-    /* 새로운 클래스 */
     grid-column: span 2;
 }
 
-/* 포지션 필드 (input)에 대한 그리드 컬럼 설정 (예시) */
 .formCol.position-field {
-    /* 새로운 클래스 */
     grid-column: span 2;
 }
 
 /* 재직중 체크박스 그룹 */
 .formCol.current-job-checkbox-group {
     display: flex;
-    flex-direction: row; /* 체크박스와 라벨을 가로로 배치 */
+    flex-direction: row;
     align-items: center;
-    gap: 5px; /* 체크박스와 라벨 간격 */
-    grid-column: span 2; /* 예시 */
-    padding-top: 10px; /* 상단 입력필드와의 간격 */
+    gap: 5px;
+    grid-column: span 2;
+    padding-top: 10px;
 }
 .formCol.current-job-checkbox-group input[type='checkbox'] {
-    width: auto; /* 기본 input 스타일 오버라이드 */
+    width: auto;
     margin: 0;
     padding: 0;
-    /* 추가적인 체크박스 스타일링 (예: 크기, 색상 등) */
     transform: scale(1.2); /* 체크박스 크기 키우기 */
     cursor: pointer;
 }
 .formCol.current-job-checkbox-group label {
-    margin: 0; /* 기본 마진 제거 */
+    margin: 0;
     font-size: 0.9em;
     color: #555;
     cursor: pointer;
@@ -119,10 +107,10 @@
 /* --- 모든 폼 입력 필드의 공통 기본 스타일 (input, select, textarea) --- */
 /* .careerFormBox 내의 모든 input, select, textarea에 적용되는 기본 스타일 */
 .careerFormBox input,
-.careerFormBox select, /* 현재 경력에는 select 없지만, 향후를 위해 유지 가능 */
+.careerFormBox select,
 .careerFormBox textarea {
     padding: 15px;
-    border: 1px solid #a0cbed; /* 테마 색상 유지 */
+    border: 1px solid #a0cbed;
     border-radius: 6px;
     box-sizing: border-box;
     font-size: 13px;
@@ -130,7 +118,7 @@
     color: #555;
     transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
     margin-bottom: 5px;
-    width: 100%; /* 부모 formCol에 꽉 차도록 */
+    width: 100%;
     font-weight: normal;
 }
 
@@ -210,7 +198,6 @@
     display: flex;
     justify-content: flex-end;
     gap: 15px;
-    margin-top: 15px;
     padding: 0 15px;
 }
 /* 폼 버튼 공통 스타일 */
@@ -241,17 +228,17 @@
 }
 
 .careerFormBox .custom-datepicker-input[readOnly] {
-    background-color: #ffffff; /* 배경색을 확실히 하얀색으로 유지 */
-    color: #555; /* 글자색 유지 */
-    border-color: #e0e0e0; /* 테두리색을 약간 다르게 하여 readOnly임을 나타낼 수 있습니다 */
-    cursor: default; /* 마우스 커서를 기본으로 변경 */
-    opacity: 1; /* 투명도 변경 없음 */
-    box-shadow: none; /* 그림자 효과 제거 */
+    background-color: #ffffff;
+    color: #555;
+    border-color: #e0e0e0;
+    cursor: default;
+    opacity: 1;
+    box-shadow: none;
 }
 /* readOnly 상태일 때는 포커스 스타일 적용 안되게 (더 구체적인 선택자로) */
 .careerFormBox .custom-datepicker-input[readOnly]:focus {
     outline: none;
-    border-color: #e0e0e0; /* readOnly 상태의 테두리 색상 유지 */
+    border-color: #e0e0e0;
     box-shadow: none;
 }
 

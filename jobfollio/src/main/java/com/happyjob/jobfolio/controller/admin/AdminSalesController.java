@@ -1,25 +1,37 @@
 package com.happyjob.jobfolio.controller.admin;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.happyjob.jobfolio.service.admin.AdminSalesService;
 import com.happyjob.jobfolio.vo.pay.PayModel;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Controller
 @RequestMapping("/api/admin/sales")
+@PropertySource("classpath:application-secret.properties")
 public class AdminSalesController {
 
     // Set logger
     private final Logger logger = LogManager.getLogger(this.getClass());
+
+    @Value("${secretKey}")
+    private String secretKey;
 
     @Autowired
     private AdminSalesService adminSalesService;
@@ -93,4 +105,120 @@ public class AdminSalesController {
 
         return resultMap;
     }
+
+    // 관리자 페이지 - 결제 내역 조회
+    @RequestMapping("/salesHistory")
+    @ResponseBody
+    public Map<String, Object> salesHistory(@RequestParam Map<String, Object> paramMap) throws Exception {
+
+        int currentPage = Integer.parseInt((String) paramMap.get("currentpage"));
+        int pageSize = Integer.parseInt((String) paramMap.get("pagesize"));
+        int pageIndex = (currentPage - 1) * pageSize;
+
+        paramMap.put("pageIndex", pageIndex);
+        paramMap.put("pageSize", pageSize);
+
+        List<PayModel> salesHistory = adminSalesService.salesHistory(paramMap);
+        int salesHistoryCnt = adminSalesService.salesHistoryCnt(paramMap);
+
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("salesHistory", salesHistory);
+        resultMap.put("totalcnt", salesHistoryCnt);
+
+        return resultMap;
+    }
+
+    @PostMapping("/refundSuccess")
+    @ResponseBody
+    public Map<String, Object> refundSuccess(@RequestBody Map<String, Object> params) throws Exception {
+        String paymentKey = (String) params.get("paymentKey");
+        String orderId = (String) params.get("orderId");
+        int amount = Integer.parseInt(params.get("amount").toString());
+        int userNo = Integer.parseInt(params.get("user_no").toString());
+        int subPeriod = Integer.parseInt(params.get("sub_period").toString());
+
+        Map<String, Object> result = new HashMap<>();
+
+        try {
+            String encodedAuth = Base64.getEncoder().encodeToString((secretKey + ":").getBytes("UTF-8"));
+            URL url = new URL("https://api.tosspayments.com/v1/payments/" + paymentKey + "/cancel");
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", "Basic " + encodedAuth);
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setDoOutput(true);
+
+            String jsonBody = "{\"cancelReason\":\"구매자가 취소를 원함\"}";
+            try (OutputStream os = conn.getOutputStream()) {
+                os.write(jsonBody.getBytes("UTF-8"));
+            }
+
+            int responseCode = conn.getResponseCode();
+            InputStream is = (responseCode == 200) ? conn.getInputStream() : conn.getErrorStream();
+            BufferedReader in = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+            StringBuilder responseBody = new StringBuilder();
+            String line;
+            while ((line = in.readLine()) != null) {
+                responseBody.append(line);
+            }
+            in.close();
+
+            if (responseCode != 200) {
+                result.put("success", false);
+                result.put("message", "환불 승인 실패: " + responseBody);
+                return result;
+            }
+
+            ObjectMapper mapper = new ObjectMapper();
+            Map<String, Object> responseData = mapper.readValue(responseBody.toString(), Map.class);
+            Map<String, Object> metadata = (Map<String, Object>) responseData.get("metadata");
+
+            System.out.println("1. 토스 환불 응답 : " + responseData);
+
+            if (metadata == null) {
+                result.put("success", false);
+                result.put("message", "환불은 되었지만 메타데이터가 누락되었습니다.");
+                return result;
+            }
+
+            String productNo = metadata.get("product_no").toString();
+            String orderName = metadata.get("order_name").toString();
+
+            Map<String, Object> paramMap = new HashMap<>();
+            paramMap.put("paymentKey", paymentKey);
+            paramMap.put("orderId", orderId);
+            paramMap.put("amount", amount);
+            paramMap.put("product_no", productNo);
+            paramMap.put("user_no", userNo);
+            paramMap.put("order_name", orderName);
+            paramMap.put("sub_period", subPeriod);
+
+            // DB 상태 업데이트
+            int updated = adminSalesService.refundSuccess(paramMap);
+            if (updated > 0) {
+                // 환불 성공 시 구독 기간 차감 처리
+                Map<String, Object> subParamMap = new HashMap<>();
+                subParamMap.put("user_no", userNo);
+                subParamMap.put("sub_period", subPeriod);
+
+                adminSalesService.updateUserSubscription(subParamMap);
+
+                result.put("success", true);
+                result.put("message", "환불 성공");
+            } else {
+                result.put("success", false);
+                result.put("message", "DB 업데이트 실패");
+            }
+
+        } catch (Exception e) {
+            result.put("success", false);
+            result.put("message", "서버 에러: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+
 }

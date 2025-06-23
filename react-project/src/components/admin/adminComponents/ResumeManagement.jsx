@@ -153,9 +153,11 @@ const ResumeManagement = () => {
         <div className='info-section-content-box'>
           <div className='info-header'>
             <h3>이력서</h3>
+
             <p className='info-warning'>삭제할 경우 복구가 어려우며, JobFolio 이용자에게 해당 항목이 즉시 비노출됩니다. 삭제 시 신중히 선택 바랍니다.</p>
             <div className='info-controls search-bar'>
               <div className="search-group">
+
               <select
                 className="search-select"
                 value={searchField}
@@ -174,10 +176,12 @@ const ResumeManagement = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}              
               >
               </input>
-
+              </div>
+              <div>
               <button onClick={() => setCurrentPage(1)}>검색</button>
               </div>
               <button onClick={handleDeleteSelected}>선택 삭제</button>
+              </div>
             </div>
             </div>
         

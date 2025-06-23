@@ -3,6 +3,7 @@ import '../../css/community/CommuFaq.css';
 import CommuMenuBar from './CommuMenuBar';
 import { useState, useEffect } from 'react';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import Banner from "../common/Banner";
 
 const CommuFaq = () => {
     const [ faqList, setFaqList ] = useState([]);
@@ -29,11 +30,8 @@ const CommuFaq = () => {
    
     return (
     <>
-        <div className="faq-banner">
-            <img src="/resources/img/banner.png" alt="Banner" />
-            <h1>자주묻는질문</h1>
-        </div>
-    <CommuMenuBar/>
+        <Banner pageName="자주묻는 질문" />
+        <CommuMenuBar/>
 
         <ul className="faq-list">
             {faqList.map((item) => (

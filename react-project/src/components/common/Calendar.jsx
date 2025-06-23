@@ -1,12 +1,19 @@
 // components/DateRangePicker.jsx
-import React from 'react'; // useState 제거
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
+import React from "react"; // useState 제거
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 // import './DateRangePicker.css'; // 필요 시 커스터마이징 CSS 작성
-import '../../css/common/Calendar.css';
+import "../../css/common/Calendar.css";
 
 // selectedStartDate, selectedEndDate, onStartDateChange, onEndDateChange 프롭을 받도록 수정
-export default function Calendar({ selectedStartDate, selectedEndDate, onChangeStartDate, onChangeEndDate,startplaceholder,endplaceholder}) {
+export default function Calendar({
+  selectedStartDate,
+  selectedEndDate,
+  onChangeStartDate,
+  onChangeEndDate,
+  startplaceholder,
+  endplaceholder,
+}) {
   return (
     <div className="date-range-wrapper">
       <DatePicker
