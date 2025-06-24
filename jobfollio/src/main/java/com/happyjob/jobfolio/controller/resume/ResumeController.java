@@ -288,7 +288,9 @@ public class ResumeController {
                 .replaceAll("(?i)<br(?=[^/>]*>)",  "<br/>")
                 .replaceAll("(?i)<hr(?=[^/>]*>)",  "<hr/>")
                 .replaceAll("(?i)<img([^>]*)(?<!/)>", "<img$1/>")   // img 도 자주 문제
-                .replaceAll("(?i)<meta([^>]*)(?<!/)>", "<meta$1/>");
+                .replaceAll("(?i)<meta([^>]*)(?<!/)>", "<meta$1/>")
+                .replaceAll("(?i)<link([^>]*)(?<!/)>", "<link$1/>")
+                .replaceAll("&(?!(?:amp;|lt;|gt;|quot;|apos;))", "&amp;");
 
         String xhtml = ""
                 + "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
