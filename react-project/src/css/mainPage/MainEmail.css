@@ -1,5 +1,4 @@
 .main-email {
-    height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -12,13 +11,14 @@
     border: 2px solid #fff;
     width: 70%;
     height: 600px;
-    margin-top: 50px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: baseline;
     letter-spacing: 0.1em;
     background-color: #e6f4fa;
+    margin-top: 50px;
+    margin-bottom: 200px;
   }
 
   .main-email .box .text {
