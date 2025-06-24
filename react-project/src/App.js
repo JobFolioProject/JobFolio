@@ -31,6 +31,7 @@ import InfoManagement from "./components/admin/adminComponents/InfoManagement";
 import FaqManagement from "./components/admin/adminComponents/FaqManagement";
 import SubscriptManagement from "./components/admin/adminComponents/SubscriptManagement";
 import TemplateManagement from "./components/admin/adminComponents/TemplateManagement";
+import GroupManagement from "./components/admin/adminComponents/GroupManagement";
 import Configuration from "./components/admin/adminComponents/Configuration";
 import ResumeModify from "./components/resume/ResumeModify";
 import Join from "./components/user/join/JoinForm";
@@ -174,6 +175,14 @@ function AppContent() {
             element={
               <PrivateRoute requiredRoles={["A", "B"]}>
                 <UserManagement />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/adminPage/groupManagement"
+            element={
+              <PrivateRoute requiredRoles={["A", "B"]}>
+                <GroupManagement />
               </PrivateRoute>
             }
           />
