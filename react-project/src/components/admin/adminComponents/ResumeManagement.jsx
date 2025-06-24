@@ -14,6 +14,8 @@ const ResumeManagement = () => {
     const [selected, setSelected] = useState([]);
     const [searchField, setSearchField] = useState('title');
     const [searchTerm, setSearchTerm] = useState('');
+    const [sortType, setSortType] = useState('latest');
+    const [resumeList, setResumeList] = useState([]);
     const pageSize = 12;
 
     const totalPages = Math.ceil(tempList.length / pageSize);
@@ -29,8 +31,31 @@ const ResumeManagement = () => {
     );
   };
 
+  const handleSortChange = (type) => {
+    setSortType(type);
+  };
+
+const fetchResumeList = async () => {
+  try {
+    const res = await axios.get('/api/resume/adminSelectResumeInfo', {
+      params: {
+        sortType, // 'like' 또는 'latest' 기본은 latest임
+      },
+    });
+    setResumeList(res); 
+  } catch (err) {
+    console.error('정렬 정렬 실패:', err);
+  }
+};
+
+useEffect(() => {
+  fetchResumeList();
+}, [sortType]);
+
+
   const handleDeleteSelected = () => {
     if (selected.length === 0) {
+
       alert("삭제할 항목 선택해라");
       return;
     }
@@ -80,6 +105,7 @@ const ResumeManagement = () => {
             pageSize: pageSize,
             searchField: searchField,
             search: searchTerm,
+            sortType: sortType,
           },
         });
         const withHtml = await Promise.all(
@@ -103,7 +129,8 @@ const ResumeManagement = () => {
     };
 
     fetchResumes();
-  }, [currentPage, searchTerm, searchField]);
+  }, [currentPage, searchTerm, searchField, sortType]);
+
 
   const openResumePopup = (physicalPath) => {
     const path = physicalPath.replace(/^.*?resume_output/, '/resumes').replace(/\\/g, '/');
@@ -183,10 +210,24 @@ const ResumeManagement = () => {
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
-              <div>
-                <button onClick={() => setCurrentPage(1)}>검색</button>
-              </div>
-              <button onClick={handleDeleteSelected}>선택 삭제</button>
+
+              <div className="action-group">
+                <div className="sort-group">
+                  <button onClick={() => handleSortChange('like')}
+                          className={`sort-button ${sortType === 'like' ? 'active' : ''}`}>
+                            좋아요순 정렬
+                  </button>
+                  <button onClick={() => handleSortChange('latest')}
+                          className={`sort-button ${sortType === 'latest' ? 'active' : ''}`}>
+                            최신순 정렬
+                  </button>
+                </div>
+              </div>           
+                  <button 
+                    className ="delete-button"
+                    onClick={handleDeleteSelected}>
+                      선택 삭제
+                  </button>
             </div>
           </div>
         </div>
@@ -228,6 +269,7 @@ const ResumeManagement = () => {
                       <p><strong>작성일:</strong> {template.create_date ? template.create_date.slice(0, 16) : '날짜 없음'}</p>
                       <p><strong>작성자:</strong> {template.user_name}</p>
                       <p><strong>사용자 삭제여부:</strong> {template.status_yn === 'Y' ? "삭제" : "사용중"} </p>
+                      <p><strong>좋아요 수:</strong>{template.like_count}</p>
                       <div className='status-select-container'>
                         <Select
                           className='input-status-select'
