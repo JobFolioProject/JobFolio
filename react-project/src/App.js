@@ -31,7 +31,6 @@ import InfoManagement from "./components/admin/adminComponents/InfoManagement";
 import FaqManagement from "./components/admin/adminComponents/FaqManagement";
 import SubscriptManagement from "./components/admin/adminComponents/SubscriptManagement";
 import TemplateManagement from "./components/admin/adminComponents/TemplateManagement";
-import Configuration from "./components/admin/adminComponents/Configuration";
 import ResumeModify from "./components/resume/ResumeModify";
 import Join from "./components/user/join/JoinForm";
 import { AuthProvider } from "./context/AuthContext";
@@ -238,17 +237,6 @@ function AppContent() {
             element={
               <PrivateRoute requiredRoles={["A", "B"]}>
                 <AdminManagement />
-              </PrivateRoute>
-            }
-          />
-          {/* ========== 관리자 전용 (A, B 권한) 끝 ========== */}
-          {/* ========== 최고관리자 전용 (A 권한만) ========== */}
-      
-          <Route
-            path="/adminPage/configuration"
-            element={
-              <PrivateRoute requiredRoles={["A"]}>
-                <Configuration />
               </PrivateRoute>
             }
           />
