@@ -43,6 +43,18 @@ import OAuthCallback from "./components/oauth/OAuthCallback";
 import OAuthError from "./components/oauth/OAuthError";
 import { SnackbarProvider } from "./context/SnackbarProvider";
 
+import { useEffect } from "react";
+
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0); // 최상단으로 이동
+  }, [pathname]);
+
+  return null;
+};
+
 
 function App() {
   return (
@@ -65,6 +77,7 @@ function AppContent() {
   return (
     <>
       {!isAdminPath && <MenuBar />}
+      <ScrollToTop />
 
       <main>
         <Routes>
