@@ -70,7 +70,14 @@
 			</choose>
 		</if>
 
-		ORDER BY resume_no DESC
+		<choose>
+			<when test="sortType == 'like'">
+				ORDER BY like_count DESC, resume_no DESC
+			</when>
+			<otherwise>
+				ORDER BY resume_no DESC
+			</otherwise>
+		</choose>
 	</select>
 
 
@@ -111,7 +118,7 @@
 			 WHERE l.resume_no = r.resume_no)AS like_count
 		FROM tb_resume_info r
 		WHERE status_yn = 'N' and publication_yn = 'Y'
-		ORDER BY create_date DESC
+		ORDER BY like_count DESC, create_date DESC
 	</select>
 
 
