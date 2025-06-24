@@ -27,8 +27,8 @@ DateRangePicker.css
 
 .react-datepicker__input-container input:focus {
   outline: none; /* 포커스 시 기본 아웃라인을 제거합니다. */
-  border-color: #87ceeb; /* 포커스 시 더 진한 하늘색 테두리로 강조합니다. */
-  box-shadow: 0 0 0 3px rgba(135, 206, 235, 0.3); /* 하늘색 그림자를 추가하여 선택된 느낌을 줍니다. */
+  border-color: var(--primary-blue);/* 포커스 시 더 진한 하늘색 테두리로 강조합니다. */
+  /* box-shadow: 0 0 0 3px rgba(135, 206, 235, 0.3); 하늘색 그림자를 추가하여 선택된 느낌을 줍니다. */
 }
 
 /* 플레이스홀더 텍스트 스타일 */

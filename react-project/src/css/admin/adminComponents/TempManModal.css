@@ -1,0 +1,60 @@
+/* modal-overlay: 모달이 떴을 때 배경을 어둡게 처리하고, 모달을 중앙에 고정시키는 역할 */
+/* .modal-overlay { */
+    /* position: fixed; 뷰포트 기준으로 위치 고정 */
+    /* top: 0; */
+    /* left: 0; */
+    /* right: 0; */
+    /* bottom: 0; */
+    /* background-color: rgba(0, 0, 0, 0.5); 반투명 검정 배경 */
+    /* display: flex; 자식 요소를 중앙에 정렬하기 위해 flex 사용 */
+    /* justify-content: center; 수평 중앙 정렬 */
+    /* align-items: center; 수직 중앙 정렬 */
+    /* z-index: 1000; 다른 요소들 위에 나타나도록 높은 z-index 설정 */
+/* } */
+.modal-overlay {
+  position: fixed;
+  inset: 0; /* top, right, bottom, left = 0 */
+  z-index: 50;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px); /* 약한 흐림 효과 */
+}
+
+/* modal-content: 모달 자체의 스타일 */
+.modal-content {
+    background-color: white; /* 모달 배경색 */
+    padding: 30px; /* 내부 여백 */
+    border-radius: 8px; /* 둥근 모서리 */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* 그림자 효과 */
+    max-width: 500px; /* 최대 너비 */
+    width: 90%; /* 화면 너비에 따라 조절 */
+    max-height: 80vh; /* 최대 높이 (뷰포트 높이의 80%) */
+    overflow-y: auto; /* 내용이 많아지면 스크롤 가능하게 */
+    position: relative; /* 자식 요소의 absolute positioning을 위한 기준 */
+}
+
+/* 모달 내부 요소 스타일 (선택 사항) */
+.modal-content h4 {
+    margin-top: 0;
+    color: #333;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+}
+
+.modal-content button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    font-size: 1rem;
+}
+
+.modal-content button:hover {
+    background-color: #0056b3;
+}

@@ -45,6 +45,19 @@ public class ResumeInfoVO {
 
     private String publication_yn;
 
+    /* 관리자페이지 이력서 Y/N */
+    private String status_yn;
+
+    public String getStatus_yn() {
+        return status_yn;
+    }
+
+    public void setStatus_yn(String status_yn) {
+        this.status_yn = status_yn;
+    }
+
+
+
     public int getResume_liked() {
         return resume_liked;
     }

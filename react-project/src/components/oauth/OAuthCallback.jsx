@@ -1,18 +1,23 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { useSnackbar } from "../../context/SnackbarProvider"; // 추가
 import axios from "../../utils/axiosConfig";
-import '../../css/user/join/ErrorModal.css';
 
 const OAuthCallback = () => {
   const navigate = useNavigate();
   const { setAccessToken, setUser } = useAuth();
+  const snackbar = useSnackbar(); // 추가
   const [isLoading, setIsLoading] = useState(true);
-  const [showErrorModal, setShowErrorModal] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
+    let hasProcessed = false; // 중복 실행 방지 플래그
+    
     const handleOAuthCallback = async () => {
+      // 이미 처리했다면 리턴
+      if (hasProcessed) return;
+      hasProcessed = true;
+      
       try {
         // URL에서 에러 파라미터 먼저 체크
         const urlParams = new URLSearchParams(window.location.search);
@@ -21,11 +26,26 @@ const OAuthCallback = () => {
         const code = urlParams.get('code');
         
         if (error === 'true') {
-          // 백엔드에서 온 에러 메시지를 커스텀 모달로 표시
+          // 에러 코드별 메시지와 스낵바 표시
           const decodedMessage = message ? decodeURIComponent(message) : '로그인에 실패했습니다.';
-          setErrorMessage(decodedMessage);
-          setShowErrorModal(true);
+          
           setIsLoading(false);
+          // 바로 메인으로 이동 후 에러 메시지 표시
+          navigate("/");
+          setTimeout(() => {
+            // 에러 코드별로 다른 처리
+            switch (code) {
+              case 'DEACTIVATED_USER':
+                snackbar.auth.accountDeleted();
+                break;
+              case 'DUPLICATE_ACCOUNT':
+                snackbar.error(`${decodedMessage} ⚠️`, 2500);
+                break;
+              default:
+                snackbar.auth.loginError(decodedMessage);
+                break;
+            }
+          }, 100);
           return;
         }
 
@@ -53,70 +73,39 @@ const OAuthCallback = () => {
           };
                   
           setUser(userData);
+          
+          // 바로 메인으로 이동
           navigate("/");
+          
+          // 메인 페이지 로드 후 성공 메시지 표시 (약간의 딜레이)
+          setTimeout(() => {
+            snackbar.auth.loginSuccess(userData.userName);
+          }, 100);
         } else {
           throw new Error('사용자 정보를 가져올 수 없습니다.');
         }
       } catch (error) {
         console.error("OAuth 콜백 처리 실패:", error);
-        setErrorMessage("로그인 처리 중 오류가 발생했습니다.");
-        setShowErrorModal(true);
+        
+        // 에러 발생시 바로 메인으로 이동 후 에러 메시지
+        navigate("/");
+        setTimeout(() => {
+          // 네트워크 에러 vs 서버 에러 구분
+          if (error.code === 'NETWORK_ERROR' || !navigator.onLine) {
+            snackbar.system.networkError();
+          } else {
+            snackbar.system.serverError();
+          }
+        }, 100);
       } finally {
         setIsLoading(false);
       }
     };
 
     handleOAuthCallback();
-  }, [navigate, setAccessToken, setUser]);
+  }, []); // 의존성 배열을 빈 배열로 변경 - 한 번만 실행
 
-  const handleCloseErrorModal = () => {
-    setShowErrorModal(false);
-    navigate("/");
-  };
-
-  // 에러 코드에 따른 아이콘과 스타일 결정
-  const getErrorIcon = () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const code = urlParams.get('code');
-    
-    switch (code) {
-      case 'DEACTIVATED_USER':
-        return '🚫'; // 탈퇴한 계정
-      case 'DUPLICATE_ACCOUNT':
-        return '⚠️'; // 중복 계정
-      default:
-        return '❌'; // 일반 오류
-    }
-  };
-
-  const getErrorTitle = () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const code = urlParams.get('code');
-    
-    switch (code) {
-      case 'DEACTIVATED_USER':
-        return '탈퇴한 계정';
-      case 'DUPLICATE_ACCOUNT':
-        return '계정 중복';
-      default:
-        return '로그인 실패';
-    }
-  };
-
-  const getErrorClass = () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const code = urlParams.get('code');
-    
-    switch (code) {
-      case 'DEACTIVATED_USER':
-        return 'deactivated';
-      case 'DUPLICATE_ACCOUNT':
-        return 'duplicate';
-      default:
-        return '';
-    }
-  };
-
+  // 로딩 화면
   if (isLoading) {
     return (
       <div style={{
@@ -135,8 +124,13 @@ const OAuthCallback = () => {
           borderRadius: '50%',
           animation: 'spin 1s linear infinite'
         }}></div>
-        <p style={{ marginTop: '20px', fontSize: '18px', color: '#666' }}>
-          로그인 처리 중입니다...
+        <p style={{ 
+          marginTop: '20px', 
+          fontSize: '18px', 
+          color: '#666',
+          fontWeight: '500'
+        }}>
+          소셜 로그인 처리 중입니다...
         </p>
         <style>
           {`
@@ -150,37 +144,8 @@ const OAuthCallback = () => {
     );
   }
 
-  return (
-    <>
-      {showErrorModal && (
-        <div className="error-modal-overlay">
-          <div className="error-modal">
-            <div className="error-modal-header">
-              <h3 className={getErrorClass()}>{getErrorTitle()}</h3>
-              <button 
-                className="error-modal-close"
-                onClick={handleCloseErrorModal}
-              >
-                ×
-              </button>
-            </div>
-            <div className="error-modal-body">
-              <div className={`error-icon ${getErrorClass()}`}>{getErrorIcon()}</div>
-              <p className={getErrorClass()}>{errorMessage}</p>
-            </div>
-            <div className="error-modal-footer">
-              <button 
-                className={`error-modal-btn ${getErrorClass()}`}
-                onClick={handleCloseErrorModal}
-              >
-                확인
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </>
-  );
+  // 로딩이 끝나면 빈 컴포넌트 반환 (스낵바가 메시지 표시)
+  return null;
 };
 
 export default OAuthCallback;

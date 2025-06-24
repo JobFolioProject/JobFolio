@@ -74,6 +74,7 @@ const ResumePreviewModal = ({ open, onClose, loading, setLoading, htmlString, fo
                 await pdfSubmit();
             }
             onClose(false);
+            setDownload(false);
         } catch (err) {
             // 이미 내부에서 alert 처리하므로 별도 처리 생략 가능
         }

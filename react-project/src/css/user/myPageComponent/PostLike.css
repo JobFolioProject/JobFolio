@@ -1,0 +1,88 @@
+.postLikeDetail {
+    margin-top: 50px;
+    display: flex;
+    justify-content: space-between;
+    flex-flow: wrap;
+    align-items: center;
+    width: 100%;
+    height: fit-content;
+}
+
+.postLikeDetail .postLikeItem {
+    position: relative;
+    display: flex;
+    width: 430px;
+    height: 150px;
+    border: 1px solid #cacaca;
+    border-radius: 15px;
+    margin-bottom: 40px;
+}
+
+.postLikeDetail .postLikeItemCon {
+    position: relative;
+    padding: 40px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    align-self: center;
+}
+
+.postLikeDetail .community-notice-pagination {
+    margin-bottom: 100px;
+    border-top: none;
+    margin: auto;
+    width: 100%;
+}
+
+.postLikeDetail .postLikeItemHeader {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.postLikeDetail .postLikeItemCon h3 {
+    color: #5f4dff;
+    margin: 0;
+}
+
+.postLikeDetail .postLikeItemCon h3:hover {
+    cursor: pointer;
+}
+
+.postLikeDetail .postLikeItemDetail {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    margin-top: 30px;
+}
+
+.postLikeDetail .likeIcon:hover {
+    cursor: pointer;
+}
+
+.postLikeItemDetail p {
+    margin: 0;
+}
+
+.postLikeDetail p.resumeItemJob {
+    color: #717171;
+}
+
+.postLikeDetail p.resumeItemDate {
+    color: #8b8b8b;
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: 1px;
+}
+
+.emptyPstLikeList {
+    color: #6c757d;
+    text-align: center;
+    width: 100%;
+    padding: 10px;
+    font-weight: 500;
+}

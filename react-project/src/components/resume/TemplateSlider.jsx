@@ -66,15 +66,16 @@ const TemplateSlider = ({
     setLoading(true);
     setOpen(true);
     const dataToSend = {
-      ...formData,
-      education: [...formData.education, ...formData.newEducation],
-      experience: [...formData.experience, ...formData.newExperience],
-      template_no: template_no,
-      newEducation: undefined,
-      newExperience: undefined,
-      skillList: [...formData.skillList, ...formData.newSkillList],
-    };
-
+            ...formData,
+            education: [...formData.education, ...formData.newEducation],
+            experience: [...formData.experience, ...formData.newExperience],
+            template_no: template_no,
+            newEducation: undefined,
+            newExperience: undefined,
+            skillList: [...formData.skillList, ...formData.newSkillList],
+            languageList: [...formData.languageList, ...formData.newLanguage],
+            certificateList: [...formData.certificateList, ...formData.newCertificate],
+        };
     try {
       const res = await axios.post("/api/resume/resumePreview", dataToSend);
       const html = res.htmlContent;
@@ -128,39 +129,35 @@ const TemplateSlider = ({
   /////////////////////수정!!!!!!!! html로 읽기///////////////////////////
   return (
     <>
-      <div className="template-slider-wrapper">
-        {!tempList || tempList.length === 0 ? (
-          <p>선택 가능한 템플릿이 없습니다.</p>
-        ) : (
-          <div className="template-grid">
-            <Slider {...settings}>
-              {tempList.map((template) => (
-                <div
-                  id={`template-slide-${template.template_no}`}
-                  key={template.template_no}
-                  className="template-slide"
-                  onClick={() => {
-                    editType === "I"
-                      ? resumePreview(formData, template.template_no)
-                      : updateTemplate(template.template_no);
-                  }}
-                >
-                  <iframe
-                    srcDoc={template.html}
-                    // src={`${template.file_pypath}?tempNo=${template.template_no}`} // tempNo 쿼리 파라미터 추가
-                    title={`템플릿 미리보기 ${template.template_name}`}
-                    // data-temp-no={template.template_no} // data 속성은 그대로 유지
-                    className="template-preview-image"
-                    width="100%"
-                    height="300px" // 초기 높이는 여전히 중요하지만, 스크립트가 재정의할 것
-                  ></iframe>
-                </div>
-              ))}
-            </Slider>
-          </div>
-        )}
-      </div>
-      <ResumePreviewModal
+    <div className="template-slider-wrapper">
+      {!tempList || tempList.length === 0 ? (
+        <p>선택 가능한 템플릿이 없습니다.</p>
+      ) : (
+        <div className="template-grid">
+          <Slider {...settings}>
+            {tempList.map((template) => (
+
+              <div id={`template-slide-${template.template_no}`} key={template.template_no} className="template-slide" 
+              onClick={() => {resumePreview(formData, template.template_no)}}>
+
+                 <iframe
+                  srcDoc={template.html}
+                  // src={`${template.file_pypath}?tempNo=${template.template_no}`} // tempNo 쿼리 파라미터 추가
+                  title={`템플릿 미리보기 ${template.template_name}`}
+                  // data-temp-no={template.template_no} // data 속성은 그대로 유지
+                  className="template-preview-image"
+                  width="100%"
+                  height="150" // 초기 높이는 여전히 중요하지만, 스크립트가 재정의할 것
+                  scrolling="no"
+                  data-temp-no={template.template_no}  
+                ></iframe>
+              </div>
+            ))}
+          </Slider>
+        </div>
+      )}
+    </div>
+    <ResumePreviewModal
         open={open}
         onClose={setOpen}
         loading={loading}

@@ -1,23 +1,25 @@
-import "../../../css/admin/adminComponents/ResumeManagement.css";
-import AdminSideBar from "../AdminSideBar";
-import Pagination from "../../common/Pagination.jsx";
-import { useState, useEffect } from "react";
-import axios from "../../../utils/axiosConfig";
-import { Select, MenuItem } from "@mui/material";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+
+import '../../../css/admin/adminComponents/ResumeManagement.css';
+import AdminSideBar from '../AdminSideBar';
+import Pagination from '../../common/Pagination.jsx';
+import { useState, useEffect } from 'react';
+import axios from '../../../utils/axiosConfig';
+import { Select, MenuItem } from '@mui/material';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 const ResumeManagement = () => {
-  const [tempList, setTempList] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [selected, setSelected] = useState([]);
-  const [searchField, setSearchField] = useState("title");
-  const [searchTerm, setSearchTerm] = useState("");
-  const pageSize = 12;
+    const [tempList, setTempList] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [selected, setSelected] = useState([]);
+    const [searchField, setSearchField] = useState('title');
+    const [searchTerm, setSearchTerm] = useState('');
+    const pageSize = 12;
 
-  const totalPages = Math.ceil(tempList.length / pageSize);
-  const startIdx = (currentPage - 1) * pageSize;
-  const currentTemplates = tempList.slice(startIdx, startIdx + pageSize);
+    const totalPages = Math.ceil(tempList.length / pageSize);
+    const startIdx = (currentPage - 1) * pageSize;
+    const currentTemplates = tempList.slice(startIdx, startIdx + pageSize);
+
 
   const handleToggleSelect = (resumeNo) => {
     setSelected((prev) =>
@@ -34,15 +36,13 @@ const ResumeManagement = () => {
     }
 
     if (!window.confirm("삭제할? 되돌리기 x")) return;
-
-    axios
-      .post("/api/resume/deleteSelectedResume", selected)
+    axios.post('/api/resume/deleteSelectedResume', selected)
       .then(() => {
-        return axios.get("/api/resume/selectResume", {
+        return axios.get('/api/resume/selectResume', {
           params: {
             page: currentPage,
             pageSize: pageSize,
-            search: "디자인",
+            search: '디자인',
           },
         });
       })
@@ -66,7 +66,7 @@ const ResumeManagement = () => {
         setSelected([]);
       })
       .catch((err) => {
-        console.error("이력서 게시판 데이터 호출 실패:", err);
+        console.error('이력서 게시판 데이터 호출 실패:', err);
         alert("오류 오류 오류 ");
       });
   };
@@ -74,18 +74,14 @@ const ResumeManagement = () => {
   useEffect(() => {
     const fetchResumes = async () => {
       try {
-        const res = await axios.get("/api/resume/selectResume", {
+        const res = await axios.get('/api/resume/selectResume', {
           params: {
             page: currentPage,
             pageSize: pageSize,
             searchField: searchField,
             search: searchTerm,
-            // search: '디자인', // 필요 시 동적 상태로 처리
           },
         });
-        console.log(res);
-
-        // HTML 파일 내용을 개별 fetch
         const withHtml = await Promise.all(
           res.boardList.map(async (item) => {
             const filePath = `http://localhost:80${item.resume_file_pypath
@@ -98,65 +94,75 @@ const ResumeManagement = () => {
             } catch (e) {
               return { ...item, html: `<p>불러오기 실패</p>` };
             }
-          })
-        );
-
+        }));
         setTempList(withHtml);
       } catch (err) {
-        console.error("이력서 게시판 데이터 호출 실패:", err);
+        console.error('이력서 게시판 데이터 호출 실패:', err);
       }
     };
 
     fetchResumes();
   }, [currentPage, searchTerm, searchField]);
 
-  // 팝업 열기 유틸
   const openResumePopup = (physicalPath) => {
-    const path = physicalPath
-      .replace(/^.*?resume_output/, "/resumes")
-      .replace(/\\/g, "/");
+    const path = physicalPath.replace(/^.*?resume_output/, '/resumes').replace(/\\/g, '/');
     const url = `http://localhost:80${path}`;
-    window.open(url, "_blank", "width=900,height=700");
+    window.open(url, '_blank', 'width=900,height=700');
   };
 
   const handleStatusChange = (resumeNo, newStatus) => {
-    axios
-      .post("/api/resume/deleteResume", {
-        resume_no: resumeNo,
-        status_yn: newStatus,
-      })
+    axios.post('/api/resume/updateResumeStatus', {
+      resume_no: resumeNo,
+      status_yn: newStatus,
+    })
       .then(() => {
-        setTempList((prev) =>
-          prev.map((item) =>
-            item.resume_no === resumeNo
-              ? { ...item, status_yn: newStatus }
-              : item
-          )
+        return axios.get('/api/resume/adminSelectResumeInfo', {
+          params : {
+            page : currentPage,
+            pageSize : pageSize,
+            searchField : searchField,
+            search : searchTerm,
+            admin: true
+          },
+        });
+      })
+      .then(async (res) => {
+        const withHtml = await Promise.all(
+          res.boardList.map(async (item) => {
+            const filePath = `http://localhost:80${item.resume_file_pypath.replace(/^.*?resume_output/, '/resumes').replace(/\\/g, '/')}`;
+            try {
+              const htmlRes = await fetch(filePath);
+              const htmlText = await htmlRes.text();
+              return { ...item, html: htmlText };
+            } catch (e) {
+              return { ...item, html: `<p>불러오기 실패</p>` };
+            }
+          })
         );
+
+        setTempList(withHtml);
       })
       .catch((err) => {
-        console.error("표시여부 변경 실패:", err);
-        alert("표시여부 변경 실패");
+        console.error('이력서 게시판 데이터 호출 실패:', err);
+        alert("오류 오류 오류 ");
       });
   };
 
   return (
-    <div className="resumeManagement">
+    <div className='resumeManagement'>
       <AdminSideBar />
-      <div className="info-content">
-        <div className="info-section-title-box">
+      <div className='info-content'>
+        <div className='info-section-title-box'>
           <h2>커뮤니티 관리</h2>
         </div>
 
         <div className="info-section-content-box">
           <div className="info-header">
             <h3>이력서</h3>
-
-            <p className="info-warning">
-              삭제할 경우 복구가 어려우며, JobFolio 이용자에게 해당 항목이 즉시
-              비노출됩니다. 삭제 시 신중히 선택 바랍니다.
+            <p className='info-warning'>
+              삭제할 경우 복구가 어려우며, JobFolio 이용자에게 해당 항목이 즉시 비노출됩니다. 삭제 시 신중히 선택 바랍니다.
             </p>
-            <div className="info-controls search-bar">
+            <div className='info-controls search-bar'>
               <div className="search-group">
                 <select
                   className="search-select"
@@ -174,7 +180,7 @@ const ResumeManagement = () => {
                   placeholder="검색어 입력"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                ></input>
+                />
               </div>
               <div>
                 <button onClick={() => setCurrentPage(1)}>검색</button>
@@ -198,13 +204,11 @@ const ResumeManagement = () => {
                   >
                     <div
                       className="template-slide"
-                      onClick={() =>
-                        openResumePopup(template.resume_file_pypath)
-                      }
+                      onClick={() => openResumePopup(template.resume_file_pypath)}
                     >
                       <input
                         type="checkbox"
-                        className="resume-select-checkbox"
+                        className='resume-select-checkbox'
                         checked={selected.includes(template.resume_no)}
                         onChange={() => handleToggleSelect(template.resume_no)}
                       />
@@ -218,39 +222,19 @@ const ResumeManagement = () => {
                     </div>
 
                     <div className="resume-info-box">
-                      <p>
-                        <strong>이력서 번호:</strong> {template.resume_no}
-                      </p>
-                      <p>
-                        <strong>제목:</strong> {template.title}
-                      </p>
-                      <p>
-                        <strong>작성일:</strong>{" "}
-                        {template.create_date
-                          ? template.create_date.slice(0, 16)
-                          : "날짜 없음"}
-                      </p>
-                      <p>
-                        <strong>작성자:</strong> {template.user_name}
-                      </p>
+                      <p><strong>이력서 번호:</strong> {template.resume_no}</p>
+                      <p><strong>제목:</strong> {template.title}</p>
+                      <p><strong>작성일:</strong> {template.create_date ? template.create_date.slice(0, 16) : '날짜 없음'}</p>
+                      <p><strong>작성자:</strong> {template.user_name}</p>
 
-                      <div className="status-select-container">
+                      <div className='status-select-container'>
                         <Select
-                          className="input-status-select"
+                          className='input-status-select'
                           value={template.status_yn ?? "N"}
-                          onChange={(e) =>
-                            handleStatusChange(
-                              template.resume_no,
-                              e.target.value
-                            )
-                          }
+                          onChange={(e) => handleStatusChange(template.resume_no, e.target.value)}
                         >
-                          <MenuItem value="N">
-                            <VisibilityIcon /> 노출
-                          </MenuItem>
-                          <MenuItem value="Y">
-                            <VisibilityOffIcon /> 숨김
-                          </MenuItem>
+                          <MenuItem value="N"><VisibilityIcon /> 노출</MenuItem>
+                          <MenuItem value="Y"><VisibilityOffIcon /> 숨김</MenuItem>
                         </Select>
                       </div>
                     </div>
@@ -259,7 +243,6 @@ const ResumeManagement = () => {
               </div>
             </>
           )}
-
           {totalPages > 1 && (
             <div className="community-notice-pagination">
               <Pagination

@@ -15,8 +15,8 @@
 }
 
 .CommuResume .resume-template-wrapper {
-  min-width: 900px;
-  padding: 20px 300px;
+  margin: auto;
+  width: 1200px;
 }
 
 .CommuResume .resume-template-wrapper h2 {
