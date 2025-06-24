@@ -52,6 +52,8 @@ const CommuResume = () => {
       );
 
       setTempList(withHtml);
+      console.log(withHtml);
+      
       
     } catch (err) {
       console.error('이력서 게시판 데이터 호출 실패:', err);
@@ -133,6 +135,9 @@ const CommuResume = () => {
           <div className="resume-template-grid">
             {currentTemplates.map((template) => (
               <div key={template.resume_no} className="template-view-wrapper">
+                <div className="like-Icon">
+                  {template.like_count}
+                </div>
                 <FavoriteIcon
                   className="likeIcon"
                   color={template.resume_liked === 1 ? 'error' : 'inherit'}
@@ -144,7 +149,7 @@ const CommuResume = () => {
                   }}
                   onMouseEnter={handleMouseEnterIcon}
                   onMouseLeave={handleMouseLeaveIcon}
-                />
+                ></FavoriteIcon>
                 <div className="template-slide" onClick={() => openResumePopup(template.resume_file_pypath)}>
                   <iframe
                     srcDoc={template.html}
