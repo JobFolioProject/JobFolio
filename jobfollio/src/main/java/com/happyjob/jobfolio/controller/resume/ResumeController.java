@@ -724,6 +724,8 @@ public class ResumeController {
         paramMap.put("offset", offset);
         paramMap.put("limit", pageSize);
 
+        if(paramMap.get("userNo") == null) paramMap.put("userNo", 0);
+
         List<ResumeInfoVO> boardList = resumeService.communityResumeList(paramMap);
 
         resultMap.put("boardList", boardList);

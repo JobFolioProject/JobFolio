@@ -352,8 +352,11 @@
 			resume_file_name,
 			resume_file_pypath,
 			resume_file_lopath,
-			create_date
-		FROM tb_resume_info
+			create_date,
+			(SELECT count(*)
+			 FROM tb_resume_like l
+			 WHERE l.resume_no = r.resume_no)AS like_count
+		FROM tb_resume_info r
 		WHERE resume_no in (select resume_no from tb_resume_like where user_no = #{user_no})
 		ORDER BY resume_no DESC
 			LIMIT #{offset}, #{limit}

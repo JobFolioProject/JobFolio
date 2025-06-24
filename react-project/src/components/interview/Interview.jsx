@@ -39,7 +39,8 @@ const Interview = () => {
     (async () => {
       try {
         const res = await axios.post("/api/resume/resumeDetail", {
-          userNo: user.userNo,
+          user_no: user.userNo,
+          pageSize: "all",
         });
         setResumeList(res.resumeList || []);
       } catch (err) {
