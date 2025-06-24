@@ -135,7 +135,7 @@ const CommuResume = () => {
           <div className="resume-template-grid">
             {currentTemplates.map((template) => (
               <div key={template.resume_no} className="template-view-wrapper">
-                <div className="like-Icon">
+                <div className="like-count">
                   {template.like_count}
                 </div>
                 <FavoriteIcon
