@@ -99,10 +99,18 @@
   cursor: default !important;
 }
 
+.like-count {
+  position: absolute;
+  top: 3px;
+  left: 30px;
+  z-index: 10;
+
+}
+
 .likeIcon {
   position: absolute;
   top: 5px;
-  right: 5px;
+  left: 5px;
   z-index: 10;
 }
 
