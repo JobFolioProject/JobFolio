@@ -52,6 +52,7 @@ const CommuResume = () => {
       );
 
       setTempList(withHtml);
+      
     } catch (err) {
       console.error('이력서 게시판 데이터 호출 실패:', err);
     }

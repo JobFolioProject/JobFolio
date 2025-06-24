@@ -660,11 +660,11 @@ public class ResumeController {
     @PostMapping("/updateResumeStatus")
     public ResponseEntity<Map<String,Object>> updateResumeStatus(@RequestBody Map<String,Object> requestMap) {
         int resumeNo = (Integer) requestMap.get("resume_no");
-        String statusYn = (String) requestMap.get("status_yn");
+        String pubYn = (String) requestMap.get("publication_yn");
 
         ResumeInfoVO vo = new ResumeInfoVO();
         vo.setResume_no(resumeNo);
-        vo.setStatus_yn(statusYn);
+        vo.setPublication_yn(pubYn);
 
         int result = resumeService.updateResumeStatus(vo);
 
