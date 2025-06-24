@@ -103,8 +103,9 @@
   position: absolute;
   top: 3px;
   left: 30px;
+  color: #000;
+  font-weight: bold;
   z-index: 10;
-
 }
 
 .likeIcon {
@@ -112,6 +113,7 @@
   top: 5px;
   left: 5px;
   z-index: 10;
+  color: #000;
 }
 
 .likeIcon:hover {
