@@ -106,7 +106,7 @@ const PostLike = () => {
                                         {item.title || '제목 없음'}
                                     </h3>
                                     <FavoriteIcon
-                                        className="likeIcon"
+                                        className="postLikeIcon"
                                         color="error"
                                         onClick={() => unlikeResume(item.resume_no)}
                                     />
