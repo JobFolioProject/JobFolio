@@ -48,6 +48,17 @@ public class ResumeInfoVO {
     /* 관리자페이지 이력서 Y/N */
     private String status_yn;
 
+    /** 좋아요 갯수 카운트 */
+    private int like_count;
+
+    public int getLike_count() {
+        return like_count;
+    }
+
+    public void setLike_count(int like_count) {
+        this.like_count = like_count;
+    }
+
     public String getStatus_yn() {
         return status_yn;
     }

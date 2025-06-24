@@ -43,8 +43,7 @@
 		resume_file_lopath,
 		(SELECT count(*)
 		FROM tb_resume_like l
-		WHERE l.user_no = #{user_no}
-		AND l.resume_no = r.resume_no)AS resume_liked,
+		WHERE l.resume_no = r.resume_no)AS like_count,
 		publication_yn,
 		create_date,
 		status_yn
@@ -106,7 +105,10 @@
 			(SELECT count(*)
 			 FROM tb_resume_like l
 			 WHERE l.user_no = #{user_no}
-			   AND l.resume_no = r.resume_no)AS resume_liked
+			   AND l.resume_no = r.resume_no)AS resume_liked,
+			(SELECT count(*)
+			 FROM tb_resume_like l
+			 WHERE l.resume_no = r.resume_no)AS like_count
 		FROM tb_resume_info r
 		WHERE status_yn = 'N' and publication_yn = 'Y'
 		ORDER BY create_date DESC
