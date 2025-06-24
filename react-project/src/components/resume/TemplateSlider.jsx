@@ -171,6 +171,7 @@ const TemplateSlider = ({
         loading={loading}
         setLoading={setLoading}
         htmlString={htmlString}
+        setHtmlString={setHtmlString}
         formData={formData}
       />
     </>

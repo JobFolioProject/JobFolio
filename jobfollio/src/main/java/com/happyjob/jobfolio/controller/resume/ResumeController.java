@@ -567,14 +567,22 @@ public class ResumeController {
                                                                @AuthenticationPrincipal UserPrincipal userPrincipal) {
         int userNo = Integer.parseInt(userPrincipal.getUser_no().toString());
         int page     = Integer.parseInt(requestMap.getOrDefault("page", "1").toString());
-        int pageSize = Integer.parseInt(requestMap.getOrDefault("pageSize", "6").toString());
+        int totalCount = resumeService.selectResumeCount(requestMap);
+
+        int pageSize = 0;
+        if (requestMap.get("pageSize") != null && "all".equals(requestMap.get("pageSize").toString())) {
+            pageSize = totalCount;
+        }
+        else {
+            pageSize = Integer.parseInt(requestMap.getOrDefault("pageSize", "6").toString());
+        }
+
         requestMap.put("offset", (page - 1) * pageSize);
         requestMap.put("limit",  pageSize);
         requestMap.put("user_no", userNo);
-        List<ResumeInfoVO> resumeList = resumeService.selectResumeInfo(requestMap);
-        int totalCount = resumeService.selectResumeCount(requestMap);
-
         requestMap.put("totalCount", totalCount);
+
+        List<ResumeInfoVO> resumeList = resumeService.selectResumeInfo(requestMap);
 
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("resumeList", resumeList);
