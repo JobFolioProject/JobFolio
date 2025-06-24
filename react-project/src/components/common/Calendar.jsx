@@ -13,6 +13,8 @@ export default function Calendar({
   onChangeEndDate,
   startplaceholder,
   endplaceholder,
+  isCurrentJob,
+  isCurrentEdu,
 }) {
   return (
     <div className="date-range-wrapper">
@@ -33,11 +35,14 @@ export default function Calendar({
         onChange={onChangeEndDate} // 변경 시 상위 컴포넌트의 핸들러 호출
         selectsEnd
         startDate={selectedStartDate}
-        endDate={selectedEndDate}
+        endDate={
+          isCurrentJob ? new Date().toISOString().slice(0, 10) : selectedEndDate
+        }
         minDate={selectedStartDate}
         dateFormat="yyyy-MM-dd"
         isClearable
         placeholderText={endplaceholder}
+        disabled={isCurrentJob || isCurrentEdu}
       />
     </div>
   );

@@ -1020,7 +1020,7 @@ const getFlagEmoji = (countryCode) => {
                         <br/>
         
                             <div className='templete-test'>
-                                <TemplateSelection formData={formData}>템플렛선택</TemplateSelection>
+                                <TemplateSelection formData={formData} editType={"I"}>템플렛선택</TemplateSelection>
                             </div>
                         <br/>
                         <div style={{ display: 'flex', justifyContent: 'center' }}>

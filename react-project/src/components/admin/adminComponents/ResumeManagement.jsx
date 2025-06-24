@@ -1,3 +1,4 @@
+
 import '../../../css/admin/adminComponents/ResumeManagement.css';
 import AdminSideBar from '../AdminSideBar';
 import Pagination from '../../common/Pagination.jsx';
@@ -35,7 +36,6 @@ const ResumeManagement = () => {
     }
 
     if (!window.confirm("삭제할? 되돌리기 x")) return;
-
     axios.post('/api/resume/deleteSelectedResume', selected)
       .then(() => {
         return axios.get('/api/resume/selectResume', {
@@ -49,7 +49,9 @@ const ResumeManagement = () => {
       .then(async (res) => {
         const withHtml = await Promise.all(
           res.boardList.map(async (item) => {
-            const filePath = `http://localhost:80${item.resume_file_pypath.replace(/^.*?resume_output/, '/resumes').replace(/\\/g, '/')}`;
+            const filePath = `http://localhost:80${item.resume_file_pypath
+              .replace(/^.*?resume_output/, "/resumes")
+              .replace(/\\/g, "/")}`;
             try {
               const htmlRes = await fetch(filePath);
               const htmlText = await htmlRes.text();
@@ -80,21 +82,19 @@ const ResumeManagement = () => {
             search: searchTerm,
           },
         });
-
         const withHtml = await Promise.all(
           res.boardList.map(async (item) => {
-            const filePath = `http://localhost:80${item.resume_file_pypath.replace(/^.*?resume_output/, '/resumes').replace(/\\/g, '/')}`;
+            const filePath = `http://localhost:80${item.resume_file_pypath
+              .replace(/^.*?resume_output/, "/resumes")
+              .replace(/\\/g, "/")}`;
             try {
               const htmlRes = await fetch(filePath);
               const htmlText = await htmlRes.text();
               return { ...item, html: htmlText };
             } catch (e) {
               return { ...item, html: `<p>불러오기 실패</p>` };
-
             }
         }));
-
-
         setTempList(withHtml);
       } catch (err) {
         console.error('이력서 게시판 데이터 호출 실패:', err);
@@ -156,8 +156,8 @@ const ResumeManagement = () => {
           <h2>커뮤니티 관리</h2>
         </div>
 
-        <div className='info-section-content-box'>
-          <div className='info-header'>
+        <div className="info-section-content-box">
+          <div className="info-header">
             <h3>이력서</h3>
             <p className='info-warning'>
               삭제할 경우 복구가 어려우며, JobFolio 이용자에게 해당 항목이 즉시 비노출됩니다. 삭제 시 신중히 선택 바랍니다.

@@ -39,42 +39,6 @@ const PersonalInfoModify = ({ resumeInfo, setResumeInfo }) => {
       </label>
       <label>
         <div>
-          <span>희망직무</span>
-        </div>
-        <div>
-          <input
-            type="text"
-            name="position"
-            value={resumeInfo.desired_position}
-            onChange={(e) => {
-              setResumeInfo({
-                ...resumeInfo,
-                desired_position: e.target.value,
-              });
-            }}
-          />
-        </div>
-      </label>
-      <label>
-        <div>
-          <span>주소</span>
-        </div>
-        <div>
-          <input
-            type="text"
-            name="address"
-            value={resumeInfo.address}
-            onChange={(e) => {
-              setResumeInfo({
-                ...resumeInfo,
-                address: e.target.value,
-              });
-            }}
-          />
-        </div>
-      </label>
-      <label>
-        <div>
           <span>이메일</span>
         </div>
         <div>
@@ -99,11 +63,11 @@ const PersonalInfoModify = ({ resumeInfo, setResumeInfo }) => {
           <input
             type="text"
             name="phoneNum"
-            value={resumeInfo.hp}
+            value={resumeInfo.phone}
             onChange={(e) => {
               setResumeInfo({
                 ...resumeInfo,
-                hp: e.target.value,
+                phone: e.target.value,
               });
             }}
           />

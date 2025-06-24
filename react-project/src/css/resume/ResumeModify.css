@@ -12,18 +12,17 @@
 
 .resumeList {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 50px;
-  margin: 70px;
+  grid-template-columns: repeat(3, 400px);
+  gap: 0px 30px;
+  margin: 55px;
 }
 .resumeList .resumeEachItem {
   position: relative;
   display: flex;
-  width: 470px;
-  height: 150px;
+  width: 100%;
+  height: 200px;
   border: 1px solid #cacaca;
   border-radius: 15px;
-  margin-bottom: 40px;
 }
 
 .resumeList .resumeEachItem:hover {
@@ -83,7 +82,7 @@
   justify-content: flex-end;
 }
 
-.resumeContent .primaryBtn, 
+.resumeContent .primaryBtn,
 .secondaryBtn {
   padding: 10px 28px;
   border: none;
@@ -110,4 +109,10 @@
 
 .resumeContent .secondaryBtn:hover {
   background: #bbdefb;
+}
+
+.resume-modify-pagination {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: center;
 }

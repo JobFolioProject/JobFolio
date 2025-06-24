@@ -171,7 +171,7 @@
   background: #f4f6fb;
   border-radius: 12px;
   padding: 24px 20px;
-  margin-top: 10px;
+  margin-top: 50px;
 }
 
 .modal-content .aiTitle {
@@ -314,4 +314,22 @@
   display: flex;
   align-items: center;
   gap: 14px;
+}
+
+.career_date_section,
+.edu_date_section {
+  display: flex;
+}
+
+.current-job-checkbox,
+.current-edu-checkbox {
+  display: flex;
+  align-items: center;
+  margin-left: 15px;
+}
+
+.current-job-checkbox p,
+.current-edu-checkbox p {
+  margin: 0 0 0 5px;
+  font-size: 1rem;
 }
