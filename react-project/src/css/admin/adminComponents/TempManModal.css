@@ -1,60 +1,143 @@
-/* modal-overlay: 모달이 떴을 때 배경을 어둡게 처리하고, 모달을 중앙에 고정시키는 역할 */
-/* .modal-overlay { */
-    /* position: fixed; 뷰포트 기준으로 위치 고정 */
-    /* top: 0; */
-    /* left: 0; */
-    /* right: 0; */
-    /* bottom: 0; */
-    /* background-color: rgba(0, 0, 0, 0.5); 반투명 검정 배경 */
-    /* display: flex; 자식 요소를 중앙에 정렬하기 위해 flex 사용 */
-    /* justify-content: center; 수평 중앙 정렬 */
-    /* align-items: center; 수직 중앙 정렬 */
-    /* z-index: 1000; 다른 요소들 위에 나타나도록 높은 z-index 설정 */
-/* } */
+/* TempManModal.css */
+
+/* 모달 오버레이 스타일 */
 .modal-overlay {
-  position: fixed;
-  inset: 0; /* top, right, bottom, left = 0 */
-  z-index: 50;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px); /* 약한 흐림 효과 */
+  position: fixed; /* 화면에 고정 */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex; /* 자식 요소를 가운데 정렬하기 위해 flex 사용 */
+  align-items: center; /* 세로 가운데 정렬 */
+  justify-content: center; /* 가로 가운데 정렬 */
+  background-color: rgba(0, 0, 0, 0.5); /* 반투명 검은색 배경 */
+  backdrop-filter: blur(5px); /* 배경 블러 처리 (지원하지 않는 브라우저에서는 무시됨) */
+  z-index: 50; /* 다른 요소들 위에 표시 */
+
+  opacity: 0; /* 기본적으로 투명하게 (숨김) */
+  pointer-events: none; /* 클릭 이벤트 비활성화 */
+  transition: opacity 0.3s ease-out; /* 투명도 변화에 애니메이션 적용 */
 }
 
-/* modal-content: 모달 자체의 스타일 */
+/* 모달이 보일 때 적용되는 스타일 */
+.modal-overlay.modal-overlay--visible {
+  opacity: 1; /* 완전히 보이게 */
+  pointer-events: auto; /* 클릭 이벤트 활성화 */
+}
+
+/* 모달 컨텐츠(프레임) 스타일 */
 .modal-content {
-    background-color: white; /* 모달 배경색 */
-    padding: 30px; /* 내부 여백 */
-    border-radius: 8px; /* 둥근 모서리 */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* 그림자 효과 */
-    max-width: 500px; /* 최대 너비 */
-    width: 90%; /* 화면 너비에 따라 조절 */
-    max-height: 80vh; /* 최대 높이 (뷰포트 높이의 80%) */
-    overflow-y: auto; /* 내용이 많아지면 스크롤 가능하게 */
-    position: relative; /* 자식 요소의 absolute positioning을 위한 기준 */
+  position: relative; /* 닫기 버튼 위치 지정을 위해 */
+  background-color: #1b1b22; /* 어두운 배경색 */
+  border-radius: 0.75rem; /* 둥근 모서리 (xl: 1rem = 16px) */
+  padding: 2.5rem 1.25rem; /* 상하 40px, 좌우 20px */
+  /* 미디어 쿼리 사용하여 반응형 패딩 적용 (md: 10px, py-[60px]) */
+  /* xl: rounded-2xl (더 둥근 모서리) */
+  max-width: 90%; /* 최대 너비 제한 */
+  max-height: 90%; /* 최대 높이 제한 */
+  overflow: auto; /* 내용이 많아지면 스크롤 가능 */
 }
 
-/* 모달 내부 요소 스타일 (선택 사항) */
-.modal-content h4 {
-    margin-top: 0;
-    color: #333;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 15px;
-    margin-bottom: 20px;
+/* 미디어 쿼리 (md 이상) */
+@media (min-width: 768px) {
+  .modal-content {
+    padding: 3.75rem 2.5rem; /* md: px-10 (40px), py-[60px] */
+  }
 }
 
+/* 미디어 쿼리 (xl 이상) */
+@media (min-width: 1280px) {
+  .modal-content {
+    border-radius: 1rem; /* xl: rounded-2xl (16px) */
+  }
+}
+
+
+/* 모달 닫기 버튼 (X) 스타일 */
+.modal-close-button {
+  position: absolute; /* 모달 컨텐츠 기준 위치 지정 */
+  top: 1rem; /* 위에서 16px */
+  right: 1rem; /* 오른쪽에서 16px */
+  margin-left: auto; /* 필요 없음, absolute로 위치 지정 */
+  color: white; /* 텍스트 색상 */
+  font-size: 1.5rem; /* 폰트 크기 */
+  font-weight: bold; /* 볼드체 */
+  background: none; /* 배경 없음 */
+  border: none; /* 테두리 없음 */
+  cursor: pointer; /* 마우스 오버 시 포인터 변경 */
+  padding: 0.5rem; /* 클릭 영역 확보 */
+  line-height: 1; /* 텍스트 정렬 */
+}
+
+/* 미디어 쿼리 (md 이상) */
+@media (min-width: 768px) {
+  .modal-close-button {
+    top: 1.25rem; /* md: top-5 (20px) */
+    right: 1.25rem; /* md: right-5 (20px) */
+    width: 2.25rem; /* md: w-9 (36px) */
+    height: 2.25rem; /* 높이도 너비와 동일하게 */
+    font-size: 1.8rem; /* 더 크게 */
+  }
+}
+
+/* 미디어 쿼리 (xl 이상) */
+@media (min-width: 1280px) {
+  .modal-close-button {
+    width: 2.5rem; /* xl: w-10 (40px) */
+    height: 2.5rem; /* 높이도 너비와 동일하게 */
+    font-size: 2rem; /* 더 크게 */
+  }
+}
+
+/* 기존 버튼 스타일 유지 (필요하다면) */
 .modal-content button {
-    margin-top: 20px;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    background-color: #007bff;
-    color: white;
-    font-size: 1rem;
+  /* 여기에 추가적인 버튼 스타일을 정의할 수 있습니다. */
 }
 
-.modal-content button:hover {
-    background-color: #0056b3;
+.modal-template{
+    margin-bottom: 1rem; /* 각 입력 그룹 하단 여백 */
+}
+
+.modal-label {
+  display: block; /* 라벨을 블록 레벨로 만들어 다음 요소가 아래로 내려오게 함 */
+  margin-bottom: 0.5rem; /* 라벨과 입력 필드 사이의 여백 */
+  font-weight: bold; /* 라벨 텍스트 굵게 */
+  color: #e0e0e0; /* 라벨 색상 */
+}
+
+.modal-input-field,
+.modal-textarea-field{
+  width: 100%; /* 너비를 부모 요소에 꽉 채움 */
+  padding: 0.75rem; /* 내부 패딩 */
+  border: 1px solid #444; /* 테두리 */
+  border-radius: 0.25rem; /* 둥근 모서리 */
+  background-color: #2c2c34; /* 입력 필드 배경색 */
+  color: #f0f0f0; /* 입력 텍스트 색상 */
+  font-size: 1rem; /* 폰트 크기 */
+  box-sizing: border-box; /* 패딩과 테두리를 너비에 포함 */
+  /* 브라우저 자동 완성 스타일 오버라이드 */
+  /* 배경색을 다시 설정하고, 그림자를 제거하여 브라우저의 기본 자동 완성 스타일을 무효화 */
+  -webkit-box-shadow: 0 0 0px 1000px #2c2c34 inset; /* 배경색을 강제로 설정 (inset으로 내부 그림자처럼) */
+  -webkit-text-fill-color: #f0f0f0; /* 입력 텍스트 색상을 강제로 설정 */
+  transition: background-color 5000s ease-in-out 0s; /* 자동 완성 시 색상 변경 애니메이션 제거 */
+}
+
+
+.modal-input-field::placeholder,
+.modal-textarea-field::placeholder {
+  color: #888; /* 플레이스홀더 텍스트 색상 */
+}
+
+.modal-input-field:focus,
+.modal-textarea-field:focus {
+  outline: none; /* 포커스 시 기본 아웃라인 제거 */
+  border-color: #6a8cff; /* 포커스 시 테두리 색상 변경 */
+  box-shadow: 0 0 0 2px rgba(106, 140, 255, 0.5); /* 포커스 시 그림자 효과 */
+  background-color: #2c2c34; /* 포커스 시에도 배경색 유지 */
+}
+
+/* 텍스트 에어리어 높이 조절 */
+.modal-textarea-field {
+  resize: vertical; /* 세로로만 크기 조절 가능 */
+  min-height: 100px; /* 최소 높이 */
 }

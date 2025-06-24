@@ -7,17 +7,28 @@ import MenuItem from '@mui/material/MenuItem'; // Material-UI 사용 시
 import VisibilityIcon from '@mui/icons-material/Visibility'; // Material-UI 사용 시
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'; // Material-UI 사용 시
 import TempManModal from './TempManModal.jsx';
+import TempModiModal from './TempModiModal.jsx';
 
 const TemplateManagement = () => {
   const [tempList, setTempList] = useState([]);
+  const [templateNo, setTemplateNo] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 12;
   const totalPages = Math.ceil(tempList.length / pageSize);
   const startIdx = (currentPage - 1) * pageSize;
   const currentTemplates = tempList.slice(startIdx, startIdx + pageSize);
-
+//모달 열기
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+//저장하기
+  const [filePath, setFilePath] = useState("");
+  
+  const [selected, setSelected] = useState([]);
+  
 
+
+  //이력서 저장
+ 
 
 
   useEffect(() => {
@@ -65,6 +76,15 @@ const TemplateManagement = () => {
     window.open(url, '_blank', 'width=900,height=700');
   };
 
+  
+  const handleToggleSelect = (resumeNo) => {
+    setSelected((prev) =>
+      prev.includes(resumeNo)
+        ? prev.filter((id) => id !== resumeNo)
+        : [...prev, resumeNo]
+    );
+    console.log('templaList', tempList);
+  };
 
 
   return (
@@ -78,7 +98,7 @@ const TemplateManagement = () => {
         <div className='info-section-content-box'>
           <div className='info-header'>
             <h3>템플릿 작성</h3>
-            <button onClick={()=>setIsModalOpen(true)}>템플릿 작성</button>
+            <button onClick={()=>setIsModalOpen(true)}>템플릿 작성</button>            
           </div>
         </div>
         <TempManModal
@@ -100,13 +120,12 @@ const TemplateManagement = () => {
                   >
                     <div className="template-slide"
                       onClick={() => openResumePopup(template.file_pypath)}>
-                      
-                      {/* 체크박스 제거 */}
+                      {/* 체크박스 */}
                       {/* <input
                         type="checkbox"
                         className='resume-select-checkbox'
-                        checked={selected.includes(template.resume_no)}
-                        onChange={() => handleToggleSelect(template.resume_no)}
+                        checked={selected.includes(template.template_no)}
+                        onChange={() => handleToggleSelect(template.template_no)}
                       /> */}
                       <iframe
                         srcDoc={template.html}
@@ -115,6 +134,7 @@ const TemplateManagement = () => {
                         width="100%"
                         height="300px"
                       ></iframe>
+
                     </div>
 
                     <div className="resume-info-box">
@@ -137,8 +157,22 @@ const TemplateManagement = () => {
                         </Select>
                       </div>
                     </div>
+                    <div>
+                    <button onClick={()=>{
+                        setTemplateNo(template.template_no);
+                        setEditModalOpen(true)
+                        console.log(templateNo);
+                        }}>수정</button>
+                    
+                    <button>삭제</button>
+                    </div>
                   </div>
                 ))}
+                <TempModiModal
+                        template_no={templateNo}
+                        editModalOpen={editModalOpen}
+                        onClose={()=>setEditModalOpen(false)}
+                    />
               </div>
             </>
           )}

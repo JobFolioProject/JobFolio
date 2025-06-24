@@ -63,4 +63,8 @@ public interface ResumeMapper {
 
 
     int selectLikeCount(Map<String, Object> paramMap);
+
+    int insertTemplateInfo(TemplateVO templateVO);
+
+    int updateTemplateInfo(Map<String, Object> paramMap);
 }

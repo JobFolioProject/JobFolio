@@ -1,47 +1,61 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import '../../../css/admin/adminComponents/TempManModal.css'; 
 import axios from "../../../utils/axiosConfig";
 // src>component>admin>admincom>TempManModal.jsx
 // src>css>admin>admincom>TempManModal.css
 
-const TempManModal = ({ isModalOpen, onClose }) => {
-     const [tempInfo, setTempInfo] = useState({
-        title:'',
-        content:''
-     })
-       const onSaveTemplate = async () => {
-        console.log(tempInfo);
-            const dataToSend = {
-                title: tempInfo.title,
-                content: tempInfo.content
-            };
-                try {
-                    const res = await axios.post('/api/resume/insertTemplateInfo', dataToSend);
-                    if (res.result === 1) {
-                    const path = res.filePath;
-                    alert('템플릿 저장이 완료되었습니다');
-                    return path;       // ← 여기서 반드시 리턴!
-                    } else {
-                    alert('템플렛 저장에 실패했습니다.');
-                    throw new Error('저장 실패');
-                    }
-                } catch (err) {
-                    console.error(err);
-                    throw err;
-                } finally {
-                }
-        };
+const TempModiModal = ({ template_no, editModalOpen, onClose }) => {
+    const [tempInfo, setTempInfo] = useState({
+        title: '',
+        content: ''
+      });
 
-  if (!isModalOpen) {
-    return null;
+
+// 내일 할 부분.... 결과가 1이면 어쩌고 저쩌고 0이면 저장 안됨.
+  const handleSaveEdit = async() => {
+    const dataToSend = {
+      template_no: template_no,
+      title: tempInfo.title,
+      content: tempInfo.content
+    }
+    try{
+      const res = await axios.post(`/api/resume/updateTemplateInfo`, dataToSend)
+      console.log("res2", res)
+    } catch (err) {
+      console.error("템플릿 수정 실패:", err);
+    }
   }
+
+  
+
+
+  useEffect(() => {
+    const fetchTemplate = async () => {
+    try {
+      const res = await axios.get(`/api/resume/selectOneTemplate`, {params:{template_no:template_no}} );
+      console.log("res", res)      
+
+
+      setTempInfo({
+        title: res.template_name,
+        content: res.html
+      });
+
+    } catch (err) {
+      console.error('템플릿 불러오기 실패:', err);
+    }
+  };
+
+  if (editModalOpen) fetchTemplate();
+}, [template_no, editModalOpen]);
+
 
   return (
     <div
       role="presentation"
       // CSS 파일의 클래스 이름을 사용합니다.
       // isModalOpen 상태에 따라 'modal-overlay--visible' 클래스를 동적으로 추가/제거합니다.
-      className={`modal-overlay ${isModalOpen ? 'modal-overlay--visible' : ''}`}
+      className={`modal-overlay ${editModalOpen ? 'modal-overlay--visible' : ''}`}
       onClick={onClose} // 뒷 배경 클릭 시 모달 닫기
       aria-label="모달 뒷 배경"
     >
@@ -70,6 +84,7 @@ const TempManModal = ({ isModalOpen, onClose }) => {
                 id="templateTitle"
                 className="modal-input-field"
                 placeholder="제목 입력"
+                value={tempInfo.title}
                 onChange={(e)=>setTempInfo((prev) => ({
                     ...prev,
                     title : e.target.value
@@ -83,6 +98,7 @@ const TempManModal = ({ isModalOpen, onClose }) => {
                 className="modal-textarea-field"
                 placeholder="내용 입력"
                 rows="20"
+                value={tempInfo.content}
                 onChange={(e)=>setTempInfo((prev)=>({
                     ...prev,
                     content:e.target.value
@@ -91,7 +107,7 @@ const TempManModal = ({ isModalOpen, onClose }) => {
         </div>
         <p>모달모달</p>
         <div>
-          <button onClick={onSaveTemplate} style={{ marginRight: '10px' }}>저장</button>
+          <button onClick={handleSaveEdit} style={{ marginRight: '10px' }}>저장</button>
           <button onClick={onClose} style={{ marginRight: '10px' }}>취소</button>
         </div>
       </section>
@@ -99,4 +115,4 @@ const TempManModal = ({ isModalOpen, onClose }) => {
   );
 }
 
-export default TempManModal;
+export default TempModiModal;
