@@ -74,13 +74,7 @@ const EduSectionModify = ({ resumeInfo, setResumeInfo }) => {
                 onChangeStartDate={(date) =>
                   handleEducationDateChange(index, "enroll_date", date)
                 }
-                selectedEndDate={
-                  edu.isCurrentEdu
-                    ? new Date()
-                    : edu.grad_date
-                    ? new Date(edu.grad_date)
-                    : null
-                }
+                selectedEndDate={edu.isCurrentEdu ? "" : edu.grad_date}
                 endplaceholder={"졸업일"}
                 onChangeEndDate={(date) =>
                   handleEducationDateChange(index, "grad_date", date)
@@ -92,6 +86,7 @@ const EduSectionModify = ({ resumeInfo, setResumeInfo }) => {
                   type="checkbox"
                   id="currentEdu"
                   name=""
+                  checked={edu.isCurrentEdu}
                   onChange={() => {
                     setResumeInfo({
                       ...resumeInfo,
@@ -100,9 +95,7 @@ const EduSectionModify = ({ resumeInfo, setResumeInfo }) => {
                           ? {
                               ...item,
                               isCurrentEdu: !item.isCurrentEdu,
-                              grad_date: !item.isCurrentEdu
-                                ? new Date().toISOString().slice(0, 10)
-                                : "",
+                              grad_date: "",
                             }
                           : item
                       ),

@@ -68,6 +68,13 @@ const SkillSectionModify = ({ resumeInfo, setResumeInfo }) => {
   };
 
   const handleDetailCodeChange = (index, skill_code) => {
+    const isDuplicate = resumeInfo.skills.some(
+      (item, idx) => idx !== index && item.skill_code === skill_code
+    );
+    if (isDuplicate) {
+      alert("이미 선택한 스킬입니다");
+      return;
+    }
     setResumeInfo((prev) => ({
       ...prev,
       skills: prev.skills.map((item, idx) =>

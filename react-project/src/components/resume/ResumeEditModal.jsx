@@ -421,32 +421,29 @@ const ResumeEditModal = ({
 
   // 이력서 수정 버튼 클릭 이벤트
   const saveModify = async () => {
+    if (!validateLanguages()) return;
     const updatedHtml = getPreviewHtml();
-    await axios
-      .post("/api/resume/saveModifiedResume", {
+    try {
+      const res = await axios.post("/api/resume/saveModifiedResume", {
         userNo: user.userNo,
         resumeInfo: resumeInfo,
         templateNo: 2,
         html: updatedHtml,
-      })
-      .then((res) => {
-        setIsDownload(true);
-        console.log(res);
-        if (res.result === 1) {
-          console.log(res.filePath);
-          const path = res.filePath;
-          setResumeFilePath(path);
-          alert("수정된 이력서 저장이 완료되었습니다");
-          return path;
-        } else {
-          alert("이력서 저장에 실패했습니다");
-          throw new Error("저장 실패");
-        }
-      })
-      .catch((err) => {
-        console.error(err);
-        throw err;
       });
+      setIsDownload(true);
+      if (res.result === 1) {
+        const path = res.filePath;
+        setResumeFilePath(path);
+        alert("수정된 이력서 저장이 완료되었습니다");
+        return path;
+      } else {
+        alert("이력서 저장에 실패했습니다");
+        throw new Error("저장 실패");
+      }
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
   };
 
   //이력서 PDF로 저장
@@ -454,38 +451,38 @@ const ResumeEditModal = ({
     console.log("filePath : ", filePath);
     const path = filePath || resumeFilePath;
     console.log("resume filePath : ", path);
-    await axios
-      .post(
+    try {
+      const res = await axios.post(
         "/api/resume/exportPdf",
         { filePath: path },
         { responseType: "arraybuffer", maxBodyLength: Infinity }
-      )
-      .then((res) => {
-        const blob = new Blob([res], { type: "application;/pdf" });
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = "resume.pdf";
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-
-        setIsDownload(false);
-        onClose();
-      })
-      .catch((err) => {
-        console.error(err.response || err);
-        alert("pdf 다운로드 중 오류가 발생했습니다");
-      });
+      );
+      const blob = new Blob([res], { type: "application/pdf" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "resume.pdf";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setIsDownload(false);
+      setResumeFilePath("");
+      onClose();
+    } catch (error) {
+      console.error(error.response || error);
+      alert("PDF 다운로드 중 오류가 발생했습니다.");
+    }
   };
 
   //이력서 저장 및 PDF로 저장
   const pdfDownload = async () => {
+    if (!validateLanguages()) return;
     try {
       if (!download) {
         const path = await saveModify();
+        await new Promise((r) => setTimeout(r, 1000));
         await pdfSubmit(path);
       } else {
-        pdfSubmit();
+        await pdfSubmit();
       }
     } catch (error) {}
   };
@@ -516,6 +513,24 @@ const ResumeEditModal = ({
       .finally(() => {
         setLoading(false);
       });
+  };
+
+  //경력 유효성 검사
+  const validateCareers = () => {
+    const careerList = resumeInfo.career.map((career) => career.career.trim());
+  };
+
+  //언어 유효성 검사
+  const validateLanguages = () => {
+    const languageList = resumeInfo.languages.map((lang) =>
+      lang.language.trim()
+    );
+    const isDuplicate = new Set(languageList).size !== languageList.length;
+    if (isDuplicate) {
+      alert("동일한 언어가 중복 입력되었습니다");
+      return false;
+    }
+    return true;
   };
 
   if (!open) return null;

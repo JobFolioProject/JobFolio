@@ -68,14 +68,7 @@ const CareerSectionModify = ({ resumeInfo, setResumeInfo }) => {
                 onChangeStartDate={(date) =>
                   handleCareerDateChange(index, "start_date", date)
                 }
-                selectedEndDate={
-                  career.isCurrentJob
-                    ? new Date()
-                    : career.end_date
-                    ? new Date(career.end_date)
-                    : null
-                  // career.end_date ? new Date(career.end_date) : null
-                }
+                selectedEndDate={career.isCurrentJob ? "" : career.end_date}
                 endplaceholder={"퇴사일"}
                 isCurrentJob={career.isCurrentJob}
                 onChangeEndDate={(date) =>
@@ -87,6 +80,7 @@ const CareerSectionModify = ({ resumeInfo, setResumeInfo }) => {
                   type="checkbox"
                   id="currentJob"
                   name=""
+                  checked={career.isCurrentJob}
                   onChange={() => {
                     setResumeInfo({
                       ...resumeInfo,
@@ -95,9 +89,7 @@ const CareerSectionModify = ({ resumeInfo, setResumeInfo }) => {
                           ? {
                               ...item,
                               isCurrentJob: !item.isCurrentJob,
-                              end_date: !item.isCurrentJob
-                                ? new Date().toISOString().slice(0, 10)
-                                : "",
+                              end_date: "",
                             }
                           : item
                       ),
