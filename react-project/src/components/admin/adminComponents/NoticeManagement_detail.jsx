@@ -53,7 +53,7 @@ const NoticeModalContent = ({ open, mode, onClose, onSaved, onEdit, noticeData }
             ],
           },
       imageDrop: true,
-      imageResize: {},
+      imageResize: {modules: ['Resize', 'DisplaySize']},
     },
     formats: [
       'header', 'bold', 'italic', 'underline',
@@ -222,7 +222,7 @@ const NoticeModalContent = ({ open, mode, onClose, onSaved, onEdit, noticeData }
 
   return (
     <div className="noticeManagementDetail modal-show">
-      <div className="modal-overlay" onClick={handleClose}>
+      <div className="modal-overlay">
         <div
           className="modal-content"
           role="dialog"
