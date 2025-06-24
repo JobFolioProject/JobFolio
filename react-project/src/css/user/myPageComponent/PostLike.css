@@ -65,7 +65,7 @@
     transform: scale(1.3);
 }
 
-.postLikeItemDetail p {
+.postLikeDetail .postLikeItemDetail p {
     margin: 0;
 }
 
@@ -80,10 +80,17 @@
     letter-spacing: 1px;
 }
 
-.emptyPstLikeList {
+.postLikeDetail .emptyPstLikeList {
     color: #6c757d;
     text-align: center;
     width: 100%;
     padding: 10px;
     font-weight: 500;
+}
+
+.postLikeDetail .like-part {
+    display: flex;
+}
+.postLikeDetail .likeIcon {
+    padding-top: 1px;
 }

@@ -99,7 +99,7 @@
   cursor: default !important;
 }
 
-.like-count {
+.CommuResume .like-count {
   position: absolute;
   top: 3px;
   left: 30px;
@@ -108,7 +108,7 @@
   z-index: 10;
 }
 
-.likeIcon {
+.CommuResume .likeIcon {
   position: absolute;
   top: 5px;
   left: 5px;
@@ -116,11 +116,11 @@
   color: #000;
 }
 
-.likeIcon:hover {
+.CommuResume .likeIcon:hover {
   transform: scale(1.3);
 }
 
 
-.resume-template-preview-image {
+.CommuResume .resume-template-preview-image {
   pointer-events: none;
 }
