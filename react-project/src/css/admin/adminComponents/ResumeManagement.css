@@ -97,7 +97,7 @@
 
 
 /* 검색 바 전체 */
-.search-bar {
+.resumeManagement .search-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -106,7 +106,7 @@
 }
 
 /* 검색창 그룹 */
-.search-group {
+.resumeManagement .search-group {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
@@ -114,19 +114,19 @@
 }
 
 /* 셀렉트, 인풋, 버튼 */
-.search-select,
-.search-input,
-.search-button {
+.resumeManagement .search-select,
+.resumeManagement .search-input,
+.resumeManagement .search-button {
   padding: 6px 10px;
   font-size: 0.9rem;
 }
 
-.search-input {
+.resumeManagement .search-input {
   width: 200px;
 }
 
-.search-button,
-.delete-button {
+.resumeManagement .search-button,
+.resumeManagement .delete-button {
   background-color: #4a90e2;
   border: none;
   color: white;
@@ -136,18 +136,18 @@
   font-weight: bold;
 }
 
-.search-button:hover,
-.delete-button:hover {
+.resumeManagement .search-button:hover,
+.resumeManagement .delete-button:hover {
   background-color: #357abd;
 }
 
-.input-status-select {
+.resumeManagement .input-status-select {
   margin-top: 8px;
   width: 100px;
   font-size: 0.9rem;
 }
 
-.status-select-container {
+.resumeManagement .status-select-container {
   margin-top: 8px;
 
 }

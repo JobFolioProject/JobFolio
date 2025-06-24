@@ -38,7 +38,7 @@ const ResumeManagement = () => {
     if (!window.confirm("삭제할? 되돌리기 x")) return;
     axios.post('/api/resume/deleteSelectedResume', selected)
       .then(() => {
-        return axios.get('/api/resume/selectResume', {
+        return axios.get('/api/resume/adminSelectResumeInfo', {
           params: {
             page: currentPage,
             pageSize: pageSize,
@@ -74,7 +74,7 @@ const ResumeManagement = () => {
   useEffect(() => {
     const fetchResumes = async () => {
       try {
-        const res = await axios.get('/api/resume/selectResume', {
+        const res = await axios.get('/api/resume/adminSelectResumeInfo', {
           params: {
             page: currentPage,
             pageSize: pageSize,
@@ -96,6 +96,7 @@ const ResumeManagement = () => {
             }
         }));
         setTempList(withHtml);
+        
       } catch (err) {
         console.error('이력서 게시판 데이터 호출 실패:', err);
       }
@@ -113,7 +114,7 @@ const ResumeManagement = () => {
   const handleStatusChange = (resumeNo, newStatus) => {
     axios.post('/api/resume/updateResumeStatus', {
       resume_no: resumeNo,
-      status_yn: newStatus,
+      publication_yn: newStatus,
     })
       .then(() => {
         return axios.get('/api/resume/adminSelectResumeInfo', {
@@ -226,15 +227,15 @@ const ResumeManagement = () => {
                       <p><strong>제목:</strong> {template.title}</p>
                       <p><strong>작성일:</strong> {template.create_date ? template.create_date.slice(0, 16) : '날짜 없음'}</p>
                       <p><strong>작성자:</strong> {template.user_name}</p>
-
+                      <p><strong>사용자 삭제여부:</strong> {template.status_yn === 'Y' ? "삭제" : "사용중"} </p>
                       <div className='status-select-container'>
                         <Select
                           className='input-status-select'
-                          value={template.status_yn ?? "N"}
+                          value={template.publication_yn ?? "N"}
                           onChange={(e) => handleStatusChange(template.resume_no, e.target.value)}
                         >
-                          <MenuItem value="N"><VisibilityIcon /> 노출</MenuItem>
-                          <MenuItem value="Y"><VisibilityOffIcon /> 숨김</MenuItem>
+                          <MenuItem value="Y"><VisibilityIcon /> 노출</MenuItem>
+                          <MenuItem value="N"><VisibilityOffIcon /> 숨김</MenuItem>
                         </Select>
                       </div>
                     </div>
