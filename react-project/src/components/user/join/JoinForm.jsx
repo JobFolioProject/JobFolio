@@ -307,7 +307,6 @@ const JoinForm = () => {
         email,
       });
       
-      // 4. 응답 처리 (axios config에서 data를 자동 반환하도록 설정했다고 가정)
       if (response.result === "Y") {
         setEmailMsg("인증이메일을 발송했습니다");
         setEmailError("");
