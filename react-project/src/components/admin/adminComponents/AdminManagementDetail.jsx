@@ -32,6 +32,7 @@ const AdminManagementDetail = ({ open, onClose, selectedUser, currentUser, onUse
     const [isLoading, setIsLoading] = useState(false);
     const [editForm, setEditForm] = useState({});
     const [alert, setAlert] = useState({ show: false, message: '', severity: 'info' });
+    
 
     // 구독 마감일자만 수정 가능 (A, B 권한)
     const canEditSubscription = () => {
@@ -231,12 +232,18 @@ const AdminManagementDetail = ({ open, onClose, selectedUser, currentUser, onUse
 
     // 권한 칩 렌더링
     const renderAuthorityChip = (userType) => {
+        
         if (userType === 'A') {
             return (
                 <Chip
                     label="슈퍼관리자"
                     icon={<CrownIcon fontSize="small" />}
-                    sx={{ bgcolor: '#FFD700', color: '#333', fontWeight: 'bold' }}
+                    sx={{   bgcolor: '#FFD700', 
+                            color: '#333', 
+                            fontWeight: 'bold',
+                            pointerEvents: 'none', 
+                            cursor: 'default'
+                     }}
                     clickable={false}
                 />
             );
@@ -245,7 +252,11 @@ const AdminManagementDetail = ({ open, onClose, selectedUser, currentUser, onUse
                 <Chip
                     label="관리자"
                     icon={<SettingsIcon fontSize="small" />}
-                    sx={{ bgcolor: '#90CAF9', color: '#333', fontWeight: 'bold' }}
+                    sx={{   bgcolor: '#90CAF9', 
+                            color: '#333', 
+                            fontWeight: 'bold', 
+                            pointerEvents: 'none', 
+                            cursor: 'default' }}
                     clickable={false}
                 />
             );
@@ -254,7 +265,11 @@ const AdminManagementDetail = ({ open, onClose, selectedUser, currentUser, onUse
                 <Chip
                     label="일반회원"
                     icon={<PersonIcon fontSize="small" />}
-                    sx={{ bgcolor: '#E0E0E0', color: '#333', fontWeight: 'bold' }}
+                    sx={{   bgcolor: '#E0E0E0', 
+                            color: '#333', 
+                            fontWeight: 'bold',
+                            pointerEvents: 'none', 
+                            cursor: 'default' }}
                     clickable={false}
                 />
             );
