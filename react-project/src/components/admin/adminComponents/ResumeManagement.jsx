@@ -252,8 +252,10 @@ useEffect(() => {
                         type="checkbox"
                         className='resume-select-checkbox'
                         checked={selected.includes(template.resume_no)}
+                        onClick={(e) => e.stopPropagation()}
                         onChange={() => handleToggleSelect(template.resume_no)}
                       />
+                      <div className="iframe-overlay"></div>
                       <iframe
                         srcDoc={template.html}
                         title={`템플릿 미리보기 ${template.title}`}

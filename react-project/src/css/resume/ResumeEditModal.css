@@ -333,3 +333,9 @@
   margin: 0 0 0 5px;
   font-size: 1rem;
 }
+
+.required-mark {
+  color: #e53935;
+  font-weight: bold;
+  font-size: 0.95em;
+}

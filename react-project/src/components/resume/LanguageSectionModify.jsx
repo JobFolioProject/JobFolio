@@ -23,7 +23,9 @@ const LanguageSectionModify = ({ resumeInfo, setResumeInfo }) => {
       {resumeInfo.languages.map((lang, index) => (
         <div className="toggleInput" key={index}>
           <div>
-            <label>언어</label>
+            <label>
+              언어 <span className="required-mark">*</span>
+            </label>
             <input
               type="text"
               value={lang.language}
@@ -39,7 +41,9 @@ const LanguageSectionModify = ({ resumeInfo, setResumeInfo }) => {
           </div>
 
           <div>
-            <label>등급</label>
+            <label>
+              등급 <span className="required-mark">*</span>
+            </label>
             <select
               name="level"
               value={lang.level}

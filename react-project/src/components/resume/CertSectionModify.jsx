@@ -35,7 +35,9 @@ const CertSectionModify = ({ resumeInfo, setResumeInfo }) => {
       {resumeInfo.certifications.map((cert, index) => (
         <div className="toggleInput" key={index}>
           <div>
-            <label>자격증 번호</label>
+            <label>
+              자격증 번호 <span className="required-mark">*</span>
+            </label>
             <input
               type="text"
               value={cert.certificate_no}
@@ -53,7 +55,9 @@ const CertSectionModify = ({ resumeInfo, setResumeInfo }) => {
           </div>
 
           <div>
-            <label>자격증명</label>
+            <label>
+              자격증명 <span className="required-mark">*</span>
+            </label>
             <input
               type="text"
               value={cert.certificate_name}
@@ -70,7 +74,9 @@ const CertSectionModify = ({ resumeInfo, setResumeInfo }) => {
             />
           </div>
           <div>
-            <label>발행기관</label>
+            <label>
+              발행기관 <span className="required-mark">*</span>
+            </label>
             <input
               type="text"
               value={cert.issuing_org}
@@ -87,7 +93,9 @@ const CertSectionModify = ({ resumeInfo, setResumeInfo }) => {
             />
           </div>
           <div>
-            <label>취득일</label>
+            <label>
+              취득일 <span className="required-mark">*</span>
+            </label>
             <SingleCalendar
               selectedDate={
                 cert.acquired_date ? new Date(cert.acquired_date) : null

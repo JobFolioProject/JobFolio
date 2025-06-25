@@ -68,6 +68,13 @@ const SkillSectionModify = ({ resumeInfo, setResumeInfo }) => {
   };
 
   const handleDetailCodeChange = (index, skill_code) => {
+    const isDuplicate = resumeInfo.skills.some(
+      (item, idx) => idx !== index && item.skill_code === skill_code
+    );
+    if (isDuplicate) {
+      alert("이미 선택한 스킬입니다");
+      return;
+    }
     setResumeInfo((prev) => ({
       ...prev,
       skills: prev.skills.map((item, idx) =>
@@ -110,7 +117,9 @@ const SkillSectionModify = ({ resumeInfo, setResumeInfo }) => {
       {resumeInfo.skills.map((skill, index) => (
         <div className="toggleInput" key={index}>
           <div className="skill_dropdown">
-            <label>스킬</label>
+            <label>
+              스킬<span className="required-mark">*</span>
+            </label>
             <DropDown
               options={groupCodeList}
               placeholder={"직무분야 선택"}
