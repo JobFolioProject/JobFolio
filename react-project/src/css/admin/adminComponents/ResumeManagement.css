@@ -47,6 +47,15 @@
   overflow: hidden;
   border-bottom: 1px solid #f0f0f0;
 }
+.resumeManagement .iframe-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 300px; /* iframe 높이와 동일하게 설정 */
+  z-index: 2;
+  cursor: pointer;
+}
 
 .resumeManagement .resume-select-checkbox {
   position: absolute;
