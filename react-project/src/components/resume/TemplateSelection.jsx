@@ -4,6 +4,7 @@ import TemplateSlider from "./TemplateSlider";
 
 const TemplateSelection = ({
   formData,
+  setFormData,
   editType,
   setResumeInfo,
   setInitHtmlContent,
@@ -91,6 +92,7 @@ const TemplateSelection = ({
       <TemplateSlider
         tempList={tempList}
         formData={formData}
+        setFormData={setFormData}
         editType={editType}
         setResumeInfo={setResumeInfo}
         setInitHtmlContent={setInitHtmlContent}
