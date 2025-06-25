@@ -14,11 +14,10 @@
 }
 
 .resumeManagement .resume-template-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
+  display: grid;
+  grid-template-columns: repeat(4, 280px);  
   justify-content: center;
-  padding: 20px 0;
+  gap: 20px;
 }
 
 .resumeManagement .resume-card-wrapper {
