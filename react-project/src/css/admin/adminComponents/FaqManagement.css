@@ -19,6 +19,14 @@
   background-color: #f5f5f5;
 }
 
+.faqManagement .faq-section-content-box {
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-top: 16px;
+}
+
 /* 상단 타이틀 */
 .faqManagement .faq-content h2 {
   font-size: 20px;
