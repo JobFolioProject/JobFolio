@@ -357,5 +357,9 @@ public class ResumeService {
         return resumeMapper.updateTemplateInfo(paramMap);
     }
 
+    public int deleteTemplateInfo(int template_no) {
+        return resumeMapper.deleteTemplateInfo(template_no);
+    }
+
 
 }

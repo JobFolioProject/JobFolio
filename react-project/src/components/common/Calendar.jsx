@@ -16,6 +16,9 @@ export default function Calendar({
   isCurrentJob,
   isCurrentEdu,
 }) {
+
+   const isRange = typeof onChangeEndDate === 'function';
+   
   return (
     <div className="date-range-wrapper">
       <DatePicker
@@ -29,6 +32,8 @@ export default function Calendar({
         isClearable
         placeholderText={startplaceholder}
       />
+      {isRange && (
+        <>
       <span className="date-range-separator"></span>
       <DatePicker
         selected={selectedEndDate}
@@ -43,7 +48,9 @@ export default function Calendar({
         isClearable
         placeholderText={endplaceholder}
         disabled={isCurrentJob || isCurrentEdu}
-      />
+        />
+        </>
+      )}
     </div>
   );
 }

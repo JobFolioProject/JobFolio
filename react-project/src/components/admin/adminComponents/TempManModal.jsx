@@ -4,7 +4,7 @@ import axios from "../../../utils/axiosConfig";
 // src>component>admin>admincom>TempManModal.jsx
 // src>css>admin>admincom>TempManModal.css
 
-const TempManModal = ({ isModalOpen, onClose }) => {
+const TempManModal = ({ isModalOpen, onClose, onSaveTempList }) => {
      const [tempInfo, setTempInfo] = useState({
         title:'',
         content:''
@@ -20,6 +20,8 @@ const TempManModal = ({ isModalOpen, onClose }) => {
                     if (res.result === 1) {
                     const path = res.filePath;
                     alert('템플릿 저장이 완료되었습니다');
+                    onSaveTempList();
+
                     return path;       // ← 여기서 반드시 리턴!
                     } else {
                     alert('템플렛 저장에 실패했습니다.');
@@ -28,6 +30,13 @@ const TempManModal = ({ isModalOpen, onClose }) => {
                 } catch (err) {
                     console.error(err);
                     throw err;
+                    // setTempInfo((prev)=>(
+                    //   {
+                    //     ...prev,
+                    //     title:'',
+                    //     content:''
+                    //   }
+                    // ))
                 } finally {
                 }
         };
@@ -91,7 +100,14 @@ const TempManModal = ({ isModalOpen, onClose }) => {
         </div>
         <p>모달모달</p>
         <div>
-          <button onClick={onSaveTemplate} style={{ marginRight: '10px' }}>저장</button>
+          <button onClick={() => {
+              if(tempInfo.title && tempInfo.content){
+                onSaveTemplate(); 
+                onClose();
+                setTempInfo({});
+              }else{
+                alert("제목과 내용을 모두 작성해주세요")
+              }}} style={{ marginRight: '10px' }}>저장</button> 
           <button onClick={onClose} style={{ marginRight: '10px' }}>취소</button>
         </div>
       </section>

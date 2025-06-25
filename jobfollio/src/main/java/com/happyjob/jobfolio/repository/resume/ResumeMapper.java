@@ -67,4 +67,6 @@ public interface ResumeMapper {
     int insertTemplateInfo(TemplateVO templateVO);
 
     int updateTemplateInfo(Map<String, Object> paramMap);
+
+    int deleteTemplateInfo(int template_no);
 }

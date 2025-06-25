@@ -213,6 +213,87 @@ const Resume = () => {
                 break;
         }
     };
+
+
+//스킬
+  const [groupCodeList, setGroupCodeList] = useState([]);
+  const [detailCodeList, setDetailCodeList] = useState({});
+  const skillLevelList = ["하", "중", "상"];
+  useEffect(() => {
+    const getGroupCode = async () => {
+      await axios
+        .get("/api/resume/selectSkillGroupCode")
+        .then((res) => {
+          setGroupCodeList(res);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    };
+
+    getGroupCode();
+  }, []);
+
+//   useEffect(() => {
+//     const getDetailCode = async () => {
+//       const result = {};
+//       await Promise.all(
+//         formData.newSkillList.map(async (skill) => {
+//           if (skill.group_code) {
+//             await axios
+//               .get("/api/resume/selectSkillDetailCode", {
+//                 params: { group_code: skill.group_code },
+//               })
+//               .then((res) => {
+//                 result[skill.group_code] = res;
+//                 console.log(result);
+//               })
+//               .catch((err) => {
+//                 console.error(err);
+//               });
+//           }
+//         })
+//       );
+//       setDetailCodeList(result);
+//     };
+//     getDetailCode();
+//   }, []);
+
+  const handleGroupCodeChange = async (group_code) => {
+    await axios
+      .get("/api/resume/selectSkillDetailCode", {
+        params: { group_code: group_code },
+      })
+      .then((res) => {
+        // setDetailCodeList((prev) => ({
+        //   ...prev,
+        //   [formData.newSkillList.group_code]: res,
+        // }));
+        setDetailCodeList(res);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+
+  };
+
+  const handleDetailCodeChange = (index, skill_code) => {
+    setFormData((prev) => ({
+      ...prev,
+      skillList: prev.skillList.map((item, idx) =>
+        idx === index ? { ...item, skill_code } : item
+      ),
+    }));
+  };
+
+  const handleSkillLevelChange = (index, exp_level) => {
+    setFormData((prev) => ({
+      ...prev,
+      skillList: prev.skillList.map((item, idx) =>
+        idx === index ? { ...item, exp_level } : item
+      ),
+    }));
+  };
 //==============================공통 함수로 필드 관리==========================================
 //(공통)학력, 경력 입력 변경 핸들러 (몇 번째 학력,경력인지, 필드 이름, 값)
     //최대 1개의 객체만 존재하도록 관리
@@ -512,7 +593,7 @@ const getFlagEmoji = (countryCode) => {
                         </label>
                         <br />
  {/* ------------------------------------------------------기술 섹션 --------------------------------------------------------- */}                 
-                    {formData.skillList.length > 0 ? (
+                    {formData.skillList.length >= 0 ? (
                         <div className="skill-section-wrapper"> {/* 새로운 wrapper div 추가 (스타일링 용이) */}
                             <div className="summary-row">
                                 {/*  접힌 상태에서 보여줄 요약 정보 */}
@@ -525,15 +606,18 @@ const getFlagEmoji = (countryCode) => {
                                                     </span>
                                                 ))}
                                 </p>
+                                
                                 {/*  상세보기/접기 버튼 */}
+                                <div className="summary-button-container">
                                 <PrettyBtn
                                     type="button"
                                     size="sm"
                                     onClick={() => toggleDetails('skill')}
-                                    style={{ marginLeft: '10px' }}
-                                >
+                                    style={{ marginLeft: '10px' , whiteSpace: 'nowrap'}}
+                                    >
                                     {showSkillDetails ? '접기' : '상세보기'}
                                 </PrettyBtn>
+                                </div>
                             </div>
 
                             {/*  showSkillDetails 상태에 따라 상세 내용 조건부 렌더링 */}
@@ -560,6 +644,7 @@ const getFlagEmoji = (countryCode) => {
                                         </div>
                                     ))}
                 {/* -------------신규 기술 입력 버튼------------------------------------------- */}
+
                             {formData.newSkillList.length === 0 && formData.skillList.length < 4 && (
                                 <div>
                                     <div style={{ display: 'flex',justifyContent: 'flex-end', alignItems: 'center' }}>
@@ -570,19 +655,38 @@ const getFlagEmoji = (countryCode) => {
                             {formData.newSkillList.length > 0 && (// newSkill 배열을 맵핑하여 입력 드롭다운 생성
                                 <div className='skill-row-input'>
                                     <DropDown
-                                        options={['IT', '디자인', '경제']}
+                                        options={groupCodeList}
                                         // selected={formData.skillList}
                                         selected={formData.newSkillList[0]?.group_code || ''}
                                         placeholder="분야 선택"
-                                        onSelect={(value)=>handleDropdownChange('group_code', value, 'newSkillList' )}/>
+                                        // onChange
+                                        onSelect={(group_code)=>{
+                                            console.log(group_code);
+                                            console.log("formData.newSkillList[0].group_code" + formData.newSkillList[0].group_code);
+                                            setFormData((prev)=>({
+                                                ...prev,
+                                                newSkillList : prev.newSkillList.map((skill, index) => index === 0 ? {...skill, group_code : group_code} : skill)                                               
+                                           }))
+                                            handleGroupCodeChange(group_code);
+                                        }
+                                        }/>
                                     <DropDown
-                                        options={dummySkillOptions}
+                                        options={detailCodeList}
                                         // selected={formData.skillList}
                                         selected={formData.newSkillList[0]?.skill_code || ''}
                                         placeholder="분야 선택"
-                                        onSelect={(value)=>handleDropdownChange('skill_code', value, 'newSkillList' )}/>
+                                        onSelect={(e)=>{
+                                            console.log(e);
+                                            console.log("formData.newSkillList[0].group_code" + formData.newSkillList[0].skill_code);
+                                            setFormData((prev)=>({
+                                                ...prev,
+                                                newSkillList : prev.newSkillList.map((skill, index) => index === 0 ? {...skill, skill_code : e} : skill)                                               
+                                           }))
+                                            handleDetailCodeChange();
+                                        }
+                                        }/>
                                     <DropDown
-                                        options={['상','중','하']}
+                                        options={skillLevelList}
                                         // selected={formData.skillList}
                                         selected={formData.newSkillList[0]?.exp_level || ''}
                                         placeholder="분야 선택"
@@ -608,7 +712,7 @@ const getFlagEmoji = (countryCode) => {
                 <div><span>외국어 능력</span></div>
             </label> */}
             {/* 🚩 languageList에 데이터가 있을 경우에만 섹션 렌더링 */}
-            {formData.languageList.length > 0 ? (
+            {formData.languageList.length >= 0 ? (
                 <div className="language-section-wrapper"> {/* skill-section-wrapper와 유사한 wrapper div */}
                     <div className="summary-row">
                         {/* 🚩 접힌 상태에서 보여줄 요약 정보 */}
@@ -623,14 +727,16 @@ const getFlagEmoji = (countryCode) => {
                             ))}
                         </p>
                         {/* 🚩 상세보기/접기 버튼 */}
+                        <div className="summary-button-container">
                         <PrettyBtn
                             type="button"
                             size="sm"
                             onClick={() => toggleDetails('language')} // 'language' 섹션 토글
                             style={{ marginLeft: '10px' }}
-                        >
+                            >
                             {showLanguageDetails ? '접기' : '상세보기'}
                         </PrettyBtn>
+                    </div>
                     </div>
 
                     {/* 🚩 showLanguageDetails 상태에 따라 상세 내용 조건부 렌더링 */}
@@ -697,7 +803,7 @@ const getFlagEmoji = (countryCode) => {
                         <div><span>자격증</span></div>
                     </label> */}
                     {/* 🚩 certificateList에 데이터가 있을 경우에만 섹션 렌더링 */}
-                    {formData.certificateList.length > 0 ? (
+                    {formData.certificateList.length >= 0 ? (
                         <div className='certificate-section-wrapper'> {/* 새로운 wrapper div 추가 */}
                             <div className="summary-row">
                                 {/* 🚩 접힌 상태에서 보여줄 요약 정보 */}
@@ -711,14 +817,16 @@ const getFlagEmoji = (countryCode) => {
                                     ))}
                                 </p>
                                 {/* 🚩 상세보기/접기 버튼 */}
+                                <div className="summary-button-container">
                                 <PrettyBtn
                                     type="button"
                                     size="sm"
                                     onClick={() => toggleDetails('certificate')} // 'certificate' 섹션 토글
                                     style={{ marginLeft: '10px' }}
-                                >
+                                    >
                                     {showCertificateDetails ? '접기' : '상세보기'}
                                 </PrettyBtn>
+                                </div>
                             </div>
 
                             {/* 🚩 showCertificateDetails 상태에 따라 상세 내용 조건부 렌더링 */}
@@ -757,7 +865,6 @@ const getFlagEmoji = (countryCode) => {
                                     )}
                                     {formData.newCertificate.length > 0 && (// newEducation 배열을 맵핑하여 입력 필드 생성
                                         <div className='certificate-row-input'>
-                                            <div className='certificate-row-input-group'>
                                             <input type='text' name='certificate_name' placeholder='자격증명 입력' onChange={(e)=>handleFieldChange(e, 'newCertificate')} value={formData.newCertificate[0]?.certificate_name || ''}/>
                                             <Calendar
                                                 selectedStartDate={formData.newCertificate[0]?.start_date}
@@ -769,7 +876,6 @@ const getFlagEmoji = (countryCode) => {
                                             />
                                             <input type = 'text' name='certificate_no' placeholder='자격증 일련번호' onChange={(e) => handleFieldChange(e, 'newCertificate')} value={formData.newCertificate[0]?.certificate_no||''}/>
                                             <input type='text' name='issuing_org' placeholder='발행기관' onChange={(e)=>handleFieldChange(e, 'newCertificate')} value={formData.newCertificate[0]?.issuing_org || ''}/>
-                                            </div>
                                         
                                         {/* <PrettyBtn type="button" size="sm" onClick={() => removeExperience(index)} disabled={formData.newCertificate.length <= 0}>삭제</PrettyBtn> */}
                                         <PrettyBtn type="button" size="sm" onClick={()=>saveFieldData('newCertificate')}>저장</PrettyBtn>
@@ -794,7 +900,7 @@ const getFlagEmoji = (countryCode) => {
                 <div><span>학력</span></div>
             </label> */}
                         {/* 🚩 education에 데이터가 있을 경우에만 섹션 렌더링 */}
-                        {formData.education.length > 0 ? (
+                        {formData.education.length >= 0 ? (
                             <div className="education-section-wrapper"> {/* 새로운 wrapper div 추가 */}
                                 <div className="summary-row">
                                     {/* 🚩 접힌 상태에서 보여줄 요약 정보 */}
@@ -808,14 +914,16 @@ const getFlagEmoji = (countryCode) => {
                                         ))}
                                     </p>
                                     {/* 🚩 상세보기/접기 버튼 */}
+                                <div className="summary-button-container">
                                     <PrettyBtn
                                         type="button"
                                         size="sm"
                                         onClick={() => toggleDetails('education')} // 'education' 섹션 토글
                                         style={{ marginLeft: '10px' }}
-                                    >
+                                        >
                                         {showEducationDetails ? '접기' : '상세보기'}
                                     </PrettyBtn>
+                                    </div>
                                 </div>
 
                                 {/* 🚩 showEducationDetails 상태에 따라 상세 내용 조건부 렌더링 */}
@@ -850,8 +958,7 @@ const getFlagEmoji = (countryCode) => {
                 {/* 신규 학력 입력 버튼 */}
                     {(formData.education.length + formData.newEducation.length) < 4 && formData.newEducation.length === 0 && (
                         <div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <span>새 학력 추가</span>
+                            <div style={{ display:'flex', justifyContent: 'flex-end', marginTop: '20px' }}>
                                 <PrettyBtn type="button" size="sm" onClick={addEducation} >새 학력 추가</PrettyBtn>
                             </div>
                         </div>
@@ -888,7 +995,7 @@ const getFlagEmoji = (countryCode) => {
                     {/* exp.career_no를 key로 사용하도록 코드를 업데이트. 만약 career_no가 null 또는 undefined일 경우를 대비하여 index를 **비상용(fallback)**으로 남겨둠 */}
                 {/* 🚩 label 내부의 div에서 justifyContent: 'space-between' 제거 (버튼이 summary-row로 이동) */}
             {/* 🚩 experience에 데이터가 있을 경우에만 섹션 렌더링 */}
-            {formData.experience.length > 0 ? (
+            {formData.experience.length >= 0 ? (
                 <div className="experience-section-wrapper"> {/* 새로운 wrapper div 추가 */}
                     <div className="summary-row">
                         {/* 🚩 접힌 상태에서 보여줄 요약 정보 */}
@@ -902,15 +1009,17 @@ const getFlagEmoji = (countryCode) => {
                             ))}
                         </p>
                         {/* 🚩 상세보기/접기 버튼 */}
+                    <div className="summary-button-container">
                         <PrettyBtn
                             type="button"
                             size="sm"
                             onClick={() => toggleDetails('experience')} // 'experience' 섹션 토글
                             style={{ marginLeft: '10px' }}
-                        >
+                            >
                             {showExperienceDetails ? '접기' : '상세보기'}
                         </PrettyBtn>
                     </div>
+                </div>
 
                     {/* 🚩 showExperienceDetails 상태에 따라 상세 내용 조건부 렌더링 */}
                     {showExperienceDetails && (
@@ -955,7 +1064,8 @@ const getFlagEmoji = (countryCode) => {
                         {(formData.experience.length + formData.newExperience.length) < 4 && formData.newExperience.length === 0 && (
                         <div>
                             <div style={{ display:'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                                <PrettyBtn type='button' size='sm' onClick={addExperience}>새 경력 추가</PrettyBtn>
+                                <PrettyBtn 
+                                type='button' size='sm' onClick={addExperience}>새 경력 추가</PrettyBtn>
                             </div>
                         </div>
                         )}

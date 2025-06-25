@@ -382,4 +382,9 @@
 		WHERE template_no = #{template_no}
 	</update>
 
+	<delete id="deleteTemplateInfo" parameterType="int">
+		DELETE FROM tb_template
+		WHERE template_no = #{template_no}
+	</delete>
+
 </mapper>

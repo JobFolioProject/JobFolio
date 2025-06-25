@@ -4,7 +4,7 @@ import axios from "../../../utils/axiosConfig";
 // src>component>admin>admincom>TempManModal.jsx
 // src>css>admin>admincom>TempManModal.css
 
-const TempModiModal = ({ template_no, editModalOpen, onClose }) => {
+const TempModiModal = ({ template_no, editModalOpen, onClose, onSaveTempList }) => {
     const [tempInfo, setTempInfo] = useState({
         title: '',
         content: ''
@@ -21,9 +21,15 @@ const TempModiModal = ({ template_no, editModalOpen, onClose }) => {
     try{
       const res = await axios.post(`/api/resume/updateTemplateInfo`, dataToSend)
       console.log("res2", res)
+      if(res.result === 1){
+        alert("수정되었습니다.");
+        onSaveTempList();
+      }else{
+        alert("수정 실패")
+      }
     } catch (err) {
-      console.error("템플릿 수정 실패:", err);
-    }
+      throw err;
+    } 
   }
 
   
@@ -107,7 +113,7 @@ const TempModiModal = ({ template_no, editModalOpen, onClose }) => {
         </div>
         <p>모달모달</p>
         <div>
-          <button onClick={handleSaveEdit} style={{ marginRight: '10px' }}>저장</button>
+          <button onClick={() => {handleSaveEdit(); onClose();}} style={{ marginRight: '10px' }}>저장</button>
           <button onClick={onClose} style={{ marginRight: '10px' }}>취소</button>
         </div>
       </section>

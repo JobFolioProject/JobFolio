@@ -900,5 +900,23 @@ public class ResumeController {
         return resultMap;
     }
 
+    @PostMapping("/deleteTemplateInfo")
+    public Map<String, Object> deleteTemplateInfo(@RequestBody Map<String, Object> requestMap) throws IOException {
+        Map<String, Object> resultMap = new HashMap<>();
+        List<Integer> templateNoList = new ArrayList<>();
+        templateNoList = (List<Integer>) requestMap.get("resumeNo");
+
+        System.out.println("template_no:" + templateNoList);
+
+        for (Integer template_no : templateNoList) {
+            int result = resumeService.deleteTemplateInfo(template_no);
+        }
+
+//        resultMap.put("result", result);
+
+        return resultMap;
+    }
+
+
 
 }
