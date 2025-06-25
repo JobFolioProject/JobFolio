@@ -421,7 +421,12 @@ const ResumeEditModal = ({
 
   // 이력서 수정 버튼 클릭 이벤트
   const saveModify = async () => {
+    if (!validateProfile()) return;
+    if (!validateEducations()) return;
+    if (!validateCareers()) return;
+    if (!validateSkills()) return;
     if (!validateLanguages()) return;
+    if (!validateCert()) return;
     const updatedHtml = getPreviewHtml();
     try {
       const res = await axios.post("/api/resume/saveModifiedResume", {
@@ -475,7 +480,12 @@ const ResumeEditModal = ({
 
   //이력서 저장 및 PDF로 저장
   const pdfDownload = async () => {
+    if (!validateProfile()) return;
+    if (!validateEducations()) return;
+    if (!validateCareers()) return;
+    if (!validateSkills()) return;
     if (!validateLanguages()) return;
+    if (!validateCert()) return;
     try {
       if (!download) {
         const path = await saveModify();
@@ -495,6 +505,7 @@ const ResumeEditModal = ({
     }
     setSelectedRadio("");
     setAiComment("");
+    setIsDownload(false);
     onClose();
   };
 
@@ -515,9 +526,59 @@ const ResumeEditModal = ({
       });
   };
 
+  //개인프로필 유효성 검사
+  const validateProfile = () => {
+    const requiredFields = ["name", "title", "email", "phone"];
+    for (const field of requiredFields) {
+      if (!resumeInfo[field] || resumeInfo[field].toString().trim() === "") {
+        alert("개인정보 필수 항목을 입력해주세요");
+        return false;
+      }
+    }
+    return true;
+  };
+
+  //학력 유효성 검사
+  const validateEducations = () => {
+    for (const edu of resumeInfo.education) {
+      const requiredFields = [
+        "school_name",
+        "enroll_date",
+        "grad_date",
+        "edu_status",
+        "major",
+        "gpa",
+      ];
+
+      for (const field of requiredFields) {
+        if (field === "grad_date" && edu.isCurrentEdu) continue;
+        if (!edu[field] || edu[field].toString().trim() === "") {
+          alert("학력 필수 항목을 입력해주세요");
+          return false;
+        }
+      }
+    }
+    return true;
+  };
+
   //경력 유효성 검사
   const validateCareers = () => {
-    const careerList = resumeInfo.career.map((career) => career.career.trim());
+    for (const career of resumeInfo.career) {
+      const requiredFields = [
+        "company_name",
+        "start_date",
+        "end_date",
+        "position",
+      ];
+      for (const field of requiredFields) {
+        if (field === "end_date" && career.isCurrentJob) continue;
+        if (!career[field] || career[field].toString().trim() === "") {
+          alert("경력 필수 항목을 입력해주세요");
+          return false;
+        }
+      }
+    }
+    return true;
   };
 
   //언어 유효성 검사
@@ -529,6 +590,41 @@ const ResumeEditModal = ({
     if (isDuplicate) {
       alert("동일한 언어가 중복 입력되었습니다");
       return false;
+    }
+    return true;
+  };
+
+  //스킬 유효성 검사
+  const validateSkills = () => {
+    for (const skill of resumeInfo.skills) {
+      const requiredFields = ["skill_code", "group_code", "exp_level"];
+
+      for (const field of requiredFields) {
+        if (!skill[field] || skill[field].toString().trim() === "") {
+          alert("스킬 항목을 선택해주세요");
+          return false;
+        }
+      }
+    }
+    return true;
+  };
+
+  //자격증 유효성 검사
+  const validateCert = () => {
+    for (const cert of resumeInfo.certifications) {
+      const requiredFields = [
+        "certificate_no",
+        "certificate_name",
+        "issuing_org",
+        "acquired_date",
+      ];
+
+      for (const field of requiredFields) {
+        if (!cert[field] || cert[field].toString().trim() === "") {
+          alert("자격증 필수 항목을 입력해주세요");
+          return false;
+        }
+      }
     }
     return true;
   };

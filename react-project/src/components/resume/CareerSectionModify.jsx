@@ -40,7 +40,9 @@ const CareerSectionModify = ({ resumeInfo, setResumeInfo }) => {
       {resumeInfo.career.map((career, index) => (
         <div className="toggleInput" key={index}>
           <div>
-            <label>회사명</label>
+            <label>
+              회사명 <span className="required-mark">*</span>
+            </label>
             <input
               type="text"
               value={career.company_name}
@@ -58,7 +60,9 @@ const CareerSectionModify = ({ resumeInfo, setResumeInfo }) => {
           </div>
 
           <div>
-            <label>입사/퇴사 날짜</label>
+            <label>
+              입사/퇴사 <span className="required-mark">*</span>
+            </label>
             <div className="career_date_section">
               <Calendar
                 selectedStartDate={
@@ -102,7 +106,9 @@ const CareerSectionModify = ({ resumeInfo, setResumeInfo }) => {
           </div>
 
           <div>
-            <label>직무</label>
+            <label>
+              직무 <span className="required-mark">*</span>
+            </label>
             <input
               type="text"
               value={career.position}

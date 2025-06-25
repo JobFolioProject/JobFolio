@@ -117,7 +117,9 @@ const SkillSectionModify = ({ resumeInfo, setResumeInfo }) => {
       {resumeInfo.skills.map((skill, index) => (
         <div className="toggleInput" key={index}>
           <div className="skill_dropdown">
-            <label>스킬</label>
+            <label>
+              스킬<span className="required-mark">*</span>
+            </label>
             <DropDown
               options={groupCodeList}
               placeholder={"직무분야 선택"}
