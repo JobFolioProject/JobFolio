@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.happyjob.jobfolio.repository.admin.CommcodeMapper">
+	
+   	<!-- 목록 조회 -->
+	<select id = "listgroupcode" parameterType="java.util.Map" resultType = "com.happyjob.jobfolio.vo.admin.CommcodeModel">
+		select group_code
+              ,group_name
+              ,note
+              ,ifnull(use_yn,'N') as use_yn
+              ,regId
+              ,reg_date
+		      ,category_code
+         from tb_group_code
+		<where>
+			<if test ="(useyn != null) and (!useyn.equals(''))">
+				and ifnull(use_yn,'N') = #{useyn}
+			</if>	
+			<if test ="(searchword != null) and (!searchword.equals(''))">
+				<choose>
+					<when
+						test="stype eq 'code'.toString()">
+						and group_code Like CONCAT('%', #{searchword}, '%')
+					</when>
+					<when
+						test="stype eq 'name_nm'.toString()">
+						and group_name LIKE CONCAT('%', #{searchword}, '%')
+					</when>
+					<otherwise>
+						AND ( 
+						         group_code Like CONCAT('%', #{searchword}, '%')
+						      OR group_name LIKE CONCAT('%', #{searchword}, '%')
+						    )
+					</otherwise>
+				</choose>
+			</if>	
+		</where>
+		 ORDER BY group_code
+		 LIMIT #{startpoint}, #{pagesize}
+	</select>
+	
+		
+	<!-- 공지사항 목록 총 갯수 조회 -->
+	<select id="totalcntgroupcode" parameterType="java.util.Map"  resultType="int">
+		SELECT COUNT(*)
+		  FROM tb_group_code
+		<where>
+			<if test ="(useyn != null) and (!useyn.equals(''))">
+				and ifnull(use_yn,'N') = #{useyn}
+			</if>	
+			<if test ="(searchword != null) and (!searchword.equals(''))">
+				<choose>
+					<when
+						test="stype eq 'code'.toString()">
+						and group_code Like CONCAT('%', #{searchword}, '%')
+					</when>
+					<when
+						test="stype eq 'name_nm'.toString()">
+						and group_name LIKE CONCAT('%', #{searchword}, '%')
+					</when>
+					<otherwise>
+						AND ( 
+						         group_code Like CONCAT('%', #{searchword}, '%')
+						      OR group_name LIKE CONCAT('%', #{searchword}, '%')
+						    )
+					</otherwise>
+				</choose>
+			</if>	
+		</where>
+	</select>	
+		
+	<insert id = "insertgroupcode" parameterType="java.util.Map">
+        
+        insert into tb_group_code
+                   (
+                    group_code
+                   ,group_name
+                   ,note
+                   ,use_yn
+                   ,regId
+                   ,reg_date
+                   ,category_code
+                  ) values (
+                    #{igroupcode}
+                   ,#{igroupname}
+                   ,#{inote}
+                   ,#{iuseyn}
+                   ,#{liginid}
+                   ,NOW()
+                   ,#{category_code}
+                  )
+        
+	</insert>
+     
+  	<!-- 목록 조회 -->
+	<select id = "selectgroupcode" parameterType="java.util.Map" resultType = "com.happyjob.jobfolio.vo.admin.CommcodeModel">
+		select group_code
+              ,group_name
+              ,note
+              ,ifnull(use_yn,'N') as use_yn
+              ,regId
+              ,reg_date
+              ,(select case when count(*) = 0 then 'Y'
+                            else 'N'
+                        end     
+                  from tb_detail_code
+                 where group_code = #{groupcode}
+                ) as delyn
+         from tb_group_code
+        where group_code = #{groupcode}
+	</select>
+	
+	<update id = "updategroupcode" parameterType="java.util.Map">
+        /*kr.happyjob.study.repository.system.updategroupcode*/
+        
+        update tb_group_code
+           set group_name = #{igroupname}
+              ,note = #{inote}
+              ,use_yn = #{iuseyn}
+              ,regId = #{liginid}
+              ,reg_date = DATE_FORMAT(NOW(), '%Y-%m-%d')
+         where group_code = #{igroupcode}        
+	</update>
+	
+	<delete id = "deletegroupcode" parameterType="java.util.Map">
+        /*kr.happyjob.study.repository.system.deletegroupcode*/
+        
+        delete from tb_group_code
+         where group_code = #{igroupcode}        
+	</delete>
+	
+   	<!-- 목록 조회 -->
+	<select id = "listdetailcode" parameterType="java.util.Map" resultType = "com.happyjob.jobfolio.vo.admin.CommcodeModel">
+		select   group_code
+               , detail_code
+               , detail_name
+               , note
+               , ifnull(use_yn,'N') as use_yn
+               , regId
+               , reg_date
+               , updateId
+               , update_date
+         from tb_detail_code
+        where  group_code = #{group_code}
+		 ORDER BY detail_code
+		 LIMIT #{startpoint}, #{pagesize}
+	</select>
+	
+		
+	<!--  목록 총 갯수 조회 -->
+	<select id="totalcntdetailcode" parameterType="java.util.Map"  resultType="int">
+		/*kr.happyjob.study.repository.system.totalcntdetailcode*/
+		SELECT COUNT(*)
+		  FROM tb_detail_code
+		 where group_code = #{group_code}
+	</select>		
+	
+	<insert id = "insertdetailcode" parameterType="java.util.Map">
+        /*kr.happyjob.study.repository.system.insertdetailcode*/
+        
+        insert into tb_detail_code
+                   (
+                    group_code
+                   ,detail_code
+                   ,detail_name
+                   ,note
+                   ,use_yn
+                   ,regId
+                   ,reg_date
+                  ) values (
+                    #{igroupcode}
+                   ,#{idetailcode}                    
+                   ,#{idetailname}
+                   ,#{idnote}
+                   ,#{iduseyn}
+                   ,#{liginid}
+                   ,DATE_FORMAT(NOW(), '%Y-%m-%d')
+                  )
+        
+	</insert>     
+	
+	<update id = "updatedetailcode" parameterType="java.util.Map">
+        /*kr.happyjob.study.repository.system.updatedetailcode*/
+        
+        update tb_detail_code
+           set detail_name = #{idetailname}           
+              ,note = #{idnote}
+              ,use_yn = #{iduseyn}
+              ,updateId = #{loginId}
+              ,update_date = DATE_FORMAT(NOW(), '%Y-%m-%d')
+         where group_code = #{igroupcode}   
+           and detail_code = #{idetailcode}        
+	</update>
+	
+	<delete id = "deletedetailcode" parameterType="java.util.Map">
+        /*kr.happyjob.study.repository.system.deletegroupcode*/
+        
+        delete from tb_detail_code
+         where group_code = #{igroupcode} 
+           and detail_code = #{idetailcode}       
+	</delete>	
+	
+		<select id = "selectdetailcode" parameterType="java.util.Map" resultType = "com.happyjob.jobfolio.vo.admin.CommcodeModel">
+        /*kr.happyjob.study.repository.system.selectdetailcode*/
+		select   group_code
+               , detail_code
+               , detail_name
+               , note
+               , ifnull(use_yn,'N') as use_yn
+               , regId
+               , reg_date
+               , updateId
+               , update_date
+         from  tb_detail_code
+        where  group_code = #{groupcode}
+          and  detail_code = #{detailcode}
+	</select>
+	
+</mapper>

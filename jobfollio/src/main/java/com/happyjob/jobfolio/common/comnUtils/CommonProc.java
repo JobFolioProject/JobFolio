@@ -29,8 +29,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.happyjob.jobfolio.service.system.CommcodeService;
-import com.happyjob.jobfolio.vo.system.CommcodeModel;
+import com.happyjob.jobfolio.service.admin.CommcodeService;
+import com.happyjob.jobfolio.vo.admin.CommcodeModel;
 
 @Controller
 @RequestMapping("/commonproc/")

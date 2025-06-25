@@ -568,6 +568,7 @@ public class ResumeController {
     public ResponseEntity<Map<String,Object>> resumeDetailList(@RequestBody Map<String,Object> requestMap,
                                                                @AuthenticationPrincipal UserPrincipal userPrincipal) {
         int userNo = Integer.parseInt(userPrincipal.getUser_no().toString());
+        requestMap.put("user_no", userNo);
         int page     = Integer.parseInt(requestMap.getOrDefault("page", "1").toString());
         int totalCount = resumeService.selectResumeCount(requestMap);
 
@@ -581,7 +582,6 @@ public class ResumeController {
 
         requestMap.put("offset", (page - 1) * pageSize);
         requestMap.put("limit",  pageSize);
-        requestMap.put("user_no", userNo);
         requestMap.put("totalCount", totalCount);
 
         List<ResumeInfoVO> resumeList = resumeService.selectResumeInfo(requestMap);

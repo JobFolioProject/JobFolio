@@ -82,6 +82,7 @@ const ResumePreviewModal = ({ open, onClose, loading, setLoading, htmlString, se
     
     const close = () =>{
         setHtmlString("");
+        setDownload(false);
         onClose(false);
     }
 
