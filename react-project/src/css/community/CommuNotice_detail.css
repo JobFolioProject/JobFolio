@@ -16,13 +16,13 @@
 
 .notice-detail-container {
   display: flex;
-  margin-left: auto;
-  margin-right: auto;
+  margin: 0 auto;
   justify-content: center;
+  width: 1200px; 
 }
 .notice-detail-container
 .notice-detail-wrapper{
-  max-width: 1000px; 
+  max-width: 1200px; 
   width: 100%; 
   padding: 0 16px; 
   box-sizing: border-box;  
@@ -36,6 +36,7 @@
 .notice-detail-wrapper
 .notice-detail-content{
   padding: 20px;
+  min-height: 400px;
 }
 .notice-detail-container
 .notice-detail-wrapper
