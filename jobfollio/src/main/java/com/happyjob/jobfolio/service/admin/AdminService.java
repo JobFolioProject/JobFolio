@@ -133,11 +133,14 @@ public class AdminService {
         return adminMapper.getMemberById(memberId);
     }
 
-    // 사용자 권한 변경 (C ↔ B)
     @Transactional
-    public int changeUserAuthority(String memberId, String newAuthority) {
+    public int changeUserAuthority(String memberId, String newAuthority, String currentUserType) {
         if (memberId == null || memberId.trim().isEmpty()) {
             throw new IllegalArgumentException("사용자 ID가 필요합니다.");
+        }
+
+        if (!"A".equals(currentUserType)) {
+            throw new IllegalArgumentException("권한 변경은 슈퍼관리자(A)만 가능합니다.");
         }
 
         if (!"B".equals(newAuthority) && !"C".equals(newAuthority)) {
@@ -150,12 +153,17 @@ public class AdminService {
             throw new IllegalArgumentException("존재하지 않는 회원입니다.");
         }
 
+        // A 계정의 권한은 변경할 수 없음
+        if ("A".equals(existingMember.getUser_type())) {
+            throw new IllegalArgumentException("슈퍼관리자(A) 계정의 권한은 변경할 수 없습니다.");
+        }
+
         return adminMapper.updateUserAuthority(memberId, newAuthority);
     }
 
     // 사용자 탈퇴 처리 (N → Y, withdrawal_date 현재시간 설정)
     @Transactional
-    public int withdrawUser(String memberId) {
+    public int withdrawUser(String memberId, String currentUserType, String targetUserType) {
         if (memberId == null || memberId.trim().isEmpty()) {
             throw new IllegalArgumentException("사용자 ID가 필요합니다.");
         }
@@ -164,22 +172,45 @@ public class AdminService {
         UserModel existingMember = getMemberById(memberId);
         if (existingMember == null) {
             throw new IllegalArgumentException("존재하지 않는 회원입니다.");
+        }
+
+        // 권한별 탈퇴 가능 대상 체크 (서비스 레벨에서 이중 체크)
+        if ("A".equals(currentUserType)) {
+            if ("A".equals(targetUserType)) {
+                throw new IllegalArgumentException("슈퍼관리자(A) 계정은 탈퇴시킬 수 없습니다.");
+            }
+        } else if ("B".equals(currentUserType)) {
+            if ("A".equals(targetUserType) || "B".equals(targetUserType)) {
+                throw new IllegalArgumentException("권한이 부족합니다.");
+            }
+        } else {
+            throw new IllegalArgumentException("일반 사용자는 다른 사용자를 탈퇴시킬 수 없습니다.");
         }
 
         return adminMapper.withdrawUser(memberId);
     }
 
-    // 탈퇴 사용자 복구 (Y → N, withdrawal_date NULL)
     @Transactional
-    public int restoreUser(String memberId) {
+    public int restoreUser(String memberId, String currentUserType, String targetUserType) {
         if (memberId == null || memberId.trim().isEmpty()) {
             throw new IllegalArgumentException("사용자 ID가 필요합니다.");
         }
 
-        // 기존 회원 확인
         UserModel existingMember = getMemberById(memberId);
         if (existingMember == null) {
             throw new IllegalArgumentException("존재하지 않는 회원입니다.");
+        }
+
+        if ("A".equals(currentUserType)) {
+            if ("A".equals(targetUserType)) {
+                throw new IllegalArgumentException("슈퍼관리자(A) 계정은 복구할 수 없습니다.");
+            }
+        } else if ("B".equals(currentUserType)) {
+            if ("A".equals(targetUserType) || "B".equals(targetUserType)) {
+                throw new IllegalArgumentException("권한이 부족합니다.");
+            }
+        } else {
+            throw new IllegalArgumentException("일반 사용자는 다른 사용자를 복구할 수 없습니다.");
         }
 
         return adminMapper.restoreUser(memberId);

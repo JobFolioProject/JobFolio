@@ -93,8 +93,35 @@ public class AdminController {
 
     // 고객 수정
     @PutMapping("/customers/{memberId}")
-    public ResponseEntity<String> updateCustomer(@PathVariable String memberId, @RequestBody UserModel updatedMember) {
+    public ResponseEntity<String> updateCustomer(@PathVariable String memberId,
+                                                 @RequestBody UserModel updatedMember,
+                                                 @AuthenticationPrincipal UserPrincipal userPrincipal) {
         try {
+            String currentUserType = userPrincipal.getUser_type();
+
+            UserModel targetUser = adminService.getMemberById(memberId);
+            if (targetUser == null) {
+                return ResponseEntity.badRequest().body("존재하지 않는 사용자입니다.");
+            }
+
+            String targetUserType = targetUser.getUser_type();
+
+            if ("A".equals(currentUserType)) {
+            } else if ("B".equals(currentUserType)) {
+                if ("A".equals(targetUserType) || "B".equals(targetUserType)) {
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                            .body("관리자 계정은 수정할 수 없습니다.");
+                }
+            } else {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body("일반 사용자는 다른 사용자를 수정할 수 없습니다.");
+            }
+
+            if (updatedMember.getUser_type() != null &&
+                    !targetUser.getUser_type().equals(updatedMember.getUser_type())) {
+                return ResponseEntity.badRequest().body("권한 변경은 별도 API를 사용해주세요.");
+            }
+
             updatedMember.setLogin_id(memberId);
             int result = adminService.updateMember(updatedMember);
             if (result > 0) {
@@ -230,7 +257,7 @@ public class AdminController {
                 return ResponseEntity.badRequest().body("B(하위관리자) 또는 C(일반) 권한만 설정 가능합니다.");
             }
 
-            int result = adminService.changeUserAuthority(memberId, newAuthority);
+            int result = adminService.changeUserAuthority(memberId, newAuthority, userPrincipal.getUser_type());
             if (result > 0) {
                 return ResponseEntity.ok("사용자 권한이 변경되었습니다.");
             } else {
@@ -242,11 +269,36 @@ public class AdminController {
         }
     }
 
-    // 사용자 탈퇴 처리 (N → Y, withdrawal_date 현재시간 설정)
+    // 사용자 탈퇴 처리 (N → Y)
     @PatchMapping("/customers/{memberId}/withdraw")
-    public ResponseEntity<String> withdrawUser(@PathVariable String memberId) {
+    public ResponseEntity<String> withdrawUser(@PathVariable String memberId,
+                                               @AuthenticationPrincipal UserPrincipal userPrincipal) {
         try {
-            int result = adminService.withdrawUser(memberId);
+            String currentUserType = userPrincipal.getUser_type();
+
+            UserModel targetUser = adminService.getMemberById(memberId);
+            if (targetUser == null) {
+                return ResponseEntity.badRequest().body("존재하지 않는 사용자입니다.");
+            }
+
+            String targetUserType = targetUser.getUser_type();
+
+            if ("A".equals(currentUserType)) {
+                if ("A".equals(targetUserType)) {
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                            .body("슈퍼관리자(A) 계정은 탈퇴시킬 수 없습니다.");
+                }
+            } else if ("B".equals(currentUserType)) {
+                if ("A".equals(targetUserType) || "B".equals(targetUserType)) {
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                            .body("권한이 부족합니다.");
+                }
+            } else {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body("일반 사용자는 다른 사용자를 탈퇴시킬 수 없습니다.");
+            }
+
+            int result = adminService.withdrawUser(memberId, currentUserType, targetUserType);
             if (result > 0) {
                 return ResponseEntity.ok("사용자가 탈퇴 처리되었습니다.");
             } else {
@@ -258,11 +310,36 @@ public class AdminController {
         }
     }
 
-    // 탈퇴 사용자 복구 (Y → N, withdrawal_date NULL)
+    // 탈퇴 사용자 복구 (Y → N)
     @PatchMapping("/customers/{memberId}/restore")
-    public ResponseEntity<String> restoreUser(@PathVariable String memberId) {
+    public ResponseEntity<String> restoreUser(@PathVariable String memberId,
+                                              @AuthenticationPrincipal UserPrincipal userPrincipal) {
         try {
-            int result = adminService.restoreUser(memberId);
+            String currentUserType = userPrincipal.getUser_type();
+
+            UserModel targetUser = adminService.getMemberById(memberId);
+            if (targetUser == null) {
+                return ResponseEntity.badRequest().body("존재하지 않는 사용자입니다.");
+            }
+
+            String targetUserType = targetUser.getUser_type();
+
+            if ("A".equals(currentUserType)) {
+                if ("A".equals(targetUserType)) {
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                            .body("슈퍼관리자(A) 계정은 복구할 수 없습니다.");
+                }
+            } else if ("B".equals(currentUserType)) {
+                if ("A".equals(targetUserType) || "B".equals(targetUserType)) {
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                            .body("권한이 부족합니다");
+                }
+            } else {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body("일반 사용자는 다른 사용자를 복구할 수 없습니다.");
+            }
+
+            int result = adminService.restoreUser(memberId, currentUserType, targetUserType);
             if (result > 0) {
                 return ResponseEntity.ok("사용자가 복구되었습니다.");
             } else {
