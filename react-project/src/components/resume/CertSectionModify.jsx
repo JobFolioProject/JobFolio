@@ -14,6 +14,10 @@ const CertSectionModify = ({ resumeInfo, setResumeInfo }) => {
       <button
         className="addrBtn"
         onClick={() => {
+          if (resumeInfo.certifications.length >= 4) {
+            alert("자격증은 최대 4개까지 입력 가능합니다");
+            return;
+          }
           setResumeInfo({
             ...resumeInfo,
             certifications: [

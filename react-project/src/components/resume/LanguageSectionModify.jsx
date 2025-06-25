@@ -5,6 +5,10 @@ const LanguageSectionModify = ({ resumeInfo, setResumeInfo }) => {
       <button
         className="addrBtn"
         onClick={() => {
+          if (resumeInfo.languages.length >= 4) {
+            alert("외국어 역량은 최대 4개까지 입력 가능합니다");
+            return;
+          }
           setResumeInfo({
             ...resumeInfo,
             languages: [

@@ -7,6 +7,7 @@ import ResumePreviewModal from "./ResumePreviewModal";
 const TemplateSlider = ({
   tempList,
   formData,
+  setFormData,
   editType,
   setInitHtmlContent,
   setHtmlContent,
@@ -84,6 +85,7 @@ const TemplateSlider = ({
       const res = await axios.post("/api/resume/resumePreview", dataToSend);
       const html = res.htmlContent;
       setHtmlString(html);
+      setFormData(dataToSend);
     } catch (err) {
       console.error("템플릿 상세 조회 실패", err);
       setHtmlString({ error: "상세 정보를 불러오는 데 실패했습니다." });

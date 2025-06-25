@@ -10,7 +10,6 @@ import CertSectionModify from "./CertSectionModify";
 import axios from "../../utils/axiosConfig";
 import Loading from "../common/Loading";
 import { useAuth } from "../../context/AuthContext";
-import { Navigate } from "react-router-dom";
 import TemplateSelection from "./TemplateSelection";
 
 const ResumeEditModal = ({
@@ -19,6 +18,7 @@ const ResumeEditModal = ({
   resumeTitle,
   htmlString,
   publication,
+  templateNo,
 }) => {
   const [initHtmlcontent, setInitHtmlContent] = useState("");
   const { user, isAuthenticated } = useAuth();
@@ -169,6 +169,7 @@ const ResumeEditModal = ({
         languages: langList,
         coverLetter: coverLetterDiv ? coverLetterDiv.innerText : "",
         publication_yn: publication,
+        templateNo: templateNo,
       };
 
       setResumeInfo(parsedResumeInfo);
@@ -432,7 +433,7 @@ const ResumeEditModal = ({
       const res = await axios.post("/api/resume/saveModifiedResume", {
         userNo: user.userNo,
         resumeInfo: resumeInfo,
-        templateNo: 2,
+        templateNo: resumeInfo.templateNo,
         html: updatedHtml,
       });
       setIsDownload(true);

@@ -18,6 +18,10 @@ const CareerSectionModify = ({ resumeInfo, setResumeInfo }) => {
       <button
         className="addrBtn"
         onClick={() => {
+          if (resumeInfo.career.length >= 4) {
+            alert("경력사항은 최대 4개까지 입력 가능합니다");
+            return;
+          }
           setResumeInfo({
             ...resumeInfo,
             career: [
