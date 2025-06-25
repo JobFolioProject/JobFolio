@@ -1,13 +1,10 @@
-package com.happyjob.jobfolio.repository.system;
+package com.happyjob.jobfolio.repository.admin;
+
+import com.happyjob.jobfolio.vo.admin.CommcodeModel;
+import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 import java.util.Map;
-
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-
-import com.happyjob.jobfolio.vo.system.CommcodeModel;
 
 @Mapper
 public interface CommcodeMapper {

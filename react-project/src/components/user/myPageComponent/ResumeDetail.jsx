@@ -42,6 +42,7 @@ const ResumeDetail = () => {
 
             if (Array.isArray(resumeList) && resumeList.length >= 0) {
                 // 첫 번째 이력서를 resumeInfo에 세팅
+                console.log("totalCount",response.totalCount);
                 setResumeList(response.resumeList);
                 setTotalCount(response.totalCount);
             }

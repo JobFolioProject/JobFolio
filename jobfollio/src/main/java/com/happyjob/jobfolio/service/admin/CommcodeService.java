@@ -1,16 +1,14 @@
-package com.happyjob.jobfolio.service.system;
+package com.happyjob.jobfolio.service.admin;
 
-import java.util.List;
-import java.util.Map;
-
+import com.happyjob.jobfolio.repository.admin.CommcodeMapper;
+import com.happyjob.jobfolio.vo.admin.CommcodeModel;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.happyjob.jobfolio.repository.system.CommcodeMapper;
-
-import com.happyjob.jobfolio.vo.system.CommcodeModel;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class CommcodeService {

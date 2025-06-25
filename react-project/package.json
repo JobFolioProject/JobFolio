@@ -36,6 +36,7 @@
     "react-datepicker": "^8.4.0",
     "react-dom": "^19.1.0",
     "react-helmet": "^6.1.0",
+    "react-modal": "^3.16.3",
     "react-quilljs": "^2.0.5",
     "react-router-dom": "^7.6.2",
     "react-scripts": "5.0.1",
