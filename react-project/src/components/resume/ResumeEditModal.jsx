@@ -421,32 +421,34 @@ const ResumeEditModal = ({
 
   // 이력서 수정 버튼 클릭 이벤트
   const saveModify = async () => {
+    if (!validateProfile()) return;
+    if (!validateEducations()) return;
+    if (!validateCareers()) return;
+    if (!validateSkills()) return;
+    if (!validateLanguages()) return;
+    if (!validateCert()) return;
     const updatedHtml = getPreviewHtml();
-    await axios
-      .post("/api/resume/saveModifiedResume", {
+    try {
+      const res = await axios.post("/api/resume/saveModifiedResume", {
         userNo: user.userNo,
         resumeInfo: resumeInfo,
         templateNo: 2,
         html: updatedHtml,
-      })
-      .then((res) => {
-        setIsDownload(true);
-        console.log(res);
-        if (res.result === 1) {
-          console.log(res.filePath);
-          const path = res.filePath;
-          setResumeFilePath(path);
-          alert("수정된 이력서 저장이 완료되었습니다");
-          return path;
-        } else {
-          alert("이력서 저장에 실패했습니다");
-          throw new Error("저장 실패");
-        }
-      })
-      .catch((err) => {
-        console.error(err);
-        throw err;
       });
+      setIsDownload(true);
+      if (res.result === 1) {
+        const path = res.filePath;
+        setResumeFilePath(path);
+        alert("수정된 이력서 저장이 완료되었습니다");
+        return path;
+      } else {
+        alert("이력서 저장에 실패했습니다");
+        throw new Error("저장 실패");
+      }
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
   };
 
   //이력서 PDF로 저장
@@ -454,38 +456,43 @@ const ResumeEditModal = ({
     console.log("filePath : ", filePath);
     const path = filePath || resumeFilePath;
     console.log("resume filePath : ", path);
-    await axios
-      .post(
+    try {
+      const res = await axios.post(
         "/api/resume/exportPdf",
         { filePath: path },
         { responseType: "arraybuffer", maxBodyLength: Infinity }
-      )
-      .then((res) => {
-        const blob = new Blob([res], { type: "application;/pdf" });
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = "resume.pdf";
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-
-        setIsDownload(false);
-        onClose();
-      })
-      .catch((err) => {
-        console.error(err.response || err);
-        alert("pdf 다운로드 중 오류가 발생했습니다");
-      });
+      );
+      const blob = new Blob([res], { type: "application/pdf" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "resume.pdf";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setIsDownload(false);
+      setResumeFilePath("");
+      onClose();
+    } catch (error) {
+      console.error(error.response || error);
+      alert("PDF 다운로드 중 오류가 발생했습니다.");
+    }
   };
 
   //이력서 저장 및 PDF로 저장
   const pdfDownload = async () => {
+    if (!validateProfile()) return;
+    if (!validateEducations()) return;
+    if (!validateCareers()) return;
+    if (!validateSkills()) return;
+    if (!validateLanguages()) return;
+    if (!validateCert()) return;
     try {
       if (!download) {
         const path = await saveModify();
+        await new Promise((r) => setTimeout(r, 1000));
         await pdfSubmit(path);
       } else {
-        pdfSubmit();
+        await pdfSubmit();
       }
     } catch (error) {}
   };
@@ -498,6 +505,7 @@ const ResumeEditModal = ({
     }
     setSelectedRadio("");
     setAiComment("");
+    setIsDownload(false);
     onClose();
   };
 
@@ -516,6 +524,109 @@ const ResumeEditModal = ({
       .finally(() => {
         setLoading(false);
       });
+  };
+
+  //개인프로필 유효성 검사
+  const validateProfile = () => {
+    const requiredFields = ["name", "title", "email", "phone"];
+    for (const field of requiredFields) {
+      if (!resumeInfo[field] || resumeInfo[field].toString().trim() === "") {
+        alert("개인정보 필수 항목을 입력해주세요");
+        return false;
+      }
+    }
+    return true;
+  };
+
+  //학력 유효성 검사
+  const validateEducations = () => {
+    for (const edu of resumeInfo.education) {
+      const requiredFields = [
+        "school_name",
+        "enroll_date",
+        "grad_date",
+        "edu_status",
+        "major",
+        "gpa",
+      ];
+
+      for (const field of requiredFields) {
+        if (field === "grad_date" && edu.isCurrentEdu) continue;
+        if (!edu[field] || edu[field].toString().trim() === "") {
+          alert("학력 필수 항목을 입력해주세요");
+          return false;
+        }
+      }
+    }
+    return true;
+  };
+
+  //경력 유효성 검사
+  const validateCareers = () => {
+    for (const career of resumeInfo.career) {
+      const requiredFields = [
+        "company_name",
+        "start_date",
+        "end_date",
+        "position",
+      ];
+      for (const field of requiredFields) {
+        if (field === "end_date" && career.isCurrentJob) continue;
+        if (!career[field] || career[field].toString().trim() === "") {
+          alert("경력 필수 항목을 입력해주세요");
+          return false;
+        }
+      }
+    }
+    return true;
+  };
+
+  //언어 유효성 검사
+  const validateLanguages = () => {
+    const languageList = resumeInfo.languages.map((lang) =>
+      lang.language.trim()
+    );
+    const isDuplicate = new Set(languageList).size !== languageList.length;
+    if (isDuplicate) {
+      alert("동일한 언어가 중복 입력되었습니다");
+      return false;
+    }
+    return true;
+  };
+
+  //스킬 유효성 검사
+  const validateSkills = () => {
+    for (const skill of resumeInfo.skills) {
+      const requiredFields = ["skill_code", "group_code", "exp_level"];
+
+      for (const field of requiredFields) {
+        if (!skill[field] || skill[field].toString().trim() === "") {
+          alert("스킬 항목을 선택해주세요");
+          return false;
+        }
+      }
+    }
+    return true;
+  };
+
+  //자격증 유효성 검사
+  const validateCert = () => {
+    for (const cert of resumeInfo.certifications) {
+      const requiredFields = [
+        "certificate_no",
+        "certificate_name",
+        "issuing_org",
+        "acquired_date",
+      ];
+
+      for (const field of requiredFields) {
+        if (!cert[field] || cert[field].toString().trim() === "") {
+          alert("자격증 필수 항목을 입력해주세요");
+          return false;
+        }
+      }
+    }
+    return true;
   };
 
   if (!open) return null;

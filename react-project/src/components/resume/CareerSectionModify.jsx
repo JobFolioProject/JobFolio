@@ -40,7 +40,9 @@ const CareerSectionModify = ({ resumeInfo, setResumeInfo }) => {
       {resumeInfo.career.map((career, index) => (
         <div className="toggleInput" key={index}>
           <div>
-            <label>회사명</label>
+            <label>
+              회사명 <span className="required-mark">*</span>
+            </label>
             <input
               type="text"
               value={career.company_name}
@@ -58,7 +60,9 @@ const CareerSectionModify = ({ resumeInfo, setResumeInfo }) => {
           </div>
 
           <div>
-            <label>입사/퇴사 날짜</label>
+            <label>
+              입사/퇴사 <span className="required-mark">*</span>
+            </label>
             <div className="career_date_section">
               <Calendar
                 selectedStartDate={
@@ -68,14 +72,7 @@ const CareerSectionModify = ({ resumeInfo, setResumeInfo }) => {
                 onChangeStartDate={(date) =>
                   handleCareerDateChange(index, "start_date", date)
                 }
-                selectedEndDate={
-                  career.isCurrentJob
-                    ? new Date()
-                    : career.end_date
-                    ? new Date(career.end_date)
-                    : null
-                  // career.end_date ? new Date(career.end_date) : null
-                }
+                selectedEndDate={career.isCurrentJob ? "" : career.end_date}
                 endplaceholder={"퇴사일"}
                 isCurrentJob={career.isCurrentJob}
                 onChangeEndDate={(date) =>
@@ -87,6 +84,7 @@ const CareerSectionModify = ({ resumeInfo, setResumeInfo }) => {
                   type="checkbox"
                   id="currentJob"
                   name=""
+                  checked={career.isCurrentJob}
                   onChange={() => {
                     setResumeInfo({
                       ...resumeInfo,
@@ -95,9 +93,7 @@ const CareerSectionModify = ({ resumeInfo, setResumeInfo }) => {
                           ? {
                               ...item,
                               isCurrentJob: !item.isCurrentJob,
-                              end_date: !item.isCurrentJob
-                                ? new Date().toISOString().slice(0, 10)
-                                : "",
+                              end_date: "",
                             }
                           : item
                       ),
@@ -110,7 +106,9 @@ const CareerSectionModify = ({ resumeInfo, setResumeInfo }) => {
           </div>
 
           <div>
-            <label>직무</label>
+            <label>
+              직무 <span className="required-mark">*</span>
+            </label>
             <input
               type="text"
               value={career.position}
