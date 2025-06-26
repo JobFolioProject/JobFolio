@@ -71,17 +71,17 @@ const TemplateSlider = ({
       education: [...formData.education, ...formData.newEducation],
       experience: [...formData.experience, ...formData.newExperience],
       template_no: template_no,
-      newEducation: undefined,
-      newExperience: undefined,
+      newEducation: [],
+      newExperience: [],
       skillList: [...formData.skillList, ...formData.newSkillList],
       languageList: [...formData.languageList, ...formData.newLanguage],
       certificateList: [
         ...formData.certificateList,
         ...formData.newCertificate,
       ],
-      newSkillList: undefined,
-      newLanguage: undefined,
-      newCertificate: undefined,
+      newSkillList: [],
+      newLanguage: [],
+      newCertificate: [],
     };
     
     try {
