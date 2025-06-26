@@ -16,15 +16,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.transaction.annotation.Transactional; // 외부저장소 삭제용 추가
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.io.IOException;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
+
 
 @Service
 public class ResumeService {
@@ -357,8 +361,45 @@ public class ResumeService {
         return resumeMapper.updateTemplateInfo(paramMap);
     }
 
+//    @Transactional(rollbackFor = Exception.class) // 어떤 예외가 발생하든 롤백
+//    public int deleteTemplateInfo(int template_no) {
+//        int dbresult = resumeMapper.deleteTemplateInfo(template_no);
+//
+//        if (dbresult>0){
+//
+//        }
+//        return dbresult;
+//    }
+
+    @Transactional(rollbackFor = Exception.class) // 어떤 예외가 발생하든 롤백
     public int deleteTemplateInfo(int template_no) {
-        return resumeMapper.deleteTemplateInfo(template_no);
+        String templateFilePath = resumeMapper.getTemplateFilePathByTemplateNo(template_no);
+        int dbresult = resumeMapper.deleteTemplateInfo(template_no);
+
+        if (dbresult>0){
+            if (templateFilePath !=null){
+                try {
+                    File fileToDelete = new File(templateFilePath);
+                    if (fileToDelete.exists()) {
+                        Files.delete(Paths.get(templateFilePath));
+                        System.out.println("로컬 템플릿 파일 삭제 성공" + templateFilePath);
+                    } else {
+                        System.out.println("로컬 템플릿 파일 없음" + templateFilePath);
+                    }
+                } catch (IOException e) {
+                    System.err.println("로컬 템플릿 파일 삭제 실패 (template_no: " + template_no + ", 경로: " + templateFilePath);
+                    // 파일 삭제 실패 시 DB 롤백을 위해 RuntimeException을 던집니다.
+                    // 이렇게 하면 @Transactional이 이 예외를 감지하고 DB 변경사항을 롤백합니다.
+                    throw new RuntimeException("템플릿 파일 삭제 중 I/O 오류 발생: " + e.getMessage(), e);
+                }
+            } else {
+                System.out.println("해당 템플릿(template_no: " + template_no + ")에 저장된 파일 경로가 없습니다. 외부 저장소 삭제 스킵.");
+            }
+        } else {
+            System.out.println("DB에서 템플릿(template_no: " + template_no + ") 삭제 실패.");
+            // DB 삭제 실패 시에는 파일을 삭제할 필요가 없으므로 여기서 메서드 종료
+        }
+        return dbresult;
     }
 
 
