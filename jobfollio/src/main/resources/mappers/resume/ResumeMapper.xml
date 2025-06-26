@@ -389,6 +389,14 @@
 		WHERE template_no = #{template_no}
 	</update>
 
+
+	<select id="getTemplateFilePathByTemplateNo" parameterType="int" resultType="String">
+		SELECT
+			file_pypath
+		FROM tb_template
+		WHERE template_no = #{template_no}
+	</select>
+
 	<delete id="deleteTemplateInfo" parameterType="int">
 		DELETE FROM tb_template
 		WHERE template_no = #{template_no}

@@ -68,5 +68,8 @@ public interface ResumeMapper {
 
     int updateTemplateInfo(Map<String, Object> paramMap);
 
+    //file lopath 삭제하기. template_no로 템플릿 파일 경로 조회.
+    String getTemplateFilePathByTemplateNo(int templateNo);
+
     int deleteTemplateInfo(int template_no);
 }

@@ -598,7 +598,7 @@ const getFlagEmoji = (countryCode) => {
                             <div className="summary-row">
                                 {/*  접힌 상태에서 보여줄 요약 정보 */}
                                 <p className="summary-text">
-                                    <strong>보유 기술:</strong>&nbsp;
+                                    {formData.skillList.length === 0 ? (<><strong>등록된 기술이 없습니다. </strong>&nbsp; </>):(<><strong>보유 기술:</strong>&nbsp;</>)}
                                     {formData.skillList.map((skill, index) => (
                                                     <span key={skill.skill_code || index} className="tag">
                                                         {skill.skill_code}
@@ -717,7 +717,7 @@ const getFlagEmoji = (countryCode) => {
                     <div className="summary-row">
                         {/* 🚩 접힌 상태에서 보여줄 요약 정보 */}
                         <p className="summary-text">
-                            <strong>보유 외국어 능력:</strong>&nbsp;
+                            {formData.languageList.length === 0 ? (<><strong>등록된 외국어 능력이 없습니다.</strong>&nbsp;</>):(<><strong>보유 외국어 능력:</strong>&nbsp;</>)}
                             {formData.languageList.map((lan, index) => (
                                 <span key={lan.language || index} className="tag"> {/* 각 언어를 태그로 표시 */}
                                     {/* getFlagEmoji(lan.language_code) 부분 제거 */}
@@ -808,7 +808,7 @@ const getFlagEmoji = (countryCode) => {
                             <div className="summary-row">
                                 {/* 🚩 접힌 상태에서 보여줄 요약 정보 */}
                                 <p className="summary-text">
-                                    <strong>보유 자격증:</strong>&nbsp;
+                                     {formData.certificateList.length === 0 ? (<><strong>등록된 자격증이 없습니다.</strong>&nbsp;</>):(<><strong>보유 자격증:</strong>&nbsp;</>)}
                                     {formData.certificateList.map((cert, index) => (
                                         <span key={cert.certificate_name || index} className="tag"> {/* 각 자격증을 태그로 표시 */}
                                             {cert.certificate_name}
@@ -905,7 +905,7 @@ const getFlagEmoji = (countryCode) => {
                                 <div className="summary-row">
                                     {/* 🚩 접힌 상태에서 보여줄 요약 정보 */}
                                     <p className="summary-text">
-                                        <strong>학력 정보:</strong>&nbsp;
+                                        {formData.education.length === 0 ? (<><strong>등록된 학력 정보가 없습니다.</strong>&nbsp;</>):(<><strong>학력 정보:</strong>&nbsp;</>)}
                                         {formData.education.map((edu, index) => (
                                             <span key={edu.edu_no || index} className="tag"> {/* 각 학력 항목을 태그로 표시 */}
                                                 {edu.school_name}
@@ -1000,7 +1000,7 @@ const getFlagEmoji = (countryCode) => {
                     <div className="summary-row">
                         {/* 🚩 접힌 상태에서 보여줄 요약 정보 */}
                         <p className="summary-text">
-                            <strong>경력 정보:</strong>&nbsp;
+                            {formData.experience.length === 0 ? (<><strong>등록된 경력 정보가 없습니다.</strong>&nbsp;</>):(<><strong>경력 정보:</strong>&nbsp;</>)}
                             {formData.experience.map((exp, index) => (
                                 <span key={exp.career_no || index} className="tag"> {/* 각 경력 항목을 태그로 표시 */}
                                     {exp.company_name}
