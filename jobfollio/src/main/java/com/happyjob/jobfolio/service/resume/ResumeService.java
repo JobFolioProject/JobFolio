@@ -346,4 +346,20 @@ public class ResumeService {
     public Integer selectLikeCount(Map<String, Object> paramMap) {
         return resumeMapper.selectLikeCount(paramMap);
     }
+
+
+    //template 저장
+    public int insertTemplateInfo(TemplateVO templateVO) {
+        return resumeMapper.insertTemplateInfo(templateVO);
+    }
+
+    public int updateTemplateInfo(Map<String, Object> paramMap) {
+        return resumeMapper.updateTemplateInfo(paramMap);
+    }
+
+    public int deleteTemplateInfo(int template_no) {
+        return resumeMapper.deleteTemplateInfo(template_no);
+    }
+
+
 }

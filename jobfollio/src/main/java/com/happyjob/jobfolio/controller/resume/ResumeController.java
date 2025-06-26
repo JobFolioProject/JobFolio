@@ -55,8 +55,8 @@ public class ResumeController {
     private UserService userService;
 
     @RequestMapping("/selectResumeInfo")
-    public Map<String,Object> selectResumeInfo(@RequestParam int user_no){
-        Map<String,Object> resultMap = new HashMap<>();
+    public Map<String, Object> selectResumeInfo(@RequestParam int user_no) {
+        Map<String, Object> resultMap = new HashMap<>();
 
         return resultMap;
     }
@@ -71,8 +71,8 @@ public class ResumeController {
 
 
     @RequestMapping("/insertResumeInfo")
-    public Map<String,Object> insertResumeInfo(@RequestBody Map<String,Object> paramMap){
-        Map<String,Object> resultMap = new HashMap<>();
+    public Map<String, Object> insertResumeInfo(@RequestBody Map<String, Object> paramMap) {
+        Map<String, Object> resultMap = new HashMap<>();
 
         ResumeInfoVO resumeInfoVO = new ResumeInfoVO();
         Long user_no = Long.valueOf(paramMap.get("user_no").toString());
@@ -83,7 +83,7 @@ public class ResumeController {
             // 2) JSON 생성 로직
             ObjectMapper mapper = new ObjectMapper();
 
-            String htmlContent=paramMap.get("htmlString").toString();
+            String htmlContent = paramMap.get("htmlString").toString();
 
 
             // ❶ 저장할 경로 생성
@@ -136,8 +136,8 @@ public class ResumeController {
     }
 
     @RequestMapping("/resumePreview")
-    public Map<String,Object> resumePreview(@RequestBody Map<String,Object> paramMap){
-        Map<String,Object> resultMap = new HashMap<>();
+    public Map<String, Object> resumePreview(@RequestBody Map<String, Object> paramMap) {
+        Map<String, Object> resultMap = new HashMap<>();
 
         ResumeInfoVO resumeInfoVO = new ResumeInfoVO();
         UserVO userVO = new UserVO();
@@ -273,7 +273,7 @@ public class ResumeController {
      * HTML 파일 경로를 받아 PDF로 변환 후 다운로드 응답
      */
     @PostMapping("/exportPdf")
-    public ResponseEntity<byte[]> exportPdf(@RequestBody Map<String,Object> requestMap) throws Exception {
+    public ResponseEntity<byte[]> exportPdf(@RequestBody Map<String, Object> requestMap) throws Exception {
         String physicalPath = requestMap.get("filePath").toString();
         Path path = Paths.get(physicalPath);
         byte[] bytes = Files.readAllBytes(path);
@@ -285,8 +285,8 @@ public class ResumeController {
                 .replaceAll("(?is)<!DOCTYPE[^>]*>", "")
                 .replaceAll("(?is)<\\?xml[^>]*>", "")
                 // (2) 빈태그 XHTML 형식으로 치환
-                .replaceAll("(?i)<br(?=[^/>]*>)",  "<br/>")
-                .replaceAll("(?i)<hr(?=[^/>]*>)",  "<hr/>")
+                .replaceAll("(?i)<br(?=[^/>]*>)", "<br/>")
+                .replaceAll("(?i)<hr(?=[^/>]*>)", "<hr/>")
                 .replaceAll("(?i)<img([^>]*)(?<!/)>", "<img$1/>")   // img 도 자주 문제
                 .replaceAll("(?i)<meta([^>]*)(?<!/)>", "<meta$1/>")
                 .replaceAll("(?i)<link([^>]*)(?<!/)>", "<link$1/>")
@@ -301,7 +301,7 @@ public class ResumeController {
 
         /* -------------- PDF 렌더링 -------------- */
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        PdfRendererBuilder     b = new PdfRendererBuilder();
+        PdfRendererBuilder b = new PdfRendererBuilder();
 
         /* 1) 폰트 등록 : 이름을 CSS 와 동일하게 “Noto Serif KR” 로 */
         b.useFont(
@@ -328,9 +328,9 @@ public class ResumeController {
 
 
     @RequestMapping("/generateCoverLetter")
-    public Map<String,Object> generateCoverLetter(@RequestBody Map<String,Object> paramMap){
-        Map<String,Object> resumeInfo = (Map<String, Object>) paramMap.get("dataToSendToBackend");
-        Map<String,Object> resultMap = new HashMap<>();
+    public Map<String, Object> generateCoverLetter(@RequestBody Map<String, Object> paramMap) {
+        Map<String, Object> resumeInfo = (Map<String, Object>) paramMap.get("dataToSendToBackend");
+        Map<String, Object> resultMap = new HashMap<>();
         String response = "";
         try {
             ObjectMapper mapper = new ObjectMapper();
@@ -342,7 +342,7 @@ public class ResumeController {
 
 
             //학력사항 정보
-            List<Map<String, String>> educations = (List<Map<String,String>>) resumeInfo.get("educationList");
+            List<Map<String, String>> educations = (List<Map<String, String>>) resumeInfo.get("educationList");
             ArrayNode educationArray = mapper.createArrayNode();
             for (Map<String, String> education : educations) {
                 ObjectNode node = mapper.createObjectNode();
@@ -362,7 +362,7 @@ public class ResumeController {
             root.set("educations", educationArray);
 
             //경력사항 정보
-            List<Map<String, String>> careers  = (List<Map<String, String>>) resumeInfo.get("careerHistoryList");
+            List<Map<String, String>> careers = (List<Map<String, String>>) resumeInfo.get("careerHistoryList");
             ArrayNode careerArray = mapper.createArrayNode();
             for (Map<String, String> career : careers) {
                 ObjectNode node = mapper.createObjectNode();
@@ -400,7 +400,7 @@ public class ResumeController {
 //            root.set("languages", languageArray);
 
             //주요 스킬 정보
-            List<Map<String,String>> skills = (List<Map<String,String>>) resumeInfo.get("skillList");
+            List<Map<String, String>> skills = (List<Map<String, String>>) resumeInfo.get("skillList");
             ArrayNode skillArray = mapper.createArrayNode();
             for (Map<String, String> skill : skills) {
                 ObjectNode node = mapper.createObjectNode();
@@ -416,7 +416,7 @@ public class ResumeController {
             response = resumeService.generateCoverLetter(root);
 
 
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
         resultMap.put("response", response);
@@ -428,12 +428,11 @@ public class ResumeController {
 
 
     @RequestMapping("/saveModifiedResume")
-    public Map<String,Object> saveModifiedResume(@RequestBody Map<String,Object> paramMap) throws IOException {
-        Map<String,Object> resultMap = new HashMap<>();
+    public Map<String, Object> saveModifiedResume(@RequestBody Map<String, Object> paramMap) throws IOException {
+        Map<String, Object> resultMap = new HashMap<>();
         ResumeInfoVO resumeInfoVO = new ResumeInfoVO();
         Map<String, Object> resumeInfo = (Map<String, Object>) paramMap.get("resumeInfo");
         Long user_no = Long.valueOf(paramMap.get("userNo").toString());
-
 
 
         String htmlContent = paramMap.get("html").toString();
@@ -471,9 +470,9 @@ public class ResumeController {
     }
 
     @RequestMapping("/getAiComment")
-    public Map<String,Object> getAiComment(@RequestBody Map<String,Object> paramMap){
-        Map<String,Object> resumeInfo = (Map<String, Object>) paramMap.get("resumeInfo");
-        Map<String,Object> resultMap = new HashMap<>();
+    public Map<String, Object> getAiComment(@RequestBody Map<String, Object> paramMap) {
+        Map<String, Object> resumeInfo = (Map<String, Object>) paramMap.get("resumeInfo");
+        Map<String, Object> resultMap = new HashMap<>();
         String response = "";
         try {
             ObjectMapper mapper = new ObjectMapper();
@@ -482,7 +481,7 @@ public class ResumeController {
 //            root.put("desired_position", resumeInfo.get("desired_position").toString());
 
             //학력사항 정보
-            List<Map<String, String>> educations = (List<Map<String,String>>) resumeInfo.get("education");
+            List<Map<String, String>> educations = (List<Map<String, String>>) resumeInfo.get("education");
             ArrayNode educationArray = mapper.createArrayNode();
             for (Map<String, String> education : educations) {
                 ObjectNode node = mapper.createObjectNode();
@@ -496,7 +495,7 @@ public class ResumeController {
             root.set("educations", educationArray);
 
             //경력사항 정보
-            List<Map<String, String>> careers  = (List<Map<String, String>>) resumeInfo.get("career");
+            List<Map<String, String>> careers = (List<Map<String, String>>) resumeInfo.get("career");
             ArrayNode careerArray = mapper.createArrayNode();
             for (Map<String, String> career : careers) {
                 ObjectNode node = mapper.createObjectNode();
@@ -509,7 +508,7 @@ public class ResumeController {
             root.set("career", careerArray);
 
             // 자격증 정보
-            List<Map<String,String>> certificates = (List<Map<String,String>>) resumeInfo.get("certifications");
+            List<Map<String, String>> certificates = (List<Map<String, String>>) resumeInfo.get("certifications");
             ArrayNode certificateArray = mapper.createArrayNode();
             for (Map<String, String> certificate : certificates) {
                 ObjectNode node = mapper.createObjectNode();
@@ -519,7 +518,7 @@ public class ResumeController {
             root.set("certifications", certificateArray);
 
             // 언어 정보
-            List<Map<String,String>> languages = (List<Map<String,String>>) resumeInfo.get("languages");
+            List<Map<String, String>> languages = (List<Map<String, String>>) resumeInfo.get("languages");
             ArrayNode languageArray = mapper.createArrayNode();
             for (Map<String, String> language : languages) {
                 ObjectNode node = mapper.createObjectNode();
@@ -530,7 +529,7 @@ public class ResumeController {
             root.set("languages", languageArray);
 
             //주요 스킬 정보
-            List<Map<String,String>> skills = (List<Map<String,String>>) resumeInfo.get("skills");
+            List<Map<String, String>> skills = (List<Map<String, String>>) resumeInfo.get("skills");
             ArrayNode skillArray = mapper.createArrayNode();
             for (Map<String, String> skill : skills) {
                 ObjectNode node = mapper.createObjectNode();
@@ -544,7 +543,7 @@ public class ResumeController {
             response = resumeService.getAiComment(root);
 
 
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
         resultMap.put("response", response);
@@ -565,9 +564,15 @@ public class ResumeController {
     // ======================================== 이력서 내역 =============================================
     // 마이페이지 - 이력서 내역 조회
     @PostMapping("/resumeDetail")
-    public ResponseEntity<Map<String,Object>> resumeDetailList(@RequestBody Map<String,Object> requestMap,
-                                                               @AuthenticationPrincipal UserPrincipal userPrincipal) {
+    public ResponseEntity<Map<String, Object>> resumeDetailList(@RequestBody Map<String, Object> requestMap,
+                                                                @AuthenticationPrincipal UserPrincipal userPrincipal) {
         int userNo = Integer.parseInt(userPrincipal.getUser_no().toString());
+
+        int page = Integer.parseInt(requestMap.getOrDefault("page", "1").toString());
+        int pageSize = Integer.parseInt(requestMap.getOrDefault("pageSize", "6").toString());
+        requestMap.put("offset", (page - 1) * pageSize);
+        requestMap.put("limit", pageSize);
+
         requestMap.put("user_no", userNo);
         int page     = Integer.parseInt(requestMap.getOrDefault("page", "1").toString());
         int totalCount = resumeService.selectResumeCount(requestMap);
@@ -593,14 +598,14 @@ public class ResumeController {
     }
 
     @PostMapping("/resume/liked")
-    public ResponseEntity<Map<String,Object>> resumeLikedList(@RequestBody Map<String,Object> requestMap,
-                                                              @AuthenticationPrincipal UserPrincipal userPrincipal) {
+    public ResponseEntity<Map<String, Object>> resumeLikedList(@RequestBody Map<String, Object> requestMap,
+                                                               @AuthenticationPrincipal UserPrincipal userPrincipal) {
 
         int userNo = Integer.parseInt(userPrincipal.getUser_no().toString());
-        int page     = Integer.parseInt(requestMap.getOrDefault("page", "1").toString());
+        int page = Integer.parseInt(requestMap.getOrDefault("page", "1").toString());
         int pageSize = Integer.parseInt(requestMap.getOrDefault("pageSize", "6").toString());
         requestMap.put("offset", (page - 1) * pageSize);
-        requestMap.put("limit",  pageSize);
+        requestMap.put("limit", pageSize);
         requestMap.put("user_no", userNo);
         List<ResumeInfoVO> resumeList = resumeService.resumeLikedList(requestMap);
         int totalCount = resumeService.selectLikeCount(requestMap);
@@ -613,13 +618,13 @@ public class ResumeController {
     }
 
     @PostMapping("/likeResume")
-    public ResponseEntity<Map<String,Object>> likeResume(@RequestBody Map<String,Integer> requestMap) {
+    public ResponseEntity<Map<String, Object>> likeResume(@RequestBody Map<String, Integer> requestMap) {
         int userNo = requestMap.get("userNo");
         int resumeNo = requestMap.get("resumeNo");
-        System.out.println(userNo+""+resumeNo+"----------------------------------------------------------------");
+        System.out.println(userNo + "" + resumeNo + "----------------------------------------------------------------");
         int likeResume = resumeService.likeResume(userNo, resumeNo);
 
-        if(likeResume == 1){
+        if (likeResume == 1) {
             Map<String, Object> resultMap = new HashMap<>();
             resultMap.put("message", "좋아요 완료되었습니다.");
             return ResponseEntity.ok(resultMap);
@@ -633,12 +638,12 @@ public class ResumeController {
     }
 
     @PostMapping("/unlikeResume")
-    public ResponseEntity<Map<String,Object>> unlikeResume(@RequestBody Map<String,Integer> requestMap) {
+    public ResponseEntity<Map<String, Object>> unlikeResume(@RequestBody Map<String, Integer> requestMap) {
         int userNo = requestMap.get("userNo");
         int resumeNo = requestMap.get("resumeNo");
         int unlikeResume = resumeService.unlikeResume(userNo, resumeNo);
 
-        if(unlikeResume == 1){
+        if (unlikeResume == 1) {
             Map<String, Object> resultMap = new HashMap<>();
             resultMap.put("message", "취소 완료되었습니다.");
             return ResponseEntity.ok(resultMap);
@@ -652,23 +657,23 @@ public class ResumeController {
     }
 
     @PostMapping("/deleteResume")
-    public ResponseEntity<Map<String,Object>> deleteResume(@RequestBody Map<String,Integer> requestMap) {
+    public ResponseEntity<Map<String, Object>> deleteResume(@RequestBody Map<String, Integer> requestMap) {
         Map<String, Object> resultMap = new HashMap<>();
-            int resume_no = requestMap.get("resume_no");
-            int result = resumeService.deleteResume(resume_no);
-            if (result == 1) {
-                resultMap.put("message", "Y");
-                return ResponseEntity.ok(resultMap);
-            } else {
-                resultMap.put("message", "N");
-                return ResponseEntity.ok(resultMap);
-            }
+        int resume_no = requestMap.get("resume_no");
+        int result = resumeService.deleteResume(resume_no);
+        if (result == 1) {
+            resultMap.put("message", "Y");
+            return ResponseEntity.ok(resultMap);
+        } else {
+            resultMap.put("message", "N");
+            return ResponseEntity.ok(resultMap);
+        }
 
     }
 
     // 관리자 이력서 페이지 표시여부 Y/N
     @PostMapping("/updateResumeStatus")
-    public ResponseEntity<Map<String,Object>> updateResumeStatus(@RequestBody Map<String,Object> requestMap) {
+    public ResponseEntity<Map<String, Object>> updateResumeStatus(@RequestBody Map<String, Object> requestMap) {
         int resumeNo = (Integer) requestMap.get("resume_no");
         String pubYn = (String) requestMap.get("publication_yn");
 
@@ -685,7 +690,7 @@ public class ResumeController {
 
     // 관리자 이력서 페이지 이력서 data 삭제
     @PostMapping("/deleteSelectedResume")
-    public ResponseEntity<Map<String,Object>> deleteSelectedResume(@RequestBody List<Integer> resumeNos) {
+    public ResponseEntity<Map<String, Object>> deleteSelectedResume(@RequestBody List<Integer> resumeNos) {
         Map<String, Object> resultMap = new HashMap<>();
         int result = resumeService.deleteSelectedResume(resumeNos);
         resultMap.put("message", result > 0 ? "Y" : "N");
@@ -739,10 +744,10 @@ public class ResumeController {
     // 관리자페이지에선 모든 정보 가져옴
     @GetMapping("/adminSelectResumeInfo")
     public Map<String, Object> adminResumeList(Model model,
-                                                   @RequestParam Map<String, Object> paramMap,
-                                                   HttpServletRequest request,
-                                                   HttpServletResponse response,
-                                                   HttpSession session) throws Exception {
+                                               @RequestParam Map<String, Object> paramMap,
+                                               HttpServletRequest request,
+                                               HttpServletResponse response,
+                                               HttpSession session) throws Exception {
 
         Map<String, Object> resultMap = new HashMap<>();
 
@@ -784,7 +789,7 @@ public class ResumeController {
 
     //스킬 그룹 코드 가져오기
     @GetMapping("/selectSkillGroupCode")
-    public ResponseEntity<List<String>> selectSkillGroupCodeList(){
+    public ResponseEntity<List<String>> selectSkillGroupCodeList() {
         List<String> skillGroupCodeList = new ArrayList<>();
         skillGroupCodeList = resumeService.getSkillGroupCode();
         return ResponseEntity.ok(skillGroupCodeList);
@@ -792,7 +797,7 @@ public class ResumeController {
 
     // 디테일 코드 가져오기
     @GetMapping("/selectSkillDetailCode")
-    public ResponseEntity<List<String>> selectSkillDetailCode(@RequestParam String group_code){
+    public ResponseEntity<List<String>> selectSkillDetailCode(@RequestParam String group_code) {
         List<String> skillDetailCodeList = new ArrayList<>();
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("group_code", group_code);
@@ -812,7 +817,6 @@ public class ResumeController {
     }
 
 
-
     //템플렛 조회하기.
 
     @GetMapping("/selectAllTemplates")
@@ -820,5 +824,117 @@ public class ResumeController {
     public List<TemplateVO> selectAllTemplates() {
         return resumeService.selectAllTemplates();
     }
+
+
+    @PostMapping("/insertTemplateInfo")
+    public Map<String, Object> insertTemplateInfo(@RequestBody Map<String, Object> paramMap) {
+        Map<String, Object> resultMap = new HashMap<>();
+        TemplateVO templateVO = new TemplateVO();
+
+
+        try{
+            // 2) JSON 생성 로직
+            String htmlContent = paramMap.get("content").toString();
+            String template_name = paramMap.get("title").toString();
+            templateVO.setTemplate_name(template_name);
+
+            //저장할 경로 생성//file_pypath
+            String outputDir = "X:/resume_output/template";
+            //타임스탬프 포맷터
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
+            //현재 날짜, 시간 문자열
+            String timestamp = LocalDateTime.now().format(formatter);
+            //파일명에 timestamp 결합 //원격 저장소에 저장할 때 이름?
+            String fileName = "template_" + timestamp + ".html";
+
+            Path dirPath = Paths.get(outputDir);
+            //resolve()는 Java의 Path 클래스에서 제공하는 메서드로, 경로(Path)를 결합하는 함수
+            Path filePath = dirPath.resolve(fileName);
+            //파일을 저장할 디렉토리(폴더) 가 없는 경우, 자동으로 생성
+            if (Files.notExists(dirPath)){
+                Files.createDirectories(dirPath);
+            }
+            //Java에서 문자열은 내부적으로 UTF-16으로 저장 <---이건  JDK 8에는 지원되지 않나보죠?
+            //문자열(htmlContent)을 UTF-8로 인코딩한 후, 해당 내용을 파일에 저장
+            byte[] bytes = htmlContent.getBytes(StandardCharsets.UTF_8);
+            //filePath에 byte[] 데이터를 한 번에 저장합니다
+            Files.write(filePath, bytes);
+
+            resultMap.put("filePath", filePath.toString());
+
+            //vo
+            templateVO.setTemplate_name(template_name);
+            templateVO.setFile_pypath(filePath.toString());
+            // 논리경로 (Logical Path) – 웹에서 접근 가능한 URL 패턴에 맞춰 설정
+            String logicalBase =  "/resume_output/template/";
+            templateVO.setFile_lopath(logicalBase+fileName);
+
+            //3 DB저장..........
+            int result = resumeService.insertTemplateInfo(templateVO);
+
+            resultMap.put("result", result);
+
+
+
+        }catch(Exception e){
+            throw new RuntimeException(e);
+
+        }
+
+        return resultMap;
+    }
+
+    @GetMapping("/selectOneTemplate")
+    public Map<String, Object> selectOneTemplate(@RequestParam("template_no") int templateNo) throws IOException {
+        Map<String, Object> resultMap = new HashMap<>();
+        TemplateVO templateVO = new TemplateVO();
+        templateVO = resumeService.selectTemplateByNum(templateNo);
+        System.out.println(templateNo);
+        String temp_filepypath = templateVO.getFile_pypath();
+
+        Path path = Paths.get(temp_filepypath);
+        String html = new String(Files.readAllBytes(path), StandardCharsets.UTF_8);
+
+        resultMap.put("html", html);
+        resultMap.put("template_name", templateVO.getTemplate_name());
+
+        return resultMap;
+    }
+
+    @PostMapping("/updateTemplateInfo")
+    public Map<String, Object> updateTemplateInfo(@RequestBody Map<String, Object> paramMap) throws IOException {
+        Map<String, Object> resultMap = new HashMap<>();
+        TemplateVO templateVO = new TemplateVO();
+        int template_no = Integer.parseInt(paramMap.get("template_no").toString());
+        String htmlContent = paramMap.get("content").toString();
+        templateVO = resumeService.selectTemplateByNum(template_no);
+        Path path = Paths.get(templateVO.getFile_pypath());
+        Files.write(path, htmlContent.getBytes(StandardCharsets.UTF_8));
+
+        int result = resumeService.updateTemplateInfo(paramMap);
+
+        resultMap.put("result", result);
+
+        return resultMap;
+    }
+
+    @PostMapping("/deleteTemplateInfo")
+    public Map<String, Object> deleteTemplateInfo(@RequestBody Map<String, Object> requestMap) throws IOException {
+        Map<String, Object> resultMap = new HashMap<>();
+        List<Integer> templateNoList = new ArrayList<>();
+        templateNoList = (List<Integer>) requestMap.get("resumeNo");
+
+        System.out.println("template_no:" + templateNoList);
+
+        for (Integer template_no : templateNoList) {
+            int result = resumeService.deleteTemplateInfo(template_no);
+        }
+
+//        resultMap.put("result", result);
+
+        return resultMap;
+    }
+
+
 
 }

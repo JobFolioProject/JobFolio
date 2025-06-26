@@ -82,7 +82,7 @@ const handleGenerateResume = async() => {
 
     return (
         <div className="my-cover-letter-section" style={{ textAlign: 'center' }}>
-            <h2>자기소개서 AI 생성</h2>
+            {/* <h2>자기소개서 AI 생성</h2> */}
             <PrettyBtn onClick={handleGenerateResume} disabled={loading}>
                 {loading ? '생성 중...' : '자기소개서 생성하기'}
             </PrettyBtn>

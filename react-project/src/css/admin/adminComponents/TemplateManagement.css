@@ -3,3 +3,159 @@
     flex-direction: row;
     width: 100%;
 }
+
+.templateManagement{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.templateManagement .template-template-wrapper {
+  min-width: 900px;
+  padding: 20px 80px;
+}
+
+.templateManagement .template-template-wrapper h2 {
+  margin-left: 100px;
+}
+
+.templateManagement .template-template-grid{
+  display: flex;
+  flex-wrap: wrap;       /* 넘칠 경우 줄바꿈 */
+  gap: 20px;             /* 카드 간 간격 */
+  justify-content: center; /* 왼쪽부터 정렬 */
+  padding: 20px 0;
+}
+
+.templateManagement .template-card-wrapper {
+  width: 280px;
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-sizing: border-box;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease;
+  cursor: pointer;
+}
+
+.templateManagement .template-card-wrapper:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.templateManagement .template-slide {
+  position : relative;
+  width: 100%;
+  height: 300px;
+  overflow: hidden;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.templateManagement .resume-select-checkbox {
+  /* position: absolute; 제거 또는 조정 */
+  /* top: 8px; 제거 또는 조정 */
+  /* left: 8px; 제거 또는 조정 */
+  /* z-index: 10; 제거 또는 조정 */
+  margin-right: 10px; /* 정보 옆에 배치하려면 여백 추가 */
+  transform: scale(1.8); 
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+/* info 박스 스타일 */
+.templateManagement .template-info-box {
+  background-color: #f9f9f9;
+  padding: 16px;
+  font-size: 0.9rem;
+  /* border: 1px solid #ccc; */
+  color: #333;
+  line-height: 1.6;
+  /* border-radius: 6px; */
+}
+
+.templateManagement .info-content {
+    flex: 1 1;
+    padding: 40px;
+    background-color: #f5f5f5;
+}
+
+.templateManagement .template-template-preview-image {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.templateManagement .community-notice-pagination {
+  margin-bottom: 100px;
+  border-top: none;
+}
+
+.templateManagement .template-info-box p {
+  margin: 4px 0;
+  word-break: break-all;
+}
+
+.templateManagement .template-info-box strong {
+  color: #555;
+  font-weight: 600;
+  margin-right: 4px;
+}
+
+
+/* 검색 바 전체 */
+.search-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 20px 0;
+  flex-wrap: wrap;
+}
+
+/* 검색창 그룹 */
+.search-group {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* 셀렉트, 인풋, 버튼 */
+.search-select,
+.search-input,
+.search-button {
+  padding: 6px 10px;
+  font-size: 0.9rem;
+}
+
+.search-input {
+  width: 200px;
+}
+
+.search-button,
+.delete-button {
+  background-color: #4a90e2;
+  border: none;
+  color: white;
+  padding: 6px 12px;
+  cursor: pointer;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.search-button:hover,
+.delete-button:hover {
+  background-color: #357abd;
+}
+
+.input-status-select {
+  margin-top: 8px;
+  width: 100px;
+  font-size: 0.9rem;
+}
+
+.status-select-container {
+  margin-top: 8px;
+
+}

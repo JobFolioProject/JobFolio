@@ -212,15 +212,20 @@ body {
   border-color: var(--primary-blue);
 }
 
-/* 요약 정보 행 */
+/* 요약 정보 행--- 가운데 정렬에서 왼쪽 정렬로 바뀜 */
 .summary-row {
     display: flex;
-    justify-content: space-between;
+    /* justify-content: space-between; */
     align-items: center;
     padding-bottom: 10px; /* 요약 정보와 상세 내용 사이 여백 */
     border-bottom: 1px dashed var(--border-light); /* 구분선 (선택 사항) */
     margin-bottom: 10px;
+    padding: 10px;
+    /* flex-wrap: wrap; */
+    justify-content: flex-start;
+    gap: 10px; /* 요소들 사이의 기본 간격 */
 }
+
 .summary-row:last-child {
     border-bottom: none; /* 마지막 요약 행에는 구분선 제거 */
 }
@@ -230,6 +235,11 @@ body {
     margin: 0; /* p 태그 기본 마진 제거 */
     font-size: 1rem;
     color: var(--text-dark);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    min-width: 0;
 }
 
 .summary-text strong {
@@ -271,14 +281,18 @@ body {
     font-size: 1rem;
 }
 
-/* 전체 summary-row 정렬을 위한 스타일 (필요시) */
-.summary-row {
-    display: flex;
-    flex-wrap: wrap; /* 내용이 많아지면 다음 줄로 넘어가도록 */
-    align-items: center; /* 세로 중앙 정렬 */
-    gap: 10px; /* 요소들 사이의 기본 간격 */
-    padding: 10px 0; /* 상하 패딩 */
+/* 이거 추가해서 해결함 */
+.summary-button-container {
+    flex-shrink: 0;  /* 공간이 부족해도 줄어들지 않도록 */
+    flex-basis: auto;  /* 자동 너비 */
+    margin-left: auto; /* 핵심: 항상 오른쪽으로 밀어냅니다. */
+    margin-left: 10px;  /* 좌측 간격은 선택 사항 */
+    align-self: flex-start; /* 만약 .summary-row가 flex-direction: column일 경우 등 필요할 수 있음 */
+    display: flex; /* 버튼 하나만 있어도 flex 컨테이너로 간주 (선택 사항) */
+    align-items: center; 
+    justify-content: flex-end;
 }
+
 
 /* 상세 정보 섹션 */
 .language-details-section,

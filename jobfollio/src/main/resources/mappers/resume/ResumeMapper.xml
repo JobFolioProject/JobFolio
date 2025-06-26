@@ -368,4 +368,30 @@
 		ORDER BY resume_no DESC
 			LIMIT #{offset}, #{limit}
 	</select>
+
+
+	<insert id="insertTemplateInfo"
+			parameterType="com.happyjob.jobfolio.vo.resume.TemplateVO">
+		INSERT INTO tb_template (
+			template_name,
+			file_pypath,
+			file_lopath
+		) VALUES (
+		          	 #{template_name},
+					 #{file_pypath},
+					 #{file_lopath}
+				 )
+	</insert>
+
+	<update id="updateTemplateInfo" parameterType="map">
+		UPDATE tb_template
+		SET template_name = #{title}
+		WHERE template_no = #{template_no}
+	</update>
+
+	<delete id="deleteTemplateInfo" parameterType="int">
+		DELETE FROM tb_template
+		WHERE template_no = #{template_no}
+	</delete>
+
 </mapper>
