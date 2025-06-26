@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import axios from "../../utils/axiosConfig";
 import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 import "../../css/interview/Interview.css";
 import Banner from "../common/Banner";
 import TextField from '@mui/material/TextField';
@@ -8,6 +9,7 @@ import { FormControl, InputLabel, Select, MenuItem, TextareaAutosize } from '@mu
 
 const Interview = () => {
   const { user, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
 
   // 지원 회사/직무, 자기소개
   const [applyCompany, setApplyCompany] = useState("");
@@ -42,12 +44,20 @@ const Interview = () => {
           user_no: user.userNo,
           pageSize: "all",
         });
-        setResumeList(res.resumeList || []);
+        const list = res.resumeList || [];
+       setResumeList(list);
+       // 목록이 비어 있으면 확인창 띄우고, 동의 시 이동
+        if (list.length === 0) {
+          const ok = window.confirm("저장된 이력서가 없습니다.\n이력서 작성 페이지로 이동하시겠습니까?");
+          if (ok) {
+            navigate("/resume/write");
+          }
+        }
       } catch (err) {
         console.error("이력서 목록 불러오기 실패:", err);
       }
     })();
-  }, [isAuthenticated, user]);
+  }, [isAuthenticated, user, navigate]);
 
   // 2) 자기소개 추출
   const extractBySelector = (htmlStr, selector) => {
@@ -75,7 +85,7 @@ const Interview = () => {
     }
   };
 
-  // 질문 파싱 헬퍼
+  // 질문 파싱
   const parseQuestions = (content) => {
     const arr = [];
     const regex = /(\d+)\.\s*(.*?)(?=\n\d+\.|\n*$)/gs;
@@ -86,10 +96,11 @@ const Interview = () => {
     return arr;
   };
 
-  // 3) 첫 배치 생성
+  // 3) 첫 질문 생성
   const generateFirstBatch = async () => {
     if (!introduce.trim()) return alert("자기소개를 입력해주세요.");
     if (!applyCompany.trim()) return alert("지원할 회사명을 입력해주세요.");
+    if (!applyPosition.trim()) return alert("지원할 직무를 입력해주세요.");
 
     setLoading(true);
     setQuestions([]);
@@ -119,7 +130,7 @@ const Interview = () => {
     }
   };
 
-  // 4) 추가 배치 생성
+  // 4) 추가 질문 생성
   const generateMore = async () => {
     setLoading(true);
     try {

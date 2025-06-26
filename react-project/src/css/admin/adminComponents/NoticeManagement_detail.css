@@ -20,10 +20,12 @@
   opacity: 0;
   transition: visibility 0s, opacity 0.2s ease-in-out;
   z-index: 1000;
+  pointer-events: none;
 }
 
 /* 모달이 보이는 상태 */
 .noticeManagementDetail.modal-show .modal-overlay {
+  pointer-events: auto;
   visibility: visible;
   opacity: 1;
 }
@@ -45,6 +47,8 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   transform: scale(0.95);
   transition: all 0.2s ease-in-out;
+  z-index: 1001;         
+  pointer-events: auto;  
 }
 
 .noticeManagementDetail.modal-show .modal-overlay .modal-content {

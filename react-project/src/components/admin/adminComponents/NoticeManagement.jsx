@@ -65,33 +65,6 @@ const NoticeManagement = () => {
     if (e.key === 'Enter') handleSearch();
   };
 
-  // 일괄 삭제 버튼
-  const handleDeleteSelected = async () => {
-    if (selectedIds.length === 0) {
-      alert('삭제할 항목을 선택하세요.');
-      return;
-    }
-
-    const confirmed = window.confirm('정말로 선택된 공지사항을 삭제하시겠습니까?');
-    if (!confirmed) return;
-
-    try {
-      await axios.delete(
-        '/api/admin/community/deleteBatch',
-        {
-          data: selectedIds,  
-          headers: { 'Content-Type': 'application/json' }
-        }
-      );
-      alert('삭제가 완료되었습니다.');
-      setSelectedIds([]);
-      fetchNotices();
-    } catch (err) {
-      console.error('삭제 실패', err);
-      alert('삭제 중 오류가 발생했습니다.');
-    }
-  };
-
   // 공지 등록 버튼 클릭
   const handleCreate = () => {
     setSelectedNotice(null);
@@ -142,6 +115,28 @@ const NoticeManagement = () => {
       priorityList.every((item) => checkedPinned.includes(item.boardNo));
     setAllCheckedPinned(allChecked);
   }, [checkedPinned, priorityList]);
+
+  // 공지사항 일괄 삭제
+  const handleBatchDelete = async (ids, label, resetFn) => {
+    if (ids.length === 0) {
+      alert(`삭제할 ${label}을(를) 선택하세요.`);
+      return;
+    }
+    if (!window.confirm(`정말로 선택된 ${label}을(를) 삭제하시겠습니까?`)) return;
+
+    try {
+      await axios.delete('/api/admin/community/deleteBatch', {
+        data: ids,
+        headers: { 'Content-Type': 'application/json' }
+      });
+      alert(`${label}이(가) 삭제되었습니다.`);
+      resetFn([]);          // 선택 목록 초기화
+      fetchNotices();       // 목록 갱신
+    } catch (err) {
+      console.error(`${label} 삭제 실패`, err);
+      alert('삭제 중 오류가 발생했습니다.');
+    }
+  };
 
   // 선택한 일반 공지를 고정 처리
   const handleFixPriority = () => {
@@ -279,7 +274,13 @@ const NoticeManagement = () => {
               <h3>고정 공지사항</h3>
               <div className="notice-controls">
                 <div className="notice-left-controls">
-                  <button className="notice-button" onClick={handleDeleteSelected} disabled={checkedPinned.length === 0}>선택 삭제</button>
+                  <button
+                    className="notice-button"
+                    onClick={() => handleBatchDelete(checkedPinned, '고정 공지', setCheckedPinned)}
+                    disabled={checkedPinned.length === 0}
+                  >
+                    선택 삭제
+                  </button>
                   <button className="notice-button" onClick={handleUnpinSelected} disabled={checkedPinned.length === 0}>고정 해제</button>
                 </div>
               </div>
@@ -362,7 +363,13 @@ const NoticeManagement = () => {
               <h3>공지사항</h3>
               <div className="notice-controls">
                 <div className="notice-left-controls">
-                  <button className="notice-button" onClick={handleDeleteSelected} disabled={selectedIds.length === 0}>선택 삭제</button>
+                  <button
+                    className="notice-button"
+                    onClick={() => handleBatchDelete(selectedIds, '공지사항', setSelectedIds)}
+                    disabled={selectedIds.length === 0}
+                  >
+                    선택 삭제
+                  </button>
                   <button className="notice-button" onClick={handleFixPriority} disabled={selectedIds.length === 0}>선택 고정</button>
                 </div>
                 <div className="notice-right-controls">
