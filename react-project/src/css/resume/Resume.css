@@ -476,7 +476,7 @@ body {
 
 /* 자기소개서 영역 */
 .my-cover-letter-section {
-    min-height: 220px; /* 최소 높이 살짝 늘림 */
+    min-height: 50px; /* 최소 높이 살짝 늘림 */
     resize: vertical;
     /* input/textarea와 동일한 스타일을 사용하므로 별도 스타일은 최소화 */
 }
