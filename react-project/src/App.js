@@ -31,7 +31,7 @@ import InfoManagement from "./components/admin/adminComponents/InfoManagement";
 import FaqManagement from "./components/admin/adminComponents/FaqManagement";
 import SubscriptManagement from "./components/admin/adminComponents/SubscriptManagement";
 import TemplateManagement from "./components/admin/adminComponents/TemplateManagement";
-import Configuration from "./components/admin/adminComponents/Configuration";
+import GroupManagement from "./components/admin/adminComponents/GroupManagement";
 import ResumeModify from "./components/resume/ResumeModify";
 import Join from "./components/user/join/JoinForm";
 import { AuthProvider } from "./context/AuthContext";
@@ -42,6 +42,18 @@ import NotFound from "./components/common/NotFound";
 import OAuthCallback from "./components/oauth/OAuthCallback";
 import OAuthError from "./components/oauth/OAuthError";
 import { SnackbarProvider } from "./context/SnackbarProvider";
+
+import { useEffect } from "react";
+
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0); // 최상단으로 이동
+  }, [pathname]);
+
+  return null;
+};
 
 
 function App() {
@@ -65,6 +77,7 @@ function AppContent() {
   return (
     <>
       {!isAdminPath && <MenuBar />}
+      <ScrollToTop />
 
       <main>
         <Routes>
@@ -165,6 +178,14 @@ function AppContent() {
             }
           />
           <Route
+            path="/adminPage/groupManagement"
+            element={
+              <PrivateRoute requiredRoles={["A", "B"]}>
+                <GroupManagement />
+              </PrivateRoute>
+            }
+          />
+          <Route
             path="/adminPage/subscriptStatus"
             element={
               <PrivateRoute requiredRoles={["A", "B"]}>
@@ -225,17 +246,6 @@ function AppContent() {
             element={
               <PrivateRoute requiredRoles={["A", "B"]}>
                 <AdminManagement />
-              </PrivateRoute>
-            }
-          />
-          {/* ========== 관리자 전용 (A, B 권한) 끝 ========== */}
-          {/* ========== 최고관리자 전용 (A 권한만) ========== */}
-      
-          <Route
-            path="/adminPage/configuration"
-            element={
-              <PrivateRoute requiredRoles={["A"]}>
-                <Configuration />
               </PrivateRoute>
             }
           />

@@ -125,7 +125,7 @@ const Resume = () => {
         newCertificate:[],
         newLanguage:[],
         coverLetter: '', // 자기소개서 상태 추가
-        template_no : 4, //
+        template_no : '', //
     });
 
 
@@ -1132,7 +1132,7 @@ const getFlagEmoji = (countryCode) => {
                         <br/>
         
                             <div className='templete-test'>
-                                <TemplateSelection formData={formData} editType={"I"}>템플렛선택</TemplateSelection>
+                                <TemplateSelection formData={formData} editType={"I"} setFormData={setFormData}>템플렛선택</TemplateSelection>
                             </div>
                         <br/>
                         <div style={{ display: 'flex', justifyContent: 'center' }}>

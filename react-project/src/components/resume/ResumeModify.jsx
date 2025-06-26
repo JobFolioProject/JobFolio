@@ -19,6 +19,7 @@ const ResumeModify = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
+  const [templateNo, setTemplateNo] = useState("");
   const pageSize = 6;
 
   const iframeRef = useRef(null);
@@ -68,7 +69,12 @@ const ResumeModify = () => {
   };
 
   //해당 이력서 상세 정보 렌더링
-  const openResumeDetail = async (resumeFilePath, resumeTitle, publication) => {
+  const openResumeDetail = async (
+    resumeFilePath,
+    resumeTitle,
+    publication,
+    templateNo
+  ) => {
     await axios
       .get("/api/resume/selectOneResume", {
         params: {
@@ -80,6 +86,7 @@ const ResumeModify = () => {
         setShowDetailResume(true);
         setResumeTitle(resumeTitle);
         setPublication(publication);
+        setTemplateNo(templateNo);
       })
       .catch((err) => {
         console.error(err);
@@ -128,7 +135,8 @@ const ResumeModify = () => {
                         openResumeDetail(
                           item.resume_file_pypath,
                           item.title,
-                          item.publication_yn
+                          item.publication_yn,
+                          item.template_no
                         )
                       }
                     >
@@ -182,6 +190,7 @@ const ResumeModify = () => {
         htmlString={htmlString}
         resumeTitle={resumeTitle}
         publication={publication}
+        templateNo={templateNo}
       ></ResumeEditModal>
     </>
   );

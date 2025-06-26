@@ -23,14 +23,13 @@ const CommuResume = () => {
   // 이력서 불러오기
   const fetchResumes = async () => {
     try {
-      const userNo = user.userNo
-      if (!userNo) return;
+      const userNo = user?.userNo ?? 0;
 
       const res = await axios.get('/api/resume/selectResume', {
         params: {
           page: currentPage,
           pageSize: pageSize,
-          user_no: user.userNo
+          user_no: userNo
         },
 
       });
@@ -52,6 +51,9 @@ const CommuResume = () => {
       );
 
       setTempList(withHtml);
+      console.log(withHtml);
+      
+      
     } catch (err) {
       console.error('이력서 게시판 데이터 호출 실패:', err);
     }
@@ -60,7 +62,7 @@ const CommuResume = () => {
   useEffect(() => {
 
     fetchResumes();
-
+    
   }, [currentPage, user]);
 
   // 이력서 좋아요
@@ -71,7 +73,7 @@ const CommuResume = () => {
 
       const res = await axios.post('/api/resume/likeResume', {
         resumeNo: resume_no,
-        userNo: user.userNo
+        userNo: userNo
       });
       console.log(res);
     } catch (err) {
@@ -88,7 +90,7 @@ const CommuResume = () => {
 
       const res = await axios.post('/api/resume/unlikeResume', {
         resumeNo: resume_no,
-        userNo: user.userNo
+        userNo: userNo
       });
       console.log(res);
     } catch (err) {
@@ -132,6 +134,9 @@ const CommuResume = () => {
           <div className="resume-template-grid">
             {currentTemplates.map((template) => (
               <div key={template.resume_no} className="template-view-wrapper">
+                <div className="like-count">
+                  {template.like_count}
+                </div>
                 <FavoriteIcon
                   className="likeIcon"
                   color={template.resume_liked === 1 ? 'error' : 'inherit'}
@@ -143,7 +148,7 @@ const CommuResume = () => {
                   }}
                   onMouseEnter={handleMouseEnterIcon}
                   onMouseLeave={handleMouseLeaveIcon}
-                />
+                ></FavoriteIcon>
                 <div className="template-slide" onClick={() => openResumePopup(template.resume_file_pypath)}>
                   <iframe
                     srcDoc={template.html}

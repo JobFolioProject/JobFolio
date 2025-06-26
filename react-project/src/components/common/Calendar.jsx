@@ -40,9 +40,7 @@ export default function Calendar({
         onChange={onChangeEndDate} // 변경 시 상위 컴포넌트의 핸들러 호출
         selectsEnd
         startDate={selectedStartDate}
-        endDate={
-          isCurrentJob ? new Date().toISOString().slice(0, 10) : selectedEndDate
-        }
+        endDate={isCurrentJob ? "" : selectedEndDate}
         minDate={selectedStartDate}
         dateFormat="yyyy-MM-dd"
         isClearable

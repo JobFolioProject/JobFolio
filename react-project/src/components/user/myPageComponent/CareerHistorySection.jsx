@@ -253,7 +253,7 @@ const CareerHistorySection = React.memo(({ userNo, careerHistoryList, onListChan
         const finalDateToSend = {
             ...currentFormCareer,
             user_no: userNo,
-            end_date: isCurrentJob ? '재직중' : currentFormCareer.end_date, // 재직중이면 재직중 문자열
+            end_date: isCurrentJob ? '' : currentFormCareer.end_date, // 재직중이면 재직중 문자열
         };
 
         // 수정 시작
@@ -349,7 +349,7 @@ const CareerHistorySection = React.memo(({ userNo, careerHistoryList, onListChan
 
     // UI에 표시할 종료 날짜 (재직중인 경우 "재직중" 표시)
     const displayEndDate = (career) => {
-        if (career.end_date === '재직중') {
+        if (career.end_date === '') {
             // '재직중'이라는 문자열을 저장한다면
             return '재직중';
         }

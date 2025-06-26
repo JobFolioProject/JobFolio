@@ -20,7 +20,7 @@ const menuData = [
   },
   { name: "상품 관리", path: "/adminPage/subscriptManagement" },
   { name: "템플릿 관리", path: "/adminPage/templateManagement" },
-  { name: "설정값", path: "/adminPage/configuration" }
+  { name: "공통코드 관리", path: "/adminPage/groupManagement" }
 ];
 
 const AdminSideBar = () => {

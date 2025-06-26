@@ -1,32 +1,27 @@
-package com.happyjob.jobfolio.controller.system;
+package com.happyjob.jobfolio.controller.admin;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.happyjob.jobfolio.security.UserPrincipal;
+import com.happyjob.jobfolio.service.admin.CommcodeService;
+import com.happyjob.jobfolio.vo.admin.CommcodeModel;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
-
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-
-import com.happyjob.jobfolio.service.system.CommcodeService;
-import com.happyjob.jobfolio.vo.system.CommcodeModel;
-
-@Controller
-@RequestMapping("/system/")
-public class CommcodeController {
+@RestController
+@RequestMapping("/api/admin")
+public class AdminCommcodeController {
 	
 	// Set logger
 	private final Logger logger = LogManager.getLogger(this.getClass());
@@ -40,17 +35,19 @@ public class CommcodeController {
 
 		
 	@RequestMapping("/listgroupcode")
-	@ResponseBody
-	public Map<String, Object> listgroupcode(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
-	         HttpServletResponse response, HttpSession session) throws Exception {
+	public Map<String, Object> listgroupcode(@RequestBody Map<String, Object> paramMap
+											 ) throws Exception {
 
 	      logger.info("+ Start Commcodecontroller.listgroupcode");
 		  logger.info("   - ParamMap : " + paramMap);
+
+		  Map<String, Object> searchdata = (Map<String, Object>) paramMap.get("searchdata");
 		    
 		  // 페이지 번호
-		  
-		  int cpage = Integer.parseInt((String) paramMap.get("cpage"));
-		  int pagesize = Integer.parseInt((String) paramMap.get("pagesize"));
+
+		int cpage = Integer.parseInt( searchdata.get("cpage").toString() );
+		int pagesize = Integer.parseInt( searchdata.get("pagesize").toString() );
+		System.out.println("cpage: " + cpage);
 		  int startpoint = (cpage - 1) * pagesize;
 		  
 		  paramMap.put("startpoint",startpoint);
@@ -80,9 +77,8 @@ public class CommcodeController {
     }
 	   	
 	@RequestMapping("/savegroupcode")
-	@ResponseBody
-	public Map<String, Object> savegroupcode(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
-	         HttpServletResponse response, HttpSession session) throws Exception {
+	public Map<String, Object> savegroupcode(@RequestBody Map<String, Object> paramMap,
+											 @AuthenticationPrincipal UserPrincipal userPrincipal) throws Exception {
 
 	      logger.info("+ Start Commcodecontroller.savegroupcode");
 		  logger.info("   - ParamMap : " + paramMap);
@@ -91,8 +87,8 @@ public class CommcodeController {
 		  String resultMsg;
 		  Map<String, Object> resultMap = new HashMap<String, Object>();
 		  
-		  String action = (String) paramMap.get("action");
-		  paramMap.put("liginid",(String)session.getAttribute("loginId"));
+		  String action = paramMap.get("action").toString();
+		  paramMap.put("liginid",userPrincipal.getUser_no().toString());
 		  
 		  try {
 			  
@@ -118,9 +114,7 @@ public class CommcodeController {
     }
 	
 	@RequestMapping("/selectgroupcode")
-	@ResponseBody
-	public Map<String, Object> selectgroupcode(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
-	         HttpServletResponse response, HttpSession session) throws Exception {
+	public Map<String, Object> selectgroupcode(@RequestBody Map<String, Object> paramMap) throws Exception {
 
 	      logger.info("+ Start Commcodecontroller.selectgroupcode");
 		  logger.info("   - ParamMap : " + paramMap);
@@ -147,15 +141,19 @@ public class CommcodeController {
     }
 	
 	@RequestMapping("/listdetailcode")
-	@ResponseBody
-	public Map<String, Object> listdetailcode(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
-	         HttpServletResponse response, HttpSession session) throws Exception {
+	public Map<String, Object> listdetailcode(@RequestBody Map<String, Object> paramMap) throws Exception {
 
 	      logger.info("+ Start Commcodecontroller.listdetailcode");
 		  logger.info("   - ParamMap : " + paramMap);
-		    
-		  int cpage = Integer.parseInt((String) paramMap.get("cpage"));
-		  int pagesize = Integer.parseInt((String) paramMap.get("pagesize"));
+
+		Map<String, Object> detaildata = (Map<String, Object>) paramMap.get("detaildata");
+
+		// 1) group_code를 꺼내서 paramMap에 추가
+		String groupCode = Objects.toString(detaildata.get("group_code"), "");
+		paramMap.put("group_code", groupCode);
+
+		int cpage = Integer.parseInt( detaildata.get("cpage").toString() );
+		int pagesize = Integer.parseInt( detaildata.get("pagesize").toString() );
 		  int startpoint = (cpage - 1) * pagesize;
 		  
 		  paramMap.put("startpoint",startpoint);
@@ -186,9 +184,8 @@ public class CommcodeController {
 	
 
 	@RequestMapping("/savedetailcode")
-	@ResponseBody
-	public Map<String, Object> savedetailcode(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
-	         HttpServletResponse response, HttpSession session) throws Exception {
+	public Map<String, Object> savedetailcode(@RequestBody Map<String, Object> paramMap,
+											  @AuthenticationPrincipal UserPrincipal userPrincipal) throws Exception {
 
 	      logger.info("+ Start Commcodecontroller.savedetailcode");
 		  logger.info("   - ParamMap : " + paramMap);
@@ -198,7 +195,7 @@ public class CommcodeController {
 		  Map<String, Object> resultMap = new HashMap<String, Object>();
 		  
 		  String action = (String) paramMap.get("action");
-		  paramMap.put("loginId",(String)session.getAttribute("loginId"));
+		  paramMap.put("loginId",userPrincipal.getUser_no().toString());
 		  
 		  logger.info("   - loginId : " + paramMap.get("loginId"));
 		  
@@ -228,9 +225,7 @@ public class CommcodeController {
 	
 
 	@RequestMapping("/selectdetailcode")
-	@ResponseBody
-	public Map<String, Object> selectdetailcode(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
-	         HttpServletResponse response, HttpSession session) throws Exception {
+	public Map<String, Object> selectdetailcode(@RequestBody Map<String, Object> paramMap) throws Exception {
 
 	      logger.info("+ Start Commcodecontroller.selectdetailcode");
 		  logger.info("   - ParamMap : " + paramMap);

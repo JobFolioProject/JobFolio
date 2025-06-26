@@ -1,36 +1,59 @@
 .navbar {
   display: flex;
   justify-content: space-between; /* 로고와 메뉴를 양쪽 끝에 배치 */
-  align-items: center;
+  align-items: flex-start;
+  height: 70px;
   padding: 0px 50px;
   background-color: #cce0ff;
   position: fixed;
   top: 0;
   width: 100%;
   z-index: 1000;
-  min-width: 200px; /* 최소 크기 제한 */
   box-sizing: border-box;
+  transition: height 0.3s ease;
+}
+
+/* 서브 메뉴 링크 기본 색 */
+.navbar ul li .main-menubar-submenu li > a {
+  color: #575757cc;              
+  font-size: 14px;
+  display: block;
+  text-decoration: none;
+  transition: color 0.3s, background-color 0.3s;
+}
+
+/* 서브 메뉴 링크 호버 색 */
+.navbar ul li .main-menubar-submenu li > a:hover {
+  color: #00ffff;            
 }
 
 .navbar ul {
   list-style: none;
   display: flex;
-  margin: 0;
   padding: 0;
 }
 
 .navbar ul li {
   margin: 0 20px;
+  position: relative;
+}
+.navbar > ul > li > .main-menubar-submenu {
+  display: none;   
+  position: absolute;       /* 부모 li에 상대적으로 절대 위치 */
+  top: 75%;                /* 부모 메뉴 바로 아래 */
+  left: -20px;
+  white-space: nowrap;      /* 줄바꿈 방지 */
 }
 
-.navbar ul li a {
+.navbar > ul > li > a {
   color: #000;
   text-decoration: none;
   font-size: 18px;
+  line-height: 70px;
   transition: color 0.3s;
 }
 
-.navbar ul li a:hover {
+.navbar > ul > li > a:hover {
   color: #00ffff;
 }
 
@@ -38,18 +61,24 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  font-size: large;
-  font-weight: 650;
-  letter-spacing: 0.1em;
-  height: 70px;
+  justify-content: flex-start;
+  margin: 0;
+  padding: 0;
 }
 
 .navbar .logoImg {
   width: 80px;
-  margin-top: 10px;
+  height: auto;
+  margin-left: 40px;
 }
 
 .user-options {
+  display: flex;
+  align-items: center;
+}
+.user-options span{
+  line-height: 70px;
+  cursor: pointer;
   display: flex;
   align-items: center;
 }
@@ -62,9 +91,10 @@
   align-items: center;
   cursor: pointer;
   width: 30px;
+  height: 30px;
   position: absolute;
   left: 10px; /* 로고 왼쪽 끝에 위치 */
-  top: 50%;
+  top: 20px;
   transform: translateY(-50%); /* 수직 중앙 정렬 */
   z-index: 1100; /* 메뉴보다 항상 위에 표시되도록 설정 */
 }
@@ -78,10 +108,21 @@
 }
 
 /* 반응형 처리 */
+@media screen and (min-width: 1025px) {
+  .navbar:hover ul li > .main-menubar-submenu,
+  .navbar ul li:hover > .main-menubar-submenu {
+    display: flex;
+    flex-direction: column;
+  }
+  .navbar:hover {
+  height: 190px;
+  }
+}
+
 @media screen and (max-width: 1024px) {
   .navbar {
     flex-direction: column;
-    padding: 10px 20px;
+    align-items: flex-start;
   }
 
   .navbar ul {
@@ -95,21 +136,41 @@
     display: flex; /* 클릭 시 메뉴 표시 */
     flex-direction: column;
     align-items: center;
-    background-color: #f8f0ef;
+    background-color: #cce0ff;
     position: absolute;
-    top: 50px;
+    top: 70px;
     left: 0;
+    padding-bottom: 5px;
     width: 100%;
     z-index: 1000;
   }
 
   .navbar ul li {
-    margin: 10px 0;
+    position: static;
+  }
+  .navbar ul li .main-menubar-submenu {
+    position: static; /* 기본 흐름에 따라 배치 */
+    display: block;   /* 항상 보이도록 */
+    background-color: transparent;
+    margin-top: -20px;     
+    padding-left: 10px;
+  }
+  .navbar ul li .main-menubar-submenu li {
+    text-align: left;
+    margin: 0;
+  }
+  .navbar ul li .main-menubar-submenu li > a{
+    text-align: left;
   }
 
-  .logo {
+  /* 하이라이트 효과 */
+  .navbar ul li .main-menubar-submenu li > a:hover {
+    color: #00ffff;
+  }
+
+  .navbar .logo {
     justify-content: center;
-    margin-bottom: 10px;
+    width: 100%;
   }
 
   .user-options {
@@ -119,7 +180,7 @@
   }
 
   .toggle-button {
-    display: flex; /* 작은 화면에서 햄버거 버튼 표시 */
+    display: flex;    
   }
 }
 
@@ -127,39 +188,8 @@
   .navbar ul li a {
     font-size: 16px;
   }
-
-  .logo {
-    font-size: medium;
+  .navbar ul li .main-menubar-submenu li a {
+    font-size: 13px;
   }
 }
 
-@media screen and (max-width: 480px) {
-  .navbar {
-    padding: 5px;
-  }
-
-  .navbar ul li {
-    margin: 15px 0;
-  }
-
-  .logo {
-    font-size: medium;
-    margin-bottom: 10px;
-  }
-}
-
-
-@media screen and (max-width: 430px) {
-  .navbar {
-    padding: 5px;
-  }
-
-  .navbar ul li {
-    margin: 15px 0;
-  }
-
-  .logo {
-    font-size: medium;
-    margin-bottom: 10px;
-  }
-}

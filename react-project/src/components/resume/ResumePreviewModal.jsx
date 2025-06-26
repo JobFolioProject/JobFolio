@@ -5,7 +5,7 @@ import axios from "../../utils/axiosConfig";
 import '../../css/resume/ResumePreviewModal.css';
 import { faL } from '@fortawesome/free-solid-svg-icons';
 
-const ResumePreviewModal = ({ open, onClose, loading, setLoading, htmlString, formData }) => {
+const ResumePreviewModal = ({ open, onClose, loading, setLoading, htmlString, setHtmlString, formData }) => {
 
     const [download, setDownload] = useState(false);
     const [filePath, setFilePath] = useState("");
@@ -73,12 +73,18 @@ const ResumePreviewModal = ({ open, onClose, loading, setLoading, htmlString, fo
             } else {
                 await pdfSubmit();
             }
-            onClose(false);
             setDownload(false);
+            close();
         } catch (err) {
             // 이미 내부에서 alert 처리하므로 별도 처리 생략 가능
         }
     };
+    
+    const close = () =>{
+        setHtmlString("");
+        setDownload(false);
+        onClose(false);
+    }
 
 
     if(!open){return null;}
@@ -108,7 +114,7 @@ const ResumePreviewModal = ({ open, onClose, loading, setLoading, htmlString, fo
                     </button>
                 </>
             )}
-          <button className="modal-close secondaryBtn" onClick={()=>onClose(false)}>
+          <button className="modal-close secondaryBtn" onClick={close}>
             닫기
           </button>
         </div>

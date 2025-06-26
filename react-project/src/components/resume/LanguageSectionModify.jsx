@@ -5,6 +5,10 @@ const LanguageSectionModify = ({ resumeInfo, setResumeInfo }) => {
       <button
         className="addrBtn"
         onClick={() => {
+          if (resumeInfo.languages.length >= 4) {
+            alert("외국어 역량은 최대 4개까지 입력 가능합니다");
+            return;
+          }
           setResumeInfo({
             ...resumeInfo,
             languages: [
@@ -23,7 +27,9 @@ const LanguageSectionModify = ({ resumeInfo, setResumeInfo }) => {
       {resumeInfo.languages.map((lang, index) => (
         <div className="toggleInput" key={index}>
           <div>
-            <label>언어</label>
+            <label>
+              언어 <span className="required-mark">*</span>
+            </label>
             <input
               type="text"
               value={lang.language}
@@ -39,7 +45,9 @@ const LanguageSectionModify = ({ resumeInfo, setResumeInfo }) => {
           </div>
 
           <div>
-            <label>등급</label>
+            <label>
+              등급 <span className="required-mark">*</span>
+            </label>
             <select
               name="level"
               value={lang.level}

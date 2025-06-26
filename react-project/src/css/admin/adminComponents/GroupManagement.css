@@ -1,0 +1,179 @@
+/* GroupManagement.css */
+
+.groupManagement {
+  display: flex;
+  background-color: #ffffff;
+  flex-direction: row;
+}
+
+/* 메인 컨텐츠 영역: 너비 80% */
+.group-content {
+  flex: none;
+  width: 70%;
+  padding: 24px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin: 0 auto; /* 가운데 정렬 */
+}
+
+/* 타이틀 영역 */
+.group-conTitle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #333;
+}
+
+/* 오른쪽 버튼 그룹 */
+.group-conTitle .fr {
+  display: flex;
+  gap: 8px;
+}
+
+/* 테이블 공통 스타일 */
+.group-col {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+}
+
+.group-col th,
+.group-col td {
+  padding: 12px 8px;
+  border-bottom: 1px solid #e8e8e8;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.group-col thead th {
+  background-color: #fafafa;
+  font-weight: 600;
+  color: #555;
+}
+
+/* hoverable-row: 클릭 가능한 코드명 */
+.hoverable-row {
+  cursor: pointer;
+  color: #1890ff;
+  transition: color 0.2s ease;
+}
+
+.hoverable-row:hover {
+  text-decoration: underline;
+}
+
+/* 공통 버튼 스타일 */
+.btn {
+  display: inline-block;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.5;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  text-align: center;
+  vertical-align: middle;
+  user-select: none;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: #1890ff;
+  border-color: #1890ff;
+}
+
+.btn-primary:hover {
+  background-color: #40a9ff;
+  border-color: #40a9ff;
+}
+
+.btn-light {
+  color: #333;
+  background-color: #f5f5f5;
+  border-color: #d9d9d9;
+}
+
+.btn-light:hover {
+  background-color: #e6e6e6;
+  border-color: #c1c1c1;
+}
+
+.btn-default {
+  color: #333;
+  background-color: #fff;
+  border-color: #d9d9d9;
+}
+
+.btn-default:hover {
+  background-color: #f5f5f5;
+  border-color: #c1c1c1;
+}
+
+/* Pagination 컴포넌트가 들어갈 영역 여백 */
+.group-content > div + div {
+  margin-top: 24px;
+}
+
+/* 오버레이: 화면 전체, 반투명 배경 */
+.custom-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.4);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 모달 컨텐츠: 내용 크기에 맞춰 자동 너비, 높이는 최대값 지정 */
+.custom-modal-content {
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  padding: 24px;
+  position: relative;
+  max-height: 80vh;
+  overflow-y: auto;
+  
+  /* 주요 변경: 내용 크기에 맞춰 width auto */
+  width: auto;
+  display: inline-block;
+  /* 최대 너비 제한 */
+  max-width: 90%;
+}
+
+/* 상세 모달은 약간 더 넓게 */
+.detail-modal-content {
+  max-width: 95%;
+}
+
+/* 모달 내부에 있는 테이블 자동 크기 조정 */
+.custom-modal-content .modal-content {
+  width: auto !important;
+  min-width: 400px; /* 최소 너비 */
+}
+
+/* Modal 내 버튼 스타일 */
+.modal-button button {
+  background-color: #1890ff;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+  margin-left: 8px;
+}
+
+.modal-button button:hover {
+  background-color: #40a9ff;
+}
+

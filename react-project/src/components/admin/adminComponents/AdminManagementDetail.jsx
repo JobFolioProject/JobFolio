@@ -32,6 +32,7 @@ const AdminManagementDetail = ({ open, onClose, selectedUser, currentUser, onUse
     const [isLoading, setIsLoading] = useState(false);
     const [editForm, setEditForm] = useState({});
     const [alert, setAlert] = useState({ show: false, message: '', severity: 'info' });
+    
 
     // 구독 마감일자만 수정 가능 (A, B 권한)
     const canEditSubscription = () => {
@@ -58,7 +59,7 @@ const AdminManagementDetail = ({ open, onClose, selectedUser, currentUser, onUse
         }
     }, [open, selectedUser]);
 
-    // 🔍 사용자 상세 정보 조회
+    //  사용자 상세 정보 조회
     const fetchUserDetail = async (loginId) => {
         setIsLoading(true);
 
@@ -87,7 +88,7 @@ const AdminManagementDetail = ({ open, onClose, selectedUser, currentUser, onUse
         }
     };
 
-    // 📱 전화번호 포맷팅 함수들
+    // 전화번호 포맷팅 함수들
     const formatPhoneNumber = (phone) => {
         if (!phone) return '';
         const cleaned = phone.replace(/\D/g, '');
@@ -97,7 +98,7 @@ const AdminManagementDetail = ({ open, onClose, selectedUser, currentUser, onUse
         return `${cleaned.slice(0, 3)}-${cleaned.slice(3, 7)}-${cleaned.slice(7, 11)}`;
     };
 
-    // 📅 날짜 포맷팅 함수
+    //  날짜 포맷팅 함수
     const formatDateTime = (dateString) => {
         if (!dateString) return '없음';
         const date = new Date(dateString);
@@ -109,13 +110,13 @@ const AdminManagementDetail = ({ open, onClose, selectedUser, currentUser, onUse
         return `${year}-${month}-${day} ${hours}:${minutes}`;
     };
 
-    // 🚨 알림 표시
+    //  알림 표시
     const showAlert = (message, severity = 'info') => {
         setAlert({ show: true, message, severity });
         setTimeout(() => setAlert({ show: false, message: '', severity: 'info' }), 5000);
     };
 
-    // 💾 구독 마감일자만 저장
+    //  구독 마감일자만 저장
     const saveSubscriptionExpiry = async () => {
         if (!userDetail) return;
 
@@ -123,8 +124,6 @@ const AdminManagementDetail = ({ open, onClose, selectedUser, currentUser, onUse
             const updateData = {
                 expire_days: editForm.expire_days || null,
             };
-
-            console.log('💾 저장할 데이터:', updateData);
 
             await axios.put(`/api/admin/customers/${userDetail.login_id}`, updateData);
             showAlert('구독 마감일자가 성공적으로 저장되었습니다.', 'success');
@@ -136,11 +135,11 @@ const AdminManagementDetail = ({ open, onClose, selectedUser, currentUser, onUse
             }
         } catch (error) {
             console.error('❌ 구독 마감일자 저장 실패:', error);
-            showAlert('구독 마감일자 저장에 실패했습니다.', 'error');
+            const errorMessage = error.response?.data || '구독 마감일자 저장에 실패했습니다.';
+            showAlert(errorMessage, 'error');
         }
     };
 
-    // 👑 권한 변경
     const changeUserAuthority = async (newAuthority) => {
         if (!canChangeAuthority()) {
             showAlert('권한 변경은 슈퍼관리자(A)만 가능합니다.', 'error');
@@ -165,11 +164,12 @@ const AdminManagementDetail = ({ open, onClose, selectedUser, currentUser, onUse
             }
         } catch (error) {
             console.error('❌ 권한 변경 실패:', error);
-            showAlert('권한 변경에 실패했습니다.', 'error');
+            const errorMessage = error.response?.data || '권한 변경에 실패했습니다.';
+            showAlert(errorMessage, 'error');
         }
     };
 
-    // 🚫 탈퇴 처리
+    //  탈퇴 처리
     const withdrawUser = async () => {
         if (!window.confirm('정말로 이 사용자를 탈퇴 처리하시겠습니까?')) {
             return;
@@ -186,7 +186,8 @@ const AdminManagementDetail = ({ open, onClose, selectedUser, currentUser, onUse
             }
         } catch (error) {
             console.error('❌ 탈퇴 처리 실패:', error);
-            showAlert('탈퇴 처리에 실패했습니다.', 'error');
+            const errorMessage = error.response?.data || '탈퇴 처리에 실패했습니다.';
+            showAlert(errorMessage, 'error');
         }
     };
 
@@ -207,7 +208,8 @@ const AdminManagementDetail = ({ open, onClose, selectedUser, currentUser, onUse
             }
         } catch (error) {
             console.error('❌ 사용자 복구 실패:', error);
-            showAlert('사용자 복구에 실패했습니다.', 'error');
+            const errorMessage = error.response?.data || '사용자 복구에 실패했습니다.';
+            showAlert(errorMessage, 'error');
         }
     };
 
@@ -221,7 +223,7 @@ const AdminManagementDetail = ({ open, onClose, selectedUser, currentUser, onUse
         }
     };
 
-    // 🔥 성별 표시 변환 (M → 남성, F/W → 여성)
+    //  성별 표시 변환 (M → 남성, F/W → 여성)
     const getDisplaySex = (sex) => {
         if (sex === 'M') return '남성';
         if (sex === 'F' || sex === 'W') return '여성';
@@ -230,12 +232,18 @@ const AdminManagementDetail = ({ open, onClose, selectedUser, currentUser, onUse
 
     // 권한 칩 렌더링
     const renderAuthorityChip = (userType) => {
+        
         if (userType === 'A') {
             return (
                 <Chip
                     label="슈퍼관리자"
                     icon={<CrownIcon fontSize="small" />}
-                    sx={{ bgcolor: '#FFD700', color: '#333', fontWeight: 'bold' }}
+                    sx={{   bgcolor: '#FFD700', 
+                            color: '#333', 
+                            fontWeight: 'bold',
+                            pointerEvents: 'none', 
+                            cursor: 'default'
+                     }}
                     clickable={false}
                 />
             );
@@ -244,7 +252,11 @@ const AdminManagementDetail = ({ open, onClose, selectedUser, currentUser, onUse
                 <Chip
                     label="관리자"
                     icon={<SettingsIcon fontSize="small" />}
-                    sx={{ bgcolor: '#90CAF9', color: '#333', fontWeight: 'bold' }}
+                    sx={{   bgcolor: '#90CAF9', 
+                            color: '#333', 
+                            fontWeight: 'bold', 
+                            pointerEvents: 'none', 
+                            cursor: 'default' }}
                     clickable={false}
                 />
             );
@@ -253,7 +265,11 @@ const AdminManagementDetail = ({ open, onClose, selectedUser, currentUser, onUse
                 <Chip
                     label="일반회원"
                     icon={<PersonIcon fontSize="small" />}
-                    sx={{ bgcolor: '#E0E0E0', color: '#333', fontWeight: 'bold' }}
+                    sx={{   bgcolor: '#E0E0E0', 
+                            color: '#333', 
+                            fontWeight: 'bold',
+                            pointerEvents: 'none', 
+                            cursor: 'default' }}
                     clickable={false}
                 />
             );

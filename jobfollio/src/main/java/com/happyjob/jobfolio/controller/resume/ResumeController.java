@@ -288,7 +288,9 @@ public class ResumeController {
                 .replaceAll("(?i)<br(?=[^/>]*>)", "<br/>")
                 .replaceAll("(?i)<hr(?=[^/>]*>)", "<hr/>")
                 .replaceAll("(?i)<img([^>]*)(?<!/)>", "<img$1/>")   // img 도 자주 문제
-                .replaceAll("(?i)<meta([^>]*)(?<!/)>", "<meta$1/>");
+                .replaceAll("(?i)<meta([^>]*)(?<!/)>", "<meta$1/>")
+                .replaceAll("(?i)<link([^>]*)(?<!/)>", "<link$1/>")
+                .replaceAll("&(?!(?:amp;|lt;|gt;|quot;|apos;))", "&amp;");
 
         String xhtml = ""
                 + "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -565,15 +567,29 @@ public class ResumeController {
     public ResponseEntity<Map<String, Object>> resumeDetailList(@RequestBody Map<String, Object> requestMap,
                                                                 @AuthenticationPrincipal UserPrincipal userPrincipal) {
         int userNo = Integer.parseInt(userPrincipal.getUser_no().toString());
+
         int page = Integer.parseInt(requestMap.getOrDefault("page", "1").toString());
         int pageSize = Integer.parseInt(requestMap.getOrDefault("pageSize", "6").toString());
         requestMap.put("offset", (page - 1) * pageSize);
         requestMap.put("limit", pageSize);
+
         requestMap.put("user_no", userNo);
-        List<ResumeInfoVO> resumeList = resumeService.selectResumeInfo(requestMap);
+        int page     = Integer.parseInt(requestMap.getOrDefault("page", "1").toString());
         int totalCount = resumeService.selectResumeCount(requestMap);
 
+        int pageSize = 0;
+        if (requestMap.get("pageSize") != null && "all".equals(requestMap.get("pageSize").toString())) {
+            pageSize = totalCount;
+        }
+        else {
+            pageSize = Integer.parseInt(requestMap.getOrDefault("pageSize", "6").toString());
+        }
+
+        requestMap.put("offset", (page - 1) * pageSize);
+        requestMap.put("limit",  pageSize);
         requestMap.put("totalCount", totalCount);
+
+        List<ResumeInfoVO> resumeList = resumeService.selectResumeInfo(requestMap);
 
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("resumeList", resumeList);
@@ -659,11 +675,11 @@ public class ResumeController {
     @PostMapping("/updateResumeStatus")
     public ResponseEntity<Map<String, Object>> updateResumeStatus(@RequestBody Map<String, Object> requestMap) {
         int resumeNo = (Integer) requestMap.get("resume_no");
-        String statusYn = (String) requestMap.get("status_yn");
+        String pubYn = (String) requestMap.get("publication_yn");
 
         ResumeInfoVO vo = new ResumeInfoVO();
         vo.setResume_no(resumeNo);
-        vo.setStatus_yn(statusYn);
+        vo.setPublication_yn(pubYn);
 
         int result = resumeService.updateResumeStatus(vo);
 
@@ -712,6 +728,8 @@ public class ResumeController {
         int offset = (page - 1) * pageSize;
         paramMap.put("offset", offset);
         paramMap.put("limit", pageSize);
+
+        if(paramMap.get("userNo") == null) paramMap.put("userNo", 0);
 
         List<ResumeInfoVO> boardList = resumeService.communityResumeList(paramMap);
 

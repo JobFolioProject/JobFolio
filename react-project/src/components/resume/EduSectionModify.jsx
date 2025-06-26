@@ -11,9 +11,10 @@ const EduSectionModify = ({ resumeInfo, setResumeInfo }) => {
           : item
       ),
     });
-    console.log(resumeInfo.education[index].enroll_date);
-    console.log(resumeInfo.education[index].grad_date);
   };
+
+  const eduStatusOptions = ["졸업", "재학", "수료", "휴학", "자퇴"];
+
   useEffect(() => {
     console.log(resumeInfo);
   }, []);
@@ -22,6 +23,10 @@ const EduSectionModify = ({ resumeInfo, setResumeInfo }) => {
       <button
         className="addrBtn"
         onClick={() => {
+          if (resumeInfo.education.length >= 4) {
+            alert("학력사항은 최대 4개까지 입력 가능합니다");
+            return;
+          }
           setResumeInfo({
             ...resumeInfo,
             education: [
@@ -46,7 +51,9 @@ const EduSectionModify = ({ resumeInfo, setResumeInfo }) => {
       {resumeInfo.education.map((edu, index) => (
         <div className="toggleInput" key={index}>
           <div>
-            <label>학교명</label>
+            <label>
+              학교명 <span className="required-mark">*</span>
+            </label>
             <input
               type="text"
               value={edu.school_name}
@@ -64,7 +71,9 @@ const EduSectionModify = ({ resumeInfo, setResumeInfo }) => {
           </div>
 
           <div>
-            <label>입학/졸업 날짜</label>
+            <label>
+              입학/졸업 <span className="required-mark">*</span>
+            </label>
             <div className="edu_date_section">
               <Calendar
                 selectedStartDate={
@@ -74,64 +83,50 @@ const EduSectionModify = ({ resumeInfo, setResumeInfo }) => {
                 onChangeStartDate={(date) =>
                   handleEducationDateChange(index, "enroll_date", date)
                 }
-                selectedEndDate={
-                  edu.isCurrentEdu
-                    ? new Date()
-                    : edu.grad_date
-                    ? new Date(edu.grad_date)
-                    : null
-                }
+                selectedEndDate={edu.isCurrentEdu ? "" : edu.grad_date}
                 endplaceholder={"졸업일"}
                 onChangeEndDate={(date) =>
                   handleEducationDateChange(index, "grad_date", date)
                 }
                 isCurrentEdu={edu.isCurrentEdu}
               />
-              <span className="current-edu-checkbox">
-                <input
-                  type="checkbox"
-                  id="currentEdu"
-                  name=""
-                  onChange={() => {
-                    setResumeInfo({
-                      ...resumeInfo,
-                      education: resumeInfo.education.map((item, idx) =>
-                        idx === index
-                          ? {
-                              ...item,
-                              isCurrentEdu: !item.isCurrentEdu,
-                              grad_date: !item.isCurrentEdu
-                                ? new Date().toISOString().slice(0, 10)
-                                : "",
-                            }
-                          : item
-                      ),
-                    });
-                  }}
-                />
-                <p>재학중</p>
-              </span>
             </div>
           </div>
           <div>
-            <label>학력상태</label>
-            <input
-              type="text"
+            <label>
+              학력상태 <span className="required-mark">*</span>
+            </label>
+            <select
+              name="status"
               value={edu.edu_status}
               onChange={(e) => {
+                const value = e.target.value;
                 setResumeInfo({
                   ...resumeInfo,
                   education: resumeInfo.education.map((item, idx) =>
                     idx === index
-                      ? { ...item, edu_status: e.target.value }
+                      ? {
+                          ...item,
+                          edu_status: e.target.value,
+                          isCurrentEdu: value === "재학",
+                          grad_date: value === "재학" ? "" : item.grad_date,
+                        }
                       : item
                   ),
                 });
               }}
-            />
+            >
+              {eduStatusOptions.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
           </div>
           <div>
-            <label>전공</label>
+            <label>
+              전공 <span className="required-mark">*</span>
+            </label>
             <input
               type="text"
               value={edu.major}
@@ -163,7 +158,9 @@ const EduSectionModify = ({ resumeInfo, setResumeInfo }) => {
             />
           </div>
           <div>
-            <label>학점</label>
+            <label>
+              학점 <span className="required-mark">*</span>
+            </label>
             <input
               type="text"
               value={edu.gpa}

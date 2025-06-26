@@ -3,7 +3,9 @@ const PersonalInfoModify = ({ resumeInfo, setResumeInfo }) => {
     <>
       <label>
         <div>
-          <span>제목</span>
+          <span>
+            제목<span className="required-mark">*</span>
+          </span>
         </div>
         <div>
           <input
@@ -21,7 +23,9 @@ const PersonalInfoModify = ({ resumeInfo, setResumeInfo }) => {
       </label>
       <label>
         <div>
-          <span>이름</span>
+          <span>
+            이름<span className="required-mark">*</span>
+          </span>
         </div>
         <div>
           <input
@@ -39,7 +43,9 @@ const PersonalInfoModify = ({ resumeInfo, setResumeInfo }) => {
       </label>
       <label>
         <div>
-          <span>이메일</span>
+          <span>
+            이메일<span className="required-mark">*</span>
+          </span>
         </div>
         <div>
           <input
@@ -57,7 +63,9 @@ const PersonalInfoModify = ({ resumeInfo, setResumeInfo }) => {
       </label>
       <label>
         <div>
-          <span>전화번호</span>
+          <span>
+            전화번호<span className="required-mark">*</span>
+          </span>
         </div>
         <div>
           <input

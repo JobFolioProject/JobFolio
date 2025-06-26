@@ -105,11 +105,16 @@ const PostLike = () => {
                                     <h3 onClick={() => openResumePopup(item.resume_file_pypath)}>
                                         {item.title || '제목 없음'}
                                     </h3>
+                                    <div className='like-part'>
                                     <FavoriteIcon
-                                        className="likeIcon"
+                                        className="postLikeIcon"
                                         color="error"
                                         onClick={() => unlikeResume(item.resume_no)}
                                     />
+                                    <div className="like-count">
+                                      {item.like_count}
+                                    </div>
+                                    </div>
                                 </div>
                                 <div className="postLikeItemDetail">
                                     <p className="resumeItemJob">{item.desired_position || '희망 직무 없음'}</p>
