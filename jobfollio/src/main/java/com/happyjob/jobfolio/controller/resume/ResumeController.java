@@ -564,15 +564,9 @@ public class ResumeController {
     // ======================================== 이력서 내역 =============================================
     // 마이페이지 - 이력서 내역 조회
     @PostMapping("/resumeDetail")
-    public ResponseEntity<Map<String, Object>> resumeDetailList(@RequestBody Map<String, Object> requestMap,
-                                                                @AuthenticationPrincipal UserPrincipal userPrincipal) {
+    public ResponseEntity<Map<String,Object>> resumeDetailList(@RequestBody Map<String,Object> requestMap,
+                                                               @AuthenticationPrincipal UserPrincipal userPrincipal) {
         int userNo = Integer.parseInt(userPrincipal.getUser_no().toString());
-
-        int page = Integer.parseInt(requestMap.getOrDefault("page", "1").toString());
-        int pageSize = Integer.parseInt(requestMap.getOrDefault("pageSize", "6").toString());
-        requestMap.put("offset", (page - 1) * pageSize);
-        requestMap.put("limit", pageSize);
-
         requestMap.put("user_no", userNo);
         int page     = Integer.parseInt(requestMap.getOrDefault("page", "1").toString());
         int totalCount = resumeService.selectResumeCount(requestMap);
