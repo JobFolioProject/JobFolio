@@ -40,8 +40,8 @@ const SubscriptManagementDetail = ({ item, onClose, mode, onSaved }) => {
     const payload = {
       product_name: productName,
       product_detail: productDetail,
-      price: price,
-      sub_period: subPeriod,
+      price: Number(price),
+      sub_period: Number(subPeriod),
       use_yn: useYn,
       ...(isEdit && { product_no: item?.product_no }),
     };
