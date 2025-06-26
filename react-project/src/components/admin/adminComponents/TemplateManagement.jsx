@@ -4,8 +4,6 @@ import AdminSideBar from '../AdminSideBar';
 import Pagination from '../../common/Pagination.jsx'; 
 import Select from '@mui/material/Select'; // Material-UI 사용 시
 import MenuItem from '@mui/material/MenuItem'; // Material-UI 사용 시
-import VisibilityIcon from '@mui/icons-material/Visibility'; // Material-UI 사용 시
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'; // Material-UI 사용 시
 import TempManModal from './TempManModal.jsx';
 import TempModiModal from './TempModiModal.jsx';
 import '../../../css/admin/adminComponents/TemplateManagement.css'; 
@@ -125,9 +123,9 @@ const TemplateManagement = () => {
         <div className='info-section-content-box'>
           <div className='info-header'>
             <h3>템플릿 작성</h3>
-            <button onClick={()=>setIsModalOpen(true)}>템플릿 작성</button>   
-            <div>
-              <button onClick={()=>deleteTemplateList(true)}>템플릿 삭제</button>            
+            <div className='template-button'>
+            <button className= "template-write" onClick={()=>setIsModalOpen(true)}>템플릿 작성</button>   
+              <button className= "template-delete" onClick={()=>deleteTemplateList(true)}>템플릿 삭제</button>            
             </div>         
           </div>
         </div>
@@ -164,8 +162,9 @@ const TemplateManagement = () => {
                       ></iframe>
 
                     </div>
-
+                  
                     <div className="template-info-box">
+                      <div className='template-info-container'>
                       <input
                         type="checkbox"
                         className='template-select-checkbox'
@@ -173,34 +172,23 @@ const TemplateManagement = () => {
                         onChange={(e) => {
                           e.stopPropagation();
                           handleToggleSelect(template.template_no);}}
-                      />
+                          />   
+                      
+                    <button 
+                    className='template-modify-btn'
+                    onClick={()=>{
+                      setTemplateNo(template.template_no);
+                      setEditModalOpen(true)
+                      console.log(templateNo);
+                    }}>수정</button>
+                    
+                    </div>
+                  
                       <p><strong>템플릿 번호:</strong> {template.template_no}</p> {/* 텍스트 변경 */}
                       {/* <p><strong>작성일:</strong> {template.create_date ? template.create_date.slice(0, 16) : '날짜 없음'}</p> */}
                       <p><strong>템플릿 이름:</strong> {template.template_name}</p>
-
-                      <div className='status-select-container'>
-                        <Select
-                          className='input-status-select'
-                           value={template.status_yn ?? "N"}
-                          //  onChange={(e) => handleStatusChange(template.template_no, e.target.value)}
-                        >
-                          <MenuItem value="N">
-                            <VisibilityIcon /> 노출
-                          </MenuItem>
-                          <MenuItem value="Y">
-                            <VisibilityOffIcon /> 숨김
-                          </MenuItem>
-                        </Select>
-                      </div>
                     </div>
-                    <div>
-                    <button onClick={()=>{
-                        setTemplateNo(template.template_no);
-                        setEditModalOpen(true)
-                        console.log(templateNo);
-                        }}>수정</button>
-                    
-                    </div>
+                 
                   </div>
                 ))}
                 <TempModiModal
@@ -212,7 +200,6 @@ const TemplateManagement = () => {
               </div>
             </>
           )}
-
           {totalPages > 1 && (
             <div className="community-notice-pagination">
               <Pagination

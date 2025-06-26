@@ -1,7 +1,7 @@
 /* TempManModal.css */
 
 /* 모달 오버레이 스타일 */
-.modal-overlay {
+.man-modal-overlay {
   position: fixed; /* 화면에 고정 */
   top: 0;
   left: 0;
@@ -20,41 +20,25 @@
 }
 
 /* 모달이 보일 때 적용되는 스타일 */
-.modal-overlay.modal-overlay--visible {
+.man-modal-overlay.man-modal-overlay--visible {
   opacity: 1; /* 완전히 보이게 */
   pointer-events: auto; /* 클릭 이벤트 활성화 */
 }
 
 /* 모달 컨텐츠(프레임) 스타일 */
-.modal-content {
+.man-modal-content {
   position: relative; /* 닫기 버튼 위치 지정을 위해 */
   background-color: #1b1b22; /* 어두운 배경색 */
   border-radius: 0.75rem; /* 둥근 모서리 (xl: 1rem = 16px) */
   padding: 2.5rem 1.25rem; /* 상하 40px, 좌우 20px */
   /* 미디어 쿼리 사용하여 반응형 패딩 적용 (md: 10px, py-[60px]) */
   /* xl: rounded-2xl (더 둥근 모서리) */
-  max-width: 90%; /* 최대 너비 제한 */
-  max-height: 90%; /* 최대 높이 제한 */
+  width: 900px;
   overflow: auto; /* 내용이 많아지면 스크롤 가능 */
 }
 
-/* 미디어 쿼리 (md 이상) */
-@media (min-width: 768px) {
-  .modal-content {
-    padding: 3.75rem 2.5rem; /* md: px-10 (40px), py-[60px] */
-  }
-}
-
-/* 미디어 쿼리 (xl 이상) */
-@media (min-width: 1280px) {
-  .modal-content {
-    border-radius: 1rem; /* xl: rounded-2xl (16px) */
-  }
-}
-
-
 /* 모달 닫기 버튼 (X) 스타일 */
-.modal-close-button {
+.man-modal-close-button {
   position: absolute; /* 모달 컨텐츠 기준 위치 지정 */
   top: 1rem; /* 위에서 16px */
   right: 1rem; /* 오른쪽에서 16px */
@@ -69,44 +53,19 @@
   line-height: 1; /* 텍스트 정렬 */
 }
 
-/* 미디어 쿼리 (md 이상) */
-@media (min-width: 768px) {
-  .modal-close-button {
-    top: 1.25rem; /* md: top-5 (20px) */
-    right: 1.25rem; /* md: right-5 (20px) */
-    width: 2.25rem; /* md: w-9 (36px) */
-    height: 2.25rem; /* 높이도 너비와 동일하게 */
-    font-size: 1.8rem; /* 더 크게 */
-  }
-}
-
-/* 미디어 쿼리 (xl 이상) */
-@media (min-width: 1280px) {
-  .modal-close-button {
-    width: 2.5rem; /* xl: w-10 (40px) */
-    height: 2.5rem; /* 높이도 너비와 동일하게 */
-    font-size: 2rem; /* 더 크게 */
-  }
-}
-
-/* 기존 버튼 스타일 유지 (필요하다면) */
-.modal-content button {
-  /* 여기에 추가적인 버튼 스타일을 정의할 수 있습니다. */
-}
-
-.modal-template{
+.man-modal-template{
     margin-bottom: 1rem; /* 각 입력 그룹 하단 여백 */
 }
 
-.modal-label {
+.man-modal-label {
   display: block; /* 라벨을 블록 레벨로 만들어 다음 요소가 아래로 내려오게 함 */
   margin-bottom: 0.5rem; /* 라벨과 입력 필드 사이의 여백 */
   font-weight: bold; /* 라벨 텍스트 굵게 */
   color: #e0e0e0; /* 라벨 색상 */
 }
 
-.modal-input-field,
-.modal-textarea-field{
+.man-modal-input-field,
+.man-modal-textarea-field{
   width: 100%; /* 너비를 부모 요소에 꽉 채움 */
   padding: 0.75rem; /* 내부 패딩 */
   border: 1px solid #444; /* 테두리 */
@@ -123,13 +82,13 @@
 }
 
 
-.modal-input-field::placeholder,
-.modal-textarea-field::placeholder {
+.man-modal-input-field::placeholder,
+.man-modal-textarea-field::placeholder {
   color: #888; /* 플레이스홀더 텍스트 색상 */
 }
 
-.modal-input-field:focus,
-.modal-textarea-field:focus {
+.man-modal-input-field:focus,
+.man-modal-textarea-field:focus {
   outline: none; /* 포커스 시 기본 아웃라인 제거 */
   border-color: #6a8cff; /* 포커스 시 테두리 색상 변경 */
   box-shadow: 0 0 0 2px rgba(106, 140, 255, 0.5); /* 포커스 시 그림자 효과 */
@@ -137,7 +96,59 @@
 }
 
 /* 텍스트 에어리어 높이 조절 */
-.modal-textarea-field {
+.man-modal-textarea-field {
   resize: vertical; /* 세로로만 크기 조절 가능 */
   min-height: 100px; /* 최소 높이 */
+}
+.man-modal-btn-container{
+  display: flex;
+}
+
+.man-modal-btn-container .man-modal-btn-save{
+ 
+  padding: 8px 14px;
+  font-size: 0.9rem;
+  border-color:#e0e0e0;
+  background-color: #e0e0e0;
+  color: #333;
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  /* ✅ 추가된 위치 조정용 속성 */
+  align-self: center;
+  margin-left: auto;
+}
+
+.man-modal-btn-container .man-modal-btn-cancel{
+padding: 8px 14px;
+  font-size: 0.9rem;
+  background-color: #e0e0e0;
+  color: #333;
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  /* ✅ 추가된 위치 조정용 속성 */
+  align-self: center;
+  margin-left: 5px;
+}
+
+.man-modal-btn-cancel:hover{
+   background-color: #b9b9b9;
+}
+
+.man-modal-btn-save:hover{
+  background-color: #b9b9b9;
+}
+
+.man-modal-title{
+  margin-bottom: 10px;
+  font-size: 30px;
+  color: #e0e0e0;
+  text-align : center;
 }

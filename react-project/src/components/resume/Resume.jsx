@@ -180,10 +180,6 @@ const Resume = () => {
         }));
     }
 
-    // useEffect(() => {
-    //     console.log('폼 데이터가 변경되었습니다:', formData);
-    // }, [formData]);
-
 
 // 각 섹션의 펼침 상태 관리 state 추가    
     const [showSkillDetails, setShowSkillDetails] = useState(false);
@@ -234,30 +230,6 @@ const Resume = () => {
     getGroupCode();
   }, []);
 
-//   useEffect(() => {
-//     const getDetailCode = async () => {
-//       const result = {};
-//       await Promise.all(
-//         formData.newSkillList.map(async (skill) => {
-//           if (skill.group_code) {
-//             await axios
-//               .get("/api/resume/selectSkillDetailCode", {
-//                 params: { group_code: skill.group_code },
-//               })
-//               .then((res) => {
-//                 result[skill.group_code] = res;
-//                 console.log(result);
-//               })
-//               .catch((err) => {
-//                 console.error(err);
-//               });
-//           }
-//         })
-//       );
-//       setDetailCodeList(result);
-//     };
-//     getDetailCode();
-//   }, []);
 
   const handleGroupCodeChange = async (group_code) => {
     await axios
@@ -270,9 +242,24 @@ const Resume = () => {
         //   [formData.newSkillList.group_code]: res,
         // }));
         setDetailCodeList(res);
+        setFormData((prev) => ({
+            ...prev,
+            newSkillList: prev.newSkillList.map((skill, index) =>
+                // 첫 번째 newSkillList 항목만 대상으로 합니다.
+                index === 0
+                    ? { ...skill, group_code: group_code, skill_code: '' } // skill_code를 빈 문자열로 설정
+                    : skill
+            ),
+        }));
       })
       .catch((err) => {
         console.error(err);
+        setFormData((prev) => ({
+            ...prev,
+            newSkillList: prev.newSkillList.map((skill, index) =>
+                index === 0 ? { ...skill, group_code: group_code, skill_code: '' } : skill
+            ),
+        }));
       });
 
   };
@@ -602,7 +589,6 @@ const getFlagEmoji = (countryCode) => {
                                     {formData.skillList.map((skill, index) => (
                                                     <span key={skill.skill_code || index} className="tag">
                                                         {skill.skill_code}
-                                                        {/* {skill.exp_level && ` (${skill.exp_level})`} 레벨도 같이 보여줄 때 */}
                                                     </span>
                                                 ))}
                                 </p>
@@ -662,7 +648,6 @@ const getFlagEmoji = (countryCode) => {
                                         // onChange
                                         onSelect={(group_code)=>{
                                             console.log(group_code);
-                                            console.log("formData.newSkillList[0].group_code" + formData.newSkillList[0].group_code);
                                             setFormData((prev)=>({
                                                 ...prev,
                                                 newSkillList : prev.newSkillList.map((skill, index) => index === 0 ? {...skill, group_code : group_code} : skill)                                               
@@ -677,7 +662,6 @@ const getFlagEmoji = (countryCode) => {
                                         placeholder="분야 선택"
                                         onSelect={(e)=>{
                                             console.log(e);
-                                            console.log("formData.newSkillList[0].group_code" + formData.newSkillList[0].skill_code);
                                             setFormData((prev)=>({
                                                 ...prev,
                                                 newSkillList : prev.newSkillList.map((skill, index) => index === 0 ? {...skill, skill_code : e} : skill)                                               
@@ -703,19 +687,16 @@ const getFlagEmoji = (countryCode) => {
                     ) : (
                         <p>등록된 기존 기술 정보가 없습니다</p>
                     )}
-
-                           
                         <br />
-
 {/* ------------------------------------------------------외국어 섹션 --------------------------------------------------------- */}  
         {/* <label>
                 <div><span>외국어 능력</span></div>
             </label> */}
-            {/* 🚩 languageList에 데이터가 있을 경우에만 섹션 렌더링 */}
+            {/*  languageList에 데이터가 있을 경우에만 섹션 렌더링 */}
             {formData.languageList.length >= 0 ? (
                 <div className="language-section-wrapper"> {/* skill-section-wrapper와 유사한 wrapper div */}
                     <div className="summary-row">
-                        {/* 🚩 접힌 상태에서 보여줄 요약 정보 */}
+                        {/*  접힌 상태에서 보여줄 요약 정보 */}
                         <p className="summary-text">
                             {formData.languageList.length === 0 ? (<><strong>등록된 외국어 능력이 없습니다.</strong>&nbsp;</>):(<><strong>보유 외국어 능력:</strong>&nbsp;</>)}
                             {formData.languageList.map((lan, index) => (
@@ -726,7 +707,7 @@ const getFlagEmoji = (countryCode) => {
                                 </span>
                             ))}
                         </p>
-                        {/* 🚩 상세보기/접기 버튼 */}
+                        {/*  상세보기/접기 버튼 */}
                         <div className="summary-button-container">
                         <PrettyBtn
                             type="button"
@@ -739,7 +720,7 @@ const getFlagEmoji = (countryCode) => {
                     </div>
                     </div>
 
-                    {/* 🚩 showLanguageDetails 상태에 따라 상세 내용 조건부 렌더링 */}
+                    {/*  showLanguageDetails 상태에 따라 상세 내용 조건부 렌더링 */}
                     {showLanguageDetails && (
                         <div className="language-details-section">
                             {/* <h4>기존 외국어 능력 상세</h4> */}
@@ -772,11 +753,7 @@ const getFlagEmoji = (countryCode) => {
                         )}
                         {formData.newLanguage.length > 0 && (// newSkill 배열을 맵핑하여 입력 드롭다운 생성
                                 <div className='language-row-input'>
-                                    <DropDown
-                                        options={['영어', '독일어', '중국어']}
-                                        selected={formData.newLanguage[0]?.language || ''}
-                                        placeholder="외국어 선택"
-                                        onSelect={(value)=>handleDropdownChange('language', value, 'newLanguage' )}/>
+                                    <input type = 'text' name='language' placeholder='외국어 능력' onChange={(e) => handleFieldChange(e, 'newLanguage')} value={formData.newLanguage[0]?.language||''}/>
                                     <DropDown
                                         options={['상','중','하']}
                                         selected={formData.newLanguage[0]?.level || ''}
@@ -793,16 +770,10 @@ const getFlagEmoji = (countryCode) => {
             ) : (
                 <p>등록된 기존 외국어 정보가 없습니다.</p>
             )}
-
-
                         <br />
-
 {/* ------------------------------------------------------자격증 섹션 --------------------------------------------------------- */}                        
                         {/* 기존 자격증 버튼 */}
-                    {/* <label>
-                        <div><span>자격증</span></div>
-                    </label> */}
-                    {/* 🚩 certificateList에 데이터가 있을 경우에만 섹션 렌더링 */}
+                    {/*  certificateList에 데이터가 있을 경우에만 섹션 렌더링 */}
                     {formData.certificateList.length >= 0 ? (
                         <div className='certificate-section-wrapper'> {/* 새로운 wrapper div 추가 */}
                             <div className="summary-row">
@@ -816,7 +787,7 @@ const getFlagEmoji = (countryCode) => {
                                         </span>
                                     ))}
                                 </p>
-                                {/* 🚩 상세보기/접기 버튼 */}
+                                {/* 상세보기/접기 버튼 */}
                                 <div className="summary-button-container">
                                 <PrettyBtn
                                     type="button"
@@ -828,8 +799,7 @@ const getFlagEmoji = (countryCode) => {
                                 </PrettyBtn>
                                 </div>
                             </div>
-
-                            {/* 🚩 showCertificateDetails 상태에 따라 상세 내용 조건부 렌더링 */}
+                            {/* showCertificateDetails 상태에 따라 상세 내용 조건부 렌더링 */}
                             {showCertificateDetails && (
                                 <div className="certificate-details-section">
                             {/* <h4>기존 자격증 정보 상세</h4> */}
@@ -870,18 +840,12 @@ const getFlagEmoji = (countryCode) => {
                                                 selectedStartDate={formData.newCertificate[0]?.start_date}
                                                 startplaceholder="취득일"
                                                 onChangeStartDate={(date)=>handleFieldDateChange('newCertificate', 'start_date', date)}
-                                                // selectedEndDate={formData.newCertificate[0]?.end_date}
-                                                // endplaceholder="퇴사일"
-                                                // onChangeEndDate={(date) => handleFieldDateChange('newCertificate', 'end_date', date)}
                                             />
                                             <input type = 'text' name='certificate_no' placeholder='자격증 일련번호' onChange={(e) => handleFieldChange(e, 'newCertificate')} value={formData.newCertificate[0]?.certificate_no||''}/>
                                             <input type='text' name='issuing_org' placeholder='발행기관' onChange={(e)=>handleFieldChange(e, 'newCertificate')} value={formData.newCertificate[0]?.issuing_org || ''}/>
-                                        
                                         {/* <PrettyBtn type="button" size="sm" onClick={() => removeExperience(index)} disabled={formData.newCertificate.length <= 0}>삭제</PrettyBtn> */}
                                         <PrettyBtn type="button" size="sm" onClick={()=>saveFieldData('newCertificate')}>저장</PrettyBtn>
                                         <PrettyBtn type="button" size="sm" onClick={(e)=>removeNewField(e, 'newCertificate')}>취소</PrettyBtn>
-
-
                                     </div>
                                     )}
                         </div>
@@ -890,10 +854,7 @@ const getFlagEmoji = (countryCode) => {
             ) : (
                 <p>등록된 기존 자격증 정보가 없습니다.</p>
             )}
-        
             <br />            
-
- 
 {/* ------------------------------------------------------학력 섹션 --------------------------------------------------------- */}              
             {/* ---기존 학력 섹션 --- */}
             {/* <label>
@@ -973,6 +934,7 @@ const getFlagEmoji = (countryCode) => {
                                     selectedEndDate={formData.newEducation[0]?.grad_date}
                                     endplaceholder="졸업일"
                                     onChangeEndDate={(date) => handleFieldDateChange('newEducation','grad_date', date)}
+                                    popperPlacement="top-end"
                                 />
                                         <input type="text" name="major" placeholder="전공" onChange={(e)=>handleFieldChange(e, 'newEducation')} value={formData.newEducation[0]?.major || ''} />
                                 <input type="text" name="sub_major" placeholder="복수전공" onChange={(e)=>handleFieldChange(e, 'newEducation')} value={formData.newEducation[0]?.sub_major || ''}/>
@@ -993,8 +955,6 @@ const getFlagEmoji = (countryCode) => {
 
 {/* ------------------------------------------------------경력 섹션 --------------------------------------------------------- */}
                     {/* exp.career_no를 key로 사용하도록 코드를 업데이트. 만약 career_no가 null 또는 undefined일 경우를 대비하여 index를 **비상용(fallback)**으로 남겨둠 */}
-                {/* 🚩 label 내부의 div에서 justifyContent: 'space-between' 제거 (버튼이 summary-row로 이동) */}
-            {/* 🚩 experience에 데이터가 있을 경우에만 섹션 렌더링 */}
             {formData.experience.length >= 0 ? (
                 <div className="experience-section-wrapper"> {/* 새로운 wrapper div 추가 */}
                     <div className="summary-row">
@@ -1008,7 +968,7 @@ const getFlagEmoji = (countryCode) => {
                                 </span>
                             ))}
                         </p>
-                        {/* 🚩 상세보기/접기 버튼 */}
+                        {/* 상세보기/접기 버튼 */}
                     <div className="summary-button-container">
                         <PrettyBtn
                             type="button"
@@ -1021,7 +981,7 @@ const getFlagEmoji = (countryCode) => {
                     </div>
                 </div>
 
-                    {/* 🚩 showExperienceDetails 상태에 따라 상세 내용 조건부 렌더링 */}
+                    {/* showExperienceDetails 상태에 따라 상세 내용 조건부 렌더링 */}
                     {showExperienceDetails && (
                         <div className="experience-details-section">
                             {/* <h4>기존 경력 정보 상세</h4> */}
@@ -1058,17 +1018,17 @@ const getFlagEmoji = (countryCode) => {
                 )}
                 
                 {/* 새 경력 입력 필드 */}
-                {formData.newExperience.length > 0 && (
-                    <div className='experience-row-input'>
-                        {/* 경력 추가 버튼*/}
-                        {(formData.experience.length + formData.newExperience.length) < 4 && formData.newExperience.length === 0 && (
-                        <div>
-                            <div style={{ display:'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                                <PrettyBtn 
-                                type='button' size='sm' onClick={addExperience}>새 경력 추가</PrettyBtn>
-                            </div>
-                        </div>
-                        )}
+                        {formData.newExperience.length > 0 && (
+                            <div className='experience-row-input'>
+                                {/* 경력 추가 버튼*/}
+                                {(formData.experience.length + formData.newExperience.length) < 4 && formData.newExperience.length === 0 && (
+                                <div>
+                                    <div style={{ display:'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                                        <PrettyBtn 
+                                        type='button' size='sm' onClick={addExperience}>새 경력 추가</PrettyBtn>
+                                    </div>
+                                </div>
+                                )}
                                 <Calendar
                                     selectedStartDate={formData.newExperience[0]?.start_date}
                                     startplaceholder="입사일"
@@ -1088,21 +1048,20 @@ const getFlagEmoji = (countryCode) => {
                         </div>
                     )}
                     </div>
-                )}
+                    )}
                         </div>
 
-            ) : (
-                <p>등록된 기존 경력 정보가 없습니다.</p>
-            )}
-<br />
-<br />
+                ) : (
+                    <p>등록된 기존 경력 정보가 없습니다.</p>
+                )}
+                    <br />
+                    <br />
 {/* ------------------------------------------------------링크 섹션 --------------------------------------------------------- */}
                     <label>
                         <div className='input-title'><span>링크</span></div>
                         <div className='input-title-space'><input type="text" name="link_url" onChange={handleChange} value={formData.link_url}/></div>
                     </label>
                         <br />
-
 {/* ------------------------------------------------------자기소개서 섹션 --------------------------------------------------------- */}
                         <label>
                             {/*내가 작성한 자소서는 DB에 저장할것인지???*/}
@@ -1127,10 +1086,9 @@ const getFlagEmoji = (countryCode) => {
                         setFormData={setFormData} // formData 상태를 자식 컴포넌트에 전달
                         userNo={user.userNo} 
                         userName={user.userName}
-                     />
-                     <br/>
+                        />
                         <br/>
-        
+                            <br/>
                             <div className='templete-test'>
                                 <TemplateSelection formData={formData} editType={"I"} setFormData={setFormData}>템플렛선택</TemplateSelection>
                             </div>
@@ -1153,7 +1111,5 @@ const getFlagEmoji = (countryCode) => {
         </div>
     </>
     );
-
 };
-
 export default Resume;
