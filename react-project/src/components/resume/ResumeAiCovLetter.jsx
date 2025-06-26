@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import axios from "../../utils/axiosConfig";
 import PrettyBtn from './PrettyBtn'; // PrettyBtn 컴포넌트 임포트
 
 
@@ -64,10 +64,10 @@ const handleGenerateResume = async() => {
     // })
     .then(res => {
                 console.log(typeof res); //object
-                console.log(typeof res.data);//object
-                const parsedAnswerno = res.data.response;
+                console.log(typeof res);//object
+                const parsedAnswerno = res.response;
                 console.log(typeof parsedAnswerno); //string 
-                const parsedAnswer = JSON.parse(res.data.response);
+                const parsedAnswer = JSON.parse(res.response);
                 const content = parsedAnswer.choices[0].message.content;
                 console.log('restext는:' ,content);
          setMyCoverLetter(content);
