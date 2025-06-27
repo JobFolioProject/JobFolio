@@ -75,25 +75,27 @@ const GroupManagement = () => {
       cpage: 1,
     }));
 
-    const payload = { searchdata: { 
-      ...searchdata, 
-      cpage: currentPage, 
-      pagesize: pageSize 
-    }};
+    const payload = {
+      searchdata: {
+        ...searchdata,
+        cpage: currentPage,
+        pagesize: pageSize
+      }
+    };
 
     await axios.post('/api/admin/listgroupcode', payload)
-    .then(response => {
+      .then(response => {
 
-      setGroupdata(prev => ({
-        ...prev,
-        grouplist: response.commcodeModel,
-        totalcnt: response.totalcnt,
-      }));
-      setTotalCount(response.totalcnt)
-    })
-    .catch(error => {
-      console.error('Group Code Data 요청 중 Error 발생', error);
-    });
+        setGroupdata(prev => ({
+          ...prev,
+          grouplist: response.commcodeModel,
+          totalcnt: response.totalcnt,
+        }));
+        setTotalCount(response.totalcnt)
+      })
+      .catch(error => {
+        console.error('Group Code Data 요청 중 Error 발생', error);
+      });
   };
 
   // 그룹코드 수정
@@ -101,7 +103,7 @@ const GroupManagement = () => {
 
 
     await axios
-      .post("/api/admin/selectgroupcode", {groupcode})
+      .post("/api/admin/selectgroupcode", { groupcode })
       .then((res) => {
         console.log(res);
 
@@ -125,8 +127,8 @@ const GroupManagement = () => {
     setDetaildata((prev) => ({
       ...prev,
       group_code: pgroupcode,
-      cpage: detailcurrentPage, 
-      pagesize: pageSize 
+      cpage: detailcurrentPage,
+      pagesize: pageSize
     }));
   };
 
@@ -142,7 +144,7 @@ const GroupManagement = () => {
     console.log(detaildata);
 
     await axios
-      .post("/api/admin/listdetailcode", {detaildata})
+      .post("/api/admin/listdetailcode", { detaildata })
       .then((response) => {
         console.log(response);
         setDetaildata((prevdetaildata) => ({
@@ -201,13 +203,13 @@ const GroupManagement = () => {
     if (!commonjs.nullcheck(checklist)) return;
 
     const payload = {
-    igroupcode:    groupeditdata.group_code,
-    igroupname:    groupeditdata.group_name,
-    inote:         groupeditdata.note,
-    iuseyn:        groupeditdata.useyn,
-    category_code: groupeditdata.category_code,
-    action:        proc === "D" ? "D" : groupeditdata.action
-  };
+      igroupcode: groupeditdata.group_code,
+      igroupname: groupeditdata.group_name,
+      inote: groupeditdata.note,
+      iuseyn: groupeditdata.useyn,
+      category_code: groupeditdata.category_code,
+      action: proc === "D" ? "D" : groupeditdata.action
+    };
 
     await axios
       .post("/api/admin/savegroupcode", payload)
@@ -280,196 +282,212 @@ const GroupManagement = () => {
 
     if (flag === true) detailsearch();
   };
-    
+
 
   return (
-    <div className='groupManagement'>
-    <AdminSideBar />
-      <div className="group-content">
-        <p className="group-conTitle">
-          <span> 공통 코드</span>
-          <span className="fr" style={{ textAlign: "left", display: "block" }}>
-            <select
-              id="stype"
-              name="stype"
-              onChange={(e) => {
-                setSearchdata({ ...searchdata, stype: e.target.value });
-              }}
-            >
-              <option value="">전체</option>
-              <option value="code">코드</option>
-              <option value="name">코드명</option>
-            </select>
-            <input
-              type="text"
-              className="form-control"
-              id="searchword"
-              name="searchword"
-              style={{ width: 150 }}
-              onInput={(e) => {
-                setSearchdata({ ...searchdata, searchword: e.target.value });
-              }}
-            />
-            사용 여부
-            <select
-              id="useyn"
-              name="useyn"
-              onChange={(e) => {
-                setSearchdata({ ...searchdata, useyn: e.target.value });
-              }}
-            >
-              <option value="">전체</option>
-              <option value="Y">사용</option>
-              <option value="N">미사용</option>
-            </select>
-            <button
-              className="btn btn-primary mx-2"
-              id="btnSearchGrpcod"
-              name="btn"
-              onClick={groupsearch}
-            >
-              <span> 검 색 </span>
-            </button>
-            <button
-              className="btn btn-light mx-2"
-              id="btnSearchGrpcod"
-              name="btn"
-              onClick={groupreg}
-            >
-              <span> 신규등록 </span>
-            </button>
-          </span>
-        </p>
-        <div style={{ marginTop: "5px" }}>
-          <span>
-            총건수 : {totalCount}  현재 페이지번호 : {currentPage}
-          </span>
-          <table className="group-col">
-            <thead>
-              <tr>
-                <th scope="col"> 그룹 코드 </th>
-                <th scope="col"> 그룸 코드 명 </th>
-                <th scope="col"> 사용 여부 </th>
-                <th scope="col"> 카테고리 </th>
-                <th scope="col"> 등록 일자 </th>
-                <th scope="col"> </th>
-              </tr>
-            </thead>
-            <tbody>
-              {groupdata.totalcnt === 0 ? (
-              <tr>
-                <td colSpan="4">조회된 제이터가 없습니다.</td>
-              </tr>
-            ) : (
-              groupdata.grouplist.map((item, index) => {
-                return (
-                  <tr key={index}>
-                    <td>{item.group_code}</td>
-                    <td
-                      className="hoverable-row"
-                      onClick={() => grpclick(item.group_code)}
-                    >
-                      {item.group_name}
-                    </td>
-                    <td>{item.use_yn}</td>
-                    <td>{item.category_code ? item.category_code : "-"}</td>
-                    <td>
-                      {item.reg_date ? item.reg_date.split(" ")[0] : "-"}
-                    </td>
-                    <td>
-                      <button
-                        className="btn btn-default mx-2"
-                        onClick={() => {
-                          groupcodemodify(item.group_code);
-                        }}
-                      >
-                        수정
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })
-            )}
-            </tbody>
-          </table>
-          <br />
-          
-          <div>
-            <Pagination currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage} />
+    <div className='group-management'>
+      <AdminSideBar />
+      <div className="group-manage-content">
+        <div className="group-manage-wrapper">
+          <div className="group-manage-title">
+            <div className="group-manage-title-inner">
+              <h2>공통코드 관리</h2>
+            </div>
           </div>
-        </div>
-        <div style={{ marginTop: "5px" }}>
-          <span>
-            총건수 : {detailtotalCount}  현재 페이지번호 : {detailcurrentPage}
-            <span className="fr">
-              <button
-                className="btn btn-light mx-2"
-                id="btnSearchGrpcod"
-                name="btn"
-                onClick={newdetail}
-              >
-                <span> 신규등록 </span>
-              </button>
-            </span>
-          </span>
-          <table className="group-col">
-            <thead>
-              <tr>
-                <th scope="col"> 상세 코드 </th>
-                <th scope="col"> 상세코드 명 </th>
-                <th scope="col"> 사용 여부 </th>
-                <th scope="col"> 등록자 </th>
-                <th scope="col"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {detaildata.totalcnt === 0 ? (
-                <tr>
-                  <td colSpan={5}>조회된 데이터가 없습니다.</td>
-                </tr>
-              ) : (
-                detaildata.detaillist.map((item, index) => {
-                  return (
-                    <tr key={index}>
-                      <td>{item.detail_code}</td>
-                      <td>{item.detail_name}</td>
-                      <td>{item.use_yn || "-"}</td>
-                      <td>{item.regId || "-"}</td>
-                      <td>
-                        <button
-                          className="btn btn-default mx-2"
-                          onClick={() => {
-                            detailcodemodify(item.detail_code);
-                          }}
-                        >
-                          수정
-                        </button>
-                      </td>
+          <div className="group-manage-main-code-box">
+            <div className="group-manage-main-control">
+              <div className="group-manage-main-count">
+                <span>총건수 : {totalCount}</span>
+                <span>현재 페이지번호 : {currentPage}</span>
+              </div>
+              <div className='group-manage-main-tap-right'>
+                <div className="group-manage-main-search-section">
+                  <select
+                    id="stype"
+                    name="stype"
+                    onChange={(e) => {
+                      setSearchdata({ ...searchdata, stype: e.target.value });
+                    }}
+                  >
+                    <option value="">전체</option>
+                    <option value="code">코드</option>
+                    <option value="name">코드명</option>
+                  </select>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="searchword"
+                    name="searchword"
+                    style={{ width: 150 }}
+                    onInput={(e) => {
+                      setSearchdata({ ...searchdata, searchword: e.target.value });
+                    }}
+                  />
+                  사용 여부
+                  <select
+                    id="useyn"
+                    name="useyn"
+                    onChange={(e) => {
+                      setSearchdata({ ...searchdata, useyn: e.target.value });
+                    }}
+                  >
+                    <option value="">전체</option>
+                    <option value="Y">사용</option>
+                    <option value="N">미사용</option>
+                  </select>
+                  <button
+                    className="btn btn-primary mx-2"
+                    id="btnSearchGrpcod"
+                    name="btn"
+                    onClick={groupsearch}
+                  >
+                    <span> 검 색 </span>
+                  </button>
+                </div>
+                <div className="group-manage-main-button-section">
+                  <button
+                    className="btn btn-light mx-2"
+                    id="btnSearchGrpcod"
+                    name="btn"
+                    onClick={groupreg}
+                  >
+                    <span> 신규등록 </span>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div className='group-manage-main-table'>
+              <table className="group-manage-table main-code">
+                <thead>
+                  <tr>
+                    <th className="col-group-code"> 그룹 코드 </th>
+                    <th className="col-group-code-name"> 그룹 코드 명 </th>
+                    <th className="col-group-code-yn"> 사용 여부 </th>
+                    <th className="col-group-code-category"> 카테고리 </th>
+                    <th className="col-group-code-regdate"> 등록 일자 </th>
+                    <th className="col-group-code-button"> </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {groupdata.totalcnt === 0 ? (
+                    <tr>
+                      <td colSpan="4">조회된 데이터가 없습니다.</td>
                     </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
-          <br />
-          <div>
-            <Pagination currentPage={detailcurrentPage} totalPages={detailtotalPages} setCurrentPage={setDetailCurrentPage} />
+                  ) : (
+                    groupdata.grouplist.map((item, index) => {
+                      return (
+                        <tr key={index}>
+                          <td>{item.group_code}</td>
+                          <td
+                            className="hoverable-row"
+                            onClick={() => grpclick(item.group_code)}
+                          >
+                            {item.group_name}
+                          </td>
+                          <td>{item.use_yn}</td>
+                          <td>{item.category_code ? item.category_code : "-"}</td>
+                          <td>
+                            {item.reg_date ? item.reg_date.split(" ")[0] : "-"}
+                          </td>
+                          <td>
+                            <button
+                              className="btn btn-default"
+                              onClick={() => {
+                                groupcodemodify(item.group_code);
+                              }}
+                            >
+                              수정
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
+              <div className='group-manage-main-pagination'>
+                <Pagination currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage} />
+              </div>
+            </div>
+          </div>
+
+          <div className="group-manage-sub-code-box">
+            <div className='group-manage-sub-control'>
+              <div className="group-manage-sub-count">
+                <span>
+                  총건수 : {detailtotalCount}
+                </span>
+                <span>
+                  현재 페이지번호 : {detailcurrentPage}
+                </span>
+              </div>
+              <div className="group-manage-sub-tap-right">
+                <div className="group-manage-sub-button-section">
+                  <button
+                    className="btn btn-light"
+                    id="btnSearchGrpcod"
+                    name="btn"
+                    onClick={newdetail}
+                  >
+                    <span> 신규등록 </span>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div className="group-manage-sub-table">
+              <table className="group-manage-table sub-code">
+                <thead>
+                  <tr>
+                    <th className="col-group-sub-code"> 상세 코드 </th>
+                    <th className="col-group-sub-code-name"> 상세코드 명 </th>
+                    <th className="col-group-sub-code-yn"> 사용 여부 </th>
+                    <th className="col-group-code-reg-id"> 등록자 </th>
+                    <th className="col-group-code-button"> </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {detaildata.totalcnt === 0 ? (
+                    <tr>
+                      <td colSpan={5}>조회된 데이터가 없습니다.</td>
+                    </tr>
+                  ) : (
+                    detaildata.detaillist.map((item, index) => {
+                      return (
+                        <tr key={index}>
+                          <td>{item.detail_code}</td>
+                          <td>{item.detail_name}</td>
+                          <td>{item.use_yn || "-"}</td>
+                          <td>{item.regId || "-"}</td>
+                          <td>
+                            <button
+                              className="btn btn-default mx-2"
+                              onClick={() => {
+                                detailcodemodify(item.detail_code);
+                              }}
+                            >
+                              수정
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
+            </div>
+            <div className='group-manage-sub-pagination'>
+              <Pagination currentPage={detailcurrentPage} totalPages={detailtotalPages} setCurrentPage={setDetailCurrentPage} />
+            </div>
           </div>
         </div>
       </div>
       <Modal
-        className="custom-modal-content"
+        className="group-manage-custom-modal-content"
         overlayClassName="custom-modal-overlay"
         isOpen={groupmodalopen.isopen}
         onRequestClose={groupclosemodal}
       >
-        <table className="row modal-content">
-          <colgroup>
-            <col style={{ width: "20px" }} />
-            <col style={{ width: "30px" }} />
-            <col style={{ width: "20px" }} />
-            <col style={{ width: "30px" }} />
-          </colgroup>
+        <table className="group-manage-modal-content">
           <tbody>
             <tr>
               <td colSpan={4}>
