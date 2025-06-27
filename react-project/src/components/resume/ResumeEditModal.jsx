@@ -113,6 +113,10 @@ const ResumeEditModal = ({
         sub_major: tr.querySelector(".sub_major")?.textContent.trim() || "",
         gpa: tr.querySelector(".gpa")?.textContent.trim() || "",
         notes: tr.querySelector(".notes")?.textContent.trim() || "",
+        isCurrentEdu:
+          tr.querySelector(".edu_status").textContent.trim() === "재학"
+            ? true
+            : false,
       }));
 
       //경력사항 정보
@@ -124,6 +128,10 @@ const ResumeEditModal = ({
         end_date: tr.querySelector(".end_date")?.textContent.trim() || "",
         position: tr.querySelector(".position")?.textContent.trim() || "",
         notes: tr.querySelector(".notes")?.textContent.trim() || "",
+        isCurrentJob:
+          tr.querySelector(".end_date").textContent.trim() === ""
+            ? true
+            : false,
       }));
 
       //스킬사항 정보
