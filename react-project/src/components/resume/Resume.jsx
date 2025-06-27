@@ -306,7 +306,7 @@ console.log("formData after date change:", formData);
         [type]: prev[type].map((item, index) =>
             index === 0 ? {
                 ...item,
-                [field]: date // Calendar 컴포넌트에서 받은 Date 객체를 그대로 저장
+                [field]: date ? date.toISOString().slice(0,10) : null // Calendar 컴포넌트에서 받은 Date 객체를 그대로 저장
             } : item // 첫 번째 항목이 아니면 기존 항목을 그대로 반환
         )
     }));
@@ -990,10 +990,10 @@ const getFlagEmoji = (countryCode) => {
                                         />
                                 <Calendar
                                     isCurrentEdu={isCurrentEdu}
-                                    selectedStartDate={formData.newEducation[0]?.enroll_date}
+                                    selectedStartDate={ formData.newEducation[0].enroll_date ? new Date(formData.newEducation[0].enroll_date) : null}
                                     startplaceholder="입학일"
                                     onChangeStartDate={(date) => handleFieldDateChange('newEducation','enroll_date', date)}
-                                    selectedEndDate={isCurrentEdu ? "" :formData.newEducation[0]?.grad_date}
+                                    selectedEndDate={isCurrentEdu ? "" :formData.newEducation[0].grad_date ? new Date(formData.newEducation[0].grad_date) : null}
                                     endplaceholder="졸업일"
                                     onChangeEndDate={(date) => handleFieldDateChange('newEducation','grad_date', date)}
                                     popperPlacement="top-end"
@@ -1094,10 +1094,10 @@ const getFlagEmoji = (countryCode) => {
                                 <input type='text' name='company_name' placeholder='회사명' onChange={(e)=>handleFieldChange(e, 'newExperience')} value={formData.newExperience[0]?.company_name || ''}/>
                                 <Calendar
                                     isCurrentJob={isCurrentJob}
-                                    selectedStartDate={formData.newExperience[0]?.start_date}
+                                    selectedStartDate={ formData.newExperience[0].start_date ? new Date(formData.newExperience[0].start_date) : null}
                                     startplaceholder="입사일"
                                     onChangeStartDate={(date)=>handleFieldDateChange('newExperience', 'start_date', date)}
-                                    selectedEndDate={isCurrentJob ? "" : formData.newExperience[0]?.end_date}
+                                    selectedEndDate={isCurrentJob ? "" : formData.newExperience[0].end_date ? new Date(formData.newExperience[0].end_date) : null}
                                     endplaceholder="퇴사일"
                                     onChangeEndDate={(date) => handleFieldDateChange('newExperience', 'end_date', date)}
                                 />
