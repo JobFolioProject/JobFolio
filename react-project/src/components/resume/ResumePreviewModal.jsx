@@ -93,7 +93,7 @@ const ResumePreviewModal = ({ open, onClose, loading, setLoading, htmlString, se
     <>
     <div className="modal-overlay">
       <div className="modal-content" onClick={e => e.stopPropagation()}>
-        <button className="modal-close-btn" onClick={()=>onClose(false)}>&times;</button>
+        <button className="modal-close-btn" onClick={close}>&times;</button>
         <iframe
             title="이력서 미리보기"
             srcDoc={htmlString}
