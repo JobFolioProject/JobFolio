@@ -1,6 +1,7 @@
-/* TempManModal.css */
+/* TempMantempManModal.css */
 
 /* 모달 오버레이 스타일 */
+
 .man-modal-overlay {
   position: fixed; /* 화면에 고정 */
   top: 0;
@@ -20,6 +21,7 @@
 }
 
 /* 모달이 보일 때 적용되는 스타일 */
+
 .man-modal-overlay.man-modal-overlay--visible {
   opacity: 1; /* 완전히 보이게 */
   pointer-events: auto; /* 클릭 이벤트 활성화 */
@@ -52,6 +54,7 @@
   padding: 0.5rem; /* 클릭 영역 확보 */
   line-height: 1; /* 텍스트 정렬 */
 }
+
 
 .man-modal-template{
     margin-bottom: 1rem; /* 각 입력 그룹 하단 여백 */

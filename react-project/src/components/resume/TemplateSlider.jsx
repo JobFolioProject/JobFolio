@@ -79,8 +79,11 @@ const TemplateSlider = ({
         ...formData.certificateList,
         ...formData.newCertificate,
       ],
+      newSkillList: undefined,
+      newLanguage: undefined,
+      newCertificate: undefined,
     };
-
+    
     try {
       const res = await axios.post("/api/resume/resumePreview", dataToSend);
       const html = res.htmlContent;

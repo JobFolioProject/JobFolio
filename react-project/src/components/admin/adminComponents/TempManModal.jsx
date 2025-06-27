@@ -70,7 +70,6 @@ const TempManModal = ({ isModalOpen, onClose, onSaveTempList }) => {
         >
           X
         </button>
-
         <h4 className="man-modal-title">템플릿 작성</h4>
         <div className="man-modal-template">
             <label htmlFor="templateTitle" className="man-modal-label">제목:</label>
