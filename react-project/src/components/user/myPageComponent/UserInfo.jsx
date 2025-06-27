@@ -431,9 +431,16 @@ const UserInfo = () => {
                 <div className="find-account-modal-overlay" onClick={handleOverlayClick}>
                     <div className="find-account-modal" onClick={(e) => e.stopPropagation()}>
                         <div className="find-account-container">
-                            <h1 className="login-form-title" style={{ marginBottom: 0 }}>
+                            {/* <h1 className="login-form-title" style={{ marginBottom: 0 }}>
                                 jobfolio
-                            </h1>
+                            </h1> */}
+                             <img
+                                src="/resources/logo/logo.png"
+                                alt="로고"
+                                className="logoImg"
+                                // 크기 css
+                                style={{width: '130px', height: '141.14px', marginLeft: '0px'}}
+                                />
                             <h3 className="login-form-subtitle" style={{ marginTop: 0, marginBottom: '2.2rem' }}>
                                 비밀번호 변경
                             </h3>

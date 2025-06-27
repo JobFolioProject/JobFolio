@@ -6,10 +6,17 @@ const FindPasswordResult = ({ onClose, email, onGoToLogin }) => {
     <div className="find-account-modal-overlay" onClick={onClose}>
       <div className="find-account-modal" onClick={e => e.stopPropagation()}>
         <div className="find-account-container">
-          <h1 className="login-form-title" style={{marginBottom: 0}}>jobfolio</h1>
-          <h3 className="login-form-subtitle" style={{marginTop: 0, marginBottom: '2.2rem'}}>
+          {/* <h1 className="login-form-title" style={{marginBottom: 0}}>jobfolio</h1> */}
+          <img
+                  src="/resources/logo/logo.png"
+                  alt="로고"
+                  className="logoImg"
+                  // 크기 css
+                  style={{width: '80px', height: '100.14px', marginLeft: '0px'}}
+                />
+          {/* <h3 className="login-form-subtitle" style={{marginTop: 0, marginBottom: '2.2rem'}}>
             AI기반의 자기소개서 생성서비스
-          </h3>
+          </h3> */}
           
           <div className="find-result">
             <div className="completion-content" style={{textAlign: 'center', padding: '20px 0'}}>
