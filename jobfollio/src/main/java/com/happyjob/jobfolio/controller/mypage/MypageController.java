@@ -42,6 +42,8 @@ public class MypageController {
     public ResponseEntity<UserVO> getUserInfo(@PathVariable("userNo") Long userNo) {
 
         UserVO userVO= mypageService.getUserInfo(userNo);
+        String userid= userVO.getLogin_id().replaceAll("^.*?_", "");
+        userVO.setLogin_id(userid);
 
         return ResponseEntity.ok(userVO);
     }
