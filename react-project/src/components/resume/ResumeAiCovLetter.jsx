@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from "../../utils/axiosConfig";
 import PrettyBtn from './PrettyBtn'; // PrettyBtn 컴포넌트 임포트
+import { frameData } from 'framer-motion';
 
 
 const ResumeAiCoverLetter = ({formData,myCoverLetter,setMyCoverLetter,setFormData,userNo, userName}) => {
@@ -24,7 +25,7 @@ const handleGenerateResume = async() => {
             // 현재 ResumeAiCoverLetter에는 userNo가 직접 전달되지 않으므로, 이 부분을 부모에서 받아와야 합니다.
             // 임시로 하드코딩하거나, props로 userNo를 추가해야 합니다. (예: `userNo: 4,` 또는 props로 `userNo` 받기)
             // userNo: yourUserNoVariable,
-
+            certifications: [...formData.certificateList, ...(formData.newCertificate || [])],
             // 학력 데이터: 기존 학력(education)과 새로 추가된 학력(newEducation)을 합쳐서
             // 백엔드 CareerAllDto의 'educationList' 필드명에 맞춰 전송합니다.
             educationList: [...formData.education, ...(formData.newEducation || [])], // newEducation이 없을 경우를 대비해 빈 배열 합치기
@@ -38,7 +39,7 @@ const handleGenerateResume = async() => {
             // skillList: formData.skill_tool ? [{ skill_name: formData.skill_tool }] : [], // SkillVO 구조에 맞춰야 함
             skillList: [...formData.skillList, ...(formData.newSkillList || [])],
             link_url: formData.link_url, // CareerAllDto에 이 필드가 있다면 추가
-
+            languages: [...formData.languageList, ...(formData.newLanguage || [])]
             // formData에 hobby, notes 필드가 있다면 CareerAllDto에 맞게 추가
             // hobby: formData.hobby,
             // notes: formData.notes,
