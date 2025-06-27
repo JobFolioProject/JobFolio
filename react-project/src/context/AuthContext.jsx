@@ -1,58 +1,47 @@
-// src/context/AuthContext.jsx (백엔드 호환 버전)
 import { createContext, useContext, useState, useEffect } from "react";
-import axios from "../utils/axiosConfig";
-import { setAuthContextRef } from "../utils/axiosConfig";
+import axios, { setAccessToken } from "../utils/axiosConfig";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [accessToken, setAccessToken] = useState(null);
+  const [accessToken, setAccessTokenState] = useState(null);
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  // 토큰 설정 함수 (axios와 동기화)
+  const updateAccessToken = (token) => {
+    setAccessTokenState(token);
+    setAccessToken(token); // axios 설정도 업데이트
+  };
 
   useEffect(() => {
     initializeAuth();
   }, []);
 
-  const gracefulRefreshToken = async () => {
-    try {
-      const response = await axios.post("/api/join/refresh-token");
-      return { success: true, data: response };
-    } catch (error) {
-      if (error.response?.status === 400) {
-        return { success: false, reason: "NO_REFRESH_TOKEN" };
-      }
-      return { success: false, reason: "ERROR", error };
-    }
-  };
-
   const initializeAuth = async () => {
     try {
       setIsLoading(true);
+      console.log("🔍 자동 로그인 확인 중...");
 
-      // console.log(" 자동 로그인 확인 중...");
+      // 기본 axios로 refresh 시도 (interceptor 없음)
+      const refreshResponse = await fetch('/api/join/refresh-token', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
 
-      // 우아한 refresh token 요청
-      const result = await gracefulRefreshToken();
+      const refreshData = await refreshResponse.json();
 
-      if (result.success && result.data.result === "Y") {
-        const newAccessToken = result.data.accessToken;
+      if (refreshData.result === "Y") {
+        const newAccessToken = refreshData.accessToken;
+        updateAccessToken(newAccessToken);
 
-        // 토큰 설정
-        setAccessToken(newAccessToken);
-        setAuthContextRef({
-          accessToken: newAccessToken,
-          refreshToken,
-          setAccessToken,
-          setUser,
-        });
-
-        // 토큰 설정 완료 보장
-        await new Promise((resolve) => setTimeout(resolve, 100));
-
-        // 사용자 정보 요청
+        // 토큰 설정 후 사용자 정보 조회
         const userResponse = await axios.post("/api/join/check-login-status");
+        
         if (userResponse.result === "Y") {
           const userData = {
             userNo: userResponse.user_no,
@@ -61,25 +50,20 @@ export const AuthProvider = ({ children }) => {
             userType: userResponse.user_type,
             expire_days: userResponse.expire_days,
           };
+          
           setUser(userData);
           setIsAuthenticated(true);
-          // console.log("자동 로그인 성공:", userData.loginId);
+          console.log("✅ 자동 로그인 성공:", userData.loginId);
         }
       } else {
-        // 실패 이유에 따른 다른 메시지
-        if (result.reason === "NO_REFRESH_TOKEN") {
-          console.log(" 로그아웃 상태입니다.");
-        } else if (result.reason === "ERROR") {
-          console.log(" 자동 로그인 확인 실패:", result.error.message);
-        }
-
-        setAccessToken(null);
+        console.log("ℹ️ 로그아웃 상태입니다.");
+        setAccessTokenState(null);
         setUser(null);
         setIsAuthenticated(false);
       }
     } catch (error) {
-      console.log(" 예상치 못한 오류:", error.message);
-      setAccessToken(null);
+      console.log("⚠️ 자동 로그인 확인 실패:", error.message);
+      setAccessTokenState(null);
       setUser(null);
       setIsAuthenticated(false);
     } finally {
@@ -90,7 +74,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (credentials) => {
     try {
       const response = await axios.post("/api/join/login", credentials);
-      console.log(response);
+      
       if (response.result === "Y") {
         const newAccessToken = response.accessToken;
         const userData = {
@@ -101,17 +85,17 @@ export const AuthProvider = ({ children }) => {
           expire_days: response.user.expire_days,
         };
 
-        setAccessToken(newAccessToken);
+        updateAccessToken(newAccessToken);
         setUser(userData);
         setIsAuthenticated(true);
 
-        // console.log(" 로그인 성공:", userData.loginId);
+        console.log("✅ 로그인 성공:", userData.loginId);
         return { success: true, data: response };
       } else {
         return { success: false, message: response.message };
       }
     } catch (error) {
-      console.error(" 로그인 에러:", error);
+      console.error("❌ 로그인 에러:", error);
       return {
         success: false,
         message: error.message || "로그인 중 오류가 발생했습니다.",
@@ -119,35 +103,16 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const refreshToken = async () => {
-    try {
-      const response = await axios.post("/api/join/refresh-token");
-
-      if (response.result === "Y") {
-        const newAccessToken = response.accessToken;
-        setAccessToken(newAccessToken);
-        console.log(" 토큰 갱신 완료");
-        return newAccessToken;
-      } else {
-        throw new Error("토큰 갱신 실패");
-      }
-    } catch (error) {
-      console.error(" 토큰 갱신 실패:", error);
-      await logout();
-      throw error;
-    }
-  };
-
   const logout = async () => {
     try {
       await axios.post("/api/join/logout");
     } catch (error) {
-      // 로그아웃 에러는 조용히 처리
+      // 로그아웃 에러는 무시
     } finally {
-      setAccessToken(null);
+      updateAccessToken(null);
       setUser(null);
       setIsAuthenticated(false);
-      console.log(" 로그아웃 완료");
+      console.log("✅ 로그아웃 완료");
       window.location.href = "/";
     }
   };
@@ -170,25 +135,16 @@ export const AuthProvider = ({ children }) => {
         });
         setIsAuthenticated(true);
       } else {
-        setAccessToken(null);
+        updateAccessToken(null);
         setUser(null);
         setIsAuthenticated(false);
       }
     } catch (error) {
-      setAccessToken(null);
+      updateAccessToken(null);
       setUser(null);
       setIsAuthenticated(false);
     }
   };
-
-  useEffect(() => {
-    setAuthContextRef({
-      accessToken,
-      refreshToken,
-      setAccessToken,
-      setUser,
-    });
-  }, [accessToken]);
 
   return (
     <AuthContext.Provider
@@ -199,9 +155,7 @@ export const AuthProvider = ({ children }) => {
         isLoading,
         login,
         logout,
-        refreshToken,
         checkLoginStatus,
-        setAccessToken,
         setUser,
         setIsAuthenticated,
       }}
