@@ -123,6 +123,7 @@ const Resume = () => {
         newLanguage:[],
         coverLetter: '', // 자기소개서 상태 추가
         template_no : '', //
+        publication_yn: 'N',
     });
 
 
@@ -1174,14 +1175,7 @@ const getFlagEmoji = (countryCode) => {
                             </div>
                         <br/>
                         <div style={{ display: 'flex', justifyContent: 'center' }}>
-                            {download ? (
-                                <PrettyBtn onClick={pdfDownload}>PDF 다운로드</PrettyBtn>
-                            ) : (
-                                <>
-                                    <PrettyBtn onClick={handleSubmit}>이력서 저장</PrettyBtn>
-                                    <PrettyBtn onClick={pdfDownload}>이력서 저장 및 PDF 다운로드</PrettyBtn>
-                                </>
-                            )}
+                            *템플릿을 클릭하시면 미리보기창이 생성됩니다*
                             
                         </div>
                     </form>

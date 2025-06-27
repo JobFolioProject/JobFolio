@@ -178,6 +178,7 @@ const TemplateSlider = ({
         htmlString={htmlString}
         setHtmlString={setHtmlString}
         formData={formData}
+        setFormData={setFormData}
       />
     </>
   );
