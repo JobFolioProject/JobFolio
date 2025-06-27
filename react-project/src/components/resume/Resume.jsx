@@ -696,7 +696,7 @@ const getFlagEmoji = (countryCode) => {
                                             handleGroupCodeChange(group_code);
                                         }
                                         }/>
-                                    <DropDown
+                                    { formData.newSkillList[0].group_code && <DropDown
                                         options={detailCodeList}
                                         // selected={formData.skillList}
                                         selected={formData.newSkillList[0]?.skill_code || ''}
@@ -709,13 +709,13 @@ const getFlagEmoji = (countryCode) => {
                                            }))
                                             handleDetailCodeChange();
                                         }
-                                        }/>
-                                    <DropDown
+                                        }/>}
+                                    { formData.newSkillList[0].skill_code && <DropDown
                                         options={skillLevelList}
                                         // selected={formData.skillList}
                                         selected={formData.newSkillList[0]?.exp_level || ''}
                                         placeholder="분야 선택"
-                                        onSelect={(value)=>handleDropdownChange('exp_level', value, 'newSkillList' )}/>
+                                        onSelect={(value)=>handleDropdownChange('exp_level', value, 'newSkillList' )}/>}
 
                                     <PrettyBtn type="button" size="sm" onClick={() => saveFieldData('newSkillList')} style={{ marginLeft: '10px' }}>저장</PrettyBtn>
                                     <PrettyBtn type="button" size="sm" onClick={(e) => removeNewField(e, 'newSkillList')} style={{ marginLeft: '5px' }}>취소</PrettyBtn>
