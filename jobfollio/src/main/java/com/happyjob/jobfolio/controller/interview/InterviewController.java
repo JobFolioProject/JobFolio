@@ -14,7 +14,6 @@ import java.util.Map;
 @RequestMapping("/api/interview")
 public class InterviewController {
 
-    // Log4j 1.x 로거 선언
     private static final Logger logger = LogManager.getLogger(InterviewController.class);
 
     @Autowired
