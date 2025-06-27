@@ -1,17 +1,26 @@
 DateRangePicker.css
 
+
+.react-datepicker-popper {
+    position: absolute !important; /* 이 부분이 가장 중요합니다 */
+    z-index: 9999; /* 다른 요소들 위에 표시되도록 높은 값 설정 */
+    /* 필요에 따라 top, left, transform 등의 위치 조정 */
+}
+
+
 /* 전체 날짜 범위 래퍼 */
 .date-range-wrapper {
   display: flex; /* 날짜 선택기를 가로로 정렬합니다. */
   align-items: center; /* 세로 중앙 정렬합니다. */
   font-family: 'Pretendard', 'Noto Sans KR', sans-serif; /* 가독성 좋은 한글 폰트를 사용합니다. */
-  gap:10px;/*********문제 해결 포인트. 날짜 입력 필드와 구분자 사이의 간격을 조절합니다. */
+  /* gap:2px; */
 
 }
 
 /* 개별 날짜 선택기 입력 필드 */
 .react-datepicker-wrapper {
   display: inline-block; /* 인라인 블록으로 정렬을 유연하게 합니다. */
+  position: relative;
 }
 
 .react-datepicker__input-container input {
