@@ -342,7 +342,7 @@ const GroupManagement = () => {
         </p>
         <div style={{ marginTop: "5px" }}>
           <span>
-            총건수 :  현재 페이지번호 : 
+            총건수 : {totalCount}  현재 페이지번호 : {currentPage}
           </span>
           <table className="group-col">
             <thead>
@@ -400,7 +400,7 @@ const GroupManagement = () => {
         </div>
         <div style={{ marginTop: "5px" }}>
           <span>
-            총건수 :  현재 페이지번호 : 
+            총건수 : {detailtotalCount}  현재 페이지번호 : {detailcurrentPage}
             <span className="fr">
               <button
                 className="btn btn-light mx-2"
