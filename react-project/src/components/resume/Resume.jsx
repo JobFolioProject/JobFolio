@@ -39,7 +39,7 @@ const Resume = () => {
             newExperience: undefined,
             skillList: [...formData.skillList, ...formData.newSkillList],
             languageList: [...formData.languageList, ...formData.newLanguage],
-            certificateList: [...formData.certificateList, ...formData.newCertificate],
+            certificateList: [...formData.certificateList, ...formData.acquired],
         };
             try {
                 const res = await axios.post('/api/resume/insertResumeInfo', dataToSend);
@@ -100,9 +100,6 @@ const Resume = () => {
         }
     };
 
-
-    // test!!! 기술/툴 드롭다운 옵션 샘플데이터
-    const dummySkillOptions = ['JavaScript', 'Python', 'Java', 'C++', 'React', 'Node.js', 'HTML/CSS', 'SQL', 'Git', 'Docker'];
 
     // 이력서 작성 폼 데이터 상태
     // U-data
@@ -299,33 +296,41 @@ const Resume = () => {
   };
 
 //(공통)학력, 경력 입력 날짜 변경 핸들러(Calendar 컴포넌트의 onChangeStartDate, onChangeEndDate prop에 연결)
-  const handleFieldDateChange = (type,field, date) => {
-    setFormData((prev)=>({
+const handleFieldDateChange = (type, field, date) => {
+    console.log("date received by handleFieldDateChange:", date);
+console.log("date type received:", typeof date);
+console.log("formData after date change:", formData);
+    setFormData(prev => ({
         ...prev,
-        [type]: [
-            {
-                ...prev[type][0],
-                [field]: date,
-            }
-        ]
-    }))
-} 
+        // 해당 'type'의 배열을 순회하면서 첫 번째 항목(index === 0)만 업데이트합니다.
+        [type]: prev[type].map((item, index) =>
+            index === 0 ? {
+                ...item,
+                [field]: date // Calendar 컴포넌트에서 받은 Date 객체를 그대로 저장
+            } : item // 첫 번째 항목이 아니면 기존 항목을 그대로 반환
+        )
+    }));
+};
 
 
 
 //(공통) 새로 추가한 항목 '저장' 버튼 클릭 시 호출
 const saveFieldData = (type) => {
+console.log("formData after save:", formData);
+console.log("acquired_date type:", typeof formData.newCertificate[0]?.acquired_date);
+console.log("acquired_date value:", formData.newCertificate[0]?.acquired_date);
+
     if (!['newEducation', 'newExperience', 'newSkillList', 'newLanguage', 'newCertificate'].includes(type)) return;
 
     const fieldMap = {
         newEducation: {
             targetKey: 'education',
-            requiredFields: [ 'edu_no', 'enroll_date', 'gpa', 'grad_date', 'major', 'sub_major'],
+            requiredFields: [ 'edu_no', 'enroll_date', 'gpa', 'major', 'sub_major'],
             idKey: 'edu_no' 
         },
         newExperience: {
             targetKey: 'experience',
-            requiredFields: ['company_name', 'position', 'start_date', 'end_date', 'notes'],
+            requiredFields: ['company_name', 'position', 'start_date', 'notes'],
             idKey: 'career_no'
         },
         newSkillList: {
@@ -349,10 +354,28 @@ const saveFieldData = (type) => {
     const newEntry = formData[type][0];
 
     const missingField = requiredFields.find((field)=> !newEntry?.[field]);
+    console.log("missingField", missingField);
+    console.log("missingField" ,typeof missingField);
     if (missingField){
         alert(`${missingField}은 필수 입력 항목입니다`);
         return;
     }
+    //newEducatin의 grad_date
+    if (type === 'newEducation') {
+        const eduStatus = newEntry?.edu_status;
+        if (eduStatus !== '재학' && !newEntry?.grad_date) {
+            alert(`졸업일(grad_date)은 필수 입력 항목입니다`);
+            return;
+        }
+    }
+    //newExperience의 end_date
+     if (type === 'newExperience') {
+        if (!isCurrentJob && !newEntry?.end_date) {
+            alert(`퇴사일(end_date)은 필수 입력 항목입니다`);
+            return;
+        }
+    }
+   
     //스킬 코드 중복 검사.skillList에 이미 있는 스킬인지 - skill_code가 고유값이므로
     if (type === 'newSkillList') {
         const isAlreadyAdded = formData.skillList.some(
@@ -363,6 +386,7 @@ const saveFieldData = (type) => {
             return;
         }
     }
+
     //언어 중복 검사.
     if (type === 'newLanguage') {
         const isAlreadyAdded = formData.languageList.some(
@@ -383,6 +407,8 @@ const saveFieldData = (type) => {
         }
     }
 
+    
+
     // 저장
     setFormData((prev)=>({
         ...prev,
@@ -391,8 +417,12 @@ const saveFieldData = (type) => {
             {...newEntry},
         ],
         [type]:[], //임시 입력 데이터 비우기
+        //  이렇게 수정하세요 (이전 라인을 제거하고 하나만 남깁니다) ✨
+//[type]: type === 'newCertificate' ? [{}] : [], // newCertificate는 빈 객체로 초기화, 나머지는 빈 배열
     }));
 }
+
+
 
 
   //(공통) 새로 추가하는 칸의 '취소' 버튼 클릭 시 호출 (저장 안 하고 버림)
@@ -414,6 +444,8 @@ const saveFieldData = (type) => {
             languageList: 'language',
             certificateList: 'certificate_name',
         };
+        
+        console.log(type, idToRemove);
 
         const idKey = fieldMap[type];
         if (!idKey){
@@ -479,6 +511,7 @@ const addCertificate = () => {
         ...prev,
         newEducation: [{
             school_name:'',
+            edu_status:'',
             major:'',
             sub_major: '',
             gpa:'',
@@ -489,6 +522,11 @@ const addCertificate = () => {
         }],
     }));
   };   
+
+  const [isCurrentEdu, setIsCurrentEdu] = useState(false);
+
+
+
 
 
 //=================경력 추가===========================================================================
@@ -505,10 +543,13 @@ const addCertificate = () => {
             company_name: '',
             position: '',
             notes: '',
+            career_no: Date.now()
            }
         ]
     }));
   }
+
+  const [isCurrentJob, setIsCurrentJob] = useState(false);
 
 //=================스킬 추가===========================================================================
 //기술 추가 버튼 클릭 시 새  항목 추가 ! 근데 기존 기술과 별도로, 새로운 기술 배열에 추가
@@ -819,7 +860,7 @@ const getFlagEmoji = (countryCode) => {
                                     </PrettyBtn>
                                     <p><strong>자격증명:</strong>{cert.certificate_name}</p>
                                     <p><strong>발행기관:</strong>{cert.issuing_org}</p>
-                                    <p><strong>취득일:</strong>{cert.acquired_date}</p>
+                                    <p><strong>취득일:</strong>{new Date(cert.acquired_date).toLocaleDateString()}</p>
                                     {/* `certificate_no`는 필수가 아니라면 조건부 렌더링 가능 */}
                                     {cert.certificate_no && <p><strong>일련번호:</strong>{cert.certificate_no}</p>}
                                 </div>
@@ -837,9 +878,9 @@ const getFlagEmoji = (countryCode) => {
                                         <div className='certificate-row-input'>
                                             <input type='text' name='certificate_name' placeholder='자격증명 입력' onChange={(e)=>handleFieldChange(e, 'newCertificate')} value={formData.newCertificate[0]?.certificate_name || ''}/>
                                             <Calendar
-                                                selectedStartDate={formData.newCertificate[0]?.start_date}
+                                                selectedStartDate={formData.newCertificate[0]?.acquired_date}
                                                 startplaceholder="취득일"
-                                                onChangeStartDate={(date)=>handleFieldDateChange('newCertificate', 'start_date', date)}
+                                                onChangeStartDate={(date)=>handleFieldDateChange('newCertificate', 'acquired_date', date)}
                                             />
                                             <input type = 'text' name='certificate_no' placeholder='자격증 일련번호' onChange={(e) => handleFieldChange(e, 'newCertificate')} value={formData.newCertificate[0]?.certificate_no||''}/>
                                             <input type='text' name='issuing_org' placeholder='발행기관' onChange={(e)=>handleFieldChange(e, 'newCertificate')} value={formData.newCertificate[0]?.issuing_org || ''}/>
@@ -906,10 +947,11 @@ const getFlagEmoji = (countryCode) => {
                                                     />
                                                 </PrettyBtn>
                                                 <p><strong>학교명:</strong> {edu.school_name}</p>
+                                                <p><strong>학력 상태:</strong> {edu.edu_status}</p>
                                                 <p>
-                                                    <strong>입학일:</strong> {edu.enroll_date ? new Date(edu.enroll_date).toLocaleDateString() : 'N/A'}
+                                                    <strong>입학일:</strong> {edu.enroll_date ? new Date(edu.enroll_date).toLocaleDateString() : ''}
                                                     {" "}
-                                                    <strong>졸업일:</strong> {edu.grad_date ? new Date(edu.grad_date).toLocaleDateString() : 'N/A'}
+                                                    <strong>졸업일:</strong> {edu.grad_date ? new Date(edu.grad_date).toLocaleDateString() : ''}
                                                 </p>
                                                 <p><strong>전공:</strong> {edu.major}</p>
                                                 {edu.sub_major && <p><strong>복수전공:</strong> {edu.sub_major}</p>}
@@ -927,11 +969,31 @@ const getFlagEmoji = (countryCode) => {
                          {formData.newEducation.length > 0 && (// newEducation 배열을 맵핑하여 입력 필드 생성
                             <div className="education-row-input">
                                 <input type="text" name="school_name" placeholder="학교명" onChange={(e)=>handleFieldChange(e, 'newEducation')} value={formData.newEducation[0]?.school_name || ''}/>
+                                <DropDown
+                                        options={["졸업", "재학", "수료", "휴학", "자퇴"]}
+                                        selected={formData.newEducation[0]?.edu_status || ''}
+                                        placeholder="학력 상태"
+                                          onSelect={(value)=>{
+                                            if(value === "재학" ){
+                                                setIsCurrentEdu(true);
+                                                
+                                                    console.log("실행");
+                                                        setFormData((prev) =>({
+                                                        ...prev,
+                                                        newEducation : prev.newEducation.map((edu, index) => index === 0 ? {...edu, grad_date : ""} : edu)    
+                                                        }))
+                                                 
+                                            } else {
+                                                setIsCurrentEdu(false);
+                                            }
+                                            handleDropdownChange('edu_status', value, 'newEducation' )}}
+                                        />
                                 <Calendar
+                                    isCurrentEdu={isCurrentEdu}
                                     selectedStartDate={formData.newEducation[0]?.enroll_date}
                                     startplaceholder="입학일"
                                     onChangeStartDate={(date) => handleFieldDateChange('newEducation','enroll_date', date)}
-                                    selectedEndDate={formData.newEducation[0]?.grad_date}
+                                    selectedEndDate={isCurrentEdu ? "" :formData.newEducation[0]?.grad_date}
                                     endplaceholder="졸업일"
                                     onChangeEndDate={(date) => handleFieldDateChange('newEducation','grad_date', date)}
                                     popperPlacement="top-end"
@@ -939,8 +1001,8 @@ const getFlagEmoji = (countryCode) => {
                                         <input type="text" name="major" placeholder="전공" onChange={(e)=>handleFieldChange(e, 'newEducation')} value={formData.newEducation[0]?.major || ''} />
                                 <input type="text" name="sub_major" placeholder="복수전공" onChange={(e)=>handleFieldChange(e, 'newEducation')} value={formData.newEducation[0]?.sub_major || ''}/>
                                 <input type="text" name="gpa" placeholder="학점" onChange={(e)=>handleFieldChange(e, 'newEducation')} value={formData.newEducation[0]?.gpa || ''}/>
-                                <PrettyBtn type="button" size="sm" onClick={()=>saveFieldData('newEducation')}>저장</PrettyBtn>
-                                <PrettyBtn type="button" size="sm" onClick={(e)=>removeNewField(e, 'newEducation')}>취소</PrettyBtn>
+                                <PrettyBtn type="button" size="sm" onClick={()=>{setIsCurrentEdu(false);saveFieldData('newEducation')}}>저장</PrettyBtn>
+                                <PrettyBtn type="button" size="sm" onClick={(e)=>{setIsCurrentEdu(false); removeNewField(e, 'newEducation')}}>취소</PrettyBtn>
                             </div>
                         )}
                                     </div>
@@ -1002,9 +1064,9 @@ const getFlagEmoji = (countryCode) => {
                                     <p><strong>회사명:</strong> {exp.company_name}</p>
                                     {exp.position && <p><strong>직무:</strong> {exp.position}</p>} {/* 직무가 있을 때만 렌더링 */}
                                     <p>
-                                        <strong>기간:</strong> {exp.start_date ? new Date(exp.start_date).toLocaleDateString() : 'N/A'}
+                                        <strong>기간:</strong> {exp.start_date ? new Date(exp.start_date).toLocaleDateString() : ''}
                                         {' '}~{' '}
-                                        {exp.end_date ? new Date(exp.end_date).toLocaleDateString() : 'N/A'}
+                                        {exp.end_date ? new Date(exp.end_date).toLocaleDateString() : ''}
                                     </p>
                                     {exp.notes && <p><strong>상세내용:</strong> {exp.notes}</p>} {/* 상세내용이 있을 때만 렌더링 */}
                                 </div>
@@ -1029,22 +1091,40 @@ const getFlagEmoji = (countryCode) => {
                                     </div>
                                 </div>
                                 )}
+                                <input type='text' name='company_name' placeholder='회사명' onChange={(e)=>handleFieldChange(e, 'newExperience')} value={formData.newExperience[0]?.company_name || ''}/>
                                 <Calendar
+                                    isCurrentJob={isCurrentJob}
                                     selectedStartDate={formData.newExperience[0]?.start_date}
                                     startplaceholder="입사일"
                                     onChangeStartDate={(date)=>handleFieldDateChange('newExperience', 'start_date', date)}
-                                    selectedEndDate={formData.newExperience[0]?.end_date}
+                                    selectedEndDate={isCurrentJob ? "" : formData.newExperience[0]?.end_date}
                                     endplaceholder="퇴사일"
                                     onChangeEndDate={(date) => handleFieldDateChange('newExperience', 'end_date', date)}
                                 />
-                                    <input type='text' name='company_name' placeholder='회사명' onChange={(e)=>handleFieldChange(e, 'newExperience')} value={formData.newExperience[0]?.company_name || ''}/>
+                                <input type='checkbox' name='' onChange={(e) => {
+                                    const checked = e.target.checked;
+
+                                    setIsCurrentJob(checked);
+
+                                    // 체크된 상태면 → end_date 제거
+                                    if (checked) {
+                                    setFormData((prev) => ({
+                                        ...prev,
+                                        newExperience: prev.newExperience.map((exp, index) =>
+                                        index === 0 ? { ...exp, end_date: "" } : exp
+                                        )
+                                    }));
+                                    }
+                                }}
+                                /><p>재직중:</p>
+                                    
                                 <input type = 'text' name='position' placeholder='직무' onChange={(e) => handleFieldChange(e, 'newExperience')} value={formData.newExperience[0]?.position||''}/>
                              <textarea  name='notes' placeholder='상세내용 (주요 업무 및 성과를 구체적으로 기재)'
                                 onChange={(e) => handleFieldChange(e, 'newExperience')} value={formData.newExperience[0]?.notes || ''}
                                 rows="3"/>
                             {/* <PrettyBtn type="button" size="sm" onClick={() => removeExperience(index)} disabled={formData.newExperience.length <= 0}>삭제</PrettyBtn> */}
-                            <PrettyBtn type="button" size="sm" onClick={()=>saveFieldData('newExperience')}>저장</PrettyBtn>
-                            <PrettyBtn type="button" size="sm" onClick={(e)=>removeNewField(e, 'newExperience')}>취소</PrettyBtn>
+                            <PrettyBtn type="button" size="sm" onClick={()=>{setIsCurrentJob(false);saveFieldData('newExperience')}}>저장</PrettyBtn>
+                            <PrettyBtn type="button" size="sm" onClick={(e)=>{setIsCurrentJob(false); removeNewField(e, 'newExperience')}}>취소</PrettyBtn>
                         </div>
                     )}
                     </div>
