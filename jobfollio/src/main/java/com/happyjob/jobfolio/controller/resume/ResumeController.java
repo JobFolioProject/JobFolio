@@ -186,6 +186,7 @@ public class ResumeController {
                 node.put("school_name", edu.getOrDefault("school_name", ""));
                 node.put("enroll_date", edu.getOrDefault("enroll_date", ""));
                 node.put("grad_date", edu.getOrDefault("grad_date", ""));
+                node.put("edu_status", edu.getOrDefault("edu_status", ""));
                 node.put("major", edu.getOrDefault("major", ""));
                 node.put("sub_major", edu.getOrDefault("sub_major", ""));
                 node.put("gpa", edu.getOrDefault("gpa", ""));
@@ -378,26 +379,26 @@ public class ResumeController {
             root.set("career", careerArray);
             System.out.println("careerArray:" + root.get("career"));
 
-//            // 자격증 정보
-//            List<Map<String,String>> certificates = (List<Map<String,String>>) resumeInfo.get("certifications");
-//            ArrayNode certificateArray = mapper.createArrayNode();
-//            for (Map<String, String> certificate : certificates) {
-//                ObjectNode node = mapper.createObjectNode();
-//                node.put("certificate_name", certificate.get("certificate_name"));
-//                certificateArray.add(node);
-//            }
-//            root.set("certifications", certificateArray);
-//
-//            // 언어 정보
-//            List<Map<String,String>> languages = (List<Map<String,String>>) resumeInfo.get("languages");
-//            ArrayNode languageArray = mapper.createArrayNode();
-//            for (Map<String, String> language : languages) {
-//                ObjectNode node = mapper.createObjectNode();
-//                node.put("language", language.get("language"));
-//                node.put("level", language.get("level"));
-//                languageArray.add(node);
-//            }
-//            root.set("languages", languageArray);
+            // 자격증 정보
+            List<Map<String,String>> certificates = (List<Map<String,String>>) resumeInfo.get("certifications");
+            ArrayNode certificateArray = mapper.createArrayNode();
+            for (Map<String, String> certificate : certificates) {
+                ObjectNode node = mapper.createObjectNode();
+                node.put("certificate_name", certificate.get("certificate_name"));
+                certificateArray.add(node);
+            }
+            root.set("certifications", certificateArray);
+
+            // 언어 정보
+            List<Map<String,String>> languages = (List<Map<String,String>>) resumeInfo.get("languages");
+            ArrayNode languageArray = mapper.createArrayNode();
+            for (Map<String, String> language : languages) {
+                ObjectNode node = mapper.createObjectNode();
+                node.put("language", language.get("language"));
+                node.put("level", language.get("level"));
+                languageArray.add(node);
+            }
+            root.set("languages", languageArray);
 
             //주요 스킬 정보
             List<Map<String, String>> skills = (List<Map<String, String>>) resumeInfo.get("skillList");
