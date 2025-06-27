@@ -5,7 +5,7 @@ import axios from "../../utils/axiosConfig";
 import '../../css/resume/ResumePreviewModal.css';
 import { faL } from '@fortawesome/free-solid-svg-icons';
 
-const ResumePreviewModal = ({ open, onClose, loading, setLoading, htmlString, setHtmlString, formData }) => {
+const ResumePreviewModal = ({ open, onClose, loading, setLoading, htmlString, setHtmlString, formData, setFormData }) => {
 
     const [download, setDownload] = useState(false);
     const [filePath, setFilePath] = useState("");
@@ -79,6 +79,13 @@ const ResumePreviewModal = ({ open, onClose, loading, setLoading, htmlString, se
             // 이미 내부에서 alert 처리하므로 별도 처리 생략 가능
         }
     };
+
+    const publicationToggle = (event) => {
+    setFormData((prev) => ({
+      ...prev,
+      publication_yn: event.target.value,
+    }));
+  };
     
     const close = () =>{
         setHtmlString("");
@@ -99,6 +106,33 @@ const ResumePreviewModal = ({ open, onClose, loading, setLoading, htmlString, se
             srcDoc={htmlString}
             style={{ width: '100%', height: '80vh', border: 'none' }}
           />
+          <div className="publication_ratio_area">
+          <input
+            type="radio"
+            name="publication_yn"
+            id="public"
+            value="Y"
+            onChange={publicationToggle}
+            checked={formData.publication_yn === "Y"}
+            className="custom-radio"
+          />
+          <label htmlFor="public" className="radio-label">
+            공개
+          </label>
+
+          <input
+            type="radio"
+            name="publication_yn"
+            id="private"
+            value="N"
+            onChange={publicationToggle}
+            checked={formData.publication_yn === "N"}
+            className="custom-radio"
+          />
+          <label htmlFor="private" className="radio-label">
+            비공개
+          </label>
+        </div>
           <div className="buttonRow">
             {download ? (
                 <button className="secondaryBtn" type='button' onClick={pdfDownload}>
