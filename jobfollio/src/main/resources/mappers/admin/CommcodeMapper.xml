@@ -106,6 +106,7 @@
                   from tb_detail_code
                  where group_code = #{groupcode}
                 ) as delyn
+		      ,category_code
          from tb_group_code
         where group_code = #{groupcode}
 	</select>
@@ -119,6 +120,7 @@
               ,use_yn = #{iuseyn}
               ,regId = #{liginid}
               ,reg_date = DATE_FORMAT(NOW(), '%Y-%m-%d')
+              ,category_code=#{category_code}
          where group_code = #{igroupcode}        
 	</update>
 	
