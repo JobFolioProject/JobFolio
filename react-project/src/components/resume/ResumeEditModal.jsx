@@ -114,7 +114,7 @@ const ResumeEditModal = ({
         gpa: tr.querySelector(".gpa")?.textContent.trim() || "",
         notes: tr.querySelector(".notes")?.textContent.trim() || "",
         isCurrentEdu:
-          tr.querySelector(".edu_status").textContent.trim() === "재학"
+          tr.querySelector(".edu_status")?.textContent.trim() === "재학"
             ? true
             : false,
       }));
@@ -129,7 +129,7 @@ const ResumeEditModal = ({
         position: tr.querySelector(".position")?.textContent.trim() || "",
         notes: tr.querySelector(".notes")?.textContent.trim() || "",
         isCurrentJob:
-          tr.querySelector(".end_date").textContent.trim() === ""
+          tr.querySelector(".end_date")?.textContent.trim() === ""
             ? true
             : false,
       }));
