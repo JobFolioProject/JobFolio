@@ -1,57 +1,100 @@
 /* GroupManagement.css */
 
-.groupManagement {
+.group-management {
   display: flex;
-  background-color: #ffffff;
   flex-direction: row;
 }
 
-/* 메인 컨텐츠 영역: 너비 80% */
-.group-content {
-  flex: none;
-  width: 70%;
-  padding: 24px;
-  background-color: #ffffff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+/* 메인 컨텐츠 영역 */
+.group-manage-content {
+  display: flex;
+  width: 100%;
+  min-width: 1000px;
+  padding: 30px 40px;  
   margin: 0 auto; /* 가운데 정렬 */
 }
 
+.group-manage-wrapper {
+  width: 100%;  
+}
+
 /* 타이틀 영역 */
-.group-conTitle {
+.group-manage-title {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: 16px;
+  padding: 16px 24px;
+  margin-bottom: 24px;
   color: #333;
+  background-color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border-radius: 20px;
+}
+.group-manage-main-control,  
+.group-manage-sub-control{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
 }
 
-/* 오른쪽 버튼 그룹 */
-.group-conTitle .fr {
+.group-manage-main-tap-right, 
+.group-manage-sub-tap-right{
   display: flex;
-  gap: 8px;
+}
+
+.group-manage-main-code-box, 
+.group-manage-sub-code-box {
+  background-color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border-radius: 20px;
+  box-sizing: border-box;
+  padding: 16px 24px;
+  margin-bottom: 12px;
+}
+
+.group-manage-main-count span,
+.group-manage-sub-count span{
+  margin-right: 15px;
+}
+
+.group-manage-main-search-section {
+  display: flex; 
+  align-items: center;
+  gap: 5px;
+}
+
+.group-manage-main-search-section input,
+.group-manage-main-search-section select {
+  height: 100%;
+}
+
+.group-manage-main-button-section {
+  margin-left: 10px;
 }
 
 /* 테이블 공통 스타일 */
-.group-col {
+.group-manage-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 8px;
 }
 
-.group-col th,
-.group-col td {
-  padding: 12px 8px;
-  border-bottom: 1px solid #e8e8e8;
-  text-align: left;
+.group-manage-table tbody th,
+.group-manage-table tbody td {
+  text-align: center;
   vertical-align: middle;
 }
 
-.group-col thead th {
-  background-color: #fafafa;
-  font-weight: 600;
+.group-manage-table thead th {
+  padding: 12px 8px;
+  border-bottom: 1px solid #e8e8e8;
+  background-color: #f2f2f2;
   color: #555;
+  font-weight: 600;  
+}
+
+.group-manage-table tbody td {
+  padding: 5px;
 }
 
 /* hoverable-row: 클릭 가능한 코드명 */
@@ -132,20 +175,16 @@
   justify-content: center;
 }
 
-/* 모달 컨텐츠: 내용 크기에 맞춰 자동 너비, 높이는 최대값 지정 */
-.custom-modal-content {
+/* 모달 컨텐츠 */
+.group-manage-custom-modal-content {
   background-color: #fff;
   border-radius: 12px;
   box-shadow: 0 4px 16px rgba(0,0,0,0.2);
   padding: 24px;
   position: relative;
-  max-height: 80vh;
-  overflow-y: auto;
-  
-  /* 주요 변경: 내용 크기에 맞춰 width auto */
+  max-height: 80vh;  
   width: auto;
   display: inline-block;
-  /* 최대 너비 제한 */
   max-width: 90%;
 }
 
@@ -154,10 +193,23 @@
   max-width: 95%;
 }
 
-/* 모달 내부에 있는 테이블 자동 크기 조정 */
-.custom-modal-content .modal-content {
-  width: auto !important;
-  min-width: 400px; /* 최소 너비 */
+/* 모달 내부 text input 크기 조절 */
+.group-management .group-manage-custom-modal-content
+  .group-manage-modal-content input[type="text"] {
+  width: 200px;      /* 원하는 너비(px 또는 % 단위) */
+  height: 36px;      /* 원하는 높이 */
+  padding: 6px 8px;  /* 텍스트 여백 */
+  box-sizing: border-box;
+}
+
+/* 모달 내부 textarea 크기 조절 */
+.group-management .group-manage-custom-modal-content
+  .group-manage-modal-content textarea {
+  width: 100%;       /* 부모 너비에 맞춰 늘리기 */
+  height: 80px;      /* 원하는 높이 */
+  padding: 6px 8px;
+  box-sizing: border-box;
+  resize: vertical;  /* 사용자가 세로 크기만 조절 가능 */
 }
 
 /* Modal 내 버튼 스타일 */
